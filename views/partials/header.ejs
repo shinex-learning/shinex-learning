@@ -1,0 +1,31 @@
+<header class="site-header">
+    <div class="container header-flex">
+        <div class="logo-area">
+            <a href="/" class="logo-link">
+                <span class="logo-icon"><i class="fas fa-graduation-cap"></i></span>
+                <span class="logo-text">SHINEX <span class="logo-light">Learning Circle</span></span>
+                <span class="logo-reg">&reg;</span>
+            </a>
+        </div>
+
+        <nav class="main-nav">
+            <ul>
+                <% if (user) { %>
+                    <li><a href="/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                    <li><a href="/course"><i class="fas fa-book"></i> My Course</a></li>
+                    <% if (user.isAdmin) { %>
+                        <li><a href="/admin/dashboard" class="admin-link"><i class="fas fa-shield-alt"></i> Admin</a></li>
+                    <% } %>
+                    <li><a href="/logout" class="btn-logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                <% } else { %>
+                    <li><a href="/login">Login</a></li>
+                    <li><a href="/register/step1" class="btn-primary-nav">Register</a></li>
+                <% } %>
+            </ul>
+        </nav>
+
+        <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+</header>

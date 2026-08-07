@@ -1,0 +1,47 @@
+[
+  {
+    "id": "a4f52af2-d41f-4da8-a5c0-c47d2de01e76",
+    "fullName": "Admin User",
+    "email": "admin@shinex.com",
+    "password": "$2b$10$eLbzjjF5cMUPbRdATw/P2.UBJu.9uFpkt5IFQH0kNKXe14BzOeuLu",
+    "firstName": "Admin",
+    "lastName": "User",
+    "gender": "Male",
+    "dob": "1990-01-01",
+    "country": "USA",
+    "experienceLevel": "Advanced",
+    "courseId": null,
+    "interests": [],
+    "bio": "System Administrator",
+    "termsAccepted": true,
+    "isAdmin": true,
+    "progress": {},
+    "createdAt": "2026-08-07T06:56:06.495Z"
+  },
+  {
+    "id": "e1159a6d-3c97-4f2e-ba2b-ac4d6b0bc1ec",
+    "fullName": "John Doe",
+    "email": "john@example.com",
+    "password": "$2b$10$k/rQr/WO5oImwqEoPCpc4ePmXXyHaPBJd.L3e8XKS/dtHlNBSzkGu",
+    "firstName": "John",
+    "lastName": "Doe",
+    "gender": "Male",
+    "dob": "2005-08-16",
+    "country": "Nigeria",
+    "experienceLevel": "Beginner",
+    "courseId": null,
+    "interests": [
+      "HTML/CSS",
+      "JavaScript",
+      "Python",
+      "UI/UX",
+      "WordPress",
+      "SEO"
+    ],
+    "bio": "bio example",
+    "termsAccepted": true,
+    "isAdmin": false,
+    "progress": {},
+    "createdAt": "2026-08-07T07:04:05.610Z"
+  }
+]

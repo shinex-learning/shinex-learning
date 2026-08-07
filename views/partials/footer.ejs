@@ -1,0 +1,25 @@
+<footer class="site-footer">
+    <div class="container footer-flex">
+        <div class="footer-brand">
+            <span class="footer-logo"><i class="fas fa-graduation-cap"></i> SHINEX <span class="footer-light">Learning Circle</span></span>
+            <span class="footer-reg">&reg;</span>
+            <p class="footer-tagline">Empowering minds, shaping futures.</p>
+        </div>
+        <div class="footer-links">
+            <a href="#">About</a>
+            <a href="#">Contact</a>
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+        </div>
+        <div class="footer-copy">
+            &copy; <%= new Date().getFullYear() %> SLC lmt.® All rights reserved.
+        </div>
+    </div>
+</footer>
+
+<!-- Mobile nav toggle script -->
+<script>
+    document.getElementById('mobileToggle').addEventListener('click', function() {
+        document.querySelector('.main-nav').classList.toggle('active');
+    });
+</script>

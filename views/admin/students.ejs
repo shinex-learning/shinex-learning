@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin – Students</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <%- include('../partials/header', { user: null, showBack: true }) %>
+
+    <main class="main-content">
+        <div class="container">
+
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 20px;">
+                <h2 style="font-size: 1.6rem; font-weight: 800; color: #1A0A2E;">
+                    <i class="fas fa-users" style="color: #8B5CF6;"></i> All Students
+                </h2>
+                <a href="/admin/dashboard" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-arrow-left"></i> Back to Admin
+                </a>
+            </div>
+
+            <div class="card">
+                <div style="overflow-x: auto;">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Gender</th>
+                                <th>Course</th>
+                                <th>Level</th>
+                                <th>Joined</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% students.forEach(s => { %>
+                                <tr>
+                                    <td><strong><%= s.firstName %> <%= s.lastName %></strong></td>
+                                    <td><%= s.email %></td>
+                                    <td><%= s.gender %></td>
+                                    <td><%= courseMap[s.courseId] || 'Not enrolled' %></td>
+                                    <td><span class="badge badge-purple"><%= s.experienceLevel %></span></td>
+                                    <td style="font-size: 0.85rem; color: #7a6a8f;">
+                                        <%= new Date(s.createdAt).toLocaleDateString() %>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                            <% if (students.length === 0) { %>
+                                <tr><td colspan="6" style="text-align: center; color: #7a6a8f;">No students registered yet.</td></tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <%- include('../partials/footer') %>
+</body>
+</html>

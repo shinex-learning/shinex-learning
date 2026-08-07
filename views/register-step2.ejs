@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHINEX Learning Circle – Step 2</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="register-step2">
+    <%- include('partials/header', { user: null, showBack: true }) %>
+
+    <main class="main-content">
+        <div class="container" style="max-width: 720px;">
+
+            <div class="card" style="padding: 36px 32px;">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <div style="background: linear-gradient(135deg, #8B5CF6, #6a3dcf); width: 56px; height: 56px; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 10px;">
+                        <i class="fas fa-id-card" style="font-size: 1.8rem; color: #fff;"></i>
+                    </div>
+                    <h1 style="font-size: 1.6rem; font-weight: 800; color: #1A0A2E;">Complete Your Profile</h1>
+                    <p style="color: #7a6a8f; font-size: 0.95rem;">Step 2 of 2 – Tell us about yourself</p>
+                </div>
+
+                <!-- Progress -->
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+                    <span style="background: #8B5CF6; color: #fff; padding: 4px 14px; border-radius: 30px; font-size: 0.75rem; font-weight: 600;">Step 2</span>
+                    <div class="progress-wrap" style="flex:1;">
+                        <div class="progress-fill" style="width:100%;"></div>
+                    </div>
+                    <span style="color: #8B5CF6; font-size: 0.75rem; font-weight: 600;">100%</span>
+                </div>
+
+                <form action="/register/step2" method="POST">
+
+                    <!-- Personal Info -->
+                    <div class="form-section">
+                        <div class="form-section-title"><i class="fas fa-user"></i> Personal Information</div>
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label for="firstName">First Name</label>
+                                <input type="text" id="firstName" name="firstName" class="form-control" placeholder="John" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName">Last Name</label>
+                                <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Doe" required>
+                            </div>
+                        </div>
+
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label>Gender <span class="label-hint">(Male / Female only)</span></label>
+                                <div class="radio-group">
+                                    <label><input type="radio" name="gender" value="Male" required> Male</label>
+                                    <label><input type="radio" name="gender" value="Female" required> Female</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="dob">Date of Birth</label>
+                                <input type="date" id="dob" name="dob" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="country">Country</label>
+                            <select id="country" name="country" class="form-control" required>
+                                <option value="">Select your country</option>
+                                <option value="Nigeria">🇳🇬 Nigeria</option>
+                                <option value="USA">🇺🇸 United States</option>
+                                <option value="UK">🇬🇧 United Kingdom</option>
+                                <option value="Ghana">🇬🇭 Ghana</option>
+                                <option value="Kenya">🇰🇪 Kenya</option>
+                                <option value="South Africa">🇿🇦 South Africa</option>
+                                <option value="Canada">🇨🇦 Canada</option>
+                                <option value="Australia">🇦🇺 Australia</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Learning -->
+                    <div class="form-section">
+                        <div class="form-section-title"><i class="fas fa-graduation-cap"></i> Learning Profile</div>
+
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label for="experienceLevel">Experience Level</label>
+                                <select id="experienceLevel" name="experienceLevel" class="form-control" required>
+                                    <option value="">Select level</option>
+                                    <option value="Beginner">Beginner</option>
+                                    <option value="Intermediate">Intermediate</option>
+                                    <option value="Advanced">Advanced</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="courseId">Course to Study</label>
+                                <select id="courseId" name="courseId" class="form-control" required>
+                                    <option value="">Choose a course</option>
+                                    <% courses.forEach(c => { %>
+                                        <option value="<%= c.id %>"><%= c.title %> (<%= c.level %>, <%= c.duration %>)</option>
+                                    <% }) %>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Interests <span class="label-hint">(check all that apply)</span></label>
+                            <div class="checkbox-group">
+                                <div class="checkbox-grid">
+                                    <label><input type="checkbox" name="interests" value="HTML/CSS"> HTML/CSS</label>
+                                    <label><input type="checkbox" name="interests" value="JavaScript"> JavaScript</label>
+                                    <label><input type="checkbox" name="interests" value="Python"> Python</label>
+                                    <label><input type="checkbox" name="interests" value="UI/UX"> UI/UX</label>
+                                    <label><input type="checkbox" name="interests" value="WordPress"> WordPress</label>
+                                    <label><input type="checkbox" name="interests" value="SEO"> SEO</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="bio">Short Bio</label>
+                            <textarea id="bio" name="bio" class="form-control" placeholder="Tell us a little about yourself..." rows="3"></textarea>
+                        </div>
+                    </div>
+
+                   <!-- Terms -->
+<div class="form-section" style="border-color: #8B5CF6;">
+    <div class="terms-check">
+        <input type="checkbox" id="terms" name="terms" value="yes" required>
+        <label for="terms">
+            I accept the <a href="/terms" target="_blank">Terms and Conditions</a> and 
+            <a href="/privacy" target="_blank">Privacy Policy</a> of SHINEX Learning Circle.
+        </label>
+    </div>
+</div>
+
+    <%- include('partials/footer') %>
+</body>
+</html>
