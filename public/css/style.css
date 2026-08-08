@@ -2,7 +2,6 @@
    SHINEX Learning Circle – Complete CSS
    ============================================================ */
 
-/* ---------- RESET & BASE ---------- */
 * {
     margin: 0;
     padding: 0;
@@ -21,16 +20,9 @@ body {
     transition: background 0.3s ease, color 0.3s ease;
 }
 
-a {
-    text-decoration: none;
-    color: inherit;
-}
-ul {
-    list-style: none;
-}
-img {
-    max-width: 100%;
-}
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+img { max-width: 100%; }
 
 .container {
     width: 100%;
@@ -77,8 +69,7 @@ img {
     color: #fff;
     letter-spacing: -0.5px;
 }
-
-.logo-icon {
+.logo-link .logo-icon {
     background: #8B5CF6;
     color: #fff;
     width: 36px;
@@ -90,15 +81,14 @@ img {
     font-size: 1rem;
     box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
 }
-
-.logo-text {
+.logo-link .logo-text {
     font-weight: 700;
 }
-.logo-light {
+.logo-link .logo-light {
     font-weight: 300;
     color: #c4b5e6;
 }
-.logo-reg {
+.logo-link .logo-reg {
     font-size: 0.6rem;
     color: #8B5CF6;
     vertical-align: super;
@@ -174,7 +164,6 @@ img {
     padding: 8px 0;
     border-bottom: 1px solid #e0d6f0;
 }
-
 .back-arrow {
     display: inline-flex;
     align-items: center;
@@ -186,9 +175,6 @@ img {
 }
 .back-arrow:hover {
     color: #8B5CF6;
-}
-.back-arrow i {
-    font-size: 1rem;
 }
 
 /* ---------- ALERTS ---------- */
@@ -674,11 +660,11 @@ textarea.form-control {
 }
 
 /* ============================================================
-   DARK MODE
+   DARK MODE – IMPROVED READABILITY
    ============================================================ */
 body.dark-mode {
     background: #121212;
-    color: #e0e0e0;
+    color: #f0f0f0; /* much brighter base text */
 }
 
 body.dark-mode .site-header {
@@ -689,7 +675,7 @@ body.dark-mode .site-header {
 body.dark-mode .card {
     background: #1e1e1e;
     border-color: #333;
-    color: #e0e0e0;
+    color: #f0f0f0;
 }
 
 body.dark-mode .card-purple {
@@ -699,26 +685,25 @@ body.dark-mode .card-purple {
 body.dark-mode .form-control {
     background: #2a2a2a;
     border-color: #444;
-    color: #e0e0e0;
+    color: #f0f0f0;
 }
-
 body.dark-mode .form-control:focus {
     border-color: #8B5CF6;
 }
-
 body.dark-mode .form-control::placeholder {
-    color: #888;
+    color: #999;
 }
-
 body.dark-mode .form-group label {
-    color: #c0b0d0;
+    color: #d0c0e0;
+}
+body.dark-mode .form-group .label-hint {
+    color: #aaa;
 }
 
 body.dark-mode .btn-secondary {
     background: #333;
-    color: #e0e0e0;
+    color: #f0f0f0;
 }
-
 body.dark-mode .btn-secondary:hover {
     background: #444;
 }
@@ -726,40 +711,65 @@ body.dark-mode .btn-secondary:hover {
 body.dark-mode .site-footer {
     background: #0d0d0d;
     border-top: 2px solid #8B5CF6;
+    color: #d0d0d0;
+}
+body.dark-mode .site-footer .footer-logo {
+    color: #fff;
+}
+body.dark-mode .site-footer .footer-links a {
+    color: #c0c0c0;
+}
+body.dark-mode .site-footer .footer-links a:hover {
+    color: #8B5CF6;
+}
+body.dark-mode .site-footer .footer-copy {
+    color: #999;
 }
 
 body.dark-mode .reading-content-board {
     background: #1a1a1a;
-    color: #d0d0d0;
+    color: #f0f0f0;
     border-left: 4px solid #8B5CF6;
 }
-
 body.dark-mode .reading-content-board h1,
 body.dark-mode .reading-content-board h2,
 body.dark-mode .reading-content-board h3 {
-    color: #f0f0f0;
+    color: #ffffff;
 }
-
 body.dark-mode .reading-content-board strong,
 body.dark-mode .reading-content-board b {
-    color: #c4b5e6;
+    color: #d4bfff;
+}
+body.dark-mode .reading-content-board p {
+    color: #e0e0e0;
+}
+body.dark-mode .reading-content-board ul li,
+body.dark-mode .reading-content-board ol li {
+    color: #e0e0e0;
+}
+body.dark-mode .reading-content-board blockquote {
+    color: #c0c0c0;
+    border-left-color: #8B5CF6;
+}
+body.dark-mode .reading-content-board code {
+    background: #2a2a2a;
+    color: #f0f0f0;
 }
 
 body.dark-mode .lesson-item {
     background: #1a1a1a;
     border-color: #333;
+    color: #f0f0f0;
 }
-
 body.dark-mode .lesson-item:hover {
     background: #2a2a2a;
 }
 
 body.dark-mode .alert-success {
     background: #1a3a2a;
-    color: #7ae0a0;
+    color: #90e0a0;
     border-left-color: #27ae60;
 }
-
 body.dark-mode .alert-danger {
     background: #3a1a1a;
     color: #f0a0a0;
@@ -769,18 +779,21 @@ body.dark-mode .alert-danger {
 body.dark-mode .admin-stat-box {
     background: #1e1e1e;
     border-color: #333;
+    color: #f0f0f0;
+}
+body.dark-mode .admin-stat-box .lbl {
+    color: #aaa;
 }
 
 body.dark-mode .admin-table th {
     background: #2a2a2a;
-    color: #e0e0e0;
+    color: #f0f0f0;
     border-bottom-color: #444;
 }
-
 body.dark-mode .admin-table td {
     border-bottom-color: #333;
+    color: #e0e0e0;
 }
-
 body.dark-mode .admin-table tr:hover td {
     background: #2a2a2a;
 }
@@ -789,323 +802,147 @@ body.dark-mode .back-arrow-bar {
     background: #1a1a1a;
     border-bottom-color: #333;
 }
-
 body.dark-mode .back-arrow {
     color: #c4b5e6;
 }
-
 body.dark-mode .back-arrow:hover {
     color: #8B5CF6;
 }
 
 body.dark-mode .checkbox-group label,
 body.dark-mode .radio-group label {
-    color: #c0b0d0;
+    color: #d0c0e0;
 }
-
 body.dark-mode .terms-check label {
-    color: #c0b0d0;
+    color: #d0c0e0;
+}
+body.dark-mode .terms-check a {
+    color: #b088f9;
 }
 
 body.dark-mode .ad-box {
     background: #1a1a1a;
     border-color: #5a3d8a;
+    color: #d0d0d0;
 }
-
 body.dark-mode .ad-box:hover {
     background: #2a1a4a;
+}
+
+body.dark-mode .badge-dark {
+    background: #333;
+    color: #ddd;
+}
+body.dark-mode .badge-purple {
+    background: #7c4ad6;
+    color: #fff;
+}
+body.dark-mode .badge-green {
+    background: #1e8f4e;
+    color: #fff;
+}
+body.dark-mode .badge-gold {
+    background: #d48c1a;
+    color: #fff;
+}
+
+body.dark-mode .progress-wrap {
+    background: #2a2a2a;
+}
+body.dark-mode .progress-fill {
+    background: linear-gradient(90deg, #7c4ad6, #b088f9);
+}
+
+body.dark-mode .main-nav a {
+    color: #d0c0e0;
+}
+body.dark-mode .main-nav a:hover {
+    background: rgba(139, 92, 246, 0.3);
+    color: #fff;
+}
+body.dark-mode .main-nav .btn-primary-nav {
+    background: #7c4ad6;
+}
+body.dark-mode .main-nav .btn-logout {
+    color: #f0a0a0;
+}
+body.dark-mode .main-nav .btn-logout:hover {
+    background: rgba(244, 67, 54, 0.2);
+    color: #ffb0b0;
 }
 
 /* ============================================================
    RESPONSIVE
    ============================================================ */
 
-/* Tablet and up */
 @media (min-width: 768px) {
-    .container {
-        padding: 0 24px;
-    }
-    .main-content {
-        padding: 32px 0 48px;
-    }
-    .logo-link {
-        font-size: 1.3rem;
-    }
-    .logo-icon {
-        width: 40px;
-        height: 40px;
-        font-size: 1.2rem;
-    }
-    .mobile-toggle {
-        display: none;
-    }
-    .main-nav ul {
-        display: flex;
-        gap: 8px;
-    }
-    .grid-2 {
-        grid-template-columns: 1fr 1fr;
-        gap: 20px;
-    }
-    .grid-3 {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
-    }
-    .card {
-        padding: 24px 28px;
-    }
-    .reading-content-board {
-        font-size: 1.05rem;
-        padding: 18px;
-    }
-    .reading-content-board h1 {
-        font-size: 1.8rem;
-    }
-    .reading-content-board h2 {
-        font-size: 1.5rem;
-    }
-    .reading-content-board h3 {
-        font-size: 1.2rem;
-    }
-    .admin-stats {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 16px;
-    }
-    .admin-stat-box .num {
-        font-size: 2rem;
-    }
-    .footer-flex {
-        flex-direction: row;
-        justify-content: space-between;
-        text-align: left;
-    }
-    .footer-brand {
-        align-items: flex-start;
-    }
+    .container { padding: 0 24px; }
+    .main-content { padding: 32px 0 48px; }
+    .logo-link { font-size: 1.3rem; }
+    .logo-icon { width: 40px; height: 40px; font-size: 1.2rem; }
+    .mobile-toggle { display: none; }
+    .main-nav ul { display: flex; gap: 8px; }
+    .grid-2 { grid-template-columns: 1fr 1fr; gap: 20px; }
+    .grid-3 { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .card { padding: 24px 28px; }
+    .reading-content-board { font-size: 1.05rem; padding: 18px; }
+    .admin-stats { grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .admin-stat-box .num { font-size: 2rem; }
+    .footer-flex { flex-direction: row; justify-content: space-between; text-align: left; }
+    .footer-brand { align-items: flex-start; }
 }
 
-/* Desktop and up */
 @media (min-width: 1024px) {
-    .grid-3 {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 24px;
-    }
-    .card {
-        padding: 28px 32px;
-    }
-    .reading-content-board {
-        font-size: 1.125rem;
-        max-width: 65ch;
-        padding: 20px;
-    }
-    .reading-content-board h1 {
-        font-size: 2.2rem;
-    }
-    .reading-content-board h2 {
-        font-size: 1.8rem;
-    }
-    .reading-content-board h3 {
-        font-size: 1.4rem;
-    }
+    .grid-3 { grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .card { padding: 28px 32px; }
+    .reading-content-board { font-size: 1.125rem; max-width: 65ch; padding: 20px; }
 }
 
-/* Mobile specific */
+/* Mobile */
 @media (max-width: 768px) {
-    .btn,
-    .btn-sm,
-    .btn-xs {
-        min-height: 48px;
-        padding: 12px 16px;
-        font-size: 1rem;
-        border-radius: 12px;
-    }
-    .btn-sm {
-        min-height: 40px;
-        padding: 8px 14px;
-        font-size: 0.9rem;
-    }
-    .btn-xs {
-        min-height: 32px;
-        padding: 4px 10px;
-        font-size: 0.8rem;
-    }
-    .card {
-        border-radius: 16px;
-        padding: 16px;
-    }
-    .form-control {
-        padding: 14px 16px;
-        font-size: 16px;
-        border-radius: 12px;
-    }
-    .container {
-        padding: 0 12px;
-    }
-    .progress-wrap {
-        height: 12px;
-    }
-    .lesson-item {
-        padding: 14px;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-    }
-    .reading-content-board {
-        font-size: 1rem;
-        padding: 16px;
-        line-height: 1.8;
-    }
-    .reading-content-board h1 {
-        font-size: 1.5rem;
-    }
-    .reading-content-board h2 {
-        font-size: 1.3rem;
-    }
-    .reading-content-board h3 {
-        font-size: 1.1rem;
-    }
-    .admin-stats {
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
-    }
-    .admin-stat-box {
-        padding: 12px;
-    }
-    .admin-stat-box .num {
-        font-size: 1.4rem;
-    }
-    .admin-table {
-        font-size: 0.75rem;
-    }
-    .admin-table th,
-    .admin-table td {
-        padding: 6px 8px;
-        word-break: break-word;
-    }
-    .main-nav {
-        display: none;
-        width: 100%;
-        padding: 12px 0;
-        border-top: 1px solid rgba(139, 92, 246, 0.2);
-        margin-top: 8px;
-    }
-    .main-nav.active {
-        display: block;
-    }
-    .main-nav ul {
-        flex-direction: column;
-        gap: 4px;
-    }
-    .main-nav a {
-        padding: 14px 16px;
-        width: 100%;
-        font-size: 1rem;
-        justify-content: center;
-    }
-    .register-step2 .form-section {
-        padding: 14px 12px !important;
-    }
-    .register-step2 .checkbox-grid {
-        grid-template-columns: 1fr 1fr !important;
-    }
-
-    .logo-text .logo-light {
-        display: none;
-    }
+    .btn, .btn-sm, .btn-xs { min-height: 48px; padding: 12px 16px; font-size: 1rem; border-radius: 12px; }
+    .btn-sm { min-height: 40px; padding: 8px 14px; font-size: 0.9rem; }
+    .btn-xs { min-height: 32px; padding: 4px 10px; font-size: 0.8rem; }
+    .card { border-radius: 16px; padding: 16px; }
+    .form-control { padding: 14px 16px; font-size: 16px; border-radius: 12px; }
+    .container { padding: 0 12px; }
+    .progress-wrap { height: 12px; }
+    .lesson-item { padding: 14px; flex-direction: column; align-items: flex-start; gap: 8px; }
+    .reading-content-board { font-size: 1rem; padding: 16px; line-height: 1.8; }
+    .admin-stats { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .admin-stat-box { padding: 12px; }
+    .admin-stat-box .num { font-size: 1.4rem; }
+    .admin-table { font-size: 0.75rem; }
+    .admin-table th, .admin-table td { padding: 6px 8px; word-break: break-word; }
+    .main-nav { display: none; width: 100%; padding: 12px 0; border-top: 1px solid rgba(139, 92, 246, 0.2); margin-top: 8px; }
+    .main-nav.active { display: block; }
+    .main-nav ul { flex-direction: column; gap: 4px; }
+    .main-nav a { padding: 14px 16px; width: 100%; font-size: 1rem; justify-content: center; }
+    .register-step2 .form-section { padding: 14px 12px !important; }
+    .register-step2 .checkbox-grid { grid-template-columns: 1fr 1fr !important; }
+    .logo-text .logo-light { display: none; }
+    .site-footer { padding: 16px 0; }
+    .footer-flex { gap: 8px; }
+    .footer-links a { font-size: 0.85rem; }
+    .footer-copy { font-size: 0.7rem; }
 }
 
-/* Extra small phones */
 @media (max-width: 480px) {
-    .card {
-        padding: 12px 10px !important;
-        margin: 0 4px 12px 4px !important;
-    }
-    .container {
-        padding: 0 6px !important;
-    }
-    h1 {
-        font-size: 1.3rem !important;
-    }
-    h2 {
-        font-size: 1.1rem !important;
-    }
-    .form-group {
-        margin-bottom: 12px !important;
-    }
-    .form-group label {
-        font-size: 0.85rem !important;
-    }
-    .checkbox-grid {
-        grid-template-columns: 1fr 1fr !important;
-        gap: 4px !important;
-    }
-    .checkbox-grid label {
-        font-size: 0.8rem !important;
-    }
-    .logo-text {
-        font-size: 0.8rem !important;
-    }
-    .logo-icon {
-        width: 28px !important;
-        height: 28px !important;
-        font-size: 0.7rem !important;
-    }
-    .main-nav a {
-        font-size: 0.85rem !important;
-        padding: 10px 12px !important;
-    }
-    .footer-links a {
-        font-size: 0.75rem !important;
-    }
-    .footer-copy {
-        font-size: 0.65rem !important;
-    }
-    .site-footer {
-        padding: 14px 0 !important;
-    }
-    .admin-stats {
-        grid-template-columns: 1fr 1fr;
-        gap: 6px;
-    }
-    .admin-stat-box {
-        padding: 8px 10px;
-    }
-    .admin-stat-box .num {
-        font-size: 1.1rem;
-    }
-    .admin-stat-box .lbl {
-        font-size: 0.6rem;
-    }
-}
-
-/* Landscape phones */
-@media (orientation: landscape) and (max-height: 500px) {
-    .header-flex {
-        flex-wrap: nowrap;
-    }
-    .logo-text {
-        font-size: 0.8rem;
-    }
-    .logo-icon {
-        width: 28px;
-        height: 28px;
-        font-size: 0.7rem;
-    }
-    .main-nav a {
-        padding: 6px 10px;
-        font-size: 0.75rem;
-    }
-    .main-content {
-        padding: 8px 0 16px;
-    }
-    .card {
-        padding: 10px;
-        margin-bottom: 8px;
-    }
-    .hero-section {
-        padding: 16px !important;
-    }
-    .hero-section h1 {
-        font-size: 1.2rem !important;
-    }
+    .card { padding: 12px 10px !important; margin: 0 4px 12px 4px !important; }
+    .container { padding: 0 6px !important; }
+    h1 { font-size: 1.3rem !important; }
+    h2 { font-size: 1.1rem !important; }
+    .form-group { margin-bottom: 12px !important; }
+    .form-group label { font-size: 0.85rem !important; }
+    .checkbox-grid { grid-template-columns: 1fr 1fr !important; gap: 4px !important; }
+    .checkbox-grid label { font-size: 0.8rem !important; }
+    .logo-text { font-size: 0.8rem !important; }
+    .logo-icon { width: 28px !important; height: 28px !important; font-size: 0.7rem !important; }
+    .main-nav a { font-size: 0.85rem !important; padding: 10px 12px !important; }
+    .admin-stats { grid-template-columns: 1fr 1fr; gap: 6px; }
+    .admin-stat-box { padding: 8px 10px; }
+    .admin-stat-box .num { font-size: 1.1rem; }
+    .admin-stat-box .lbl { font-size: 0.6rem; }
+    .site-footer { padding: 12px 0; }
+    .footer-links a { font-size: 0.75rem; padding: 4px 8px; }
 }
