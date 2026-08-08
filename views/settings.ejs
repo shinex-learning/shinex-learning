@@ -12,52 +12,186 @@
     <%- include('partials/header', { user, showBack: true }) %>
 
     <main class="main-content">
-        <div class="container" style="max-width:600px;">
+        <div class="container" style="max-width:700px;">
             <div class="card">
                 <h2 style="font-size:1.4rem; font-weight:800; color:#1A0A2E; margin-bottom:20px;">
                     <i class="fas fa-cog" style="color:#8B5CF6;"></i> Settings
                 </h2>
 
+                <!-- ===== SETTINGS FORM ===== -->
                 <form action="/settings/update" method="POST">
-                    <div class="form-group">
-                        <label for="firstName">First Name</label>
-                        <input type="text" id="firstName" name="firstName" class="form-control" value="<%= user.firstName %>">
+
+                    <!-- 1. ACCOUNT INFORMATION -->
+                    <div class="settings-section">
+                        <h3 class="settings-section-title"><i class="fas fa-user"></i> Account Information</h3>
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label for="firstName">First Name</label>
+                                <input type="text" id="firstName" name="firstName" class="form-control" value="<%= user.firstName %>">
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName">Last Name</label>
+                                <input type="text" id="lastName" name="lastName" class="form-control" value="<%= user.lastName %>">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" name="email" class="form-control" value="<%= user.email %>" disabled style="background:#f0ebfb; opacity:0.7;">
+                            <small style="color:#7a6a8f; font-size:0.75rem;">Email cannot be changed. Contact admin for assistance.</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="bio">Bio</label>
+                            <textarea id="bio" name="bio" class="form-control" rows="3"><%= user.bio %></textarea>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="lastName">Last Name</label>
-                        <input type="text" id="lastName" name="lastName" class="form-control" value="<%= user.lastName %>">
-                    </div>
-                    <div class="form-group">
-                        <label for="bio">Bio</label>
-                        <textarea id="bio" name="bio" class="form-control" rows="3"><%= user.bio %></textarea>
-                    </div>
+
                     <hr style="margin:20px 0; border-color:#ede8f5;">
-                    <h4 style="font-weight:700; color:#1A0A2E; margin-bottom:16px;">
-                        <i class="fas fa-lock" style="color:#8B5CF6;"></i> Change Password
-                    </h4>
-                    <div class="form-group">
-                        <label for="currentPassword">Current Password</label>
-                        <div class="password-wrapper">
-                            <input type="password" id="currentPassword" name="currentPassword" class="form-control" placeholder="Enter current password">
-                            <i class="fas fa-eye password-toggle" onclick="togglePassword('currentPassword', this)"></i>
+
+                    <!-- 2. PASSWORD & SECURITY -->
+                    <div class="settings-section">
+                        <h3 class="settings-section-title"><i class="fas fa-lock"></i> Password & Security</h3>
+                        <div class="form-group">
+                            <label for="currentPassword">Current Password</label>
+                            <div class="password-wrapper">
+                                <input type="password" id="currentPassword" name="currentPassword" class="form-control" placeholder="Enter current password">
+                                <i class="fas fa-eye password-toggle" onclick="togglePassword('currentPassword', this)"></i>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="newPassword">New Password</label>
+                            <div class="password-wrapper">
+                                <input type="password" id="newPassword" name="newPassword" class="form-control" placeholder="Enter new password">
+                                <i class="fas fa-eye password-toggle" onclick="togglePassword('newPassword', this)"></i>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm New Password</label>
+                            <div class="password-wrapper">
+                                <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" placeholder="Confirm new password">
+                                <i class="fas fa-eye password-toggle" onclick="togglePassword('confirmPassword', this)"></i>
+                            </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="newPassword">New Password</label>
-                        <div class="password-wrapper">
-                            <input type="password" id="newPassword" name="newPassword" class="form-control" placeholder="Enter new password">
-                            <i class="fas fa-eye password-toggle" onclick="togglePassword('newPassword', this)"></i>
+
+                    <hr style="margin:20px 0; border-color:#ede8f5;">
+
+                    <!-- 3. APPEARANCE / THEME -->
+                    <div class="settings-section">
+                        <h3 class="settings-section-title"><i class="fas fa-palette"></i> Appearance</h3>
+                        <div class="theme-selector">
+                            <p style="color:#7a6a8f; font-size:0.9rem; margin-bottom:10px;">Choose your preferred theme:</p>
+                            <div style="display:flex; gap:16px; flex-wrap:wrap;">
+                                <label class="theme-option" style="display:flex; align-items:center; gap:8px; cursor:pointer; padding:10px 16px; border-radius:10px; border:2px solid #ede8f5; transition:all 0.2s;" onclick="setTheme('light')">
+                                    <input type="radio" name="theme" value="light" <%= user.theme === 'light' || !user.theme ? 'checked' : '' %> style="display:none;">
+                                    <i class="fas fa-sun" style="color:#f39c12; font-size:1.2rem;"></i>
+                                    <span>Light</span>
+                                </label>
+                                <label class="theme-option" style="display:flex; align-items:center; gap:8px; cursor:pointer; padding:10px 16px; border-radius:10px; border:2px solid #ede8f5; transition:all 0.2s;" onclick="setTheme('dark')">
+                                    <input type="radio" name="theme" value="dark" <%= user.theme === 'dark' ? 'checked' : '' %> style="display:none;">
+                                    <i class="fas fa-moon" style="color:#8B5CF6; font-size:1.2rem;"></i>
+                                    <span>Dark</span>
+                                </label>
+                            </div>
+                            <input type="hidden" name="theme" id="themeInput" value="<%= user.theme || 'light' %>">
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="confirmPassword">Confirm New Password</label>
-                        <div class="password-wrapper">
-                            <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" placeholder="Confirm new password">
-                            <i class="fas fa-eye password-toggle" onclick="togglePassword('confirmPassword', this)"></i>
+
+                    <hr style="margin:20px 0; border-color:#ede8f5;">
+
+                    <!-- 4. NOTIFICATION PREFERENCES -->
+                    <div class="settings-section">
+                        <h3 class="settings-section-title"><i class="fas fa-bell"></i> Notifications</h3>
+                        <div style="display:flex; flex-direction:column; gap:10px;">
+                            <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+                                <input type="checkbox" name="emailNotifications" <%= user.emailNotifications !== false ? 'checked' : '' %>>
+                                <span>Email notifications</span>
+                            </label>
+                            <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+                                <input type="checkbox" name="courseReminders" <%= user.courseReminders !== false ? 'checked' : '' %>>
+                                <span>Course reminders</span>
+                            </label>
+                            <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+                                <input type="checkbox" name="progressUpdates" <%= user.progressUpdates !== false ? 'checked' : '' %>>
+                                <span>Progress updates</span>
+                            </label>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary" style="width:100%; padding:14px;">
-                        <i class="fas fa-save"></i> Save Settings
+
+                    <hr style="margin:20px 0; border-color:#ede8f5;">
+
+                    <!-- 5. PRIVACY CONTROLS -->
+                    <div class="settings-section">
+                        <h3 class="settings-section-title"><i class="fas fa-shield-alt"></i> Privacy</h3>
+                        <div style="display:flex; flex-direction:column; gap:10px;">
+                            <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+                                <input type="checkbox" name="profilePublic" <%= user.profilePublic !== false ? 'checked' : '' %>>
+                                <span>Make my profile public</span>
+                            </label>
+                            <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+                                <input type="checkbox" name="showProgress" <%= user.showProgress !== false ? 'checked' : '' %>>
+                                <span>Show progress to others</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <hr style="margin:20px 0; border-color:#ede8f5;">
+
+                    <!-- 6. LANGUAGE & REGION -->
+                    <div class="settings-section">
+                        <h3 class="settings-section-title"><i class="fas fa-globe"></i> Language & Region</h3>
+                        <div class="form-group">
+                            <label for="language">Language</label>
+                            <select id="language" name="language" class="form-control">
+                                <option value="en" <%= user.language === 'en' || !user.language ? 'selected' : '' %>>English</option>
+                                <option value="es" <%= user.language === 'es' ? 'selected' : '' %>>Español</option>
+                                <option value="fr" <%= user.language === 'fr' ? 'selected' : '' %>>Français</option>
+                                <option value="de" <%= user.language === 'de' ? 'selected' : '' %>>Deutsch</option>
+                                <option value="pt" <%= user.language === 'pt' ? 'selected' : '' %>>Português</option>
+                                <option value="zh" <%= user.language === 'zh' ? 'selected' : '' %>>中文</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="timezone">Timezone</label>
+                            <select id="timezone" name="timezone" class="form-control">
+                                <option value="UTC" <%= user.timezone === 'UTC' || !user.timezone ? 'selected' : '' %>>UTC</option>
+                                <option value="America/New_York" <%= user.timezone === 'America/New_York' ? 'selected' : '' %>>America/New_York</option>
+                                <option value="America/Los_Angeles" <%= user.timezone === 'America/Los_Angeles' ? 'selected' : '' %>>America/Los_Angeles</option>
+                                <option value="Europe/London" <%= user.timezone === 'Europe/London' ? 'selected' : '' %>>Europe/London</option>
+                                <option value="Africa/Lagos" <%= user.timezone === 'Africa/Lagos' ? 'selected' : '' %>>Africa/Lagos (WAT)</option>
+                                <option value="Asia/Dubai" <%= user.timezone === 'Asia/Dubai' ? 'selected' : '' %>>Asia/Dubai</option>
+                                <option value="Australia/Sydney" <%= user.timezone === 'Australia/Sydney' ? 'selected' : '' %>>Australia/Sydney</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <hr style="margin:20px 0; border-color:#ede8f5;">
+
+                    <!-- 7. DATA & DOWNLOADS -->
+                    <div class="settings-section">
+                        <h3 class="settings-section-title"><i class="fas fa-download"></i> Data & Downloads</h3>
+                        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="alert('Export feature coming soon!')">
+                                <i class="fas fa-file-export"></i> Export My Data
+                            </button>
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="alert('Certificate feature coming soon!')">
+                                <i class="fas fa-certificate"></i> Download Certificate
+                            </button>
+                        </div>
+                    </div>
+
+                    <hr style="margin:20px 0; border-color:#ede8f5;">
+
+                    <!-- 8. ACCOUNT DEACTIVATION -->
+                    <div class="settings-section" style="border:1px solid #e74c3c; border-radius:10px; padding:16px; background:#fef5f5;">
+                        <h3 class="settings-section-title" style="color:#e74c3c;"><i class="fas fa-trash-alt" style="color:#e74c3c;"></i> Danger Zone</h3>
+                        <p style="color:#7a6a8f; font-size:0.85rem; margin-bottom:10px;">Once you deactivate your account, all your data will be permanently deleted.</p>
+                        <button type="button" class="btn btn-danger" onclick="if(confirm('Are you sure you want to deactivate your account? This cannot be undone!')){alert('Account deactivation feature coming soon.');}">
+                            <i class="fas fa-exclamation-triangle"></i> Deactivate Account
+                        </button>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width:100%; padding:14px; margin-top:20px; font-size:1rem;">
+                        <i class="fas fa-save"></i> Save All Settings
                     </button>
                 </form>
             </div>
@@ -65,6 +199,44 @@
     </main>
 
     <script>
+        // Theme selector
+        function setTheme(theme) {
+            document.getElementById('themeInput').value = theme;
+            if (theme === 'dark') {
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+            }
+            // Update the radio button styles
+            document.querySelectorAll('.theme-option').forEach(el => {
+                el.style.borderColor = '#ede8f5';
+                el.style.background = 'transparent';
+            });
+            event.target.closest('.theme-option').style.borderColor = '#8B5CF6';
+            event.target.closest('.theme-option').style.background = '#f0ebfb';
+        }
+
+        // Apply saved theme on load
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeInput = document.getElementById('themeInput');
+            if (themeInput && themeInput.value === 'dark') {
+                document.body.classList.add('dark-mode');
+                document.querySelectorAll('.theme-option').forEach(el => {
+                    if (el.querySelector('input[value="dark"]')?.checked) {
+                        el.style.borderColor = '#8B5CF6';
+                        el.style.background = '#f0ebfb';
+                    }
+                });
+            } else {
+                document.querySelectorAll('.theme-option').forEach(el => {
+                    if (el.querySelector('input[value="light"]')?.checked) {
+                        el.style.borderColor = '#8B5CF6';
+                        el.style.background = '#f0ebfb';
+                    }
+                });
+            }
+        });
+
         function togglePassword(id, icon) {
             const input = document.getElementById(id);
             if (input.type === 'password') {
@@ -78,6 +250,38 @@
             }
         }
     </script>
+
+    <style>
+        .settings-section {
+            margin-bottom: 8px;
+        }
+        .settings-section-title {
+            font-weight: 700;
+            color: #1A0A2E;
+            font-size: 1rem;
+            margin-bottom: 12px;
+        }
+        body.dark-mode .settings-section-title {
+            color: #e0e0e0;
+        }
+        .theme-option {
+            border: 2px solid #ede8f5;
+            border-radius: 10px;
+            padding: 10px 16px;
+            transition: all 0.2s;
+        }
+        .theme-option:hover {
+            border-color: #8B5CF6;
+            background: #f0ebfb;
+        }
+        body.dark-mode .theme-option {
+            border-color: #444;
+        }
+        body.dark-mode .theme-option:hover {
+            border-color: #8B5CF6;
+            background: #2a1a4a;
+        }
+    </style>
 
     <%- include('partials/footer') %>
 </body>

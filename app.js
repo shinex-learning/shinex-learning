@@ -376,6 +376,65 @@ app.get('/dashboard', requireAuth, (req, res) => {
     req.session.messages = {};
 });
 
+// ---------- Next Class (Mark complete + go to next) ----------
+app.post('/course/next/:classId', requireAuth, (req, res) => {
+    const user = getUserById(req.session.userId);
+    if (!user) {
+        req.session.destroy();
+        return res.redirect('/login');
+    }
+
+    const { classId } = req.params;
+    const course = user.courseId ? findCourseById(user.courseId) : null;
+    if (!course) {
+        req.session.messages = { error: 'No course enrolled.' };
+        return res.redirect('/dashboard');
+    }
+
+    // Mark current class as complete
+    if (!user.progress) user.progress = {};
+    user.progress[classId] = true;
+
+    // Find the next class (in order)
+    let allClasses = [];
+    course.lessons.forEach(lesson => {
+        if (lesson.classes) {
+            lesson.classes.forEach(cls => {
+                allClasses.push({
+                    id: cls.id,
+                    lessonId: lesson.id,
+                    lessonTitle: lesson.title,
+                    title: cls.title,
+                    index: allClasses.length
+                });
+            });
+        }
+    });
+
+    // Find current index
+    let currentIndex = allClasses.findIndex(c => c.id === classId);
+    let nextClass = null;
+    if (currentIndex !== -1 && currentIndex < allClasses.length - 1) {
+        nextClass = allClasses[currentIndex + 1];
+    }
+
+    // Save user progress
+    const users = readUsers();
+    const idx = users.findIndex(u => u.id === user.id);
+    if (idx !== -1) {
+        users[idx].progress = user.progress;
+        writeUsers(users);
+    }
+
+    if (nextClass) {
+        req.session.messages = { success: '✅ Class completed! Moving to next...' };
+        res.redirect(`/course?classId=${nextClass.id}`);
+    } else {
+        req.session.messages = { success: '🎉 All classes completed! You finished the course!' };
+        res.redirect('/course');
+    }
+});
+
 // ---------- Course view ----------
 app.get('/course', requireAuth, (req, res) => {
     const user = getUserById(req.session.userId);
