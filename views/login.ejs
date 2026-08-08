@@ -2,58 +2,97 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Login – SHINEX</title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background: #f8f7fc;
+        }
+        .app-wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .main-content {
+            flex: 1;
+            padding: 20px 0;
+        }
+        .site-footer {
+            margin-top: auto;
+        }
+        .card {
+            padding: 24px 20px !important;
+            border-radius: 16px !important;
+            margin: 0 8px !important;
+        }
+        @media (max-width: 480px) {
+            .card {
+                padding: 16px 12px !important;
+                margin: 0 4px !important;
+            }
+            .container {
+                padding: 0 8px !important;
+            }
+        }
+    </style>
 </head>
 <body>
-    <%- include('partials/header', { user: null, showBack: false }) %>
+    <div class="app-wrapper">
+        <%- include('partials/header', { user: null, showBack: false }) %>
 
-    <main class="main-content">
-        <div class="container" style="max-width:440px;">
-            <div class="card" style="padding:36px 32px;">
-                <div style="text-align:center; margin-bottom:20px;">
-                    <div style="background:#1A0A2E; width:56px; height:56px; border-radius:16px; display:inline-flex; align-items:center; justify-content:center; margin-bottom:10px;">
-                        <i class="fas fa-sign-in-alt" style="font-size:1.8rem; color:#8B5CF6;"></i>
-                    </div>
-                    <h1 style="font-size:1.6rem; font-weight:800; color:#1A0A2E;">Welcome Back</h1>
-                    <p style="color:#7a6a8f; font-size:0.95rem;">Login to continue learning</p>
-                </div>
-
-                <% if (messages && messages.error) { %>
-                    <div class="alert alert-danger"><%= messages.error %></div>
-                <% } %>
-                <% if (messages && messages.success) { %>
-                    <div class="alert alert-success"><%= messages.success %></div>
-                <% } %>
-
-                <form action="/login" method="POST" autocomplete="off">
-                    <div class="form-group">
-                        <label for="email">Email Address</label>
-                        <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email" required autocomplete="off">
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <div class="password-wrapper">
-                            <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required autocomplete="new-password">
-                            <i class="fas fa-eye password-toggle" onclick="togglePassword('password', this)"></i>
+        <main class="main-content">
+            <div class="container" style="max-width:440px; margin:0 auto;">
+                <div class="card">
+                    <div style="text-align:center; margin-bottom:16px;">
+                        <div style="background:#1A0A2E; width:48px; height:48px; border-radius:14px; display:inline-flex; align-items:center; justify-content:center; margin-bottom:8px;">
+                            <i class="fas fa-sign-in-alt" style="font-size:1.5rem; color:#8B5CF6;"></i>
                         </div>
+                        <h1 style="font-size:1.4rem; font-weight:800; color:#1A0A2E; margin:0;">Welcome Back</h1>
+                        <p style="color:#7a6a8f; font-size:0.85rem; margin:2px 0 0;">Login to continue learning</p>
                     </div>
-                    <button type="submit" class="btn btn-primary" style="width:100%; padding:14px; font-size:1rem;">
-                        <i class="fas fa-arrow-right"></i> Login
-                    </button>
-                    <p style="text-align:center; margin-top:12px; font-size:0.85rem;">
-                        <a href="/forgot-password" style="color:#8B5CF6;">Forgot password?</a>
-                    </p>
-                    <p style="text-align:center; margin-top:8px; font-size:0.9rem; color:#7a6a8f;">
-                        Don't have an account? <a href="/register/step1" style="color:#8B5CF6; font-weight:600;">Register</a>
-                    </p>
-                </form>
+
+                    <!-- ===== MESSAGES AT TOP ===== -->
+                    <% if (messages && messages.error) { %>
+                        <div class="alert alert-danger" style="margin-bottom:12px;"><i class="fas fa-exclamation-circle"></i> <%= messages.error %></div>
+                    <% } %>
+                    <% if (messages && messages.success) { %>
+                        <div class="alert alert-success" style="margin-bottom:12px;"><i class="fas fa-check-circle"></i> <%= messages.success %></div>
+                    <% } %>
+
+                    <form action="/login" method="POST" autocomplete="off">
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email" required autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <div class="password-wrapper">
+                                <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required autocomplete="new-password">
+                                <i class="fas fa-eye password-toggle" onclick="togglePassword('password', this)"></i>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width:100%; padding:14px; font-size:1rem; margin-top:4px;">
+                            <i class="fas fa-arrow-right"></i> Login
+                        </button>
+                        <p style="text-align:center; margin-top:10px; font-size:0.85rem;">
+                            <a href="/forgot-password" style="color:#8B5CF6;">Forgot password?</a>
+                        </p>
+                        <p style="text-align:center; margin-top:6px; font-size:0.85rem; color:#7a6a8f;">
+                            Don't have an account? <a href="/register/step1" style="color:#8B5CF6; font-weight:600;">Register</a>
+                        </p>
+                    </form>
+                </div>
             </div>
-        </div>
-    </main>
+        </main>
+
+        <%- include('partials/footer') %>
+    </div>
 
     <script>
         function togglePassword(id, icon) {
@@ -69,7 +108,5 @@
             }
         }
     </script>
-
-    <%- include('partials/footer') %>
 </body>
 </html>

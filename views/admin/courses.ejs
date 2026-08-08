@@ -2,77 +2,141 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Manage Courses – SHINEX</title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .add-course-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .add-course-form .full-width {
+            grid-column: 1 / -1;
+        }
+        .course-table-wrap {
+            overflow-x: auto;
+        }
+        @media (max-width: 480px) {
+            .add-course-form {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            .admin-table {
+                font-size: 0.7rem;
+            }
+            .admin-table th,
+            .admin-table td {
+                padding: 4px 6px;
+            }
+            .admin-actions .btn {
+                font-size: 0.7rem;
+                padding: 4px 8px;
+            }
+        }
+    </style>
 </head>
 <body>
     <%- include('../partials/header', { user: null, showBack: true }) %>
 
     <main class="main-content">
         <div class="container">
-            <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:20px;">
-                <h2 style="font-size:1.6rem; font-weight:800; color:#1A0A2E;"><i class="fas fa-book" style="color:#8B5CF6;"></i> Manage Courses</h2>
-                <a href="/admin/dashboard" class="btn btn-secondary btn-sm"><i class="fas fa-arrow-left"></i> Back to Admin</a>
+
+            <!-- ===== MESSAGES ===== -->
+            <% if (messages && messages.error) { %>
+                <div class="alert alert-danger" style="margin-bottom:12px;"><%= messages.error %></div>
+            <% } %>
+            <% if (messages && messages.success) { %>
+                <div class="alert alert-success" style="margin-bottom:12px;"><%= messages.success %></div>
+            <% } %>
+
+            <!-- ===== HEADER ===== -->
+            <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:16px;">
+                <h2 style="font-size:1.4rem; font-weight:800; color:#1A0A2E; margin:0;">
+                    <i class="fas fa-book" style="color:#8B5CF6;"></i> Manage Courses
+                </h2>
+                <a href="/admin/dashboard" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-arrow-left"></i> Back to Admin
+                </a>
             </div>
 
-            <div class="card" style="margin-bottom:24px; background:#f8f6fc; border:2px solid #8B5CF6;">
-                <h4 style="font-weight:700; color:#1A0A2E; margin-bottom:12px;"><i class="fas fa-plus-circle" style="color:#8B5CF6;"></i> Add New Course</h4>
-                <form action="/admin/courses/add" method="POST" style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <!-- ===== ADD COURSE FORM ===== -->
+            <div class="card" style="margin-bottom:16px; background:#f8f6fc; border:2px solid #8B5CF6; padding:16px 18px;">
+                <h4 style="font-weight:700; color:#1A0A2E; font-size:1rem; margin:0 0 10px 0;">
+                    <i class="fas fa-plus-circle" style="color:#8B5CF6;"></i> Add New Course
+                </h4>
+                <form action="/admin/courses/add" method="POST" class="add-course-form">
                     <input type="text" name="title" class="form-control" placeholder="Course Title" required>
                     <input type="text" name="description" class="form-control" placeholder="Short Description" required>
-                    <select name="level" class="form-control" required>
-                        <option value="">Level</option>
-                        <option value="Beginner">Beginner</option>
-                        <option value="Intermediate">Intermediate</option>
-                        <option value="Advanced">Advanced</option>
-                    </select>
-                    <input type="text" name="duration" class="form-control" placeholder="e.g. 4 hours" required>
-                    <textarea name="review" class="form-control" rows="6" style="grid-column:1/-1; min-height:120px;" placeholder="Course Review / Notes (optional)"></textarea>
-                    <button type="submit" class="btn btn-primary" style="grid-column:1/-1;"><i class="fas fa-save"></i> Add Course</button>
+                    <input type="text" name="duration" class="form-control" placeholder="Total Duration (e.g. 12 hours)" required>
+                    <textarea name="review" class="form-control" rows="4" placeholder="Course Review / Notes (optional)" style="grid-column:1/-1; min-height:80px; resize:vertical;"></textarea>
+                    <button type="submit" class="btn btn-primary full-width" style="grid-column:1/-1; padding:12px;">
+                        <i class="fas fa-save"></i> Add Course
+                    </button>
                 </form>
             </div>
 
-            <div class="card">
-                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:12px;">
-                    <h4 style="font-weight:700; color:#1A0A2E;"><i class="fas fa-list"></i> All Courses (<%= courses.length %>)</h4>
+            <!-- ===== COURSE LIST ===== -->
+            <div class="card" style="padding:16px 18px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+                    <h4 style="font-weight:700; color:#1A0A2E; font-size:1rem; margin:0;">
+                        <i class="fas fa-list"></i> All Courses (<%= courses.length %>)
+                    </h4>
                     <form action="/admin/courses/delete-all" method="POST" style="display:inline;" onsubmit="return confirm('⚠️ Delete ALL courses? This cannot be undone!');">
                         <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Delete All</button>
                     </form>
                 </div>
-                <div style="overflow-x:auto;">
+
+                <div class="course-table-wrap">
                     <table class="admin-table">
-                        <thead><tr><th>Title</th><th>Level</th><th>Duration</th><th>Lessons</th><th>Students</th><th>Review</th><th>Actions</th></tr></thead>
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Levels</th>
+                                <th>Duration</th>
+                                <th>Students</th>
+                                <th>Review</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
                         <tbody>
-                            <% courses.forEach(c => { %>
+                            <% if (courses.length > 0) { %>
+                                <% courses.forEach(function(c) { %>
+                                    <tr>
+                                        <td><strong><%= c.title %></strong></td>
+                                        <td><%= c.levels ? c.levels.length : 0 %></td>
+                                        <td><%= c.duration %></td>
+                                        <td><%= c.studentCount || 0 %></td>
+                                        <td style="max-width:120px; font-size:0.8rem; color:#5a4a70;">
+                                            <%= c.review ? c.review.substring(0, 40) + (c.review.length > 40 ? '...' : '') : 'N/A' %>
+                                        </td>
+                                        <td>
+                                            <div class="admin-actions" style="display:flex; gap:4px; flex-wrap:wrap;">
+                                                <a href="/admin/courses/edit/<%= c.id %>" class="btn btn-secondary btn-xs">
+                                                    <i class="fas fa-edit"></i> Edit
+                                                </a>
+                                                <form action="/admin/courses/delete/<%= c.id %>" method="POST" style="display:inline;" onsubmit="return confirm('Delete this course?');">
+                                                    <button type="submit" class="btn btn-danger btn-xs"><i class="fas fa-trash"></i></button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            <% } else { %>
                                 <tr>
-                                    <td><strong><%= c.title %></strong></td>
-                                    <td><span class="badge badge-purple"><%= c.level %></span></td>
-                                    <td><%= c.duration %></td>
-                                    <td><%= c.lessons ? c.lessons.length : 0 %></td>
-                                    <td><%= c.studentCount || 0 %></td>
-                                    <td style="max-width:200px; font-size:0.85rem; color:#5a4a70;"><%= c.review ? c.review.substring(0,60) + (c.review.length > 60 ? '...' : '') : 'No review' %></td>
-                                    <td>
-                                        <div class="actions">
-                                            <a href="/admin/courses/edit/<%= c.id %>" class="btn btn-secondary btn-xs"><i class="fas fa-edit"></i> Edit</a>
-                                            <form action="/admin/courses/delete/<%= c.id %>" method="POST" style="display:inline;" onsubmit="return confirm('Delete this course?');">
-                                                <button type="submit" class="btn btn-danger btn-xs"><i class="fas fa-trash"></i></button>
-                                            </form>
-                                        </div>
+                                    <td colspan="6" style="text-align:center; color:#7a6a8f; padding:20px;">
+                                        <i class="fas fa-plus-circle" style="font-size:1.5rem; color:#8B5CF6; display:block; margin-bottom:6px;"></i>
+                                        No courses yet. Add your first course above!
                                     </td>
                                 </tr>
-                            <% }) %>
-                            <% if (courses.length === 0) { %>
-                                <tr><td colspan="7" style="text-align:center; color:#7a6a8f; padding:30px;">
-                                    <i class="fas fa-plus-circle" style="font-size:2rem; color:#8B5CF6; display:block; margin-bottom:10px;"></i>
-                                    No courses yet. Add your first course above!
-                                </td></tr>
                             <% } %>
                         </tbody>
                     </table>
                 </div>
             </div>
+
         </div>
     </main>
 

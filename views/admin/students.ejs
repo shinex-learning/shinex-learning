@@ -2,43 +2,134 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Students – SHINEX</title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .students-table-wrap {
+            overflow-x: auto;
+        }
+        .student-stat {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .student-stat.active {
+            background: #e6f7ed;
+            color: #1d7a4a;
+        }
+        .student-stat.inactive {
+            background: #fee8e8;
+            color: #b33c3c;
+        }
+        body.dark-mode .student-stat.active {
+            background: #1a3a2a;
+            color: #7ae0a0;
+        }
+        body.dark-mode .student-stat.inactive {
+            background: #3a1a1a;
+            color: #f0a0a0;
+        }
+        @media (max-width: 480px) {
+            .admin-table {
+                font-size: 0.7rem;
+            }
+            .admin-table th,
+            .admin-table td {
+                padding: 4px 6px;
+            }
+            .admin-table .badge {
+                font-size: 0.6rem;
+                padding: 2px 6px;
+            }
+        }
+    </style>
 </head>
 <body>
     <%- include('../partials/header', { user: null, showBack: true }) %>
 
     <main class="main-content">
         <div class="container">
-            <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:20px;">
-                <h2 style="font-size:1.6rem; font-weight:800; color:#1A0A2E;"><i class="fas fa-users" style="color:#8B5CF6;"></i> All Students</h2>
-                <a href="/admin/dashboard" class="btn btn-secondary btn-sm"><i class="fas fa-arrow-left"></i> Back to Admin</a>
+
+            <!-- ===== MESSAGES ===== -->
+            <% if (messages && messages.error) { %>
+                <div class="alert alert-danger" style="margin-bottom:12px;"><%= messages.error %></div>
+            <% } %>
+            <% if (messages && messages.success) { %>
+                <div class="alert alert-success" style="margin-bottom:12px;"><%= messages.success %></div>
+            <% } %>
+
+            <!-- ===== HEADER ===== -->
+            <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:16px;">
+                <h2 style="font-size:1.4rem; font-weight:800; color:#1A0A2E; margin:0;">
+                    <i class="fas fa-users" style="color:#8B5CF6;"></i> All Students
+                </h2>
+                <a href="/admin/dashboard" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-arrow-left"></i> Back to Admin
+                </a>
             </div>
-            <div class="card">
-                <div style="overflow-x:auto;">
+
+            <!-- ===== STUDENT LIST ===== -->
+            <div class="card" style="padding:16px 18px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+                    <h4 style="font-weight:700; color:#1A0A2E; font-size:1rem; margin:0;">
+                        <i class="fas fa-list"></i> Registered Students (<%= students.length %>)
+                    </h4>
+                </div>
+
+                <div class="students-table-wrap">
                     <table class="admin-table">
-                        <thead><tr><th>Name</th><th>Email</th><th>Gender</th><th>School</th><th>Course</th><th>Level</th><th>Joined</th></tr></thead>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Gender</th>
+                                <th>School</th>
+                                <th>Course</th>
+                                <th>Level</th>
+                                <th>Joined</th>
+                            </tr>
+                        </thead>
                         <tbody>
-                            <% students.forEach(s => { %>
+                            <% if (students.length > 0) { %>
+                                <% students.forEach(function(s, index) { %>
+                                    <tr>
+                                        <td><%= index + 1 %></td>
+                                        <td><strong><%= s.firstName %> <%= s.lastName %></strong></td>
+                                        <td style="font-size:0.8rem;"><%= s.email %></td>
+                                        <td><%= s.gender %></td>
+                                        <td><%= s.school || 'N/A' %></td>
+                                        <td>
+                                            <% if (s.courseId && courseMap[s.courseId]) { %>
+                                                <span class="badge badge-purple"><%= courseMap[s.courseId] %></span>
+                                            <% } else { %>
+                                                <span style="color:#b0a3c4; font-size:0.75rem;">Not enrolled</span>
+                                            <% } %>
+                                        </td>
+                                        <td><span class="badge badge-dark"><%= s.experienceLevel %></span></td>
+                                        <td style="font-size:0.75rem; color:#7a6a8f;">
+                                            <%= new Date(s.createdAt).toLocaleDateString() %>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            <% } else { %>
                                 <tr>
-                                    <td><strong><%= s.firstName %> <%= s.lastName %></strong></td>
-                                    <td><%= s.email %></td>
-                                    <td><%= s.gender %></td>
-                                    <td><%= s.school || 'N/A' %></td>
-                                    <td><%= courseMap[s.courseId] || 'Not enrolled' %></td>
-                                    <td><span class="badge badge-purple"><%= s.experienceLevel %></span></td>
-                                    <td style="font-size:0.85rem; color:#7a6a8f;"><%= new Date(s.createdAt).toLocaleDateString() %></td>
+                                    <td colspan="8" style="text-align:center; color:#7a6a8f; padding:20px;">
+                                        <i class="fas fa-users" style="font-size:1.5rem; color:#d4c4f0; display:block; margin-bottom:6px;"></i>
+                                        No students registered yet.
+                                    </td>
                                 </tr>
-                            <% }) %>
-                            <% if (students.length === 0) { %>
-                                <tr><td colspan="7" style="text-align:center; color:#7a6a8f;">No students registered yet.</td></tr>
                             <% } %>
                         </tbody>
                     </table>
                 </div>
             </div>
+
         </div>
     </main>
 

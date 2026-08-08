@@ -14,17 +14,27 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// ============================================================
+// SESSION – FIXED FOR CROSS-DEVICE
+// ============================================================
 app.use(session({
     secret: 'shinex-super-secret-key-2026',
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 1000 * 60 * 60 * 24 * 365 } // 1 year
+    cookie: { 
+        maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year
+        secure: false,
+        httpOnly: true,
+        sameSite: 'lax'
+    }
 }));
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// ---------- Data ----------
+// ============================================================
+// DATA HELPERS
+// ============================================================
 const DATA_DIR = path.join(__dirname, 'data');
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 
@@ -44,13 +54,24 @@ function writeCourses(c) { fs.writeFileSync(coursesFile, JSON.stringify(c, null,
 function findUserByEmail(email) {
     return readUsers().find(u => u.email.toLowerCase() === email.toLowerCase());
 }
-function findCourseById(id) {
-    return readCourses().find(c => c.id === id);
-}
-function getUserById(id) {
+
+function findUserById(id) {
     return readUsers().find(u => u.id === id);
 }
 
+function findCourseById(id) {
+    return readCourses().find(c => c.id === id);
+}
+
+function findLevelById(courseId, levelId) {
+    const course = findCourseById(courseId);
+    if (!course || !course.levels) return null;
+    return course.levels.find(l => l.id === levelId);
+}
+
+// ============================================================
+// INIT FUNCTIONS
+// ============================================================
 function initDefaultCourses() {
     if (readCourses().length === 0) writeCourses([]);
 }
@@ -85,7 +106,7 @@ async function initAdminUser() {
 
 function sanitize(content) {
     return sanitizeHtml(content, {
-        allowedTags: ['b','strong','i','em','u','p','ul','ol','li','h1','h2','h3','h4','h5','h6','br','img','a','blockquote','pre','code','span','div'],
+        allowedTags: ['b','strong','i','em','u','p','ul','ol','li','h1','h2','h3','h4','h5','h6','br','img','a','blockquote','pre','code','span','div','hr'],
         allowedAttributes: {
             img: ['src','alt','title','style'],
             a: ['href','target','rel'],
@@ -95,45 +116,174 @@ function sanitize(content) {
     });
 }
 
-// ---------- Middleware ----------
+// ============================================================
+// PARSE CONTENT – Converts Markdown-style to HTML
+// ============================================================
+function parseContent(text) {
+    if (!text) return '';
+    
+    let lines = text.split('\n');
+    let result = [];
+    let inList = false;
+    let listType = null;
+    
+    for (let i = 0; i < lines.length; i++) {
+        let line = lines[i];
+        
+        if (line.trim() === '') {
+            if (inList) {
+                result.push('</' + listType + '>');
+                inList = false;
+                listType = null;
+            }
+            continue;
+        }
+        
+        if (line.match(/^#\s+(.+)/)) {
+            if (inList) {
+                result.push('</' + listType + '>');
+                inList = false;
+                listType = null;
+            }
+            result.push('<h1>' + line.replace(/^#\s+/, '') + '</h1>');
+            continue;
+        }
+        
+        if (line.match(/^##\s+(.+)/)) {
+            if (inList) {
+                result.push('</' + listType + '>');
+                inList = false;
+                listType = null;
+            }
+            result.push('<h2>' + line.replace(/^##\s+/, '') + '</h2>');
+            continue;
+        }
+        
+        if (line.match(/^###\s+(.+)/)) {
+            if (inList) {
+                result.push('</' + listType + '>');
+                inList = false;
+                listType = null;
+            }
+            result.push('<h3>' + line.replace(/^###\s+/, '') + '</h3>');
+            continue;
+        }
+        
+        if (line.match(/^---+$/)) {
+            if (inList) {
+                result.push('</' + listType + '>');
+                inList = false;
+                listType = null;
+            }
+            result.push('<hr>');
+            continue;
+        }
+        
+        if (line.match(/^(\*|-)\s+(.+)/)) {
+            if (!inList) {
+                result.push('<ul>');
+                inList = true;
+                listType = 'ul';
+            }
+            result.push('<li>' + line.replace(/^(\*|-)\s+/, '') + '</li>');
+            continue;
+        }
+        
+        if (line.match(/^\d+\.\s+(.+)/)) {
+            if (!inList || listType !== 'ol') {
+                if (inList) {
+                    result.push('</' + listType + '>');
+                }
+                result.push('<ol>');
+                inList = true;
+                listType = 'ol';
+            }
+            result.push('<li>' + line.replace(/^\d+\.\s+/, '') + '</li>');
+            continue;
+        }
+        
+        if (inList) {
+            result.push('</' + listType + '>');
+            inList = false;
+            listType = null;
+        }
+        
+        let processed = line.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+        processed = processed.replace(/_(.+?)_/g, '<em>$1</em>');
+        processed = processed.replace(/`(.+?)`/g, '<code>$1</code>');
+        processed = processed.replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" target="_blank">$1</a>');
+        
+        result.push('<p>' + processed + '</p>');
+    }
+    
+    if (inList) {
+        result.push('</' + listType + '>');
+    }
+    
+    return result.join('\n');
+}
+
+// ============================================================
+// AUTH MIDDLEWARE
+// ============================================================
 function requireAuth(req, res, next) {
     if (!req.session.userId) {
         req.session.messages = { error: 'Please log in to access this page.' };
         return res.redirect('/login');
     }
+    const user = findUserById(req.session.userId);
+    if (!user) {
+        req.session.destroy();
+        return res.redirect('/login');
+    }
+    req.user = user;
     next();
 }
 
 function requireAdmin(req, res, next) {
-    if (!req.session.userId) {
+    if (!req.session.adminId) {
         req.session.messages = { error: 'Please log in as admin.' };
-        return res.redirect('/admin/login');
+        return res.redirect('/shinex-admin');
     }
-    const user = getUserById(req.session.userId);
-    if (!user || !user.isAdmin) {
+    const admin = findUserById(req.session.adminId);
+    if (!admin || !admin.isAdmin) {
+        req.session.destroy();
         req.session.messages = { error: 'Admin access required.' };
-        return res.redirect('/dashboard');
+        return res.redirect('/shinex-admin');
     }
+    req.admin = admin;
     next();
 }
 
-// ---------- Reset tokens ----------
-const resetTokens = {};
-
-// ---------- Home ----------
+// ============================================================
+// HOME
+// ============================================================
 app.get('/', (req, res) => {
-    const user = req.session.userId ? getUserById(req.session.userId) : null;
+    const user = req.session.userId ? findUserById(req.session.userId) : null;
     const courses = readCourses();
-    res.render('index', { user, courses, messages: req.session.messages || {}, showBack: false, title: 'Home' });
+    res.render('index', { 
+        user, 
+        courses, 
+        messages: req.session.messages || {}, 
+        showBack: false, 
+        title: 'Home' 
+    });
     req.session.messages = {};
 });
 
-// ---------- Register Step 1 ----------
+// ============================================================
+// REGISTRATION
+// ============================================================
 app.get('/register/step1', (req, res) => {
     if (req.session.userId) return res.redirect('/dashboard');
-    res.render('register-step1', { messages: req.session.messages || {}, showBack: false, title: 'Register Step 1' });
+    res.render('register-step1', { 
+        messages: req.session.messages || {}, 
+        showBack: false, 
+        title: 'Register Step 1' 
+    });
     req.session.messages = {};
 });
+
 app.post('/register/step1', async (req, res) => {
     const { fullName, email, password, confirmPassword } = req.body;
     if (!fullName || !email || !password || !confirmPassword) {
@@ -160,7 +310,6 @@ app.post('/register/step1', async (req, res) => {
     res.redirect('/register/step2');
 });
 
-// ---------- Register Step 2 ----------
 app.get('/register/step2', (req, res) => {
     if (req.session.userId) return res.redirect('/dashboard');
     if (!req.session.tempUser) {
@@ -168,9 +317,16 @@ app.get('/register/step2', (req, res) => {
         return res.redirect('/register/step1');
     }
     const courses = readCourses();
-    res.render('register-step2', { tempUser: req.session.tempUser, courses, messages: req.session.messages || {}, showBack: true, title: 'Register Step 2' });
+    res.render('register-step2', { 
+        tempUser: req.session.tempUser, 
+        courses, 
+        messages: req.session.messages || {}, 
+        showBack: true, 
+        title: 'Register Step 2' 
+    });
     req.session.messages = {};
 });
+
 app.post('/register/step2', async (req, res) => {
     if (!req.session.tempUser) {
         req.session.messages = { error: 'Session expired.' };
@@ -216,12 +372,19 @@ app.post('/register/step2', async (req, res) => {
     res.redirect('/dashboard');
 });
 
-// ---------- Login ----------
+// ============================================================
+// LOGIN
+// ============================================================
 app.get('/login', (req, res) => {
     if (req.session.userId) return res.redirect('/dashboard');
-    res.render('login', { messages: req.session.messages || {}, showBack: false, title: 'Login' });
+    res.render('login', { 
+        messages: req.session.messages || {}, 
+        showBack: false, 
+        title: 'Login' 
+    });
     req.session.messages = {};
 });
+
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) {
@@ -240,19 +403,66 @@ app.post('/login', async (req, res) => {
     }
     req.session.userId = user.id;
     req.session.messages = { success: `Welcome back, ${user.firstName}!` };
-    if (user.isAdmin) return res.redirect('/admin/dashboard');
+    if (user.isAdmin) return res.redirect('/shinex-admin');
     res.redirect('/dashboard');
+});
+
+// ============================================================
+// ADMIN LOGIN (SEPARATE)
+// ============================================================
+app.get('/shinex-admin', (req, res) => {
+    if (req.session.adminId) {
+        const admin = findUserById(req.session.adminId);
+        if (admin && admin.isAdmin) return res.redirect('/admin/dashboard');
+    }
+    res.render('admin/login', { 
+        messages: req.session.messages || {}, 
+        showBack: false, 
+        title: 'Admin Login' 
+    });
+    req.session.messages = {};
+});
+
+app.post('/shinex-admin', async (req, res) => {
+    const { email, password } = req.body;
+    const user = findUserByEmail(email);
+    if (!user || !user.isAdmin) {
+        req.session.messages = { error: 'Invalid admin credentials.' };
+        return res.redirect('/shinex-admin');
+    }
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) {
+        req.session.messages = { error: 'Invalid admin credentials.' };
+        return res.redirect('/shinex-admin');
+    }
+    req.session.adminId = user.id;
+    req.session.messages = { success: 'Welcome to Admin Panel.' };
+    res.redirect('/admin/dashboard');
 });
 
 app.get('/logout', (req, res) => {
     req.session.destroy(() => res.redirect('/'));
 });
 
-// ---------- Forgot password ----------
+app.get('/admin/logout', (req, res) => {
+    req.session.adminId = null;
+    res.redirect('/shinex-admin');
+});
+
+// ============================================================
+// FORGOT PASSWORD
+// ============================================================
+const resetTokens = {};
+
 app.get('/forgot-password', (req, res) => {
-    res.render('forgot-password', { messages: req.session.messages || {}, showBack: true, title: 'Forgot Password' });
+    res.render('forgot-password', { 
+        messages: req.session.messages || {}, 
+        showBack: true, 
+        title: 'Forgot Password' 
+    });
     req.session.messages = {};
 });
+
 app.post('/forgot-password', async (req, res) => {
     const { email } = req.body;
     if (!email) {
@@ -279,9 +489,15 @@ app.get('/reset-password/:token', (req, res) => {
         req.session.messages = { error: 'Invalid or expired token.' };
         return res.redirect('/forgot-password');
     }
-    res.render('reset-password', { token, messages: req.session.messages || {}, showBack: true, title: 'Reset Password' });
+    res.render('reset-password', { 
+        token, 
+        messages: req.session.messages || {}, 
+        showBack: true, 
+        title: 'Reset Password' 
+    });
     req.session.messages = {};
 });
+
 app.post('/reset-password/:token', async (req, res) => {
     const { token } = req.params;
     const { password, confirmPassword } = req.body;
@@ -305,25 +521,29 @@ app.post('/reset-password/:token', async (req, res) => {
     res.redirect('/login');
 });
 
-// ---------- Settings ----------
+// ============================================================
+// SETTINGS
+// ============================================================
 app.get('/settings', requireAuth, (req, res) => {
-    const user = getUserById(req.session.userId);
-    if (!user) { req.session.destroy(); return res.redirect('/login'); }
-    res.render('settings', { user, messages: req.session.messages || {}, showBack: true, title: 'Settings' });
+    res.render('settings', { 
+        user: req.user, 
+        messages: req.session.messages || {}, 
+        showBack: true, 
+        title: 'Settings' 
+    });
     req.session.messages = {};
 });
+
 app.post('/settings/update', requireAuth, async (req, res) => {
-    const user = getUserById(req.session.userId);
-    if (!user) { req.session.destroy(); return res.redirect('/login'); }
     const { firstName, lastName, bio, currentPassword, newPassword, confirmPassword } = req.body;
     const users = readUsers();
-    const idx = users.findIndex(u => u.id === user.id);
+    const idx = users.findIndex(u => u.id === req.user.id);
     if (idx === -1) return res.redirect('/settings');
     if (firstName) users[idx].firstName = firstName;
     if (lastName) users[idx].lastName = lastName;
     if (bio !== undefined) users[idx].bio = bio;
     if (currentPassword && newPassword && confirmPassword) {
-        if (!(await bcrypt.compare(currentPassword, user.password))) {
+        if (!(await bcrypt.compare(currentPassword, req.user.password))) {
             req.session.messages = { error: 'Current password is incorrect.' };
             return res.redirect('/settings');
         }
@@ -338,211 +558,275 @@ app.post('/settings/update', requireAuth, async (req, res) => {
     res.redirect('/settings');
 });
 
-// ---------- Terms & Privacy ----------
+// ============================================================
+// TERMS & PRIVACY
+// ============================================================
 app.get('/terms', (req, res) => {
-    const user = req.session.userId ? getUserById(req.session.userId) : null;
-    res.render('terms', { user, messages: req.session.messages || {}, showBack: true, title: 'Terms' });
-    req.session.messages = {};
-});
-app.get('/privacy', (req, res) => {
-    const user = req.session.userId ? getUserById(req.session.userId) : null;
-    res.render('privacy', { user, messages: req.session.messages || {}, showBack: true, title: 'Privacy' });
+    const user = req.session.userId ? findUserById(req.session.userId) : null;
+    res.render('terms', { 
+        user, 
+        messages: req.session.messages || {}, 
+        showBack: true, 
+        title: 'Terms' 
+    });
     req.session.messages = {};
 });
 
-// ---------- Dashboard ----------
+app.get('/privacy', (req, res) => {
+    const user = req.session.userId ? findUserById(req.session.userId) : null;
+    res.render('privacy', { 
+        user, 
+        messages: req.session.messages || {}, 
+        showBack: true, 
+        title: 'Privacy' 
+    });
+    req.session.messages = {};
+});
+
+// ============================================================
+// DASHBOARD
+// ============================================================
 app.get('/dashboard', requireAuth, (req, res) => {
-    const user = getUserById(req.session.userId);
-    if (!user) { req.session.destroy(); return res.redirect('/login'); }
+    const user = req.user;
     const courses = readCourses();
     const enrolledCourse = user.courseId ? findCourseById(user.courseId) : null;
+    
     let totalClasses = 0, completedClasses = 0, score = 0;
-    if (enrolledCourse && enrolledCourse.lessons) {
-        enrolledCourse.lessons.forEach(lesson => {
-            if (lesson.classes) {
-                lesson.classes.forEach(cls => {
-                    totalClasses++;
-                    if (user.progress && user.progress[cls.id]) completedClasses++;
+    if (enrolledCourse && enrolledCourse.levels) {
+        enrolledCourse.levels.forEach(level => {
+            if (level.lessons) {
+                level.lessons.forEach(lesson => {
+                    if (lesson.classes) {
+                        lesson.classes.forEach(cls => {
+                            totalClasses++;
+                            if (user.progress && user.progress[cls.id]) completedClasses++;
+                        });
+                    }
                 });
             }
         });
         score = completedClasses * 10;
     }
     const progress = totalClasses > 0 ? Math.round((completedClasses / totalClasses) * 100) : 0;
+    
     res.render('dashboard', {
-        user, enrolledCourse, progress, completedClasses, totalClasses, score,
-        messages: req.session.messages || {}, showBack: false, title: 'Dashboard'
+        user,
+        enrolledCourse,
+        progress,
+        completedClasses,
+        totalClasses,
+        score,
+        messages: req.session.messages || {},
+        showBack: false,
+        title: 'Dashboard'
     });
     req.session.messages = {};
 });
 
-// ---------- Next Class (Mark complete + go to next) ----------
-app.post('/course/next/:classId', requireAuth, (req, res) => {
-    const user = getUserById(req.session.userId);
-    if (!user) {
-        req.session.destroy();
-        return res.redirect('/login');
-    }
-
-    const { classId } = req.params;
-    const course = user.courseId ? findCourseById(user.courseId) : null;
+// ============================================================
+// COURSE PAGE – Show Levels
+// ============================================================
+app.get('/course/:courseId', requireAuth, (req, res) => {
+    const user = req.user;
+    const course = findCourseById(req.params.courseId);
     if (!course) {
-        req.session.messages = { error: 'No course enrolled.' };
+        req.session.messages = { error: 'Course not found.' };
         return res.redirect('/dashboard');
     }
-
-    // Mark current class as complete
-    if (!user.progress) user.progress = {};
-    user.progress[classId] = true;
-
-    // Find the next class (in order)
-    let allClasses = [];
-    course.lessons.forEach(lesson => {
-        if (lesson.classes) {
-            lesson.classes.forEach(cls => {
-                allClasses.push({
-                    id: cls.id,
-                    lessonId: lesson.id,
-                    lessonTitle: lesson.title,
-                    title: cls.title,
-                    index: allClasses.length
-                });
-            });
-        }
-    });
-
-    // Find current index
-    let currentIndex = allClasses.findIndex(c => c.id === classId);
-    let nextClass = null;
-    if (currentIndex !== -1 && currentIndex < allClasses.length - 1) {
-        nextClass = allClasses[currentIndex + 1];
-    }
-
-    // Save user progress
-    const users = readUsers();
-    const idx = users.findIndex(u => u.id === user.id);
-    if (idx !== -1) {
-        users[idx].progress = user.progress;
-        writeUsers(users);
-    }
-
-    if (nextClass) {
-        req.session.messages = { success: '✅ Class completed! Moving to next...' };
-        res.redirect(`/course?classId=${nextClass.id}`);
-    } else {
-        req.session.messages = { success: '🎉 All classes completed! You finished the course!' };
-        res.redirect('/course');
-    }
-});
-
-// ---------- Course view ----------
-app.get('/course', requireAuth, (req, res) => {
-    const user = getUserById(req.session.userId);
-    if (!user) { req.session.destroy(); return res.redirect('/login'); }
-    const course = user.courseId ? findCourseById(user.courseId) : null;
-    if (!course) {
-        req.session.messages = { error: 'No course enrolled.' };
-        return res.redirect('/dashboard');
-    }
-    // Numbering and progress
-    const numberedCourse = {
-        ...course,
-        lessons: course.lessons.map((lesson, lIdx) => ({
-            ...lesson,
-            number: lIdx + 1,
-            classes: lesson.classes ? lesson.classes.map((cls, cIdx) => ({
-                ...cls,
-                number: `${lIdx+1}.${cIdx+1}`,
-                completed: !!(user.progress && user.progress[cls.id])
-            })) : []
-        }))
-    };
-    let totalClasses = 0, completedClasses = 0;
-    course.lessons.forEach(l => {
-        if (l.classes) {
-            l.classes.forEach(c => {
-                totalClasses++;
-                if (user.progress && user.progress[c.id]) completedClasses++;
-            });
-        }
-    });
-    const score = completedClasses * 10;
     res.render('course', {
-        user, course: numberedCourse, progress: user.progress || {}, score, completedClasses, totalClasses,
-        messages: req.session.messages || {}, showBack: true, title: 'My Course'
+        user,
+        course,
+        messages: req.session.messages || {},
+        showBack: true,
+        title: course.title
     });
     req.session.messages = {};
 });
 
-// ---------- Mark class complete ----------
-app.post('/course/complete/:classId', requireAuth, (req, res) => {
-    const user = getUserById(req.session.userId);
-    if (!user) { req.session.destroy(); return res.redirect('/login'); }
+// ============================================================
+// LEVEL PAGE – Show Lessons & Classes
+// ============================================================
+app.get('/level/:courseId/:levelId', requireAuth, (req, res) => {
+    const user = req.user;
+    const course = findCourseById(req.params.courseId);
+    if (!course) {
+        req.session.messages = { error: 'Course not found.' };
+        return res.redirect('/dashboard');
+    }
+    
+    const level = course.levels ? course.levels.find(l => l.id === req.params.levelId) : null;
+    if (!level) {
+        req.session.messages = { error: 'Level not found.' };
+        return res.redirect('/course/' + req.params.courseId);
+    }
+    
+    let allClasses = [];
+    if (level.lessons) {
+        level.lessons.forEach(lesson => {
+            if (lesson.classes) {
+                lesson.classes.forEach(cls => {
+                    allClasses.push({
+                        id: cls.id,
+                        lessonId: lesson.id,
+                        lessonTitle: lesson.title,
+                        title: cls.title,
+                        content: cls.content,
+                        imageUrl: cls.imageUrl,
+                        videoUrl: cls.videoUrl,
+                        externalLink: cls.externalLink,
+                        completed: !!(user.progress && user.progress[cls.id])
+                    });
+                });
+            }
+        });
+    }
+    
+    let currentClassId = req.query.classId || (allClasses.length > 0 ? allClasses[0].id : null);
+    let currentClass = allClasses.find(c => c.id === currentClassId);
+    if (!currentClass && allClasses.length > 0) {
+        currentClass = allClasses[0];
+        currentClassId = currentClass.id;
+    }
+    
+    let totalClasses = allClasses.length;
+    let completedClasses = allClasses.filter(c => c.completed).length;
+    let score = completedClasses * 10;
+    let progress = totalClasses > 0 ? Math.round((completedClasses / totalClasses) * 100) : 0;
+    
+    let currentLesson = null;
+    if (level.lessons) {
+        level.lessons.forEach(lesson => {
+            if (lesson.classes && lesson.classes.some(c => c.id === currentClassId)) {
+                currentLesson = lesson;
+            }
+        });
+    }
+    
+    res.render('level', {
+        user,
+        course,
+        level,
+        currentClass,
+        currentLesson,
+        allClasses,
+        totalClasses,
+        completedClasses,
+        progress,
+        score,
+        messages: req.session.messages || {},
+        showBack: true,
+        title: level.name + ' - ' + course.title
+    });
+    req.session.messages = {};
+});
+
+// ============================================================
+// MARK CLASS COMPLETE
+// ============================================================
+app.post('/level/complete/:classId', requireAuth, (req, res) => {
+    const user = req.user;
     const { classId } = req.params;
     if (!user.progress) user.progress = {};
     user.progress[classId] = true;
+    
     const users = readUsers();
     const idx = users.findIndex(u => u.id === user.id);
     if (idx !== -1) {
         users[idx].progress = user.progress;
         writeUsers(users);
     }
+    
     req.session.messages = { success: '✅ Class completed! +10 points!' };
-    res.redirect('/course');
+    res.redirect('back');
 });
 
 // ============================================================
-//  ADMIN ROUTES (Separate – no link in user header)
+// NEXT CLASS
 // ============================================================
-
-app.get('/admin/login', (req, res) => {
-    if (req.session.userId) {
-        const user = getUserById(req.session.userId);
-        if (user && user.isAdmin) return res.redirect('/admin/dashboard');
+app.post('/level/next/:courseId/:levelId/:classId', requireAuth, (req, res) => {
+    const user = req.user;
+    const { courseId, levelId, classId } = req.params;
+    
+    if (!user.progress) user.progress = {};
+    user.progress[classId] = true;
+    
+    const users = readUsers();
+    const idx = users.findIndex(u => u.id === user.id);
+    if (idx !== -1) {
+        users[idx].progress = user.progress;
+        writeUsers(users);
     }
-    res.render('admin/login', { messages: req.session.messages || {}, showBack: false, title: 'Admin Login' });
-    req.session.messages = {};
+    
+    const course = findCourseById(courseId);
+    const level = course.levels ? course.levels.find(l => l.id === levelId) : null;
+    
+    let allClasses = [];
+    if (level && level.lessons) {
+        level.lessons.forEach(lesson => {
+            if (lesson.classes) {
+                lesson.classes.forEach(cls => {
+                    allClasses.push(cls.id);
+                });
+            }
+        });
+    }
+    
+    let currentIndex = allClasses.indexOf(classId);
+    let nextClassId = null;
+    if (currentIndex !== -1 && currentIndex < allClasses.length - 1) {
+        nextClassId = allClasses[currentIndex + 1];
+    }
+    
+    if (nextClassId) {
+        req.session.messages = { success: '✅ Class completed! Moving to next...' };
+        res.redirect(`/level/${courseId}/${levelId}?classId=${nextClassId}`);
+    } else {
+        req.session.messages = { success: '🎉 All classes completed! You finished this level!' };
+        res.redirect(`/course/${courseId}`);
+    }
 });
-app.post('/admin/login', async (req, res) => {
-    const { email, password } = req.body;
-    const user = findUserByEmail(email);
-    if (!user || !user.isAdmin) {
-        req.session.messages = { error: 'Invalid admin credentials.' };
-        return res.redirect('/admin/login');
-    }
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) {
-        req.session.messages = { error: 'Invalid admin credentials.' };
-        return res.redirect('/admin/login');
-    }
-    req.session.userId = user.id;
-    req.session.messages = { success: 'Welcome to Admin Panel.' };
-    res.redirect('/admin/dashboard');
-});
 
+// ============================================================
+// ADMIN ROUTES
+// ============================================================
 app.get('/admin/dashboard', requireAdmin, (req, res) => {
-    const admin = getUserById(req.session.userId);
     const users = readUsers();
     const courses = readCourses();
     const totalStudents = users.filter(u => !u.isAdmin).length;
     const totalCourses = courses.length;
     const totalEnrollments = users.filter(u => u.courseId && !u.isAdmin).length;
-    let totalLessons = 0, totalClasses = 0;
+    
+    let totalClasses = 0;
     courses.forEach(c => {
-        if (c.lessons) {
-            totalLessons += c.lessons.length;
-            c.lessons.forEach(l => { if (l.classes) totalClasses += l.classes.length; });
+        if (c.levels) {
+            c.levels.forEach(l => {
+                if (l.lessons) {
+                    l.lessons.forEach(ls => {
+                        if (ls.classes) totalClasses += ls.classes.length;
+                    });
+                }
+            });
         }
     });
+    
     const studentsByCourse = {};
     courses.forEach(c => {
         const students = users.filter(u => u.courseId === c.id && !u.isAdmin);
         studentsByCourse[c.id] = { course: c, students, count: students.length };
     });
+    
     res.render('admin/dashboard', {
-        admin, totalStudents, totalCourses, totalEnrollments, totalLessons, totalClasses,
-        studentsByCourse, courses, users,
-        messages: req.session.messages || {}, showBack: true, title: 'Admin Dashboard'
+        admin: req.admin,
+        totalStudents,
+        totalCourses,
+        totalEnrollments,
+        totalClasses,
+        studentsByCourse,
+        courses,
+        users,
+        messages: req.session.messages || {},
+        showBack: true,
+        title: 'Admin Dashboard'
     });
     req.session.messages = {};
 });
@@ -553,10 +837,19 @@ app.get('/admin/students', requireAdmin, (req, res) => {
     const courses = readCourses();
     const courseMap = {};
     courses.forEach(c => { courseMap[c.id] = c.title; });
-    res.render('admin/students', { students, courseMap, messages: req.session.messages || {}, showBack: true, title: 'Students' });
+    res.render('admin/students', { 
+        students, 
+        courseMap, 
+        messages: req.session.messages || {}, 
+        showBack: true, 
+        title: 'Students' 
+    });
     req.session.messages = {};
 });
 
+// ============================================================
+// ADMIN COURSES
+// ============================================================
 app.get('/admin/courses', requireAdmin, (req, res) => {
     const courses = readCourses();
     const users = readUsers();
@@ -564,13 +857,18 @@ app.get('/admin/courses', requireAdmin, (req, res) => {
         const count = users.filter(u => u.courseId === c.id && !u.isAdmin).length;
         return { ...c, studentCount: count };
     });
-    res.render('admin/courses', { courses: coursesWithCount, messages: req.session.messages || {}, showBack: true, title: 'Manage Courses' });
+    res.render('admin/courses', { 
+        courses: coursesWithCount, 
+        messages: req.session.messages || {}, 
+        showBack: true, 
+        title: 'Manage Courses' 
+    });
     req.session.messages = {};
 });
 
 app.post('/admin/courses/add', requireAdmin, (req, res) => {
-    const { title, description, level, duration, review } = req.body;
-    if (!title || !description || !level || !duration) {
+    const { title, description, duration, review } = req.body;
+    if (!title || !description || !duration) {
         req.session.messages = { error: 'All fields required.' };
         return res.redirect('/admin/courses');
     }
@@ -579,11 +877,10 @@ app.post('/admin/courses/add', requireAdmin, (req, res) => {
         id: uuidv4(),
         title,
         description,
-        level,
         duration,
-        lessons: [],
-        test: null,
-        review: review || ''
+        levels: [],
+        review: review || '',
+        createdAt: new Date().toISOString()
     };
     courses.push(newCourse);
     writeCourses(courses);
@@ -613,17 +910,26 @@ app.post('/admin/courses/delete-all', requireAdmin, (req, res) => {
     res.redirect('/admin/courses');
 });
 
+// ============================================================
+// ADMIN EDIT COURSE
+// ============================================================
 app.get('/admin/courses/edit/:id', requireAdmin, (req, res) => {
     const course = findCourseById(req.params.id);
     if (!course) {
         req.session.messages = { error: 'Course not found.' };
         return res.redirect('/admin/courses');
     }
-    res.render('admin/course-edit', { course, messages: req.session.messages || {}, showBack: true, title: 'Edit Course' });
+    res.render('admin/course-edit', { 
+        course, 
+        messages: req.session.messages || {}, 
+        showBack: true, 
+        title: 'Edit Course' 
+    });
     req.session.messages = {};
 });
+
 app.post('/admin/courses/edit/:id', requireAdmin, (req, res) => {
-    const { title, description, level, duration } = req.body;
+    const { title, description, duration, review } = req.body;
     const courses = readCourses();
     const idx = courses.findIndex(c => c.id === req.params.id);
     if (idx === -1) {
@@ -632,17 +938,20 @@ app.post('/admin/courses/edit/:id', requireAdmin, (req, res) => {
     }
     courses[idx].title = title || courses[idx].title;
     courses[idx].description = description || courses[idx].description;
-    courses[idx].level = level || courses[idx].level;
     courses[idx].duration = duration || courses[idx].duration;
+    courses[idx].review = review || courses[idx].review;
     writeCourses(courses);
     req.session.messages = { success: '✅ Course updated!' };
     res.redirect('/admin/courses');
 });
 
-app.post('/admin/courses/:id/lessons/add', requireAdmin, (req, res) => {
-    const { title, description } = req.body;
-    if (!title) {
-        req.session.messages = { error: 'Lesson title required.' };
+// ============================================================
+// ADMIN ADD LEVEL
+// ============================================================
+app.post('/admin/courses/:id/levels/add', requireAdmin, (req, res) => {
+    const { name, duration } = req.body;
+    if (!name || !duration) {
+        req.session.messages = { error: 'Level name and duration required.' };
         return res.redirect(`/admin/courses/edit/${req.params.id}`);
     }
     const courses = readCourses();
@@ -651,31 +960,64 @@ app.post('/admin/courses/:id/lessons/add', requireAdmin, (req, res) => {
         req.session.messages = { error: 'Course not found.' };
         return res.redirect('/admin/courses');
     }
-    const newLesson = { id: uuidv4(), title, description: description || '', classes: [] };
-    courses[idx].lessons.push(newLesson);
+    if (!courses[idx].levels) courses[idx].levels = [];
+    courses[idx].levels.push({
+        id: uuidv4(),
+        name,
+        duration,
+        lessons: [],
+        test: { questions: [] }
+    });
     writeCourses(courses);
-    req.session.messages = { success: '✅ Lesson added!' };
+    req.session.messages = { success: '✅ Level added!' };
     res.redirect(`/admin/courses/edit/${req.params.id}`);
 });
 
-app.post('/admin/courses/:courseId/lessons/delete/:lessonId', requireAdmin, (req, res) => {
+app.post('/admin/courses/:id/levels/delete/:levelId', requireAdmin, (req, res) => {
     const courses = readCourses();
-    const idx = courses.findIndex(c => c.id === req.params.courseId);
+    const idx = courses.findIndex(c => c.id === req.params.id);
     if (idx === -1) {
         req.session.messages = { error: 'Course not found.' };
         return res.redirect('/admin/courses');
     }
-    courses[idx].lessons = courses[idx].lessons.filter(l => l.id !== req.params.lessonId);
+    courses[idx].levels = courses[idx].levels.filter(l => l.id !== req.params.levelId);
     writeCourses(courses);
-    req.session.messages = { success: '🗑️ Lesson deleted.' };
-    res.redirect(`/admin/courses/edit/${req.params.courseId}`);
+    req.session.messages = { success: '🗑️ Level deleted.' };
+    res.redirect(`/admin/courses/edit/${req.params.id}`);
 });
 
-app.post('/admin/courses/:courseId/lessons/:lessonId/classes/add', requireAdmin, (req, res) => {
-    const { title, content, imageUrl, videoUrl, externalLink } = req.body;
-    if (!title || !content) {
-        req.session.messages = { error: 'Class title and content required.' };
+// ============================================================
+// ADMIN EDIT LEVEL
+// ============================================================
+app.get('/admin/levels/edit/:courseId/:levelId', requireAdmin, (req, res) => {
+    const course = findCourseById(req.params.courseId);
+    if (!course) {
+        req.session.messages = { error: 'Course not found.' };
+        return res.redirect('/admin/courses');
+    }
+    const level = course.levels ? course.levels.find(l => l.id === req.params.levelId) : null;
+    if (!level) {
+        req.session.messages = { error: 'Level not found.' };
         return res.redirect(`/admin/courses/edit/${req.params.courseId}`);
+    }
+    res.render('admin/level-edit', { 
+        course, 
+        level, 
+        messages: req.session.messages || {}, 
+        showBack: true, 
+        title: 'Edit Level' 
+    });
+    req.session.messages = {};
+});
+
+// ============================================================
+// ADMIN ADD LESSON TO LEVEL
+// ============================================================
+app.post('/admin/levels/:courseId/:levelId/lessons/add', requireAdmin, (req, res) => {
+    const { title, description } = req.body;
+    if (!title) {
+        req.session.messages = { error: 'Lesson title required.' };
+        return res.redirect(`/admin/levels/edit/${req.params.courseId}/${req.params.levelId}`);
     }
     const courses = readCourses();
     const cIdx = courses.findIndex(c => c.id === req.params.courseId);
@@ -683,44 +1025,102 @@ app.post('/admin/courses/:courseId/lessons/:lessonId/classes/add', requireAdmin,
         req.session.messages = { error: 'Course not found.' };
         return res.redirect('/admin/courses');
     }
-    const lesson = courses[cIdx].lessons.find(l => l.id === req.params.lessonId);
-    if (!lesson) {
-        req.session.messages = { error: 'Lesson not found.' };
+    const level = courses[cIdx].levels.find(l => l.id === req.params.levelId);
+    if (!level) {
+        req.session.messages = { error: 'Level not found.' };
         return res.redirect(`/admin/courses/edit/${req.params.courseId}`);
     }
-    const newClass = {
+    level.lessons.push({
+        id: uuidv4(),
+        title,
+        description: description || '',
+        classes: []
+    });
+    writeCourses(courses);
+    req.session.messages = { success: '✅ Lesson added!' };
+    res.redirect(`/admin/levels/edit/${req.params.courseId}/${req.params.levelId}`);
+});
+
+app.post('/admin/levels/:courseId/:levelId/lessons/delete/:lessonId', requireAdmin, (req, res) => {
+    const courses = readCourses();
+    const cIdx = courses.findIndex(c => c.id === req.params.courseId);
+    if (cIdx === -1) {
+        req.session.messages = { error: 'Course not found.' };
+        return res.redirect('/admin/courses');
+    }
+    const level = courses[cIdx].levels.find(l => l.id === req.params.levelId);
+    if (!level) {
+        req.session.messages = { error: 'Level not found.' };
+        return res.redirect(`/admin/courses/edit/${req.params.courseId}`);
+    }
+    level.lessons = level.lessons.filter(l => l.id !== req.params.lessonId);
+    writeCourses(courses);
+    req.session.messages = { success: '🗑️ Lesson deleted.' };
+    res.redirect(`/admin/levels/edit/${req.params.courseId}/${req.params.levelId}`);
+});
+
+// ============================================================
+// ADMIN ADD CLASS TO LESSON
+// ============================================================
+app.post('/admin/levels/:courseId/:levelId/lessons/:lessonId/classes/add', requireAdmin, (req, res) => {
+    const { title, content, imageUrl, videoUrl, externalLink } = req.body;
+    if (!title || !content) {
+        req.session.messages = { error: 'Class title and content required.' };
+        return res.redirect(`/admin/levels/edit/${req.params.courseId}/${req.params.levelId}`);
+    }
+    const courses = readCourses();
+    const cIdx = courses.findIndex(c => c.id === req.params.courseId);
+    if (cIdx === -1) {
+        req.session.messages = { error: 'Course not found.' };
+        return res.redirect('/admin/courses');
+    }
+    const level = courses[cIdx].levels.find(l => l.id === req.params.levelId);
+    if (!level) {
+        req.session.messages = { error: 'Level not found.' };
+        return res.redirect(`/admin/courses/edit/${req.params.courseId}`);
+    }
+    const lesson = level.lessons.find(l => l.id === req.params.lessonId);
+    if (!lesson) {
+        req.session.messages = { error: 'Lesson not found.' };
+        return res.redirect(`/admin/levels/edit/${req.params.courseId}/${req.params.levelId}`);
+    }
+    lesson.classes.push({
         id: uuidv4(),
         title,
         content: sanitize(content),
         imageUrl: imageUrl || '',
         videoUrl: videoUrl || '',
         externalLink: externalLink || ''
-    };
-    lesson.classes.push(newClass);
+    });
     writeCourses(courses);
     req.session.messages = { success: '✅ Class added!' };
-    res.redirect(`/admin/courses/edit/${req.params.courseId}`);
+    res.redirect(`/admin/levels/edit/${req.params.courseId}/${req.params.levelId}`);
 });
 
-app.post('/admin/courses/:courseId/lessons/:lessonId/classes/delete/:classId', requireAdmin, (req, res) => {
+app.post('/admin/levels/:courseId/:levelId/lessons/:lessonId/classes/delete/:classId', requireAdmin, (req, res) => {
     const courses = readCourses();
     const cIdx = courses.findIndex(c => c.id === req.params.courseId);
     if (cIdx === -1) {
         req.session.messages = { error: 'Course not found.' };
         return res.redirect('/admin/courses');
     }
-    const lesson = courses[cIdx].lessons.find(l => l.id === req.params.lessonId);
-    if (!lesson) {
-        req.session.messages = { error: 'Lesson not found.' };
+    const level = courses[cIdx].levels.find(l => l.id === req.params.levelId);
+    if (!level) {
+        req.session.messages = { error: 'Level not found.' };
         return res.redirect(`/admin/courses/edit/${req.params.courseId}`);
     }
-    lesson.classes = lesson.classes.filter(cl => cl.id !== req.params.classId);
+    const lesson = level.lessons.find(l => l.id === req.params.lessonId);
+    if (!lesson) {
+        req.session.messages = { error: 'Lesson not found.' };
+        return res.redirect(`/admin/levels/edit/${req.params.courseId}/${req.params.levelId}`);
+    }
+    lesson.classes = lesson.classes.filter(c => c.id !== req.params.classId);
     writeCourses(courses);
     req.session.messages = { success: '🗑️ Class deleted.' };
-    res.redirect(`/admin/courses/edit/${req.params.courseId}`);
+    res.redirect(`/admin/levels/edit/${req.params.courseId}/${req.params.levelId}`);
 });
 
-app.post('/admin/courses/:courseId/lessons/:lessonId/classes/edit/:classId', requireAdmin, (req, res) => {
+app.post('/admin/levels/:courseId/:levelId/lessons/:lessonId/classes/edit/:classId', requireAdmin, (req, res) => {
     const { title, content, imageUrl, videoUrl, externalLink } = req.body;
     const courses = readCourses();
     const cIdx = courses.findIndex(c => c.id === req.params.courseId);
@@ -728,15 +1128,20 @@ app.post('/admin/courses/:courseId/lessons/:lessonId/classes/edit/:classId', req
         req.session.messages = { error: 'Course not found.' };
         return res.redirect('/admin/courses');
     }
-    const lesson = courses[cIdx].lessons.find(l => l.id === req.params.lessonId);
-    if (!lesson) {
-        req.session.messages = { error: 'Lesson not found.' };
+    const level = courses[cIdx].levels.find(l => l.id === req.params.levelId);
+    if (!level) {
+        req.session.messages = { error: 'Level not found.' };
         return res.redirect(`/admin/courses/edit/${req.params.courseId}`);
     }
-    const cls = lesson.classes.find(cl => cl.id === req.params.classId);
+    const lesson = level.lessons.find(l => l.id === req.params.lessonId);
+    if (!lesson) {
+        req.session.messages = { error: 'Lesson not found.' };
+        return res.redirect(`/admin/levels/edit/${req.params.courseId}/${req.params.levelId}`);
+    }
+    const cls = lesson.classes.find(c => c.id === req.params.classId);
     if (!cls) {
         req.session.messages = { error: 'Class not found.' };
-        return res.redirect(`/admin/courses/edit/${req.params.courseId}`);
+        return res.redirect(`/admin/levels/edit/${req.params.courseId}/${req.params.levelId}`);
     }
     cls.title = title || cls.title;
     cls.content = sanitize(content || cls.content);
@@ -745,31 +1150,77 @@ app.post('/admin/courses/:courseId/lessons/:lessonId/classes/edit/:classId', req
     cls.externalLink = externalLink || '';
     writeCourses(courses);
     req.session.messages = { success: '✅ Class updated!' };
-    res.redirect(`/admin/courses/edit/${req.params.courseId}`);
+    res.redirect(`/admin/levels/edit/${req.params.courseId}/${req.params.levelId}`);
 });
 
-app.post('/admin/courses/review/:id', requireAdmin, (req, res) => {
-    const { review } = req.body;
+// ============================================================
+// ADMIN TEST ROUTES
+// ============================================================
+app.post('/admin/levels/:courseId/:levelId/test/add', requireAdmin, (req, res) => {
+    const { question, option1, option2, option3, option4, correct } = req.body;
+    if (!question || !option1 || !option2 || !option3 || !option4 || correct === undefined) {
+        req.session.messages = { error: 'All test fields required.' };
+        return res.redirect(`/admin/levels/edit/${req.params.courseId}/${req.params.levelId}`);
+    }
     const courses = readCourses();
-    const idx = courses.findIndex(c => c.id === req.params.id);
-    if (idx === -1) {
+    const cIdx = courses.findIndex(c => c.id === req.params.courseId);
+    if (cIdx === -1) {
         req.session.messages = { error: 'Course not found.' };
         return res.redirect('/admin/courses');
     }
-    courses[idx].review = review || '';
+    const level = courses[cIdx].levels.find(l => l.id === req.params.levelId);
+    if (!level) {
+        req.session.messages = { error: 'Level not found.' };
+        return res.redirect(`/admin/courses/edit/${req.params.courseId}`);
+    }
+    if (!level.test) level.test = { questions: [] };
+    level.test.questions.push({
+        id: uuidv4(),
+        question,
+        options: [option1, option2, option3, option4],
+        correct: parseInt(correct)
+    });
     writeCourses(courses);
-    req.session.messages = { success: '✅ Review saved!' };
-    res.redirect(`/admin/courses/edit/${req.params.id}`);
+    req.session.messages = { success: '✅ Test question added!' };
+    res.redirect(`/admin/levels/edit/${req.params.courseId}/${req.params.levelId}`);
 });
 
-// ---------- Admin: Manage Admins ----------
+app.post('/admin/levels/:courseId/:levelId/test/delete/:questionId', requireAdmin, (req, res) => {
+    const courses = readCourses();
+    const cIdx = courses.findIndex(c => c.id === req.params.courseId);
+    if (cIdx === -1) {
+        req.session.messages = { error: 'Course not found.' };
+        return res.redirect('/admin/courses');
+    }
+    const level = courses[cIdx].levels.find(l => l.id === req.params.levelId);
+    if (!level || !level.test) {
+        req.session.messages = { error: 'Level or test not found.' };
+        return res.redirect(`/admin/courses/edit/${req.params.courseId}`);
+    }
+    level.test.questions = level.test.questions.filter(q => q.id !== req.params.questionId);
+    if (level.test.questions.length === 0) level.test = null;
+    writeCourses(courses);
+    req.session.messages = { success: '🗑️ Test question deleted.' };
+    res.redirect(`/admin/levels/edit/${req.params.courseId}/${req.params.levelId}`);
+});
+
+// ============================================================
+// ADMIN MANAGE ADMINS
+// ============================================================
 app.get('/admin/manage-admins', requireAdmin, (req, res) => {
     const users = readUsers();
     const admins = users.filter(u => u.isAdmin);
     const nonAdmins = users.filter(u => !u.isAdmin);
-    res.render('admin/manage-admins', { admins, nonAdmins, messages: req.session.messages || {}, showBack: true, title: 'Manage Admins' });
+    res.render('admin/manage-admins', { 
+        admins, 
+        nonAdmins, 
+        messages: req.session.messages || {}, 
+        showBack: true, 
+        title: 'Manage Admins' 
+    });
     req.session.messages = {};
 });
+
 app.post('/admin/make-admin/:id', requireAdmin, (req, res) => {
     const users = readUsers();
     const idx = users.findIndex(u => u.id === req.params.id);
@@ -780,6 +1231,7 @@ app.post('/admin/make-admin/:id', requireAdmin, (req, res) => {
     }
     res.redirect('/admin/manage-admins');
 });
+
 app.post('/admin/remove-admin/:id', requireAdmin, (req, res) => {
     const users = readUsers();
     const idx = users.findIndex(u => u.id === req.params.id);
@@ -793,13 +1245,16 @@ app.post('/admin/remove-admin/:id', requireAdmin, (req, res) => {
     res.redirect('/admin/manage-admins');
 });
 
-// ---------- Start ----------
+// ============================================================
+// START SERVER
+// ============================================================
 async function startServer() {
     initDefaultCourses();
     await initAdminUser();
     app.listen(PORT, () => {
         console.log(`🚀 SHINEX running on http://localhost:${PORT}`);
         console.log(`🔐 Admin: admin@shinex.com / admin123`);
+        console.log(`📚 Admin Login: http://localhost:${PORT}/shinex-admin`);
         console.log(`📚 No default courses - add your own!`);
     });
 }

@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title><%= level.name %> – SHINEX</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* ============================================================
+           LEVEL PAGE STYLES
+           ============================================================ */
+        .level-container {
+            display: flex;
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        /* Sidebar */
+        .level-sidebar {
+            width: 300px;
+            min-width: 260px;
+            background: #fff;
+            border-radius: 14px;
+            border: 1px solid #ede8f5;
+            padding: 12px 0;
+            height: fit-content;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: sticky;
+            top: 80px;
+            box-shadow: 0 4px 20px rgba(26, 10, 46, 0.05);
+        }
+
+        body.dark-mode .level-sidebar {
+            background: #1e1e1e;
+            border-color: #333;
+        }
+
+        .sidebar-header {
+            padding: 0 14px 10px 14px;
+            border-bottom: 1px solid #ede8f5;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #1A0A2E;
+        }
+
+        body.dark-mode .sidebar-header {
+            border-bottom-color: #333;
+            color: #e0e0e0;
+        }
+
+        .sidebar-header .level-badge {
+            font-size: 0.7rem;
+            background: #8B5CF6;
+            color: #fff;
+            padding: 2px 10px;
+            border-radius: 20px;
+            margin-left: 8px;
+        }
+
+        .sidebar-nav {
+            padding: 6px 0;
+        }
+
+        .sidebar-lesson {
+            margin-bottom: 2px;
+        }
+
+        .lesson-header {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #1A0A2E;
+            background: #f8f6fc;
+            border-left: 3px solid transparent;
+        }
+
+        body.dark-mode .lesson-header {
+            color: #e0e0e0;
+            background: #2a2a2a;
+        }
+
+        .lesson-header.active {
+            border-left-color: #8B5CF6;
+            background: #f0ebfb;
+        }
+
+        body.dark-mode .lesson-header.active {
+            background: #2a1a4a;
+        }
+
+        .lesson-number {
+            font-weight: 700;
+            color: #8B5CF6;
+            min-width: 22px;
+            font-size: 0.8rem;
+        }
+
+        .lesson-title {
+            flex: 1;
+            font-size: 0.85rem;
+        }
+
+        .class-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .class-item {
+            padding: 0;
+            border-bottom: 1px solid #f0ebfb;
+        }
+
+        body.dark-mode .class-item {
+            border-bottom-color: #2a2a2a;
+        }
+
+        .class-item:last-child {
+            border-bottom: none;
+        }
+
+        .class-link {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 14px 5px 32px;
+            font-size: 0.8rem;
+            color: #4a3a60;
+            transition: all 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .class-link:hover:not(.disabled) {
+            background: #f0ebfb;
+        }
+
+        body.dark-mode .class-link:hover:not(.disabled) {
+            background: #2a1a4a;
+        }
+
+        .class-link.disabled {
+            color: #b0a3c4;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .class-link .class-number {
+            font-weight: 600;
+            color: #8B5CF6;
+            min-width: 28px;
+            font-size: 0.75rem;
+        }
+
+        .class-link .class-title {
+            flex: 1;
+        }
+
+        .class-link .class-status {
+            font-size: 0.7rem;
+        }
+
+        .class-item.active .class-link {
+            background: #f0ebfb;
+            border-left: 3px solid #8B5CF6;
+            padding-left: 29px;
+        }
+
+        body.dark-mode .class-item.active .class-link {
+            background: #2a1a4a;
+        }
+
+        .class-item.completed .class-link {
+            color: #27ae60;
+        }
+
+        .class-item.completed .class-link .class-number {
+            color: #27ae60;
+        }
+
+        /* Main Content */
+        .level-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 20px;
+            background: #fff;
+            border-radius: 14px 14px 0 0;
+            border: 1px solid #ede8f5;
+            border-bottom: none;
+        }
+
+        body.dark-mode .content-header {
+            background: #1e1e1e;
+            border-color: #333;
+        }
+
+        .content-header h1 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1A0A2E;
+            margin: 0;
+        }
+
+        body.dark-mode .content-header h1 {
+            color: #f0f0f0;
+        }
+
+        .content-header .level-name-badge {
+            background: #8B5CF6;
+            color: #fff;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .content-body {
+            background: #fff;
+            padding: 20px 24px;
+            border: 1px solid #ede8f5;
+            border-top: none;
+            border-radius: 0 0 14px 14px;
+        }
+
+        body.dark-mode .content-body {
+            background: #1e1e1e;
+            border-color: #333;
+        }
+
+        .content-body .class-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #1A0A2E;
+            margin: 0 0 12px 0;
+        }
+
+        body.dark-mode .content-body .class-title {
+            color: #f0f0f0;
+        }
+
+        .class-content {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: #1f2937;
+        }
+
+        body.dark-mode .class-content {
+            color: #d0d0d0;
+        }
+
+        .class-content h1, .class-content h2, .class-content h3 {
+            color: #1A0A2E;
+            margin-top: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        body.dark-mode .class-content h1,
+        body.dark-mode .class-content h2,
+        body.dark-mode .class-content h3 {
+            color: #f0f0f0;
+        }
+
+        .class-content p {
+            margin-bottom: 0.8rem;
+        }
+
+        .class-content ul, .class-content ol {
+            padding-left: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .class-content li {
+            margin-bottom: 0.3rem;
+        }
+
+        .class-content strong, .class-content b {
+            font-weight: 700;
+            color: #1A0A2E;
+        }
+
+        body.dark-mode .class-content strong,
+        body.dark-mode .class-content b {
+            color: #c4b5e6;
+        }
+
+        .class-content hr {
+            border: none;
+            border-top: 2px solid #ede8f5;
+            margin: 1rem 0;
+        }
+
+        body.dark-mode .class-content hr {
+            border-top-color: #333;
+        }
+
+        .class-content img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin: 0.5rem 0;
+        }
+
+        .class-image {
+            margin: 12px 0;
+        }
+
+        .class-image img {
+            max-width: 100%;
+            border-radius: 8px;
+            border: 1px solid #ede8f5;
+        }
+
+        body.dark-mode .class-image img {
+            border-color: #444;
+        }
+
+        .class-video, .class-external {
+            margin: 8px 0;
+        }
+
+        .class-status-bar {
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 1px solid #ede8f5;
+            display: flex;
+            justify-content: flex-end;
+            font-size: 0.85rem;
+        }
+
+        body.dark-mode .class-status-bar {
+            border-top-color: #333;
+        }
+
+        .status-completed {
+            color: #27ae60;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            color: #b0a3c4;
+            font-weight: 600;
+        }
+
+        /* Content Footer */
+        .content-footer {
+            margin-top: 16px;
+            padding: 16px 20px;
+            background: #fff;
+            border-radius: 14px;
+            border: 1px solid #ede8f5;
+        }
+
+        body.dark-mode .content-footer {
+            background: #1e1e1e;
+            border-color: #333;
+        }
+
+        .next-button-wrapper {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 12px;
+        }
+
+        .next-btn {
+            padding: 10px 28px;
+            font-size: 0.95rem;
+            min-width: 160px;
+        }
+
+        .course-complete-msg {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #f39c12;
+            text-align: right;
+        }
+
+        .progress-bar-wrapper {
+            border-top: 1px solid #ede8f5;
+            padding-top: 12px;
+        }
+
+        body.dark-mode .progress-bar-wrapper {
+            border-top-color: #333;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #2d1a4a;
+            margin-bottom: 3px;
+        }
+
+        body.dark-mode .progress-label {
+            color: #c0b0d0;
+        }
+
+        .score-display {
+            margin-top: 6px;
+            font-size: 0.85rem;
+            color: #7a6a8f;
+        }
+
+        body.dark-mode .score-display {
+            color: #a090b0;
+        }
+
+        /* Test Section */
+        .test-section {
+            margin-top: 16px;
+            padding: 16px 20px;
+            background: #fffbf0;
+            border: 2px solid #f7d44a;
+            border-radius: 14px;
+        }
+
+        body.dark-mode .test-section {
+            background: #2a251a;
+            border-color: #f39c12;
+        }
+
+        .test-section h4 {
+            font-weight: 700;
+            color: #1A0A2E;
+            font-size: 1rem;
+            margin: 0 0 6px 0;
+        }
+
+        body.dark-mode .test-section h4 {
+            color: #f0f0f0;
+        }
+
+        .test-section p {
+            font-size: 0.85rem;
+            color: #7a6a8f;
+            margin: 0 0 10px 0;
+        }
+
+        /* Empty state */
+        .content-empty {
+            text-align: center;
+            padding: 40px 20px;
+            background: #fff;
+            border-radius: 14px;
+            border: 1px solid #ede8f5;
+        }
+
+        body.dark-mode .content-empty {
+            background: #1e1e1e;
+            border-color: #333;
+        }
+
+        .content-empty h3 {
+            margin: 12px 0 6px;
+            color: #1A0A2E;
+        }
+
+        body.dark-mode .content-empty h3 {
+            color: #f0f0f0;
+        }
+
+        .content-empty p {
+            color: #7a6a8f;
+        }
+
+        /* Scrollbar */
+        .level-sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .level-sidebar::-webkit-scrollbar-track {
+            background: #f0ebfb;
+            border-radius: 10px;
+        }
+
+        body.dark-mode .level-sidebar::-webkit-scrollbar-track {
+            background: #2a2a2a;
+        }
+
+        .level-sidebar::-webkit-scrollbar-thumb {
+            background: #8B5CF6;
+            border-radius: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .level-sidebar {
+                width: 260px;
+                min-width: 220px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .level-container {
+                flex-direction: column;
+                padding: 0 12px;
+            }
+
+            .level-sidebar {
+                width: 100%;
+                min-width: unset;
+                max-height: none;
+                position: static;
+                margin-bottom: 14px;
+            }
+
+            .sidebar-nav {
+                max-height: 250px;
+                overflow-y: auto;
+            }
+
+            .content-body {
+                padding: 14px 16px;
+            }
+
+            .content-footer {
+                padding: 14px 16px;
+            }
+
+            .next-button-wrapper {
+                justify-content: center;
+            }
+
+            .next-btn {
+                width: 100%;
+            }
+
+            .content-header {
+                flex-wrap: wrap;
+                gap: 6px;
+                padding: 12px 16px;
+            }
+
+            .content-header h1 {
+                font-size: 1rem;
+            }
+
+            .content-body .class-title {
+                font-size: 1.1rem;
+            }
+
+            .class-content {
+                font-size: 0.95rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .content-body {
+                padding: 10px 12px;
+            }
+            .content-footer {
+                padding: 10px 12px;
+            }
+            .class-link {
+                padding: 4px 10px 4px 24px;
+                font-size: 0.75rem;
+            }
+            .lesson-header {
+                padding: 4px 10px;
+                font-size: 0.8rem;
+            }
+            .class-link .class-number {
+                min-width: 22px;
+                font-size: 0.7rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <%- include('partials/header', { user, showBack: true }) %>
+
+    <main class="main-content">
+        <div class="level-container">
+
+            <!-- ===== LEFT SIDEBAR ===== -->
+            <aside class="level-sidebar">
+                <div class="sidebar-header">
+                    <span><%= course.title %></span>
+                    <span class="level-badge"><%= level.name %></span>
+                </div>
+                <nav class="sidebar-nav">
+                    <% if (level.lessons && level.lessons.length > 0) { %>
+                        <% level.lessons.forEach(function(lesson, lIdx) { %>
+                            <div class="sidebar-lesson">
+                                <div class="lesson-header <%= lesson.id === (currentLesson ? currentLesson.id : null) ? 'active' : '' %>">
+                                    <span class="lesson-number"><%= lIdx + 1 %></span>
+                                    <span class="lesson-title"><%= lesson.title %></span>
+                                    <% 
+                                        let allCompleted = true;
+                                        if (lesson.classes) {
+                                            lesson.classes.forEach(function(cls) {
+                                                if (!(user.progress && user.progress[cls.id])) allCompleted = false;
+                                            });
+                                        } else {
+                                            allCompleted = false;
+                                        }
+                                    %>
+                                    <% if (allCompleted && lesson.classes && lesson.classes.length > 0) { %>
+                                        <span style="font-size:0.6rem; color:#27ae60;"><i class="fas fa-check-circle"></i></span>
+                                    <% } %>
+                                </div>
+                                <% if (lesson.classes && lesson.classes.length > 0) { %>
+                                    <ul class="class-list">
+                                        <% lesson.classes.forEach(function(cls, cIdx) { 
+                                            const isCompleted = user.progress && user.progress[cls.id];
+                                            const isLocked = !isCompleted && cIdx > 0 && !(user.progress && user.progress[lesson.classes[cIdx - 1].id]);
+                                            const isActive = cls.id === (currentClass ? currentClass.id : null);
+                                        %>
+                                        <li class="class-item <%= isActive ? 'active' : '' %> <%= isLocked ? 'locked' : '' %> <%= isCompleted ? 'completed' : '' %>">
+                                            <a href="/level/<%= course.id %>/<%= level.id %>?classId=<%= cls.id %>" class="class-link <%= isLocked ? 'disabled' : '' %>">
+                                                <span class="class-number"><%= (lIdx+1) %>.<%= (cIdx+1) %></span>
+                                                <span class="class-title"><%= cls.title %></span>
+                                                <% if (isCompleted) { %>
+                                                    <span class="class-status"><i class="fas fa-check-circle" style="color:#27ae60;"></i></span>
+                                                <% } else if (isLocked) { %>
+                                                    <span class="class-status"><i class="fas fa-lock" style="color:#b0a3c4;"></i></span>
+                                                <% } %>
+                                            </a>
+                                        </li>
+                                        <% }); %>
+                                    </ul>
+                                <% } else { %>
+                                    <div style="padding:4px 14px 4px 32px; font-size:0.75rem; color:#b0a3c4;">No classes yet</div>
+                                <% } %>
+                            </div>
+                        <% }); %>
+                    <% } else { %>
+                        <div style="padding:12px 14px; color:#7a6a8f; font-size:0.85rem;">No lessons yet.</div>
+                    <% } %>
+                </nav>
+            </aside>
+
+            <!-- ===== MAIN CONTENT ===== -->
+            <section class="level-content">
+
+                <% if (currentClass) { %>
+
+                    <!-- Header -->
+                    <div class="content-header">
+                        <h1><%= currentLesson ? currentLesson.title : 'Class' %></h1>
+                        <span class="level-name-badge"><%= level.name %></span>
+                    </div>
+
+                    <!-- Content Body -->
+                    <div class="content-body">
+                        <h2 class="class-title"><%= currentClass.title %></h2>
+                        
+                        <div class="class-content">
+                            <%- parseContent(currentClass.content) %>
+                        </div>
+
+                        <!-- Image -->
+                        <% if (currentClass.imageUrl) { %>
+                            <div class="class-image">
+                                <img src="<%= currentClass.imageUrl %>" alt="<%= currentClass.title %>">
+                            </div>
+                        <% } %>
+
+                        <!-- Video -->
+                        <% if (currentClass.videoUrl) { %>
+                            <div class="class-video">
+                                <a href="<%= currentClass.videoUrl %>" target="_blank" class="btn btn-secondary btn-sm">
+                                    <i class="fab fa-youtube"></i> Watch Video
+                                </a>
+                            </div>
+                        <% } %>
+
+                        <!-- External Link -->
+                        <% if (currentClass.externalLink) { %>
+                            <div class="class-external">
+                                <a href="<%= currentClass.externalLink %>" target="_blank" class="btn btn-secondary btn-sm">
+                                    <i class="fas fa-external-link-alt"></i> More Resources
+                                </a>
+                            </div>
+                        <% } %>
+
+                        <!-- Status -->
+                        <div class="class-status-bar">
+                            <% if (user.progress && user.progress[currentClass.id]) { %>
+                                <span class="status-completed"><i class="fas fa-check-circle"></i> Completed</span>
+                            <% } else { %>
+                                <span class="status-pending"><i class="far fa-circle"></i> Not Completed</span>
+                            <% } %>
+                        </div>
+                    </div>
+
+                    <!-- ===== FOOTER ===== -->
+                    <div class="content-footer">
+                        <div class="next-button-wrapper">
+                            <% 
+                                let allClassesFlat = [];
+                                if (level.lessons) {
+                                    level.lessons.forEach(function(lesson) {
+                                        if (lesson.classes) {
+                                            lesson.classes.forEach(function(cls) {
+                                                allClassesFlat.push({
+                                                    id: cls.id,
+                                                    lessonId: lesson.id
+                                                });
+                                            });
+                                        }
+                                    });
+                                }
+                                let currentIdx = allClassesFlat.findIndex(c => c.id === currentClass.id);
+                                let hasNext = currentIdx < allClassesFlat.length - 1;
+                            %>
+                            <% if (user.progress && user.progress[currentClass.id]) { %>
+                                <% if (hasNext) { %>
+                                    <form action="/level/next/<%= course.id %>/<%= level.id %>/<%= currentClass.id %>" method="POST">
+                                        <button type="submit" class="btn btn-primary next-btn">
+                                            <i class="fas fa-arrow-right"></i> Next Class
+                                        </button>
+                                    </form>
+                                <% } else { %>
+                                    <div class="course-complete-msg">
+                                        <i class="fas fa-trophy" style="color:#f39c12;"></i> All classes completed! 🎉
+                                    </div>
+                                <% } %>
+                            <% } else { %>
+                                <form action="/level/complete/<%= currentClass.id %>" method="POST">
+                                    <button type="submit" class="btn btn-success next-btn">
+                                        <i class="fas fa-check"></i> Mark Complete
+                                    </button>
+                                </form>
+                            <% } %>
+                        </div>
+
+                        <!-- Progress -->
+                        <div class="progress-bar-wrapper">
+                            <div class="progress-label">
+                                <span>Progress</span>
+                                <span><%= completedClasses %> / <%= totalClasses %> classes</span>
+                            </div>
+                            <div class="progress-wrap" style="height:8px;">
+                                <div class="progress-fill" style="width: <%= progress %>%; height:100%;"></div>
+                            </div>
+                            <div class="score-display">
+                                <i class="fas fa-star" style="color:#f39c12;"></i> Score: <strong><%= score %></strong> points
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ===== TEST SECTION ===== -->
+                    <% if (level.test && level.test.questions && level.test.questions.length > 0) { %>
+                        <div class="test-section">
+                            <h4><i class="fas fa-pencil-alt" style="color:#f39c12;"></i> Test Your Knowledge</h4>
+                            <p><%= level.test.questions.length %> questions available.</p>
+                            <button class="btn btn-primary btn-sm" disabled>
+                                <i class="fas fa-lock"></i> Coming Soon
+                            </button>
+                        </div>
+                    <% } %>
+
+                <% } else { %>
+
+                    <!-- Empty State -->
+                    <div class="content-empty">
+                        <i class="fas fa-book-open" style="font-size:2.5rem; color:#d4c4f0;"></i>
+                        <h3>Select a class from the sidebar</h3>
+                        <p>Click on any unlocked class to start learning.</p>
+                    </div>
+
+                <% } %>
+
+                <!-- ===== AD BOX ===== -->
+                <%- include('partials/ad-box') %>
+
+            </section>
+
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+
+    <script>
+        // Clicking on a locked class shows a message
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.class-link.disabled').forEach(function(link) {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    alert('🔒 This class is locked. Complete the previous class first.');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -21,7 +21,7 @@
             <ul>
                 <% if (user) { %>
                     <li><a href="/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                    <li><a href="/course"><i class="fas fa-book"></i> My Course</a></li>
+                    <li><a href="/course/<%= user.courseId || '#' %>"><i class="fas fa-book"></i> My Course</a></li>
                     <li><a href="/settings"><i class="fas fa-cog"></i> Settings</a></li>
                     <li><a href="/logout" class="btn-logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                 <% } else { %>
@@ -57,5 +57,17 @@
                 }
             }
         }
+    });
+
+    // Mobile toggle
+    document.getElementById('mobileToggle').addEventListener('click', function() {
+        document.querySelector('.main-nav').classList.toggle('active');
+    });
+
+    // Close mobile menu when clicking a link
+    document.querySelectorAll('.main-nav a').forEach(function(link) {
+        link.addEventListener('click', function() {
+            document.querySelector('.main-nav').classList.remove('active');
+        });
     });
 </script>

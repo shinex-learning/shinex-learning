@@ -2,106 +2,149 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Dashboard – SHINEX</title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        @media (max-width: 480px) {
+            .card { padding: 16px 12px !important; }
+            .container { padding: 0 8px !important; }
+            h2 { font-size: 1.2rem !important; }
+        }
+    </style>
 </head>
 <body>
     <%- include('partials/header', { user, showBack: false }) %>
 
     <main class="main-content">
         <div class="container">
-            <div class="card card-purple" style="margin-bottom:20px; padding:24px 20px;">
-                <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+
+            <!-- ===== WELCOME CARD ===== -->
+            <div class="card card-purple" style="margin-bottom:16px; padding:20px 18px;">
+                <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
                     <div>
-                        <h2 style="font-size:1.4rem; font-weight:700; color:#fff;">👋 Welcome, <%= user.firstName %>!</h2>
-                        <p style="color:#d4c4f0; margin-top:2px; font-size:0.9rem;">
+                        <h2 style="font-size:1.3rem; font-weight:700; color:#fff; margin:0;">
+                            👋 Welcome, <%= user.firstName %>!
+                        </h2>
+                        <p style="color:#d4c4f0; margin-top:2px; font-size:0.85rem;">
                             <i class="fas fa-envelope" style="margin-right:6px;"></i> <%= user.email %>
                             <% if (user.school) { %>
-                                <span style="margin-left:10px;"><i class="fas fa-school"></i> <%= user.school %></span>
+                                <span style="margin-left:8px;"><i class="fas fa-school"></i> <%= user.school %></span>
                             <% } %>
                         </p>
                     </div>
                     <div>
-                        <span class="badge badge-gold" style="font-size:0.75rem;">
+                        <span class="badge badge-gold" style="font-size:0.7rem;">
                             <i class="fas fa-user-graduate"></i> <%= user.experienceLevel || 'Not set' %>
                         </span>
                     </div>
                 </div>
             </div>
 
+            <!-- ===== MESSAGES ===== -->
+            <% if (messages && messages.error) { %>
+                <div class="alert alert-danger" style="margin-bottom:12px;"><%= messages.error %></div>
+            <% } %>
+            <% if (messages && messages.success) { %>
+                <div class="alert alert-success" style="margin-bottom:12px;"><%= messages.success %></div>
+            <% } %>
+
             <% if (enrolledCourse) { %>
-                <div class="card" style="margin-bottom:20px; border-left:5px solid #8B5CF6;">
-                    <div style="display:flex; align-items:flex-start; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+
+                <!-- ===== ENROLLED COURSE ===== -->
+                <div class="card" style="margin-bottom:16px; border-left:5px solid #8B5CF6; padding:16px 18px;">
+                    <div style="display:flex; align-items:flex-start; justify-content:space-between; flex-wrap:wrap; gap:8px;">
                         <div>
-                            <h3 style="font-size:1.1rem; font-weight:700; color:#1A0A2E;">
-                                <i class="fas fa-book-open" style="color:#8B5CF6; margin-right:8px;"></i>
+                            <h3 style="font-size:1.1rem; font-weight:700; color:#1A0A2E; margin:0;">
+                                <i class="fas fa-book-open" style="color:#8B5CF6; margin-right:6px;"></i>
                                 <%= enrolledCourse.title %>
                             </h3>
-                            <p style="color:#7a6a8f; font-size:0.85rem;">
+                            <p style="color:#7a6a8f; font-size:0.8rem; margin:2px 0 0;">
                                 <span class="badge badge-purple"><%= enrolledCourse.level %></span>
-                                <span style="margin-left:10px;"><i class="far fa-clock"></i> <%= enrolledCourse.duration %></span>
+                                <span style="margin-left:8px;"><i class="far fa-clock"></i> <%= enrolledCourse.duration %></span>
                             </p>
                         </div>
-                        <a href="/course" class="btn btn-primary btn-sm"><i class="fas fa-arrow-right"></i> Go to Course</a>
+                        <a href="/course/<%= enrolledCourse.id %>" class="btn btn-primary btn-sm">
+                            <i class="fas fa-arrow-right"></i> Go to Course
+                        </a>
                     </div>
-                    <div style="margin-top:14px;">
-                        <div style="display:flex; justify-content:space-between; font-size:0.85rem; font-weight:500; color:#2d1a4a;">
+
+                    <!-- Progress -->
+                    <div style="margin-top:10px;">
+                        <div style="display:flex; justify-content:space-between; font-size:0.8rem; font-weight:500; color:#2d1a4a;">
                             <span>Progress</span>
                             <span><%= completedClasses %> / <%= totalClasses %> classes • <%= progress %>%</span>
                         </div>
-                        <div class="progress-wrap" style="margin-top:4px; height:10px;">
-                            <div class="progress-fill" style="width:<%= progress %>%;"></div>
+                        <div class="progress-wrap" style="margin-top:3px; height:8px;">
+                            <div class="progress-fill" style="width:<%= progress %>%; height:100%;"></div>
                         </div>
-                        <div style="margin-top:6px; font-size:0.9rem; color:#7a6a8f;">
+                        <div style="margin-top:4px; font-size:0.85rem; color:#7a6a8f;">
                             <i class="fas fa-star" style="color:#f39c12;"></i> Score: <strong><%= score %></strong> points
                         </div>
                     </div>
                 </div>
 
+                <!-- ===== AD BOX ===== -->
                 <%- include('partials/ad-box') %>
 
-                <div class="card">
-                    <h4 style="font-weight:700; color:#1A0A2E; font-size:1rem; margin-bottom:12px;">
-                        <i class="fas fa-list-ul" style="color:#8B5CF6; margin-right:8px;"></i>
+                <!-- ===== YOUR CLASSES LIST ===== -->
+                <div class="card" style="padding:16px 18px;">
+                    <h4 style="font-weight:700; color:#1A0A2E; font-size:0.95rem; margin:0 0 10px 0;">
+                        <i class="fas fa-list-ul" style="color:#8B5CF6; margin-right:6px;"></i>
                         Your Classes
                     </h4>
-                    <% if (enrolledCourse.lessons && enrolledCourse.lessons.length > 0) { %>
-                        <% enrolledCourse.lessons.forEach(lesson => { %>
-                            <% if (lesson.classes && lesson.classes.length > 0) { %>
-                                <% lesson.classes.forEach(cls => { %>
-                                    <div class="lesson-item" style="padding:10px 14px;">
-                                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                                            <span style="font-size:0.9rem;"><%= lesson.title %> → <%= cls.title %></span>
-                                            <span>
-                                                <% if (user.progress && user.progress[cls.id]) { %>
-                                                    <span style="color:#27ae60; font-size:0.8rem;"><i class="fas fa-check-circle"></i> Done</span>
-                                                <% } else { %>
-                                                    <span style="color:#b0a3c4; font-size:0.8rem;"><i class="far fa-circle"></i> Pending</span>
-                                                <% } %>
-                                            </span>
-                                        </div>
-                                    </div>
+                    <% if (enrolledCourse.levels) { %>
+                        <% let hasClasses = false; %>
+                        <% enrolledCourse.levels.forEach(level => { %>
+                            <% if (level.lessons) { %>
+                                <% level.lessons.forEach(lesson => { %>
+                                    <% if (lesson.classes && lesson.classes.length > 0) { %>
+                                        <% lesson.classes.forEach(cls => { %>
+                                            <% hasClasses = true; %>
+                                            <div class="lesson-item" style="padding:8px 12px; margin-bottom:4px;">
+                                                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
+                                                    <span style="font-size:0.85rem;">
+                                                        <span style="color:#8B5CF6; font-weight:600;"><%= level.name %></span>
+                                                        → <%= lesson.title %> → <%= cls.title %>
+                                                    </span>
+                                                    <span>
+                                                        <% if (user.progress && user.progress[cls.id]) { %>
+                                                            <span style="color:#27ae60; font-size:0.75rem;"><i class="fas fa-check-circle"></i> Done</span>
+                                                        <% } else { %>
+                                                            <span style="color:#b0a3c4; font-size:0.75rem;"><i class="far fa-circle"></i> Pending</span>
+                                                        <% } %>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        <% }); %>
+                                    <% } %>
                                 <% }); %>
                             <% } %>
                         <% }); %>
+                        <% if (!hasClasses) { %>
+                            <p style="color:#7a6a8f; font-size:0.85rem;">No classes yet in your course.</p>
+                        <% } %>
                     <% } else { %>
-                        <p style="color:#7a6a8f; font-size:0.9rem;">No classes yet.</p>
+                        <p style="color:#7a6a8f; font-size:0.85rem;">No levels yet in your course.</p>
                     <% } %>
                 </div>
 
             <% } else { %>
-                <div class="card" style="text-align:center; padding:40px 20px;">
-                    <div style="font-size:3rem; color:#d4c4f0; margin-bottom:10px;"><i class="fas fa-book-open"></i></div>
-                    <h3 style="font-size:1.2rem; color:#1A0A2E;">No Course Enrolled</h3>
-                    <p style="color:#7a6a8f; max-width:400px; margin:8px auto 16px; font-size:0.9rem;">
+
+                <!-- ===== NO COURSE ENROLLED ===== -->
+                <div class="card" style="text-align:center; padding:30px 16px;">
+                    <div style="font-size:2.5rem; color:#d4c4f0; margin-bottom:8px;"><i class="fas fa-book-open"></i></div>
+                    <h3 style="font-size:1.1rem; color:#1A0A2E;">No Course Enrolled</h3>
+                    <p style="color:#7a6a8f; font-size:0.85rem; margin:6px 0 12px;">
                         You haven't enrolled in any course yet. Please contact the admin to get started.
                     </p>
                     <a href="/" class="btn btn-primary btn-sm"><i class="fas fa-home"></i> Browse Courses</a>
                 </div>
+
             <% } %>
+
         </div>
     </main>
 

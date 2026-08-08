@@ -2,57 +2,188 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Admin Dashboard – SHINEX</title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .admin-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .admin-stat-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 14px 16px;
+            text-align: center;
+            border: 1px solid #ede8f5;
+            transition: all 0.2s;
+        }
+        .admin-stat-card:hover {
+            border-color: #8B5CF6;
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.08);
+        }
+        .admin-stat-card .num {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #8B5CF6;
+        }
+        .admin-stat-card .lbl {
+            font-size: 0.7rem;
+            color: #7a6a8f;
+            font-weight: 500;
+            margin-top: 2px;
+        }
+        body.dark-mode .admin-stat-card {
+            background: #1e1e1e;
+            border-color: #333;
+        }
+        body.dark-mode .admin-stat-card .lbl {
+            color: #a090b0;
+        }
+        .admin-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 16px;
+        }
+        .admin-actions .btn {
+            flex: 1;
+            min-width: 140px;
+            text-align: center;
+            padding: 10px 16px;
+            font-size: 0.85rem;
+        }
+        @media (max-width: 480px) {
+            .admin-stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+            .admin-stat-card {
+                padding: 10px 12px;
+            }
+            .admin-stat-card .num {
+                font-size: 1.2rem;
+            }
+            .admin-stat-card .lbl {
+                font-size: 0.6rem;
+            }
+            .admin-actions .btn {
+                min-width: 100%;
+                flex: 1 1 100%;
+            }
+            .admin-table {
+                font-size: 0.7rem;
+            }
+            .admin-table th,
+            .admin-table td {
+                padding: 4px 6px;
+            }
+        }
+    </style>
 </head>
 <body>
     <%- include('../partials/header', { user: admin, showBack: true }) %>
 
     <main class="main-content">
         <div class="container">
-            <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:20px;">
-                <h2 style="font-size:1.6rem; font-weight:800; color:#1A0A2E;"><i class="fas fa-shield-alt" style="color:#8B5CF6;"></i> Admin Dashboard</h2>
-                <span class="badge badge-purple" style="font-size:0.8rem;"><i class="fas fa-user-cog"></i> <%= admin.fullName %></span>
+
+            <!-- ===== MESSAGES ===== -->
+            <% if (messages && messages.error) { %>
+                <div class="alert alert-danger" style="margin-bottom:12px;"><%= messages.error %></div>
+            <% } %>
+            <% if (messages && messages.success) { %>
+                <div class="alert alert-success" style="margin-bottom:12px;"><%= messages.success %></div>
+            <% } %>
+
+            <!-- ===== ADMIN HEADER ===== -->
+            <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:16px;">
+                <h2 style="font-size:1.4rem; font-weight:800; color:#1A0A2E; margin:0;">
+                    <i class="fas fa-shield-alt" style="color:#8B5CF6;"></i> Admin Dashboard
+                </h2>
+                <span class="badge badge-purple" style="font-size:0.75rem;">
+                    <i class="fas fa-user-cog"></i> <%= admin.fullName %>
+                </span>
             </div>
 
-            <div class="admin-stats">
-                <div class="admin-stat-box"><div class="num"><%= totalStudents %></div><div class="lbl"><i class="fas fa-users"></i> Students</div></div>
-                <div class="admin-stat-box"><div class="num"><%= totalCourses %></div><div class="lbl"><i class="fas fa-book"></i> Courses</div></div>
-                <div class="admin-stat-box"><div class="num"><%= totalEnrollments %></div><div class="lbl"><i class="fas fa-user-graduate"></i> Enrollments</div></div>
-                <div class="admin-stat-box"><div class="num"><%= totalClasses %></div><div class="lbl"><i class="fas fa-list-ul"></i> Classes</div></div>
+            <!-- ===== STATISTICS ===== -->
+            <div class="admin-stats-grid">
+                <div class="admin-stat-card">
+                    <div class="num"><%= totalStudents %></div>
+                    <div class="lbl"><i class="fas fa-users"></i> Students</div>
+                </div>
+                <div class="admin-stat-card">
+                    <div class="num"><%= totalCourses %></div>
+                    <div class="lbl"><i class="fas fa-book"></i> Courses</div>
+                </div>
+                <div class="admin-stat-card">
+                    <div class="num"><%= totalEnrollments %></div>
+                    <div class="lbl"><i class="fas fa-user-graduate"></i> Enrollments</div>
+                </div>
+                <div class="admin-stat-card">
+                    <div class="num"><%= totalClasses %></div>
+                    <div class="lbl"><i class="fas fa-list-ul"></i> Classes</div>
+                </div>
             </div>
 
-            <div class="card">
-                <h3 class="admin-section-title"><i class="fas fa-users"></i> Students by Course</h3>
+            <!-- ===== STUDENTS BY COURSE ===== -->
+            <div class="card" style="padding:16px 18px;">
+                <h3 style="font-size:1rem; font-weight:700; color:#1A0A2E; margin:0 0 10px 0;">
+                    <i class="fas fa-users" style="color:#8B5CF6;"></i> Students by Course
+                </h3>
                 <div style="overflow-x:auto;">
                     <table class="admin-table">
-                        <thead><tr><th>Course</th><th>Level</th><th>Students</th><th>Actions</th></tr></thead>
+                        <thead>
+                            <tr>
+                                <th>Course</th>
+                                <th>Levels</th>
+                                <th>Students</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
                         <tbody>
                             <% if (Object.keys(studentsByCourse).length > 0) { %>
-                                <% Object.values(studentsByCourse).forEach(item => { %>
+                                <% Object.values(studentsByCourse).forEach(function(item) { %>
                                     <tr>
                                         <td><strong><%= item.course.title %></strong></td>
-                                        <td><span class="badge badge-purple"><%= item.course.level %></span></td>
+                                        <td><%= item.course.levels ? item.course.levels.length : 0 %></td>
                                         <td><%= item.students.length %></td>
-                                        <td><a href="/admin/students" class="btn btn-secondary btn-xs"><i class="fas fa-eye"></i> View</a></td>
+                                        <td>
+                                            <a href="/admin/students" class="btn btn-secondary btn-xs">
+                                                <i class="fas fa-eye"></i> View
+                                            </a>
+                                        </td>
                                     </tr>
-                                <% }) %>
+                                <% }); %>
                             <% } else { %>
-                                <tr><td colspan="4" style="text-align:center; color:#7a6a8f;">No students enrolled yet.</td></tr>
+                                <tr>
+                                    <td colspan="4" style="text-align:center; color:#7a6a8f; padding:16px;">
+                                        No students enrolled yet.
+                                    </td>
+                                </tr>
                             <% } %>
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <div style="display:flex; flex-wrap:wrap; gap:12px; margin-top:16px;">
-                <a href="/admin/courses" class="btn btn-primary"><i class="fas fa-plus-circle"></i> Manage Courses</a>
-                <a href="/admin/students" class="btn btn-secondary"><i class="fas fa-users"></i> View All Students</a>
-                <a href="/admin/manage-admins" class="btn btn-secondary"><i class="fas fa-user-shield"></i> Manage Admins</a>
-                <a href="/" class="btn btn-outline"><i class="fas fa-home"></i> Back to Site</a>
+            <!-- ===== QUICK ACTIONS ===== -->
+            <div class="card" style="padding:16px 18px;">
+                <h3 style="font-size:1rem; font-weight:700; color:#1A0A2E; margin:0 0 10px 0;">
+                    <i class="fas fa-bolt" style="color:#f39c12;"></i> Quick Actions
+                </h3>
+                <div class="admin-actions">
+                    <a href="/admin/courses" class="btn btn-primary"><i class="fas fa-plus-circle"></i> Manage Courses</a>
+                    <a href="/admin/students" class="btn btn-secondary"><i class="fas fa-users"></i> View Students</a>
+                    <a href="/admin/manage-admins" class="btn btn-secondary"><i class="fas fa-user-shield"></i> Manage Admins</a>
+                    <a href="/admin/logout" class="btn btn-danger"><i class="fas fa-sign-out-alt"></i> Admin Logout</a>
+                    <a href="/" class="btn btn-outline"><i class="fas fa-home"></i> Back to Site</a>
+                </div>
             </div>
+
         </div>
     </main>
 

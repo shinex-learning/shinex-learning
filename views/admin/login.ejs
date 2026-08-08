@@ -2,36 +2,143 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Admin Login – SHINEX</title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background: #f0ebfb;
+        }
+        .admin-login-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .admin-login-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 32px 28px;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 4px 30px rgba(26, 10, 46, 0.12);
+            border: 1px solid #ede8f5;
+        }
+        .admin-login-card .logo {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .admin-login-card .logo .icon {
+            background: #1A0A2E;
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            box-shadow: 0 6px 24px rgba(26, 10, 46, 0.2);
+        }
+        .admin-login-card .logo .icon i {
+            font-size: 1.8rem;
+            color: #8B5CF6;
+        }
+        .admin-login-card .logo h1 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #1A0A2E;
+            margin: 0;
+        }
+        .admin-login-card .logo p {
+            color: #7a6a8f;
+            font-size: 0.85rem;
+            margin: 2px 0 0;
+        }
+        .admin-login-card .back-link {
+            text-align: center;
+            margin-top: 14px;
+        }
+        .admin-login-card .back-link a {
+            color: #8B5CF6;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-decoration: none;
+        }
+        .admin-login-card .back-link a:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 480px) {
+            .admin-login-card {
+                padding: 24px 16px;
+                margin: 0 8px;
+            }
+            .admin-login-card .logo h1 {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
 </head>
-<body style="background:#f0ebfb;">
-    <div class="container" style="max-width:420px; padding-top:60px;">
-        <div style="text-align:center; margin-bottom:24px;">
-            <div style="background:#1A0A2E; width:64px; height:64px; border-radius:18px; display:inline-flex; align-items:center; justify-content:center; margin-bottom:10px; box-shadow:0 6px 24px rgba(26,10,46,0.2);">
-                <i class="fas fa-shield-alt" style="font-size:2rem; color:#8B5CF6;"></i>
+<body>
+    <div class="admin-login-wrapper">
+        <div class="admin-login-card">
+            <div class="logo">
+                <div class="icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h1>Admin Portal</h1>
+                <p>SHINEX Learning Circle</p>
             </div>
-            <h1 style="font-size:1.5rem; font-weight:800; color:#1A0A2E;">Admin Portal</h1>
-            <p style="color:#7a6a8f; font-size:0.9rem;">SHINEX Learning Circle</p>
-        </div>
-        <div class="card" style="padding:32px 28px;">
-            <form action="/admin/login" method="POST">
+
+            <!-- ===== MESSAGES AT TOP ===== -->
+            <% if (messages && messages.error) { %>
+                <div class="alert alert-danger" style="margin-bottom:12px;"><i class="fas fa-exclamation-circle"></i> <%= messages.error %></div>
+            <% } %>
+            <% if (messages && messages.success) { %>
+                <div class="alert alert-success" style="margin-bottom:12px;"><i class="fas fa-check-circle"></i> <%= messages.success %></div>
+            <% } %>
+
+            <form action="/shinex-admin" method="POST" autocomplete="off">
                 <div class="form-group">
                     <label for="email">Admin Email</label>
-                    <input type="email" id="email" name="email" class="form-control" placeholder="admin@shinex.com" required>
+                    <input type="email" id="email" name="email" class="form-control" placeholder="admin@shinex.com" required autocomplete="off">
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required>
+                    <div class="password-wrapper">
+                        <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required autocomplete="new-password">
+                        <i class="fas fa-eye password-toggle" onclick="togglePassword('password', this)"></i>
+                    </div>
                 </div>
-                <button type="submit" class="btn btn-primary" style="width:100%;"><i class="fas fa-lock-open"></i> Login to Admin</button>
+                <button type="submit" class="btn btn-primary" style="width:100%; padding:14px;">
+                    <i class="fas fa-lock-open"></i> Login to Admin
+                </button>
             </form>
-            <p style="text-align:center; margin-top:6px;">
-                <a href="/" style="color:#8B5CF6; font-weight:500; font-size:0.85rem;"><i class="fas fa-arrow-left"></i> Back to Site</a>
-            </p>
+
+            <div class="back-link">
+                <a href="/"><i class="fas fa-arrow-left"></i> Back to Site</a>
+            </div>
         </div>
     </div>
+
+    <script>
+        function togglePassword(id, icon) {
+            const input = document.getElementById(id);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+    </script>
 </body>
 </html>

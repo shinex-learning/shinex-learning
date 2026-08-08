@@ -2,105 +2,163 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Edit Course – SHINEX</title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .level-card {
+            background: #f8f6fc;
+            border-radius: 10px;
+            padding: 12px 14px;
+            margin-bottom: 10px;
+            border: 1px solid #ede8f5;
+        }
+        .level-card .level-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .level-card .level-name {
+            font-weight: 600;
+            color: #1A0A2E;
+        }
+        .level-card .level-duration {
+            font-size: 0.8rem;
+            color: #7a6a8f;
+        }
+        .level-card .level-actions {
+            display: flex;
+            gap: 4px;
+        }
+        body.dark-mode .level-card {
+            background: #2a2a2a;
+            border-color: #444;
+        }
+        body.dark-mode .level-card .level-name {
+            color: #e0e0e0;
+        }
+        .add-level-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .add-level-form .full-width {
+            grid-column: 1 / -1;
+        }
+        @media (max-width: 480px) {
+            .add-level-form {
+                grid-template-columns: 1fr;
+            }
+            .level-card {
+                padding: 10px 12px;
+            }
+            .admin-table {
+                font-size: 0.7rem;
+            }
+            .admin-table th,
+            .admin-table td {
+                padding: 4px 6px;
+            }
+        }
+    </style>
 </head>
 <body>
     <%- include('../partials/header', { user: null, showBack: true }) %>
 
     <main class="main-content">
         <div class="container" style="max-width:900px;">
+
+            <!-- ===== MESSAGES ===== -->
+            <% if (messages && messages.error) { %>
+                <div class="alert alert-danger" style="margin-bottom:12px;"><%= messages.error %></div>
+            <% } %>
+            <% if (messages && messages.success) { %>
+                <div class="alert alert-success" style="margin-bottom:12px;"><%= messages.success %></div>
+            <% } %>
+
+            <!-- ===== HEADER ===== -->
             <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:16px;">
-                <h2 style="font-size:1.3rem; font-weight:800; color:#1A0A2E;"><i class="fas fa-edit" style="color:#8B5CF6;"></i> Edit Course</h2>
+                <h2 style="font-size:1.3rem; font-weight:800; color:#1A0A2E; margin:0;">
+                    <i class="fas fa-edit" style="color:#8B5CF6;"></i> Edit Course
+                </h2>
                 <a href="/admin/courses" class="btn btn-secondary btn-sm"><i class="fas fa-arrow-left"></i> Back</a>
             </div>
 
-            <div class="card" style="margin-bottom:16px;">
-                <form action="/admin/courses/edit/<%= course.id %>" method="POST" style="display:grid; grid-template-columns:1fr; gap:10px;">
-                    <input type="text" name="title" class="form-control" value="<%= course.title %>" required>
+            <!-- ===== COURSE DETAILS ===== -->
+            <div class="card" style="margin-bottom:16px; padding:16px 18px;">
+                <h4 style="font-weight:700; color:#1A0A2E; font-size:1rem; margin:0 0 10px 0;">Course Details</h4>
+                <form action="/admin/courses/edit/<%= course.id %>" method="POST" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                    <input type="text" name="title" class="form-control" value="<%= course.title %>" required style="grid-column:1/-1;">
                     <input type="text" name="description" class="form-control" value="<%= course.description %>" required>
-                    <select name="level" class="form-control" required>
-                        <option value="Beginner" <%= course.level==='Beginner' ? 'selected' : '' %>>Beginner</option>
-                        <option value="Intermediate" <%= course.level==='Intermediate' ? 'selected' : '' %>>Intermediate</option>
-                        <option value="Advanced" <%= course.level==='Advanced' ? 'selected' : '' %>>Advanced</option>
-                    </select>
                     <input type="text" name="duration" class="form-control" value="<%= course.duration %>" required>
-                    <button type="submit" class="btn btn-primary">Update Course</button>
+                    <textarea name="review" class="form-control" rows="3" placeholder="Course Review / Notes" style="grid-column:1/-1; resize:vertical;"><%= course.review || '' %></textarea>
+                    <button type="submit" class="btn btn-primary" style="grid-column:1/-1; padding:12px;">
+                        <i class="fas fa-save"></i> Update Course
+                    </button>
                 </form>
             </div>
 
-            <div class="card" style="margin-bottom:16px; background:#f8f6fc; border:2px solid #8B5CF6;">
-                <h4 style="font-weight:700; color:#1A0A2E; font-size:1rem; margin-bottom:10px;"><i class="fas fa-plus-circle" style="color:#8B5CF6;"></i> Add New Lesson</h4>
-                <form action="/admin/courses/<%= course.id %>/lessons/add" method="POST" style="display:grid; gap:10px;">
-                    <input type="text" name="title" class="form-control" placeholder="Lesson title" required>
-                    <input type="text" name="description" class="form-control" placeholder="Lesson description (optional)">
-                    <button type="submit" class="btn btn-success"><i class="fas fa-plus"></i> Add Lesson</button>
+            <!-- ===== ADD LEVEL ===== -->
+            <div class="card" style="margin-bottom:16px; background:#f8f6fc; border:2px solid #8B5CF6; padding:16px 18px;">
+                <h4 style="font-weight:700; color:#1A0A2E; font-size:1rem; margin:0 0 10px 0;">
+                    <i class="fas fa-layer-group" style="color:#8B5CF6;"></i> Add New Level
+                </h4>
+                <form action="/admin/courses/<%= course.id %>/levels/add" method="POST" class="add-level-form">
+                    <input type="text" name="name" class="form-control" placeholder="Level Name (e.g. Beginner)" required>
+                    <input type="text" name="duration" class="form-control" placeholder="Duration (e.g. 4 hours)" required>
+                    <button type="submit" class="btn btn-success full-width" style="grid-column:1/-1; padding:10px;">
+                        <i class="fas fa-plus"></i> Add Level
+                    </button>
                 </form>
             </div>
 
-            <% if (course.lessons && course.lessons.length > 0) { %>
-                <% course.lessons.forEach(function(lesson, lIdx) { %>
-                    <div class="card" style="margin-bottom:16px; border-left:4px solid #8B5CF6;">
-                        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-                            <h4 style="margin:0; font-size:1.05rem;"><%= (lIdx+1) %>. <%= lesson.title %></h4>
-                            <form action="/admin/courses/<%= course.id %>/lessons/delete/<%= lesson.id %>" method="POST" style="display:inline;" onsubmit="return confirm('Delete this lesson?');">
-                                <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
-                            </form>
-                        </div>
-                        <% if (lesson.description) { %>
-                            <p style="color:#7a6a8f; font-size:0.85rem;"><%= lesson.description %></p>
-                        <% } %>
+            <!-- ===== LEVELS LIST ===== -->
+            <div class="card" style="margin-bottom:16px; padding:16px 18px;">
+                <h4 style="font-weight:700; color:#1A0A2E; font-size:1rem; margin:0 0 10px 0;">
+                    <i class="fas fa-list"></i> Levels (<%= course.levels ? course.levels.length : 0 %>)
+                </h4>
 
-                        <div style="background:#f0ebfb; padding:12px; border-radius:8px; margin:12px 0;">
-                            <h5 style="font-size:0.95rem; margin-bottom:8px;"><i class="fas fa-plus-circle" style="color:#8B5CF6;"></i> Add Class to this Lesson</h5>
-                            <form action="/admin/courses/<%= course.id %>/lessons/<%= lesson.id %>/classes/add" method="POST" style="display:grid; gap:8px;">
-                                <input type="text" name="title" class="form-control" placeholder="Class title" required>
-                                <textarea name="content" class="form-control" rows="6" placeholder="Write class content here." required></textarea>
-                                <div style="display:grid; grid-template-columns:1fr; gap:8px;">
-                                    <input type="url" name="imageUrl" class="form-control" placeholder="Image URL (optional)">
-                                    <input type="url" name="videoUrl" class="form-control" placeholder="YouTube URL (optional)">
-                                    <input type="url" name="externalLink" class="form-control" placeholder="External link (optional)">
+                <% if (course.levels && course.levels.length > 0) { %>
+                    <% course.levels.forEach(function(level) { %>
+                        <div class="level-card">
+                            <div class="level-header">
+                                <div>
+                                    <span class="level-name"><%= level.name %></span>
+                                    <span class="level-duration"><i class="far fa-clock"></i> <%= level.duration %></span>
+                                    <span style="font-size:0.75rem; color:#7a6a8f; margin-left:8px;">
+                                        <i class="fas fa-book"></i> 
+                                        <% let lessonCount = 0; let classCount = 0; %>
+                                        <% if (level.lessons) { %>
+                                            <% level.lessons.forEach(function(l) { %>
+                                                <% lessonCount++; %>
+                                                <% if (l.classes) { classCount += l.classes.length; } %>
+                                            <% }); %>
+                                        <% } %>
+                                        <%= lessonCount %> lessons • <%= classCount %> classes
+                                    </span>
                                 </div>
-                                <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Add Class</button>
-                            </form>
+                                <div class="level-actions">
+                                    <a href="/admin/levels/edit/<%= course.id %>/<%= level.id %>" class="btn btn-secondary btn-xs">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                    <form action="/admin/courses/<%= course.id %>/levels/delete/<%= level.id %>" method="POST" style="display:inline;" onsubmit="return confirm('Delete this level?');">
+                                        <button type="submit" class="btn btn-danger btn-xs"><i class="fas fa-trash"></i></button>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
+                    <% }); %>
+                <% } else { %>
+                    <p style="color:#7a6a8f; font-size:0.85rem; text-align:center; padding:12px 0;">
+                        <i class="fas fa-info-circle"></i> No levels yet. Add your first level above!
+                    </p>
+                <% } %>
+            </div>
 
-                        <% if (lesson.classes && lesson.classes.length > 0) { %>
-                            <ul style="list-style:none; padding-left:0;">
-                                <% lesson.classes.forEach(function(cls, cIdx) { %>
-                                    <li style="background:#f9fafb; padding:10px; border-radius:8px; margin-bottom:8px; border:1px solid #ede8f5;">
-                                        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
-                                            <strong style="font-size:0.95rem;"><%= (lIdx+1) %>.<%= (cIdx+1) %> <%= cls.title %></strong>
-                                            <form action="/admin/courses/<%= course.id %>/lessons/<%= lesson.id %>/classes/delete/<%= cls.id %>" method="POST" style="display:inline;" onsubmit="return confirm('Delete this class?');">
-                                                <button type="submit" class="btn btn-danger btn-xs"><i class="fas fa-trash"></i></button>
-                                            </form>
-                                        </div>
-                                        <form action="/admin/courses/<%= course.id %>/lessons/<%= lesson.id %>/classes/edit/<%= cls.id %>" method="POST" style="margin-top:8px; display:grid; gap:6px;">
-                                            <input type="text" name="title" class="form-control" value="<%= cls.title %>" required>
-                                            <textarea name="content" class="form-control" rows="4"><%= cls.content %></textarea>
-                                            <div style="display:grid; grid-template-columns:1fr; gap:6px;">
-                                                <input type="url" name="imageUrl" class="form-control" value="<%= cls.imageUrl || '' %>" placeholder="Image URL">
-                                                <input type="url" name="videoUrl" class="form-control" value="<%= cls.videoUrl || '' %>" placeholder="YouTube URL">
-                                                <input type="url" name="externalLink" class="form-control" value="<%= cls.externalLink || '' %>" placeholder="External link">
-                                            </div>
-                                            <button type="submit" class="btn btn-secondary btn-sm"><i class="fas fa-save"></i> Update Class</button>
-                                        </form>
-                                        <div style="margin-top:6px; font-size:0.85rem; color:#4a3a60; border-left:3px solid #8B5CF6; padding-left:10px;">
-                                            <%- cls.content || 'No content' %>
-                                        </div>
-                                    </li>
-                                <% }); %>
-                            </ul>
-                        <% } else { %>
-                            <p style="color:#7a6a8f; font-style:italic; font-size:0.85rem;">No classes yet in this lesson.</p>
-                        <% } %>
-                    </div>
-                <% }); %>
-            <% } else { %>
-                <p style="color:#7a6a8f;">No lessons yet. Add one above.</p>
-            <% } %>
         </div>
     </main>
 
