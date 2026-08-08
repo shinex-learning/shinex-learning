@@ -6,15 +6,12 @@
     <title>Admin Dashboard – SHINEX</title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <%- include('../partials/header', { user: admin, showBack: true }) %>
 
     <main class="main-content">
         <div class="container">
-
-            <!-- Admin Header -->
             <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 20px;">
                 <h2 style="font-size: 1.6rem; font-weight: 800; color: #1A0A2E;">
                     <i class="fas fa-shield-alt" style="color: #8B5CF6;"></i> Admin Dashboard
@@ -24,37 +21,18 @@
                 </span>
             </div>
 
-            <!-- Stats -->
             <div class="admin-stats">
-                <div class="admin-stat-box">
-                    <div class="num"><%= totalStudents %></div>
-                    <div class="lbl"><i class="fas fa-users"></i> Students</div>
-                </div>
-                <div class="admin-stat-box">
-                    <div class="num"><%= totalCourses %></div>
-                    <div class="lbl"><i class="fas fa-book"></i> Courses</div>
-                </div>
-                <div class="admin-stat-box">
-                    <div class="num"><%= totalEnrollments %></div>
-                    <div class="lbl"><i class="fas fa-user-graduate"></i> Enrollments</div>
-                </div>
+                <div class="admin-stat-box"><div class="num"><%= totalStudents %></div><div class="lbl"><i class="fas fa-users"></i> Students</div></div>
+                <div class="admin-stat-box"><div class="num"><%= totalCourses %></div><div class="lbl"><i class="fas fa-book"></i> Courses</div></div>
+                <div class="admin-stat-box"><div class="num"><%= totalEnrollments %></div><div class="lbl"><i class="fas fa-user-graduate"></i> Enrollments</div></div>
+                <div class="admin-stat-box"><div class="num"><%= totalClasses %></div><div class="lbl"><i class="fas fa-list-ul"></i> Classes</div></div>
             </div>
 
-            <!-- Students by Course -->
             <div class="card">
-                <h3 class="admin-section-title">
-                    <i class="fas fa-users"></i> Students by Course
-                </h3>
+                <h3 class="admin-section-title"><i class="fas fa-users"></i> Students by Course</h3>
                 <div style="overflow-x: auto;">
                     <table class="admin-table">
-                        <thead>
-                            <tr>
-                                <th>Course</th>
-                                <th>Level</th>
-                                <th>Students</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
+                        <thead><tr><th>Course</th><th>Level</th><th>Students</th><th>Actions</th></tr></thead>
                         <tbody>
                             <% if (Object.keys(studentsByCourse).length > 0) { %>
                                 <% Object.values(studentsByCourse).forEach(item => { %>
@@ -62,11 +40,7 @@
                                         <td><strong><%= item.course.title %></strong></td>
                                         <td><span class="badge badge-purple"><%= item.course.level %></span></td>
                                         <td><%= item.students.length %></td>
-                                        <td>
-                                            <a href="/admin/students" class="btn btn-secondary btn-xs">
-                                                <i class="fas fa-eye"></i> View
-                                            </a>
-                                        </td>
+                                        <td><a href="/admin/students" class="btn btn-secondary btn-xs"><i class="fas fa-eye"></i> View</a></td>
                                     </tr>
                                 <% }) %>
                             <% } else { %>
@@ -77,19 +51,11 @@
                 </div>
             </div>
 
-            <!-- Quick Actions -->
             <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px;">
-                <a href="/admin/courses" class="btn btn-primary">
-                    <i class="fas fa-plus-circle"></i> Manage Courses
-                </a>
-                <a href="/admin/students" class="btn btn-secondary">
-                    <i class="fas fa-users"></i> View All Students
-                </a>
-                <a href="/" class="btn btn-outline">
-                    <i class="fas fa-home"></i> Back to Site
-                </a>
+                <a href="/admin/courses" class="btn btn-primary"><i class="fas fa-plus-circle"></i> Manage Courses</a>
+                <a href="/admin/students" class="btn btn-secondary"><i class="fas fa-users"></i> View All Students</a>
+                <a href="/" class="btn btn-outline"><i class="fas fa-home"></i> Back to Site</a>
             </div>
-
         </div>
     </main>
 

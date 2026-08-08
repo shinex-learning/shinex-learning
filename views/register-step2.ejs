@@ -7,133 +7,268 @@
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        html, body { height: 100%; margin: 0; padding: 0; }
+        body { display: flex; flex-direction: column; min-height: 100vh; }
+        .app-wrapper { display: flex; flex-direction: column; min-height: 100vh; flex: 1; }
+        .main-content { flex: 1; padding-bottom: 20px; }
+        .site-footer { margin-top: auto; width: 100%; position: relative; bottom: 0; }
+        
+        @media (max-width: 768px) {
+            .register-step2 .form-section { padding: 14px 12px !important; margin-bottom: 12px !important; }
+            .register-step2 .card { padding: 14px 12px !important; }
+            .container { padding: 0 10px !important; }
+            .register-step2 .checkbox-grid { grid-template-columns: 1fr 1fr !important; gap: 4px !important; }
+            .register-step2 .checkbox-grid label { font-size: 0.8rem !important; padding: 2px 0 !important; }
+            .register-step2 .form-group { margin-bottom: 10px !important; }
+            .register-step2 .form-section-title { font-size: 0.9rem !important; margin-bottom: 8px !important; }
+            .register-step2 .grid-2 { grid-template-columns: 1fr !important; gap: 6px !important; }
+            .register-step2 .btn-primary { padding: 14px !important; font-size: 1rem !important; }
+            .register-step2 h1 { font-size: 1.3rem !important; }
+            .site-footer { padding: 16px 0 !important; margin-top: auto !important; }
+            .footer-flex { flex-direction: column !important; gap: 8px !important; text-align: center !important; }
+            .footer-links { flex-wrap: wrap; justify-content: center; gap: 10px !important; }
+            .footer-links a { font-size: 0.85rem !important; padding: 4px 10px !important; }
+        }
+    </style>
 </head>
 <body class="register-step2">
-    <%- include('partials/header', { user: null, showBack: true }) %>
+    <div class="app-wrapper">
+        <%- include('partials/header', { user: null, showBack: true }) %>
 
-    <main class="main-content">
-        <div class="container" style="max-width: 720px;">
+        <main class="main-content">
+            <div class="container" style="max-width: 720px;">
 
-            <div class="card" style="padding: 36px 32px;">
-                <div style="text-align: center; margin-bottom: 20px;">
-                    <div style="background: linear-gradient(135deg, #8B5CF6, #6a3dcf); width: 56px; height: 56px; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 10px;">
-                        <i class="fas fa-id-card" style="font-size: 1.8rem; color: #fff;"></i>
-                    </div>
-                    <h1 style="font-size: 1.6rem; font-weight: 800; color: #1A0A2E;">Complete Your Profile</h1>
-                    <p style="color: #7a6a8f; font-size: 0.95rem;">Step 2 of 2 – Tell us about yourself</p>
-                </div>
-
-                <!-- Progress -->
-                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
-                    <span style="background: #8B5CF6; color: #fff; padding: 4px 14px; border-radius: 30px; font-size: 0.75rem; font-weight: 600;">Step 2</span>
-                    <div class="progress-wrap" style="flex:1;">
-                        <div class="progress-fill" style="width:100%;"></div>
-                    </div>
-                    <span style="color: #8B5CF6; font-size: 0.75rem; font-weight: 600;">100%</span>
-                </div>
-
-                <form action="/register/step2" method="POST">
-
-                    <!-- Personal Info -->
-                    <div class="form-section">
-                        <div class="form-section-title"><i class="fas fa-user"></i> Personal Information</div>
-                        <div class="grid-2">
-                            <div class="form-group">
-                                <label for="firstName">First Name</label>
-                                <input type="text" id="firstName" name="firstName" class="form-control" placeholder="John" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="lastName">Last Name</label>
-                                <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Doe" required>
-                            </div>
+                <div class="card" style="padding: 30px 24px;">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <div style="background: linear-gradient(135deg, #8B5CF6, #6a3dcf); width: 56px; height: 56px; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 10px;">
+                            <i class="fas fa-id-card" style="font-size: 1.8rem; color: #fff;"></i>
                         </div>
+                        <h1 style="font-size: 1.5rem; font-weight: 800; color: #1A0A2E;">Complete Your Profile</h1>
+                        <p style="color: #7a6a8f; font-size: 0.9rem;">Step 2 of 2 – Tell us about yourself</p>
+                    </div>
 
-                        <div class="grid-2">
-                            <div class="form-group">
-                                <label>Gender <span class="label-hint">(Male / Female only)</span></label>
-                                <div class="radio-group">
-                                    <label><input type="radio" name="gender" value="Male" required> Male</label>
-                                    <label><input type="radio" name="gender" value="Female" required> Female</label>
+                    <!-- Progress -->
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                        <span style="background: #8B5CF6; color: #fff; padding: 4px 12px; border-radius: 30px; font-size: 0.7rem; font-weight: 600;">Step 2</span>
+                        <div class="progress-wrap" style="flex:1;">
+                            <div class="progress-fill" style="width:100%;"></div>
+                        </div>
+                        <span style="color: #8B5CF6; font-size: 0.7rem; font-weight: 600;">100%</span>
+                    </div>
+
+                    <form action="/register/step2" method="POST" id="registerForm">
+
+                        <!-- Personal Info -->
+                        <div class="form-section">
+                            <div class="form-section-title"><i class="fas fa-user"></i> Personal Information</div>
+                            <div class="grid-2">
+                                <div class="form-group">
+                                    <label for="firstName">First Name</label>
+                                    <input type="text" id="firstName" name="firstName" class="form-control" placeholder="John" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="lastName">Last Name</label>
+                                    <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Doe" required>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label for="dob">Date of Birth</label>
-                                <input type="date" id="dob" name="dob" class="form-control" required>
-                            </div>
-                        </div>
 
-                        <div class="form-group">
-                            <label for="country">Country</label>
-                            <select id="country" name="country" class="form-control" required>
-                                <option value="">Select your country</option>
-                                <option value="Nigeria">🇳🇬 Nigeria</option>
-                                <option value="USA">🇺🇸 United States</option>
-                                <option value="UK">🇬🇧 United Kingdom</option>
-                                <option value="Ghana">🇬🇭 Ghana</option>
-                                <option value="Kenya">🇰🇪 Kenya</option>
-                                <option value="South Africa">🇿🇦 South Africa</option>
-                                <option value="Canada">🇨🇦 Canada</option>
-                                <option value="Australia">🇦🇺 Australia</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Learning -->
-                    <div class="form-section">
-                        <div class="form-section-title"><i class="fas fa-graduation-cap"></i> Learning Profile</div>
-
-                        <div class="grid-2">
-                            <div class="form-group">
-                                <label for="experienceLevel">Experience Level</label>
-                                <select id="experienceLevel" name="experienceLevel" class="form-control" required>
-                                    <option value="">Select level</option>
-                                    <option value="Beginner">Beginner</option>
-                                    <option value="Intermediate">Intermediate</option>
-                                    <option value="Advanced">Advanced</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="courseId">Course to Study</label>
-                                <select id="courseId" name="courseId" class="form-control" required>
-                                    <option value="">Choose a course</option>
-                                    <% courses.forEach(c => { %>
-                                        <option value="<%= c.id %>"><%= c.title %> (<%= c.level %>, <%= c.duration %>)</option>
-                                    <% }) %>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Interests <span class="label-hint">(check all that apply)</span></label>
-                            <div class="checkbox-group">
-                                <div class="checkbox-grid">
-                                    <label><input type="checkbox" name="interests" value="HTML/CSS"> HTML/CSS</label>
-                                    <label><input type="checkbox" name="interests" value="JavaScript"> JavaScript</label>
-                                    <label><input type="checkbox" name="interests" value="Python"> Python</label>
-                                    <label><input type="checkbox" name="interests" value="UI/UX"> UI/UX</label>
-                                    <label><input type="checkbox" name="interests" value="WordPress"> WordPress</label>
-                                    <label><input type="checkbox" name="interests" value="SEO"> SEO</label>
+                            <div class="grid-2">
+                                <div class="form-group">
+                                    <label>Gender <span class="label-hint">(Male / Female only)</span></label>
+                                    <div class="radio-group">
+                                        <label><input type="radio" name="gender" value="Male" required> Male</label>
+                                        <label><input type="radio" name="gender" value="Female" required> Female</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="dob">Date of Birth</label>
+                                    <input type="date" id="dob" name="dob" class="form-control" required>
                                 </div>
                             </div>
+
+                            <div class="form-group">
+                                <label for="country">Country</label>
+                                <select id="country" name="country" class="form-control" required>
+                                    <option value="">Select your country</option>
+                                    <option value="Nigeria">🇳🇬 Nigeria</option>
+                                    <option value="USA">🇺🇸 United States</option>
+                                    <option value="UK">🇬🇧 United Kingdom</option>
+                                    <option value="Ghana">🇬🇭 Ghana</option>
+                                    <option value="Kenya">🇰🇪 Kenya</option>
+                                    <option value="South Africa">🇿🇦 South Africa</option>
+                                    <option value="Canada">🇨🇦 Canada</option>
+                                    <option value="Australia">🇦🇺 Australia</option>
+                                </select>
+                            </div>
+
+                            <!-- Phone Number + OTP -->
+                            <div class="form-group">
+                                <label for="phone">Phone Number <span class="label-hint">(OTP will be sent here)</span></label>
+                                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                    <input type="tel" id="phone" name="phone" class="form-control" placeholder="e.g. 08012345678" required style="flex: 2; min-width: 150px;">
+                                    <button type="button" onclick="sendOTP()" class="btn btn-secondary" style="flex: 1; min-width: 100px;" id="sendOtpBtn">
+                                        <i class="fas fa-send"></i> Send OTP
+                                    </button>
+                                </div>
+                                <small style="color: #7a6a8f; font-size: 0.75rem;">Enter your phone number and click "Send OTP" to verify.</small>
+                            </div>
+
+                            <div class="form-group" id="otpSection" style="display: none;">
+                                <label for="otp">Enter OTP Code</label>
+                                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                    <input type="text" id="otp" name="otp" class="form-control" placeholder="Enter 6-digit OTP" maxlength="6" style="flex: 2; min-width: 150px;">
+                                    <button type="button" onclick="verifyOTP()" class="btn btn-success" style="flex: 1; min-width: 100px;" id="verifyOtpBtn">
+                                        <i class="fas fa-check"></i> Verify
+                                    </button>
+                                </div>
+                                <div id="otpStatus" style="margin-top: 6px; font-size: 0.85rem;"></div>
+                            </div>
                         </div>
 
-                        <div class="form-group">
-                            <label for="bio">Short Bio</label>
-                            <textarea id="bio" name="bio" class="form-control" placeholder="Tell us a little about yourself..." rows="3"></textarea>
-                        </div>
-                    </div>
+                        <!-- Learning -->
+                        <div class="form-section">
+                            <div class="form-section-title"><i class="fas fa-graduation-cap"></i> Learning Profile</div>
 
-                   <!-- Terms -->
-<div class="form-section" style="border-color: #8B5CF6;">
-    <div class="terms-check">
-        <input type="checkbox" id="terms" name="terms" value="yes" required>
-        <label for="terms">
-            I accept the <a href="/terms" target="_blank">Terms and Conditions</a> and 
-            <a href="/privacy" target="_blank">Privacy Policy</a> of SHINEX Learning Circle.
-        </label>
+                            <div class="grid-2">
+                                <div class="form-group">
+                                    <label for="experienceLevel">Experience Level</label>
+                                    <select id="experienceLevel" name="experienceLevel" class="form-control" required>
+                                        <option value="">Select level</option>
+                                        <option value="Beginner">Beginner</option>
+                                        <option value="Intermediate">Intermediate</option>
+                                        <option value="Advanced">Advanced</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="courseId">Course to Study</label>
+                                    <select id="courseId" name="courseId" class="form-control" required>
+                                        <option value="">Choose a course</option>
+                                        <% courses.forEach(c => { %>
+                                            <option value="<%= c.id %>"><%= c.title %> (<%= c.level %>, <%= c.duration %>)</option>
+                                        <% }) %>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Interests <span class="label-hint">(check all that apply)</span></label>
+                                <div class="checkbox-group">
+                                    <div class="checkbox-grid">
+                                        <label><input type="checkbox" name="interests" value="HTML/CSS"> HTML/CSS</label>
+                                        <label><input type="checkbox" name="interests" value="JavaScript"> JavaScript</label>
+                                        <label><input type="checkbox" name="interests" value="Python"> Python</label>
+                                        <label><input type="checkbox" name="interests" value="UI/UX"> UI/UX</label>
+                                        <label><input type="checkbox" name="interests" value="WordPress"> WordPress</label>
+                                        <label><input type="checkbox" name="interests" value="SEO"> SEO</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="bio">Short Bio</label>
+                                <textarea id="bio" name="bio" class="form-control" placeholder="Tell us a little about yourself..." rows="3"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Terms -->
+                        <div class="form-section" style="border-color: #8B5CF6;">
+                            <div class="terms-check">
+                                <input type="checkbox" id="terms" name="terms" value="yes" required>
+                                <label for="terms" style="font-size: 0.85rem;">
+                                    I accept the <a href="/terms" target="_blank">Terms and Conditions</a> and <a href="/privacy" target="_blank">Privacy Policy</a> of SHINEX Learning Circle.
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="width:100%; margin-top: 8px; padding: 14px; font-size: 1rem;">
+                            <i class="fas fa-check-circle"></i> Complete Registration
+                        </button>
+
+                        <p style="text-align: center; margin-top: 12px; font-size: 0.8rem; color: #7a6a8f;">
+                            <i class="fas fa-lock" style="margin-right: 6px;"></i> Your data is secure and private.
+                        </p>
+                    </form>
+                </div>
+
+            </div>
+        </main>
+
+        <%- include('partials/footer') %>
     </div>
-</div>
 
-    <%- include('partials/footer') %>
+    <script>
+        let phoneNumber = '';
+
+        function sendOTP() {
+            const phone = document.getElementById('phone').value;
+            if (!phone || phone.length < 10) {
+                document.getElementById('otpStatus').innerHTML = '<span style="color: #e74c3c;">❌ Please enter a valid phone number.</span>';
+                return;
+            }
+
+            document.getElementById('otpStatus').innerHTML = '<span style="color: #8B5CF6;">⏳ Sending OTP...</span>';
+            
+            fetch('/send-otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone: phone })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    phoneNumber = phone;
+                    document.getElementById('otpSection').style.display = 'block';
+                    document.getElementById('otpStatus').innerHTML = '<span style="color: #27ae60;">✅ OTP sent!</span>';
+                    document.getElementById('sendOtpBtn').disabled = true;
+                    document.getElementById('sendOtpBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sent';
+                    setTimeout(() => {
+                        document.getElementById('sendOtpBtn').disabled = false;
+                        document.getElementById('sendOtpBtn').innerHTML = '<i class="fas fa-send"></i> Resend OTP';
+                    }, 30000);
+                    
+                    // Auto-fill OTP for testing
+                    document.getElementById('otp').value = data.otp;
+                    document.getElementById('otpStatus').innerHTML += '<br><span style="color: #8B5CF6;">🔑 Test OTP: ' + data.otp + ' (auto-filled)</span>';
+                } else {
+                    document.getElementById('otpStatus').innerHTML = '<span style="color: #e74c3c;">❌ ' + data.message + '</span>';
+                }
+            })
+            .catch(error => {
+                document.getElementById('otpStatus').innerHTML = '<span style="color: #e74c3c;">❌ Error sending OTP.</span>';
+            });
+        }
+
+        function verifyOTP() {
+            const otp = document.getElementById('otp').value;
+            if (!otp || otp.length < 6) {
+                document.getElementById('otpStatus').innerHTML = '<span style="color: #e74c3c;">❌ Please enter the 6-digit OTP.</span>';
+                return;
+            }
+
+            document.getElementById('otpStatus').innerHTML = '<span style="color: #8B5CF6;">⏳ Verifying...</span>';
+
+            fetch('/verify-otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone: phoneNumber, otp: otp })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('otpStatus').innerHTML = '<span style="color: #27ae60;">✅ Phone verified! ✅</span>';
+                    document.getElementById('verifyOtpBtn').disabled = true;
+                    document.getElementById('verifyOtpBtn').innerHTML = '<i class="fas fa-check"></i> Verified';
+                    document.getElementById('otp').disabled = true;
+                    document.getElementById('phone').disabled = true;
+                } else {
+                    document.getElementById('otpStatus').innerHTML = '<span style="color: #e74c3c;">❌ Invalid OTP. Please try again.</span>';
+                }
+            })
+            .catch(error => {
+                document.getElementById('otpStatus').innerHTML = '<span style="color: #e74c3c;">❌ Error verifying OTP.</span>';
+            });
+        }
+    </script>
 </body>
 </html>
