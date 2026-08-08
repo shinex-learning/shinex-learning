@@ -3,10 +3,19 @@
         <div class="logo-area">
             <a href="/" class="logo-link">
                 <span class="logo-icon"><i class="fas fa-graduation-cap"></i></span>
-                <span class="logo-text">SHINEX <span class="logo-light">Learning Circle</span></span>
+                <span class="logo-text">SHINEX <span class="logo-light">Learning</span></span>
                 <span class="logo-reg">&reg;</span>
             </a>
         </div>
+
+        <!-- Dark Mode Toggle -->
+        <button id="darkModeToggle" class="dark-mode-toggle" aria-label="Toggle dark mode" style="background:transparent; border:none; color:#fff; font-size:1.2rem; cursor:pointer; padding:4px 8px; border-radius:8px;">
+            <i class="fas fa-moon"></i>
+        </button>
+
+        <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+        </button>
 
         <nav class="main-nav">
             <ul>
@@ -21,9 +30,32 @@
                 <% } %>
             </ul>
         </nav>
-
-        <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation">
-            <i class="fas fa-bars"></i>
-        </button>
     </div>
 </header>
+
+<script>
+    // Dark Mode Toggle
+    document.addEventListener('DOMContentLoaded', function() {
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        if (darkModeToggle) {
+            darkModeToggle.addEventListener('click', function() {
+                document.body.classList.toggle('dark-mode');
+                localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+                const icon = darkModeToggle.querySelector('i');
+                if (icon) {
+                    icon.classList.toggle('fa-moon');
+                    icon.classList.toggle('fa-sun');
+                }
+            });
+            // Load saved preference
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.body.classList.add('dark-mode');
+                const icon = darkModeToggle.querySelector('i');
+                if (icon) {
+                    icon.classList.remove('fa-moon');
+                    icon.classList.add('fa-sun');
+                }
+            }
+        }
+    });
+</script>
