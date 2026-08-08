@@ -38,11 +38,11 @@
             margin-top: 2px;
         }
         body.dark-mode .admin-stat-card {
-            background: #1e1e1e;
-            border-color: #333;
+            background: #111111 !important;
+            border-color: #333 !important;
         }
         body.dark-mode .admin-stat-card .lbl {
-            color: #a090b0;
+            color: #cccccc !important;
         }
         .admin-actions {
             display: flex;
@@ -91,7 +91,6 @@
     <main class="main-content">
         <div class="container">
 
-            <!-- ===== MESSAGES ===== -->
             <% if (messages && messages.error) { %>
                 <div class="alert alert-danger" style="margin-bottom:12px;"><%= messages.error %></div>
             <% } %>
@@ -99,7 +98,6 @@
                 <div class="alert alert-success" style="margin-bottom:12px;"><%= messages.success %></div>
             <% } %>
 
-            <!-- ===== ADMIN HEADER ===== -->
             <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:16px;">
                 <h2 style="font-size:1.4rem; font-weight:800; color:#1A0A2E; margin:0;">
                     <i class="fas fa-shield-alt" style="color:#8B5CF6;"></i> Admin Dashboard
@@ -109,7 +107,6 @@
                 </span>
             </div>
 
-            <!-- ===== STATISTICS ===== -->
             <div class="admin-stats-grid">
                 <div class="admin-stat-card">
                     <div class="num"><%= totalStudents %></div>
@@ -129,7 +126,6 @@
                 </div>
             </div>
 
-            <!-- ===== STUDENTS BY COURSE ===== -->
             <div class="card" style="padding:16px 18px;">
                 <h3 style="font-size:1rem; font-weight:700; color:#1A0A2E; margin:0 0 10px 0;">
                     <i class="fas fa-users" style="color:#8B5CF6;"></i> Students by Course
@@ -159,18 +155,13 @@
                                     </tr>
                                 <% }); %>
                             <% } else { %>
-                                <tr>
-                                    <td colspan="4" style="text-align:center; color:#7a6a8f; padding:16px;">
-                                        No students enrolled yet.
-                                    </td>
-                                </tr>
+                                <tr><td colspan="4" style="text-align:center; color:#7a6a8f; padding:16px;">No students enrolled yet.</td></tr>
                             <% } %>
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- ===== QUICK ACTIONS ===== -->
             <div class="card" style="padding:16px 18px;">
                 <h3 style="font-size:1rem; font-weight:700; color:#1A0A2E; margin:0 0 10px 0;">
                     <i class="fas fa-bolt" style="color:#f39c12;"></i> Quick Actions
@@ -183,7 +174,6 @@
                     <a href="/" class="btn btn-outline"><i class="fas fa-home"></i> Back to Site</a>
                 </div>
             </div>
-
         </div>
     </main>
 

@@ -22,47 +22,26 @@
             flex-wrap: wrap;
             gap: 8px;
         }
-        .level-card .level-name {
-            font-weight: 600;
-            color: #1A0A2E;
-        }
-        .level-card .level-duration {
-            font-size: 0.8rem;
-            color: #7a6a8f;
-        }
-        .level-card .level-actions {
-            display: flex;
-            gap: 4px;
-        }
+        .level-card .level-name { font-weight: 600; color: #1A0A2E; }
+        .level-card .level-duration { font-size: 0.8rem; color: #7a6a8f; }
+        .level-card .level-actions { display: flex; gap: 4px; }
         body.dark-mode .level-card {
-            background: #2a2a2a;
-            border-color: #444;
+            background: #1a1a1a !important;
+            border-color: #333 !important;
         }
-        body.dark-mode .level-card .level-name {
-            color: #e0e0e0;
-        }
+        body.dark-mode .level-card .level-name { color: #ffffff !important; }
+        body.dark-mode .level-card .level-duration { color: #cccccc !important; }
         .add-level-form {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
         }
-        .add-level-form .full-width {
-            grid-column: 1 / -1;
-        }
+        .add-level-form .full-width { grid-column: 1 / -1; }
         @media (max-width: 480px) {
-            .add-level-form {
-                grid-template-columns: 1fr;
-            }
-            .level-card {
-                padding: 10px 12px;
-            }
-            .admin-table {
-                font-size: 0.7rem;
-            }
-            .admin-table th,
-            .admin-table td {
-                padding: 4px 6px;
-            }
+            .add-level-form { grid-template-columns: 1fr; }
+            .level-card { padding: 10px 12px; }
+            .admin-table { font-size: 0.7rem; }
+            .admin-table th, .admin-table td { padding: 4px 6px; }
         }
     </style>
 </head>
@@ -72,7 +51,6 @@
     <main class="main-content">
         <div class="container" style="max-width:900px;">
 
-            <!-- ===== MESSAGES ===== -->
             <% if (messages && messages.error) { %>
                 <div class="alert alert-danger" style="margin-bottom:12px;"><%= messages.error %></div>
             <% } %>
@@ -80,7 +58,6 @@
                 <div class="alert alert-success" style="margin-bottom:12px;"><%= messages.success %></div>
             <% } %>
 
-            <!-- ===== HEADER ===== -->
             <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:16px;">
                 <h2 style="font-size:1.3rem; font-weight:800; color:#1A0A2E; margin:0;">
                     <i class="fas fa-edit" style="color:#8B5CF6;"></i> Edit Course
@@ -88,7 +65,7 @@
                 <a href="/admin/courses" class="btn btn-secondary btn-sm"><i class="fas fa-arrow-left"></i> Back</a>
             </div>
 
-            <!-- ===== COURSE DETAILS ===== -->
+            <!-- Course Details -->
             <div class="card" style="margin-bottom:16px; padding:16px 18px;">
                 <h4 style="font-weight:700; color:#1A0A2E; font-size:1rem; margin:0 0 10px 0;">Course Details</h4>
                 <form action="/admin/courses/edit/<%= course.id %>" method="POST" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
@@ -102,7 +79,7 @@
                 </form>
             </div>
 
-            <!-- ===== ADD LEVEL ===== -->
+            <!-- Add Level -->
             <div class="card" style="margin-bottom:16px; background:#f8f6fc; border:2px solid #8B5CF6; padding:16px 18px;">
                 <h4 style="font-weight:700; color:#1A0A2E; font-size:1rem; margin:0 0 10px 0;">
                     <i class="fas fa-layer-group" style="color:#8B5CF6;"></i> Add New Level
@@ -116,12 +93,11 @@
                 </form>
             </div>
 
-            <!-- ===== LEVELS LIST ===== -->
+            <!-- Levels List -->
             <div class="card" style="margin-bottom:16px; padding:16px 18px;">
                 <h4 style="font-weight:700; color:#1A0A2E; font-size:1rem; margin:0 0 10px 0;">
                     <i class="fas fa-list"></i> Levels (<%= course.levels ? course.levels.length : 0 %>)
                 </h4>
-
                 <% if (course.levels && course.levels.length > 0) { %>
                     <% course.levels.forEach(function(level) { %>
                         <div class="level-card">
@@ -133,18 +109,13 @@
                                         <i class="fas fa-book"></i> 
                                         <% let lessonCount = 0; let classCount = 0; %>
                                         <% if (level.lessons) { %>
-                                            <% level.lessons.forEach(function(l) { %>
-                                                <% lessonCount++; %>
-                                                <% if (l.classes) { classCount += l.classes.length; } %>
-                                            <% }); %>
+                                            <% level.lessons.forEach(function(l) { lessonCount++; if (l.classes) classCount += l.classes.length; }); %>
                                         <% } %>
                                         <%= lessonCount %> lessons • <%= classCount %> classes
                                     </span>
                                 </div>
                                 <div class="level-actions">
-                                    <a href="/admin/levels/edit/<%= course.id %>/<%= level.id %>" class="btn btn-secondary btn-xs">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </a>
+                                    <a href="/admin/levels/edit/<%= course.id %>/<%= level.id %>" class="btn btn-secondary btn-xs"><i class="fas fa-edit"></i> Edit</a>
                                     <form action="/admin/courses/<%= course.id %>/levels/delete/<%= level.id %>" method="POST" style="display:inline;" onsubmit="return confirm('Delete this level?');">
                                         <button type="submit" class="btn btn-danger btn-xs"><i class="fas fa-trash"></i></button>
                                     </form>
@@ -158,7 +129,6 @@
                     </p>
                 <% } %>
             </div>
-
         </div>
     </main>
 

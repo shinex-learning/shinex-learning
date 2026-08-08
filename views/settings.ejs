@@ -8,16 +8,22 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        .settings-card {
+        .settings-wrapper {
             max-width: 600px;
             margin: 0 auto;
-            padding: 24px 20px;
+            padding: 0 16px;
+        }
+        .settings-card {
+            padding: 28px 24px;
+            border-radius: 16px;
+            background: #fff;
+            border: 1px solid #ede8f5;
         }
         .settings-card h2 {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 800;
             color: #1A0A2E;
-            margin: 0 0 4px 0;
+            margin: 0 0 2px 0;
         }
         .settings-card .subtitle {
             color: #7a6a8f;
@@ -29,40 +35,10 @@
             border-top: 2px solid #ede8f5;
             margin: 20px 0;
         }
-        .settings-card .form-group {
-            margin-bottom: 18px;
-        }
-        .settings-card .form-group label {
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: #2d1a4a;
-            display: block;
-            margin-bottom: 4px;
-        }
-        .settings-card .form-group .label-hint {
-            font-weight: 400;
-            color: #7a6a8f;
-            font-size: 0.8rem;
-        }
-        .settings-card .form-control {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid #e0d6f0;
-            border-radius: 10px;
-            font-size: 1rem;
-            transition: border-color 0.2s, box-shadow 0.2s;
-            background: #fff;
-        }
-        .settings-card .form-control:focus {
-            outline: none;
-            border-color: #8B5CF6;
-            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15);
-        }
         .settings-card .btn-primary {
             width: 100%;
             padding: 14px;
             font-size: 1rem;
-            border-radius: 30px;
         }
         @media (max-width: 480px) {
             .settings-card {
@@ -73,25 +49,22 @@
                 font-size: 1.2rem;
             }
         }
+        /* Dark mode */
+        body.dark-mode .settings-card {
+            background: #111111 !important;
+            border-color: #333 !important;
+        }
         body.dark-mode .settings-card h2 {
-            color: #f0f0f0;
+            color: #ffffff !important;
         }
         body.dark-mode .settings-card .subtitle {
-            color: #b0a0c0;
-        }
-        body.dark-mode .settings-card .form-group label {
-            color: #d0c0e0;
-        }
-        body.dark-mode .settings-card .form-control {
-            background: #2a2a2a;
-            border-color: #444;
-            color: #f0f0f0;
-        }
-        body.dark-mode .settings-card .form-control:focus {
-            border-color: #8B5CF6;
+            color: #cccccc !important;
         }
         body.dark-mode .settings-card hr {
-            border-top-color: #444;
+            border-top-color: #444 !important;
+        }
+        body.dark-mode .settings-card h4 {
+            color: #ffffff !important;
         }
     </style>
 </head>
@@ -99,12 +72,11 @@
     <%- include('partials/header', { user, showBack: true }) %>
 
     <main class="main-content">
-        <div class="container">
+        <div class="settings-wrapper">
             <div class="settings-card">
                 <h2><i class="fas fa-cog" style="color:#8B5CF6;"></i> Settings</h2>
                 <p class="subtitle">Update your personal information and password</p>
 
-                <!-- ===== MESSAGES ===== -->
                 <% if (messages && messages.error) { %>
                     <div class="alert alert-danger" style="margin-bottom:12px;"><%= messages.error %></div>
                 <% } %>
@@ -128,7 +100,7 @@
 
                     <hr>
 
-                    <h4 style="font-weight:700; color:#1A0A2E; margin:0 0 16px 0; font-size:1rem;">
+                    <h4 style="font-weight:700; font-size:1rem; margin:0 0 16px 0;">
                         <i class="fas fa-lock" style="color:#8B5CF6;"></i> Change Password
                     </h4>
                     <div class="form-group">

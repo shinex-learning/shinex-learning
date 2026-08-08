@@ -13,28 +13,35 @@
             grid-template-columns: 1fr 1fr;
             gap: 12px;
         }
-        .add-course-form .full-width {
-            grid-column: 1 / -1;
+        .add-course-form .full-width { grid-column: 1 / -1; }
+        .add-course-card {
+            background: #f8f6fc;
+            border: 2px solid #8B5CF6;
+            border-radius: 14px;
+            padding: 16px 18px;
+            margin-bottom: 16px;
+            transition: background 0.3s, border-color 0.3s;
         }
-        .course-table-wrap {
-            overflow-x: auto;
+        body.dark-mode .add-course-card {
+            background: #1a1a1a !important;
+            border-color: #8B5CF6 !important;
         }
+        body.dark-mode .add-course-card h4 {
+            color: #ffffff !important;
+        }
+        body.dark-mode .add-course-card .form-control {
+            background: #1a1a1a !important;
+            border-color: #444 !important;
+            color: #ffffff !important;
+        }
+        body.dark-mode .add-course-card .form-control::placeholder {
+            color: #888 !important;
+        }
+        .course-table-wrap { overflow-x: auto; }
         @media (max-width: 480px) {
-            .add-course-form {
-                grid-template-columns: 1fr;
-                gap: 10px;
-            }
-            .admin-table {
-                font-size: 0.7rem;
-            }
-            .admin-table th,
-            .admin-table td {
-                padding: 4px 6px;
-            }
-            .admin-actions .btn {
-                font-size: 0.7rem;
-                padding: 4px 8px;
-            }
+            .add-course-form { grid-template-columns: 1fr; gap: 10px; }
+            .admin-table { font-size: 0.7rem; }
+            .admin-table th, .admin-table td { padding: 4px 6px; }
         }
     </style>
 </head>
@@ -44,7 +51,6 @@
     <main class="main-content">
         <div class="container">
 
-            <!-- ===== MESSAGES ===== -->
             <% if (messages && messages.error) { %>
                 <div class="alert alert-danger" style="margin-bottom:12px;"><%= messages.error %></div>
             <% } %>
@@ -52,18 +58,14 @@
                 <div class="alert alert-success" style="margin-bottom:12px;"><%= messages.success %></div>
             <% } %>
 
-            <!-- ===== HEADER ===== -->
             <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:16px;">
                 <h2 style="font-size:1.4rem; font-weight:800; color:#1A0A2E; margin:0;">
                     <i class="fas fa-book" style="color:#8B5CF6;"></i> Manage Courses
                 </h2>
-                <a href="/admin/dashboard" class="btn btn-secondary btn-sm">
-                    <i class="fas fa-arrow-left"></i> Back to Admin
-                </a>
+                <a href="/admin/dashboard" class="btn btn-secondary btn-sm"><i class="fas fa-arrow-left"></i> Back to Admin</a>
             </div>
 
-            <!-- ===== ADD COURSE FORM ===== -->
-            <div class="card" style="margin-bottom:16px; background:#f8f6fc; border:2px solid #8B5CF6; padding:16px 18px;">
+            <div class="add-course-card">
                 <h4 style="font-weight:700; color:#1A0A2E; font-size:1rem; margin:0 0 10px 0;">
                     <i class="fas fa-plus-circle" style="color:#8B5CF6;"></i> Add New Course
                 </h4>
@@ -78,7 +80,6 @@
                 </form>
             </div>
 
-            <!-- ===== COURSE LIST ===== -->
             <div class="card" style="padding:16px 18px;">
                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
                     <h4 style="font-weight:700; color:#1A0A2E; font-size:1rem; margin:0;">
@@ -88,7 +89,6 @@
                         <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Delete All</button>
                     </form>
                 </div>
-
                 <div class="course-table-wrap">
                     <table class="admin-table">
                         <thead>
@@ -113,10 +113,8 @@
                                             <%= c.review ? c.review.substring(0, 40) + (c.review.length > 40 ? '...' : '') : 'N/A' %>
                                         </td>
                                         <td>
-                                            <div class="admin-actions" style="display:flex; gap:4px; flex-wrap:wrap;">
-                                                <a href="/admin/courses/edit/<%= c.id %>" class="btn btn-secondary btn-xs">
-                                                    <i class="fas fa-edit"></i> Edit
-                                                </a>
+                                            <div style="display:flex; gap:4px; flex-wrap:wrap;">
+                                                <a href="/admin/courses/edit/<%= c.id %>" class="btn btn-secondary btn-xs"><i class="fas fa-edit"></i> Edit</a>
                                                 <form action="/admin/courses/delete/<%= c.id %>" method="POST" style="display:inline;" onsubmit="return confirm('Delete this course?');">
                                                     <button type="submit" class="btn btn-danger btn-xs"><i class="fas fa-trash"></i></button>
                                                 </form>
@@ -125,18 +123,15 @@
                                     </tr>
                                 <% }); %>
                             <% } else { %>
-                                <tr>
-                                    <td colspan="6" style="text-align:center; color:#7a6a8f; padding:20px;">
-                                        <i class="fas fa-plus-circle" style="font-size:1.5rem; color:#8B5CF6; display:block; margin-bottom:6px;"></i>
-                                        No courses yet. Add your first course above!
-                                    </td>
-                                </tr>
+                                <tr><td colspan="6" style="text-align:center; color:#7a6a8f; padding:20px;">
+                                    <i class="fas fa-plus-circle" style="font-size:1.5rem; color:#8B5CF6; display:block; margin-bottom:6px;"></i>
+                                    No courses yet. Add your first course above!
+                                </td></tr>
                             <% } %>
                         </tbody>
                     </table>
                 </div>
             </div>
-
         </div>
     </main>
 
