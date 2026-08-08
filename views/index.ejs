@@ -13,68 +13,47 @@
 
     <main class="main-content">
         <div class="container">
-
-            <!-- Hero -->
-            <div class="card card-purple" style="padding: 40px 36px; margin-bottom: 32px; text-align: center;">
-                <h1 style="font-size: 2.4rem; font-weight: 800; color: #fff; letter-spacing: -1px;">
-                    SHINEX Learning Circle
-                </h1>
-                <p style="color: #d4c4f0; font-size: 1.1rem; max-width: 600px; margin: 8px auto 0;">
-                    Empowering minds with cutting-edge courses in tech, design, and data.
-                </p>
-                <div style="margin-top: 20px; display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;">
+            <div class="card card-purple" style="padding:40px 36px; margin-bottom:32px; text-align:center;">
+                <h1 style="font-size:2.4rem; font-weight:800; color:#fff; letter-spacing:-1px;">SHINEX Learning Circle</h1>
+                <p style="color:#d4c4f0; font-size:1.1rem; max-width:600px; margin:8px auto 0;">Empowering minds with cutting-edge courses in tech, design, and data.</p>
+                <div style="margin-top:20px; display:flex; flex-wrap:wrap; gap:12px; justify-content:center;">
                     <% if (user) { %>
-                        <a href="/dashboard" class="btn btn-primary" style="background: #fff; color: #8B5CF6;">
-                            <i class="fas fa-tachometer-alt"></i> My Dashboard
-                        </a>
+                        <a href="/dashboard" class="btn btn-primary" style="background:#fff; color:#8B5CF6;"><i class="fas fa-tachometer-alt"></i> My Dashboard</a>
                     <% } else { %>
-                        <a href="/register/step1" class="btn btn-primary" style="background: #fff; color: #8B5CF6;">
-                            <i class="fas fa-user-plus"></i> Get Started
-                        </a>
-                        <a href="/login" class="btn btn-outline" style="border-color: #fff; color: #fff;">
-                            <i class="fas fa-sign-in-alt"></i> Login
-                        </a>
+                        <a href="/register/step1" class="btn btn-primary" style="background:#fff; color:#8B5CF6;"><i class="fas fa-user-plus"></i> Get Started</a>
+                        <a href="/login" class="btn btn-outline" style="border-color:#fff; color:#fff;"><i class="fas fa-sign-in-alt"></i> Login</a>
                     <% } %>
                 </div>
             </div>
 
-            <!-- Courses -->
-            <h3 style="font-size: 1.4rem; font-weight: 700; color: #1A0A2E; margin-bottom: 16px;">
-                <i class="fas fa-graduation-cap" style="color: #8B5CF6;"></i> Our Courses
+            <h3 style="font-size:1.4rem; font-weight:700; color:#1A0A2E; margin-bottom:16px;">
+                <i class="fas fa-graduation-cap" style="color:#8B5CF6;"></i> Our Courses
             </h3>
-
             <div class="grid-3">
                 <% courses.forEach(c => { %>
-                    <div class="course-card">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div class="card" style="border:1px solid #ede8f5; border-radius:14px; padding:20px 18px;">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                             <span class="badge badge-purple"><%= c.level %></span>
-                            <span style="font-size: 0.8rem; color: #7a6a8f;"><i class="far fa-clock"></i> <%= c.duration %></span>
+                            <span style="font-size:0.8rem; color:#7a6a8f;"><i class="far fa-clock"></i> <%= c.duration %></span>
                         </div>
-                        <h4 class="course-title" style="margin-top: 8px;"><%= c.title %></h4>
-                        <p style="font-size: 0.9rem; color: #5a4a70; margin: 6px 0 10px;"><%= c.description %></p>
-                        <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                        <h4 style="margin-top:8px; font-weight:700; font-size:1.1rem; color:#1A0A2E;"><%= c.title %></h4>
+                        <p style="font-size:0.9rem; color:#5a4a70; margin:6px 0 10px;"><%= c.description %></p>
+                        <div style="display:flex; gap:6px; flex-wrap:wrap;">
                             <span class="badge badge-dark"><i class="fas fa-book"></i> <%= c.lessons ? c.lessons.length : 0 %> lessons</span>
                             <% if (user && user.courseId === c.id) { %>
                                 <span class="badge badge-green"><i class="fas fa-check-circle"></i> Enrolled</span>
                             <% } %>
                         </div>
                         <% if (user && user.courseId === c.id) { %>
-                            <a href="/course" class="btn btn-primary btn-sm" style="margin-top: 10px; width:100%;">
-                                <i class="fas fa-arrow-right"></i> Continue Learning
-                            </a>
+                            <a href="/course" class="btn btn-primary btn-sm" style="margin-top:10px; width:100%;"><i class="fas fa-arrow-right"></i> Continue Learning</a>
                         <% } else if (user) { %>
-                            <button class="btn btn-secondary btn-sm" style="margin-top: 10px; width:100%;" disabled>
-                                <i class="fas fa-lock"></i> Enroll via Admin
-                            </button>
+                            <button class="btn btn-secondary btn-sm" style="margin-top:10px; width:100%;" disabled><i class="fas fa-lock"></i> Enroll via Admin</button>
                         <% } else { %>
-                            <a href="/login" class="btn btn-secondary btn-sm" style="margin-top: 10px; width:100%;">
-                                <i class="fas fa-sign-in-alt"></i> Login to Enroll
-                            </a>
+                            <a href="/login" class="btn btn-secondary btn-sm" style="margin-top:10px; width:100%;"><i class="fas fa-sign-in-alt"></i> Login to Enroll</a>
                         <% } %>
                     </div>
                 <% }) %>
             </div>
-
         </div>
     </main>
 

@@ -6,8 +6,7 @@
             <p class="footer-tagline">Empowering minds, shaping futures.</p>
         </div>
         <div class="footer-links">
-            <a href="#">About</a>
-            <a href="#">Contact</a>
+            <a href="/forgot-password">Forgot Password</a>
             <a href="/privacy">Privacy</a>
             <a href="/terms">Terms</a>
         </div>
@@ -18,12 +17,9 @@
 </footer>
 
 <script>
-    // Mobile toggle
     document.getElementById('mobileToggle').addEventListener('click', function() {
         document.querySelector('.main-nav').classList.toggle('active');
     });
-
-    // Close mobile menu when clicking a link
     document.querySelectorAll('.main-nav a').forEach(function(link) {
         link.addEventListener('click', function() {
             document.querySelector('.main-nav').classList.remove('active');

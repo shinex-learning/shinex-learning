@@ -12,13 +12,9 @@
 
     <main class="main-content">
         <div class="container">
-            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 20px;">
-                <h2 style="font-size: 1.6rem; font-weight: 800; color: #1A0A2E;">
-                    <i class="fas fa-shield-alt" style="color: #8B5CF6;"></i> Admin Dashboard
-                </h2>
-                <span class="badge badge-purple" style="font-size: 0.8rem;">
-                    <i class="fas fa-user-cog"></i> <%= admin.fullName %>
-                </span>
+            <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:20px;">
+                <h2 style="font-size:1.6rem; font-weight:800; color:#1A0A2E;"><i class="fas fa-shield-alt" style="color:#8B5CF6;"></i> Admin Dashboard</h2>
+                <span class="badge badge-purple" style="font-size:0.8rem;"><i class="fas fa-user-cog"></i> <%= admin.fullName %></span>
             </div>
 
             <div class="admin-stats">
@@ -30,7 +26,7 @@
 
             <div class="card">
                 <h3 class="admin-section-title"><i class="fas fa-users"></i> Students by Course</h3>
-                <div style="overflow-x: auto;">
+                <div style="overflow-x:auto;">
                     <table class="admin-table">
                         <thead><tr><th>Course</th><th>Level</th><th>Students</th><th>Actions</th></tr></thead>
                         <tbody>
@@ -44,16 +40,17 @@
                                     </tr>
                                 <% }) %>
                             <% } else { %>
-                                <tr><td colspan="4" style="text-align: center; color: #7a6a8f;">No students enrolled yet.</td></tr>
+                                <tr><td colspan="4" style="text-align:center; color:#7a6a8f;">No students enrolled yet.</td></tr>
                             <% } %>
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px;">
+            <div style="display:flex; flex-wrap:wrap; gap:12px; margin-top:16px;">
                 <a href="/admin/courses" class="btn btn-primary"><i class="fas fa-plus-circle"></i> Manage Courses</a>
                 <a href="/admin/students" class="btn btn-secondary"><i class="fas fa-users"></i> View All Students</a>
+                <a href="/admin/manage-admins" class="btn btn-secondary"><i class="fas fa-user-shield"></i> Manage Admins</a>
                 <a href="/" class="btn btn-outline"><i class="fas fa-home"></i> Back to Site</a>
             </div>
         </div>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Admins – SHINEX</title>
+    <title>Edit Course – SHINEX</title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
@@ -11,82 +11,96 @@
     <%- include('../partials/header', { user: null, showBack: true }) %>
 
     <main class="main-content">
-        <div class="container">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 20px;">
-                <h2 style="font-size: 1.6rem; font-weight: 800; color: #1A0A2E;">
-                    <i class="fas fa-user-shield" style="color: #8B5CF6;"></i> Manage Admins
-                </h2>
-                <a href="/admin/dashboard" class="btn btn-secondary btn-sm"><i class="fas fa-arrow-left"></i> Back</a>
+        <div class="container" style="max-width:900px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:16px;">
+                <h2 style="font-size:1.3rem; font-weight:800; color:#1A0A2E;"><i class="fas fa-edit" style="color:#8B5CF6;"></i> Edit Course</h2>
+                <a href="/admin/courses" class="btn btn-secondary btn-sm"><i class="fas fa-arrow-left"></i> Back</a>
             </div>
 
-            <!-- Current Admins -->
-            <div class="card" style="margin-bottom: 20px;">
-                <h4 style="font-weight: 700; color: #1A0A2E; margin-bottom: 12px;">
-                    <i class="fas fa-users" style="color: #8B5CF6;"></i> Current Admins (<%= admins.length %>)
-                </h4>
-                <div style="overflow-x: auto;">
-                    <table class="admin-table">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% admins.forEach(a => { %>
-                                <tr>
-                                    <td><%= a.firstName %> <%= a.lastName %></td>
-                                    <td><%= a.email %></td>
-                                    <td>
-                                        <% if (a.email !== 'admin@shinex.com') { %>
-                                            <form action="/admin/remove-admin/<%= a.id %>" method="POST" style="display: inline;" onsubmit="return confirm('Remove admin privileges from this user?');">
-                                                <button type="submit" class="btn btn-danger btn-xs"><i class="fas fa-user-minus"></i> Remove</button>
+            <div class="card" style="margin-bottom:16px;">
+                <form action="/admin/courses/edit/<%= course.id %>" method="POST" style="display:grid; grid-template-columns:1fr; gap:10px;">
+                    <input type="text" name="title" class="form-control" value="<%= course.title %>" required>
+                    <input type="text" name="description" class="form-control" value="<%= course.description %>" required>
+                    <select name="level" class="form-control" required>
+                        <option value="Beginner" <%= course.level==='Beginner' ? 'selected' : '' %>>Beginner</option>
+                        <option value="Intermediate" <%= course.level==='Intermediate' ? 'selected' : '' %>>Intermediate</option>
+                        <option value="Advanced" <%= course.level==='Advanced' ? 'selected' : '' %>>Advanced</option>
+                    </select>
+                    <input type="text" name="duration" class="form-control" value="<%= course.duration %>" required>
+                    <button type="submit" class="btn btn-primary">Update Course</button>
+                </form>
+            </div>
+
+            <div class="card" style="margin-bottom:16px; background:#f8f6fc; border:2px solid #8B5CF6;">
+                <h4 style="font-weight:700; color:#1A0A2E; font-size:1rem; margin-bottom:10px;"><i class="fas fa-plus-circle" style="color:#8B5CF6;"></i> Add New Lesson</h4>
+                <form action="/admin/courses/<%= course.id %>/lessons/add" method="POST" style="display:grid; gap:10px;">
+                    <input type="text" name="title" class="form-control" placeholder="Lesson title" required>
+                    <input type="text" name="description" class="form-control" placeholder="Lesson description (optional)">
+                    <button type="submit" class="btn btn-success"><i class="fas fa-plus"></i> Add Lesson</button>
+                </form>
+            </div>
+
+            <% if (course.lessons && course.lessons.length > 0) { %>
+                <% course.lessons.forEach(function(lesson, lIdx) { %>
+                    <div class="card" style="margin-bottom:16px; border-left:4px solid #8B5CF6;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                            <h4 style="margin:0; font-size:1.05rem;"><%= (lIdx+1) %>. <%= lesson.title %></h4>
+                            <form action="/admin/courses/<%= course.id %>/lessons/delete/<%= lesson.id %>" method="POST" style="display:inline;" onsubmit="return confirm('Delete this lesson?');">
+                                <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                            </form>
+                        </div>
+                        <% if (lesson.description) { %>
+                            <p style="color:#7a6a8f; font-size:0.85rem;"><%= lesson.description %></p>
+                        <% } %>
+
+                        <div style="background:#f0ebfb; padding:12px; border-radius:8px; margin:12px 0;">
+                            <h5 style="font-size:0.95rem; margin-bottom:8px;"><i class="fas fa-plus-circle" style="color:#8B5CF6;"></i> Add Class to this Lesson</h5>
+                            <form action="/admin/courses/<%= course.id %>/lessons/<%= lesson.id %>/classes/add" method="POST" style="display:grid; gap:8px;">
+                                <input type="text" name="title" class="form-control" placeholder="Class title" required>
+                                <textarea name="content" class="form-control" rows="6" placeholder="Write class content here." required></textarea>
+                                <div style="display:grid; grid-template-columns:1fr; gap:8px;">
+                                    <input type="url" name="imageUrl" class="form-control" placeholder="Image URL (optional)">
+                                    <input type="url" name="videoUrl" class="form-control" placeholder="YouTube URL (optional)">
+                                    <input type="url" name="externalLink" class="form-control" placeholder="External link (optional)">
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Add Class</button>
+                            </form>
+                        </div>
+
+                        <% if (lesson.classes && lesson.classes.length > 0) { %>
+                            <ul style="list-style:none; padding-left:0;">
+                                <% lesson.classes.forEach(function(cls, cIdx) { %>
+                                    <li style="background:#f9fafb; padding:10px; border-radius:8px; margin-bottom:8px; border:1px solid #ede8f5;">
+                                        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+                                            <strong style="font-size:0.95rem;"><%= (lIdx+1) %>.<%= (cIdx+1) %> <%= cls.title %></strong>
+                                            <form action="/admin/courses/<%= course.id %>/lessons/<%= lesson.id %>/classes/delete/<%= cls.id %>" method="POST" style="display:inline;" onsubmit="return confirm('Delete this class?');">
+                                                <button type="submit" class="btn btn-danger btn-xs"><i class="fas fa-trash"></i></button>
                                             </form>
-                                        <% } else { %>
-                                            <span style="color: #7a6a8f; font-size: 0.8rem;"><i class="fas fa-star" style="color: #f39c12;"></i> Default Admin</span>
-                                        <% } %>
-                                    </td>
-                                </tr>
-                            <% }) %>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Make New Admin -->
-            <div class="card">
-                <h4 style="font-weight: 700; color: #1A0A2E; margin-bottom: 12px;">
-                    <i class="fas fa-user-plus" style="color: #8B5CF6;"></i> Make User Admin
-                </h4>
-                <div style="overflow-x: auto;">
-                    <table class="admin-table">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% nonAdmins.forEach(u => { %>
-                                <tr>
-                                    <td><%= u.firstName %> <%= u.lastName %></td>
-                                    <td><%= u.email %></td>
-                                    <td>
-                                        <form action="/admin/make-admin/<%= u.id %>" method="POST" style="display: inline;" onsubmit="return confirm('Make this user an admin?');">
-                                            <button type="submit" class="btn btn-primary btn-xs"><i class="fas fa-user-plus"></i> Make Admin</button>
+                                        </div>
+                                        <form action="/admin/courses/<%= course.id %>/lessons/<%= lesson.id %>/classes/edit/<%= cls.id %>" method="POST" style="margin-top:8px; display:grid; gap:6px;">
+                                            <input type="text" name="title" class="form-control" value="<%= cls.title %>" required>
+                                            <textarea name="content" class="form-control" rows="4"><%= cls.content %></textarea>
+                                            <div style="display:grid; grid-template-columns:1fr; gap:6px;">
+                                                <input type="url" name="imageUrl" class="form-control" value="<%= cls.imageUrl || '' %>" placeholder="Image URL">
+                                                <input type="url" name="videoUrl" class="form-control" value="<%= cls.videoUrl || '' %>" placeholder="YouTube URL">
+                                                <input type="url" name="externalLink" class="form-control" value="<%= cls.externalLink || '' %>" placeholder="External link">
+                                            </div>
+                                            <button type="submit" class="btn btn-secondary btn-sm"><i class="fas fa-save"></i> Update Class</button>
                                         </form>
-                                    </td>
-                                </tr>
-                            <% }) %>
-                            <% if (nonAdmins.length === 0) { %>
-                                <tr><td colspan="3" style="text-align: center; color: #7a6a8f;">No non-admin users available.</td></tr>
-                            <% } %>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+                                        <div style="margin-top:6px; font-size:0.85rem; color:#4a3a60; border-left:3px solid #8B5CF6; padding-left:10px;">
+                                            <%- cls.content || 'No content' %>
+                                        </div>
+                                    </li>
+                                <% }); %>
+                            </ul>
+                        <% } else { %>
+                            <p style="color:#7a6a8f; font-style:italic; font-size:0.85rem;">No classes yet in this lesson.</p>
+                        <% } %>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <p style="color:#7a6a8f;">No lessons yet. Add one above.</p>
+            <% } %>
         </div>
     </main>
 

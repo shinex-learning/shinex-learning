@@ -13,9 +13,7 @@
                 <% if (user) { %>
                     <li><a href="/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                     <li><a href="/course"><i class="fas fa-book"></i> My Course</a></li>
-                    <% if (user.isAdmin) { %>
-                        <li><a href="/admin/dashboard" class="admin-link"><i class="fas fa-shield-alt"></i> Admin</a></li>
-                    <% } %>
+                    <li><a href="/settings"><i class="fas fa-cog"></i> Settings</a></li>
                     <li><a href="/logout" class="btn-logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                 <% } else { %>
                     <li><a href="/login"><i class="fas fa-sign-in-alt"></i> Login</a></li>
