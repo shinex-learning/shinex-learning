@@ -597,6 +597,223 @@ textarea.form-control { resize: vertical; min-height: 80px; }
     .footer-links a { font-size: 0.85rem !important; padding: 4px 10px !important; }
 }
 
+/* ============================================================
+   MOBILE UI - SEPARATE FROM SYSTEM
+   ============================================================ */
+
+/* Mobile specific adjustments */
+@media (max-width: 768px) {
+    /* Larger touch targets */
+    .btn, .btn-sm, .btn-xs {
+        min-height: 48px;
+        padding: 12px 16px;
+        font-size: 1rem;
+        border-radius: 12px;
+    }
+    
+    .btn-sm {
+        min-height: 40px;
+        padding: 8px 14px;
+        font-size: 0.9rem;
+    }
+    
+    .btn-xs {
+        min-height: 32px;
+        padding: 4px 10px;
+        font-size: 0.8rem;
+    }
+    
+    /* Full width cards */
+    .card {
+        border-radius: 16px;
+        padding: 16px;
+        margin-bottom: 12px;
+        border: 1px solid #ede8f5;
+    }
+    
+    /* Better form inputs */
+    .form-control {
+        padding: 14px 16px;
+        font-size: 16px;
+        border-radius: 12px;
+        border-width: 2px;
+    }
+    
+    /* Hide default browser styling */
+    input, select, textarea {
+        -webkit-appearance: none;
+        appearance: none;
+        border-radius: 12px;
+    }
+    
+    /* Better spacing for mobile */
+    .container {
+        padding: 0 12px;
+    }
+    
+    /* Progress bar bigger */
+    .progress-wrap {
+        height: 14px;
+        border-radius: 20px;
+    }
+    
+    /* Better lesson items on mobile */
+    .lesson-item {
+        padding: 14px;
+        border-radius: 12px;
+        margin-bottom: 10px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .lesson-item .lesson-title {
+        font-size: 1rem;
+        font-weight: 600;
+    }
+    
+    /* Reading board - bigger text */
+    .reading-content-board {
+        font-size: 1rem;
+        padding: 16px;
+        border-radius: 12px;
+        line-height: 1.8;
+    }
+    
+    .reading-content-board h1 { font-size: 1.5rem; }
+    .reading-content-board h2 { font-size: 1.3rem; }
+    .reading-content-board h3 { font-size: 1.1rem; }
+    
+    /* Admin panel mobile */
+    .admin-stats {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+    
+    .admin-stat-box {
+        padding: 12px;
+        border-radius: 12px;
+    }
+    
+    .admin-stat-box .num {
+        font-size: 1.4rem;
+    }
+    
+    .admin-table {
+        font-size: 0.75rem;
+    }
+    
+    .admin-table th, 
+    .admin-table td {
+        padding: 6px 8px;
+        white-space: normal;
+        word-break: break-word;
+    }
+    
+    /* Mobile menu - full width */
+    .main-nav {
+        width: 100%;
+        padding: 12px 0;
+    }
+    
+    .main-nav ul {
+        flex-direction: column;
+        gap: 4px;
+    }
+    
+    .main-nav a {
+        padding: 14px 16px;
+        width: 100%;
+        font-size: 1rem;
+        border-radius: 10px;
+        justify-content: center;
+    }
+    
+    /* Full screen horizontal - landscape */
+    @media (orientation: landscape) and (max-height: 500px) {
+        .main-content {
+            padding: 10px 0;
+        }
+        .card {
+            padding: 10px;
+            margin-bottom: 8px;
+        }
+        .container {
+            padding: 0 16px;
+        }
+        h1 { font-size: 1.2rem; }
+        h2 { font-size: 1.1rem; }
+        h3 { font-size: 1rem; }
+    }
+}
+
+/* Very small phones */
+@media (max-width: 400px) {
+    .card {
+        padding: 12px;
+    }
+    .container {
+        padding: 0 8px;
+    }
+    .btn {
+        padding: 10px 12px;
+        font-size: 0.9rem;
+        min-height: 44px;
+    }
+    .admin-stats {
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+    }
+    .admin-stat-box {
+        padding: 8px 10px;
+    }
+    .admin-stat-box .num {
+        font-size: 1.1rem;
+    }
+    .admin-stat-box .lbl {
+        font-size: 0.6rem;
+    }
+}
+
+/* Landscape phones - full width */
+@media (orientation: landscape) and (max-width: 768px) {
+    .header-flex {
+        flex-wrap: nowrap;
+    }
+    .logo-text {
+        font-size: 0.9rem;
+    }
+    .logo-icon {
+        width: 30px;
+        height: 30px;
+        font-size: 0.8rem;
+    }
+    .main-nav a {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+    }
+}
+
+/* Ensure bold text works */
+strong, b, .bold {
+    font-weight: 700 !important;
+    color: #1A0A2E;
+}
+
+.reading-content-board strong,
+.reading-content-board b {
+    font-weight: 700 !important;
+    color: #1A0A2E;
+}
+
+/* Ad box mobile */
+.ad-box {
+    padding: 12px;
+    margin: 12px 0;
+    border-radius: 12px;
+    min-height: 60px;
+}
+
 /* Utility */
 .text-center { text-align: center; }
 .text-purple { color: #8B5CF6; }

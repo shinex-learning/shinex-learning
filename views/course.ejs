@@ -1,3 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+<!-- Content Reading Board -->
+<div class="reading-content-board" style="margin-top: 8px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+        <span style="font-weight: 600; color: #1A0A2E; font-size: 0.9rem;">📖 Content</span>
+        <button onclick="speakContent('<%= cls.content.replace(/"/g, '\\"').replace(/\n/g, ' ') %>')" 
+                style="background: #8B5CF6; color: white; border: none; border-radius: 50%; width: 34px; height: 34px; cursor: pointer; font-size: 14px;">
+            <i class="fas fa-volume-up"></i>
+        </button>
+    </div>
+    
+    <!-- CONTENT - This should show bold text -->
+    <div style="font-size: 1rem; line-height: 1.7; padding: 6px 0; max-width: 100%;">
+        <%- cls.content || 'No content yet' %>
+    </div>
+    
+    <!-- IMAGE - Under the class content -->
+    <% if (cls.imageUrl) { %>
+        <div style="margin-top: 12px;">
+            <img src="<%= cls.imageUrl %>" alt="<%= cls.title %>" style="max-width: 100%; border-radius: 8px; border: 1px solid #ede8f5;">
+        </div>
+    <% } %>
+    
+    <!-- VIDEO LINK -->
+    <% if (cls.videoUrl) { %>
+        <div style="margin-top: 6px;">
+            <a href="<%= cls.videoUrl %>" target="_blank" class="btn btn-secondary btn-sm"><i class="fab fa-youtube"></i> Watch Video</a>
+        </div>
+    <% } %>
+    
+    <!-- EXTERNAL LINK -->
+    <% if (cls.externalLink) { %>
+        <div style="margin-top: 6px;">
+            <a href="<%= cls.externalLink %>" target="_blank" class="btn btn-secondary btn-sm"><i class="fas fa-external-link-alt"></i> More Resources</a>
+        </div>
+    <% } %>
+</div>

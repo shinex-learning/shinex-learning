@@ -5,6 +5,7 @@ const path = require('path');
 const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
 const sanitizeHtml = require('sanitize-html');
+const crypto = require('crypto');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -13,12 +14,20 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(session({
+// ============================================================
+// SEPARATE SESSIONS FOR ADMIN & USER
+// ============================================================
+const sessionConfig = {
     secret: 'shinex-super-secret-key-2026',
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false, httpOnly: true }
-}));
+    cookie: { secure: false, httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 365 }
+};
+
+app.use(session(sessionConfig));
+
+// Store reset tokens
+const resetTokens = {};
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -127,32 +136,6 @@ function sanitize(content) {
 }
 
 // ============================================================
-// OTP SYSTEM (Phone Verification)
-// ============================================================
-const otpStore = {};
-
-function generateOTP() {
-    return Math.floor(100000 + Math.random() * 900000).toString();
-}
-
-function storeOTP(phone, otp) {
-    otpStore[phone] = {
-        otp: otp,
-        expires: Date.now() + 5 * 60 * 1000
-    };
-    console.log(`📱 OTP for ${phone}: ${otp}`);
-}
-
-function verifyOTP(phone, otp) {
-    const record = otpStore[phone];
-    if (!record) return false;
-    if (record.otp !== otp) return false;
-    if (Date.now() > record.expires) return false;
-    delete otpStore[phone];
-    return true;
-}
-
-// ============================================================
 // AUTH MIDDLEWARE
 // ============================================================
 function requireAuth(req, res, next) {
@@ -187,7 +170,8 @@ app.get('/', (req, res) => {
         user,
         courses,
         messages: req.session.messages || {},
-        showBack: false
+        showBack: false,
+        title: 'Home'
     });
     req.session.messages = {};
 });
@@ -200,7 +184,8 @@ app.get('/register/step1', (req, res) => {
     if (req.session.userId) return res.redirect('/dashboard');
     res.render('register-step1', {
         messages: req.session.messages || {},
-        showBack: false
+        showBack: false,
+        title: 'Register - Step 1'
     });
     req.session.messages = {};
 });
@@ -251,7 +236,8 @@ app.get('/register/step2', (req, res) => {
         tempUser: req.session.tempUser,
         courses,
         messages: req.session.messages || {},
-        showBack: true
+        showBack: true,
+        title: 'Register - Step 2'
     });
     req.session.messages = {};
 });
@@ -262,19 +248,12 @@ app.post('/register/step2', async (req, res) => {
         return res.redirect('/register/step1');
     }
     
-    const { firstName, lastName, gender, dob, country, experienceLevel, courseId, interests, bio, terms, phone, otp } = req.body;
+    const { firstName, lastName, gender, dob, country, experienceLevel, courseId, interests, bio, terms } = req.body;
     
-    if (!firstName || !lastName || !gender || !dob || !country || !experienceLevel || !courseId || !terms || !phone) {
-        req.session.messages = { error: 'All fields including phone number are required.' };
+    if (!firstName || !lastName || !gender || !dob || !country || !experienceLevel || !courseId || !terms) {
+        req.session.messages = { error: 'All fields required.' };
         return res.redirect('/register/step2');
     }
-    
-    // Verify OTP
-    if (!verifyOTP(phone, otp)) {
-        req.session.messages = { error: 'Invalid or expired OTP. Please verify your phone.' };
-        return res.redirect('/register/step2');
-    }
-    
     if (gender !== 'Male' && gender !== 'Female') {
         req.session.messages = { error: 'Please select Male or Female.' };
         return res.redirect('/register/step2');
@@ -293,7 +272,6 @@ app.post('/register/step2', async (req, res) => {
         gender,
         dob,
         country,
-        phone: phone,
         experienceLevel,
         courseId,
         interests: interestsArray,
@@ -314,38 +292,6 @@ app.post('/register/step2', async (req, res) => {
 });
 
 // ============================================================
-// OTP ROUTES
-// ============================================================
-
-app.post('/send-otp', (req, res) => {
-    const { phone } = req.body;
-    if (!phone || phone.length < 10) {
-        return res.json({ success: false, message: 'Invalid phone number.' });
-    }
-    
-    const otp = generateOTP();
-    storeOTP(phone, otp);
-    console.log(`📱 OTP for ${phone}: ${otp}`);
-    res.json({ success: true, message: 'OTP sent!', otp: otp });
-});
-
-app.post('/verify-otp', (req, res) => {
-    const { phone, otp } = req.body;
-    if (!phone || !otp) {
-        return res.json({ success: false, message: 'Phone and OTP required.' });
-    }
-    
-    const isValid = verifyOTP(phone, otp);
-    if (isValid) {
-        req.session.phoneVerified = true;
-        req.session.verifiedPhone = phone;
-        res.json({ success: true, message: 'Phone verified!' });
-    } else {
-        res.json({ success: false, message: 'Invalid or expired OTP.' });
-    }
-});
-
-// ============================================================
 // LOGIN / LOGOUT
 // ============================================================
 
@@ -353,7 +299,8 @@ app.get('/login', (req, res) => {
     if (req.session.userId) return res.redirect('/dashboard');
     res.render('login', {
         messages: req.session.messages || {},
-        showBack: false
+        showBack: false,
+        title: 'Login'
     });
     req.session.messages = {};
 });
@@ -393,6 +340,165 @@ app.get('/logout', (req, res) => {
 });
 
 // ============================================================
+// FORGOT PASSWORD
+// ============================================================
+
+app.get('/forgot-password', (req, res) => {
+    res.render('forgot-password', {
+        messages: req.session.messages || {},
+        showBack: true,
+        title: 'Forgot Password'
+    });
+    req.session.messages = {};
+});
+
+app.post('/forgot-password', async (req, res) => {
+    const { email } = req.body;
+    if (!email) {
+        req.session.messages = { error: 'Email is required.' };
+        return res.redirect('/forgot-password');
+    }
+    
+    const user = findUserByEmail(email);
+    if (!user) {
+        req.session.messages = { error: 'No account found with this email.' };
+        return res.redirect('/forgot-password');
+    }
+    
+    // Generate reset token
+    const token = crypto.randomBytes(32).toString('hex');
+    resetTokens[token] = {
+        userId: user.id,
+        expires: Date.now() + 3600000 // 1 hour
+    };
+    
+    // For testing, show the reset link
+    const resetLink = `${req.protocol}://${req.get('host')}/reset-password/${token}`;
+    console.log('🔑 Reset link:', resetLink);
+    
+    req.session.messages = { 
+        success: `Password reset link has been sent to your email. (Check console: ${resetLink})` 
+    };
+    res.redirect('/login');
+});
+
+app.get('/reset-password/:token', (req, res) => {
+    const { token } = req.params;
+    const resetData = resetTokens[token];
+    
+    if (!resetData || Date.now() > resetData.expires) {
+        req.session.messages = { error: 'Invalid or expired reset token.' };
+        return res.redirect('/forgot-password');
+    }
+    
+    res.render('reset-password', {
+        token,
+        messages: req.session.messages || {},
+        showBack: true,
+        title: 'Reset Password'
+    });
+    req.session.messages = {};
+});
+
+app.post('/reset-password/:token', async (req, res) => {
+    const { token } = req.params;
+    const { password, confirmPassword } = req.body;
+    const resetData = resetTokens[token];
+    
+    if (!resetData || Date.now() > resetData.expires) {
+        req.session.messages = { error: 'Invalid or expired reset token.' };
+        return res.redirect('/forgot-password');
+    }
+    
+    if (!password || !confirmPassword) {
+        req.session.messages = { error: 'All fields are required.' };
+        return res.redirect(`/reset-password/${token}`);
+    }
+    
+    if (password !== confirmPassword) {
+        req.session.messages = { error: 'Passwords do not match.' };
+        return res.redirect(`/reset-password/${token}`);
+    }
+    
+    if (password.length < 6) {
+        req.session.messages = { error: 'Password must be at least 6 characters.' };
+        return res.redirect(`/reset-password/${token}`);
+    }
+    
+    // Update password
+    const users = readUsers();
+    const idx = users.findIndex(u => u.id === resetData.userId);
+    if (idx !== -1) {
+        users[idx].password = await bcrypt.hash(password, 10);
+        writeUsers(users);
+    }
+    
+    delete resetTokens[token];
+    req.session.messages = { success: 'Password reset successfully! Please login.' };
+    res.redirect('/login');
+});
+
+// ============================================================
+// SETTINGS
+// ============================================================
+
+app.get('/settings', requireAuth, (req, res) => {
+    const user = getUserById(req.session.userId);
+    if (!user) {
+        req.session.destroy();
+        return res.redirect('/login');
+    }
+    res.render('settings', {
+        user,
+        messages: req.session.messages || {},
+        showBack: true,
+        title: 'Settings'
+    });
+    req.session.messages = {};
+});
+
+app.post('/settings/update', requireAuth, async (req, res) => {
+    const user = getUserById(req.session.userId);
+    if (!user) {
+        req.session.destroy();
+        return res.redirect('/login');
+    }
+    
+    const { firstName, lastName, bio, currentPassword, newPassword, confirmPassword } = req.body;
+    const users = readUsers();
+    const idx = users.findIndex(u => u.id === user.id);
+    
+    if (idx !== -1) {
+        if (firstName) users[idx].firstName = firstName;
+        if (lastName) users[idx].lastName = lastName;
+        if (bio !== undefined) users[idx].bio = bio;
+        
+        // Change password if requested
+        if (currentPassword && newPassword && confirmPassword) {
+            const match = await bcrypt.compare(currentPassword, user.password);
+            if (!match) {
+                req.session.messages = { error: 'Current password is incorrect.' };
+                return res.redirect('/settings');
+            }
+            if (newPassword !== confirmPassword) {
+                req.session.messages = { error: 'New passwords do not match.' };
+                return res.redirect('/settings');
+            }
+            if (newPassword.length < 6) {
+                req.session.messages = { error: 'Password must be at least 6 characters.' };
+                return res.redirect('/settings');
+            }
+            users[idx].password = await bcrypt.hash(newPassword, 10);
+        }
+        
+        writeUsers(users);
+        req.session.messages = { success: 'Settings updated successfully!' };
+    }
+    
+    res.redirect('/settings');
+});
+
+// ============================================================
 // TERMS & PRIVACY
 // ============================================================
 
@@ -401,7 +507,8 @@ app.get('/terms', (req, res) => {
     res.render('terms', {
         user,
         messages: req.session.messages || {},
-        showBack: true
+        showBack: true,
+        title: 'Terms'
     });
     req.session.messages = {};
 });
@@ -411,7 +518,8 @@ app.get('/privacy', (req, res) => {
     res.render('privacy', {
         user,
         messages: req.session.messages || {},
-        showBack: true
+        showBack: true,
+        title: 'Privacy'
     });
     req.session.messages = {};
 });
@@ -432,7 +540,7 @@ app.get('/dashboard', requireAuth, (req, res) => {
     
     let totalClasses = 0;
     let completedClasses = 0;
-    let progress = 0;
+    let score = 0;
     
     if (enrolledCourse && enrolledCourse.lessons) {
         enrolledCourse.lessons.forEach(lesson => {
@@ -445,8 +553,10 @@ app.get('/dashboard', requireAuth, (req, res) => {
                 });
             }
         });
-        progress = totalClasses > 0 ? Math.round((completedClasses / totalClasses) * 100) : 0;
+        score = completedClasses * 10;
     }
+    
+    const progress = totalClasses > 0 ? Math.round((completedClasses / totalClasses) * 100) : 0;
     
     res.render('dashboard', {
         user,
@@ -454,8 +564,10 @@ app.get('/dashboard', requireAuth, (req, res) => {
         progress,
         completedClasses,
         totalClasses,
+        score,
         messages: req.session.messages || {},
-        showBack: false
+        showBack: false,
+        title: 'Dashboard'
     });
     req.session.messages = {};
 });
@@ -477,6 +589,7 @@ app.get('/course', requireAuth, (req, res) => {
         return res.redirect('/dashboard');
     }
     
+    // Generate numbering and calculate score
     const numberedCourse = {
         ...course,
         lessons: course.lessons.map((lesson, lIdx) => ({
@@ -484,17 +597,37 @@ app.get('/course', requireAuth, (req, res) => {
             number: (lIdx + 1),
             classes: lesson.classes ? lesson.classes.map((cls, cIdx) => ({
                 ...cls,
-                number: `${lIdx + 1}.${cIdx + 1}`
+                number: `${lIdx + 1}.${cIdx + 1}`,
+                completed: user.progress && user.progress[cls.id] || false
             })) : []
         }))
     };
+    
+    // Calculate total score
+    let totalClasses = 0;
+    let completedClasses = 0;
+    course.lessons.forEach(lesson => {
+        if (lesson.classes) {
+            lesson.classes.forEach(cls => {
+                totalClasses++;
+                if (user.progress && user.progress[cls.id]) {
+                    completedClasses++;
+                }
+            });
+        }
+    });
+    const score = completedClasses * 10;
     
     res.render('course', {
         user,
         course: numberedCourse,
         progress: user.progress || {},
+        score,
+        completedClasses,
+        totalClasses,
         messages: req.session.messages || {},
-        showBack: true
+        showBack: true,
+        title: 'My Course'
     });
     req.session.messages = {};
 });
@@ -521,7 +654,7 @@ app.post('/course/complete/:classId', requireAuth, (req, res) => {
         writeUsers(users);
     }
     
-    req.session.messages = { success: '✅ Class completed!' };
+    req.session.messages = { success: '✅ Class completed! +10 points!' };
     res.redirect('/course');
 });
 
@@ -536,7 +669,8 @@ app.get('/admin/login', (req, res) => {
     }
     res.render('admin/login', {
         messages: req.session.messages || {},
-        showBack: false
+        showBack: false,
+        title: 'Admin Login'
     });
     req.session.messages = {};
 });
@@ -584,9 +718,11 @@ app.get('/admin/dashboard', requireAdmin, (req, res) => {
     
     const studentsByCourse = {};
     courses.forEach(c => {
+        const students = users.filter(u => u.courseId === c.id && !u.isAdmin);
         studentsByCourse[c.id] = {
             course: c,
-            students: users.filter(u => u.courseId === c.id && !u.isAdmin)
+            students: students,
+            count: students.length
         };
     });
     
@@ -601,7 +737,8 @@ app.get('/admin/dashboard', requireAdmin, (req, res) => {
         courses,
         users,
         messages: req.session.messages || {},
-        showBack: true
+        showBack: true,
+        title: 'Admin Dashboard'
     });
     req.session.messages = {};
 });
@@ -621,7 +758,8 @@ app.get('/admin/students', requireAdmin, (req, res) => {
         students,
         courseMap,
         messages: req.session.messages || {},
-        showBack: true
+        showBack: true,
+        title: 'Students'
     });
     req.session.messages = {};
 });
@@ -632,13 +770,26 @@ app.get('/admin/students', requireAdmin, (req, res) => {
 
 app.get('/admin/courses', requireAdmin, (req, res) => {
     const courses = readCourses();
+    const users = readUsers();
+    
+    // Add student count to each course
+    const coursesWithCount = courses.map(c => {
+        const count = users.filter(u => u.courseId === c.id && !u.isAdmin).length;
+        return { ...c, studentCount: count };
+    });
+    
     res.render('admin/courses', {
-        courses,
+        courses: coursesWithCount,
         messages: req.session.messages || {},
-        showBack: true
+        showBack: true,
+        title: 'Manage Courses'
     });
     req.session.messages = {};
 });
+
+// ============================================================
+// ADMIN - ADD COURSE
+// ============================================================
 
 app.post('/admin/courses/add', requireAdmin, (req, res) => {
     const { title, description, level, duration, review } = req.body;
@@ -660,9 +811,13 @@ app.post('/admin/courses/add', requireAdmin, (req, res) => {
     };
     courses.push(newCourse);
     writeCourses(courses);
-    req.session.messages = { success: '✅ Course added!' };
+    req.session.messages = { success: '✅ Course added successfully!' };
     res.redirect('/admin/courses');
 });
+
+// ============================================================
+// ADMIN - DELETE COURSE
+// ============================================================
 
 app.post('/admin/courses/delete/:id', requireAdmin, (req, res) => {
     let courses = readCourses();
@@ -682,6 +837,10 @@ app.post('/admin/courses/delete/:id', requireAdmin, (req, res) => {
     res.redirect('/admin/courses');
 });
 
+// ============================================================
+// ADMIN - DELETE ALL COURSES
+// ============================================================
+
 app.post('/admin/courses/delete-all', requireAdmin, (req, res) => {
     writeCourses([]);
     const users = readUsers();
@@ -694,6 +853,10 @@ app.post('/admin/courses/delete-all', requireAdmin, (req, res) => {
     res.redirect('/admin/courses');
 });
 
+// ============================================================
+// ADMIN - EDIT COURSE (GET)
+// ============================================================
+
 app.get('/admin/courses/edit/:id', requireAdmin, (req, res) => {
     const course = findCourseById(req.params.id);
     if (!course) {
@@ -703,10 +866,15 @@ app.get('/admin/courses/edit/:id', requireAdmin, (req, res) => {
     res.render('admin/course-edit', {
         course,
         messages: req.session.messages || {},
-        showBack: true
+        showBack: true,
+        title: 'Edit Course'
     });
     req.session.messages = {};
 });
+
+// ============================================================
+// ADMIN - EDIT COURSE (POST)
+// ============================================================
 
 app.post('/admin/courses/edit/:id', requireAdmin, (req, res) => {
     const { title, description, level, duration } = req.body;
@@ -726,7 +894,7 @@ app.post('/admin/courses/edit/:id', requireAdmin, (req, res) => {
 });
 
 // ============================================================
-// ADMIN - LESSONS
+// ADMIN - ADD LESSON
 // ============================================================
 
 app.post('/admin/courses/:id/lessons/add', requireAdmin, (req, res) => {
@@ -755,6 +923,10 @@ app.post('/admin/courses/:id/lessons/add', requireAdmin, (req, res) => {
     res.redirect(`/admin/courses/edit/${req.params.id}`);
 });
 
+// ============================================================
+// ADMIN - DELETE LESSON
+// ============================================================
+
 app.post('/admin/courses/:courseId/lessons/delete/:lessonId', requireAdmin, (req, res) => {
     const courses = readCourses();
     const idx = courses.findIndex(c => c.id === req.params.courseId);
@@ -769,7 +941,7 @@ app.post('/admin/courses/:courseId/lessons/delete/:lessonId', requireAdmin, (req
 });
 
 // ============================================================
-// ADMIN - CLASSES
+// ADMIN - ADD CLASS
 // ============================================================
 
 app.post('/admin/courses/:courseId/lessons/:lessonId/classes/add', requireAdmin, (req, res) => {
@@ -806,6 +978,10 @@ app.post('/admin/courses/:courseId/lessons/:lessonId/classes/add', requireAdmin,
     res.redirect(`/admin/courses/edit/${req.params.courseId}`);
 });
 
+// ============================================================
+// ADMIN - DELETE CLASS
+// ============================================================
+
 app.post('/admin/courses/:courseId/lessons/:lessonId/classes/delete/:classId', requireAdmin, (req, res) => {
     const courses = readCourses();
     const cIdx = courses.findIndex(c => c.id === req.params.courseId);
@@ -823,6 +999,10 @@ app.post('/admin/courses/:courseId/lessons/:lessonId/classes/delete/:classId', r
     req.session.messages = { success: '🗑️ Class deleted.' };
     res.redirect(`/admin/courses/edit/${req.params.courseId}`);
 });
+
+// ============================================================
+// ADMIN - EDIT CLASS
+// ============================================================
 
 app.post('/admin/courses/:courseId/lessons/:lessonId/classes/edit/:classId', requireAdmin, (req, res) => {
     const { title, content, imageUrl, videoUrl, externalLink } = req.body;
@@ -853,7 +1033,7 @@ app.post('/admin/courses/:courseId/lessons/:lessonId/classes/edit/:classId', req
 });
 
 // ============================================================
-// ADMIN - COURSE REVIEW & TEST
+// ADMIN - COURSE REVIEW
 // ============================================================
 
 app.post('/admin/courses/review/:id', requireAdmin, (req, res) => {
@@ -870,50 +1050,47 @@ app.post('/admin/courses/review/:id', requireAdmin, (req, res) => {
     res.redirect(`/admin/courses/edit/${req.params.id}`);
 });
 
-app.post('/admin/courses/:id/test', requireAdmin, (req, res) => {
-    const { question, option1, option2, option3, option4, correct } = req.body;
-    if (!question || !option1 || !option2 || !option3 || !option4 || correct === undefined) {
-        req.session.messages = { error: 'All test fields required.' };
-        return res.redirect(`/admin/courses/edit/${req.params.id}`);
-    }
+// ============================================================
+// ADMIN - MANAGE ADMINS
+// ============================================================
+
+app.get('/admin/manage-admins', requireAdmin, (req, res) => {
+    const users = readUsers();
+    const admins = users.filter(u => u.isAdmin);
+    const nonAdmins = users.filter(u => !u.isAdmin);
     
-    const courses = readCourses();
-    const idx = courses.findIndex(c => c.id === req.params.id);
-    if (idx === -1) {
-        req.session.messages = { error: 'Course not found.' };
-        return res.redirect('/admin/courses');
-    }
-    
-    if (!courses[idx].test) {
-        courses[idx].test = { questions: [] };
-    }
-    courses[idx].test.questions.push({
-        id: uuidv4(),
-        question,
-        options: [option1, option2, option3, option4],
-        correct: parseInt(correct)
+    res.render('admin/manage-admins', {
+        admins,
+        nonAdmins,
+        messages: req.session.messages || {},
+        showBack: true,
+        title: 'Manage Admins'
     });
-    writeCourses(courses);
-    req.session.messages = { success: '✅ Test question added!' };
-    res.redirect(`/admin/courses/edit/${req.params.id}`);
+    req.session.messages = {};
 });
 
-app.post('/admin/courses/:courseId/test/delete/:questionId', requireAdmin, (req, res) => {
-    const courses = readCourses();
-    const idx = courses.findIndex(c => c.id === req.params.courseId);
-    if (idx === -1) {
-        req.session.messages = { error: 'Course not found.' };
-        return res.redirect('/admin/courses');
+app.post('/admin/make-admin/:id', requireAdmin, (req, res) => {
+    const users = readUsers();
+    const idx = users.findIndex(u => u.id === req.params.id);
+    if (idx !== -1) {
+        users[idx].isAdmin = true;
+        writeUsers(users);
+        req.session.messages = { success: '✅ User is now an admin!' };
     }
-    if (courses[idx].test) {
-        courses[idx].test.questions = courses[idx].test.questions.filter(q => q.id !== req.params.questionId);
-        if (courses[idx].test.questions.length === 0) {
-            courses[idx].test = null;
-        }
-        writeCourses(courses);
+    res.redirect('/admin/manage-admins');
+});
+
+app.post('/admin/remove-admin/:id', requireAdmin, (req, res) => {
+    const users = readUsers();
+    const idx = users.findIndex(u => u.id === req.params.id);
+    if (idx !== -1 && users[idx].email !== 'admin@shinex.com') {
+        users[idx].isAdmin = false;
+        writeUsers(users);
+        req.session.messages = { success: '✅ Admin privileges removed.' };
+    } else {
+        req.session.messages = { error: 'Cannot remove default admin.' };
     }
-    req.session.messages = { success: '🗑️ Test question deleted.' };
-    res.redirect(`/admin/courses/edit/${req.params.courseId}`);
+    res.redirect('/admin/manage-admins');
 });
 
 // ============================================================
@@ -927,7 +1104,6 @@ async function startServer() {
         console.log(`🚀 SHINEX Learning Circle running on http://localhost:${PORT}`);
         console.log(`🔐 Admin: admin@shinex.com / admin123`);
         console.log(`📚 No default courses - add your own!`);
-        console.log(`📱 OTP System: Phone verification enabled!`);
     });
 }
 
