@@ -839,3 +839,205 @@ body.dark-mode .ad-box {
 body.dark-mode .ad-box:hover {
     background: #2a1a4a !important;
 }
+
+/* ============================================================
+   HOMEPAGE UI FIXES – Buttons, Empty State, Ad Box, Footer
+   ============================================================ */
+
+/* --- 1. Hero Buttons Alignment (Desktop & Mobile) --- */
+.hero-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.hero-buttons .btn {
+    min-height: 48px;
+    padding: 12px 28px;
+    font-size: 1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 30px;
+    flex: 0 1 auto;
+    min-width: 140px;
+}
+
+/* Mobile: buttons stack vertically on very small screens */
+@media (max-width: 480px) {
+    .hero-buttons .btn {
+        min-width: 100%;
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* --- 2. Empty State Spacing --- */
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    margin: 20px 0 30px;
+    background: var(--bg-card-alt);
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+}
+
+.empty-state .empty-icon {
+    font-size: 2.5rem;
+    color: var(--text-light);
+    display: block;
+    margin-bottom: 12px;
+}
+
+.empty-state h3 {
+    font-size: 1.2rem;
+    color: var(--text-primary);
+    margin: 0 0 6px 0;
+}
+
+.empty-state p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin: 0 0 12px 0;
+}
+
+.empty-state .btn {
+    min-height: 44px;
+    padding: 10px 24px;
+}
+
+/* --- 3. Ad Box – Dark Mode Fix --- */
+.ad-box {
+    background: var(--bg-ad);
+    border: 2px dashed var(--primary);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin: 20px 0;
+    text-align: center;
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s, border-color 0.3s;
+}
+
+.ad-box:hover {
+    border-color: var(--primary-dark);
+    background: var(--bg-card-alt);
+}
+
+/* --- 4. Footer – Mobile Fix (Cut-off) --- */
+.site-footer {
+    background: var(--bg-footer);
+    color: var(--text-muted);
+    padding: 24px 0;
+    margin-top: auto;
+    border-top: 2px solid var(--primary);
+    width: 100%;
+}
+
+.footer-flex {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    text-align: center;
+    padding: 0 16px;
+}
+
+.footer-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.footer-logo {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-white);
+}
+
+.footer-tagline {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+}
+
+.footer-links a {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    padding: 6px 12px;
+    transition: color 0.2s;
+}
+
+.footer-links a:hover {
+    color: var(--primary);
+}
+
+.footer-copy {
+    font-size: 0.75rem;
+    color: var(--text-light);
+}
+
+/* Mobile Footer */
+@media (max-width: 768px) {
+    .site-footer {
+        padding: 20px 0 30px;
+    }
+
+    .footer-flex {
+        gap: 10px;
+        padding: 0 12px;
+    }
+
+    .footer-links {
+        gap: 8px;
+    }
+
+    .footer-links a {
+        font-size: 0.8rem;
+        padding: 8px 12px;
+    }
+
+    .footer-copy {
+        font-size: 0.7rem;
+        padding-top: 4px;
+    }
+}
+
+/* --- Dark Mode Overrides for These Sections --- */
+body.dark-mode .hero-buttons .btn {
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+body.dark-mode .hero-buttons .btn-primary {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+}
+
+body.dark-mode .empty-state {
+    background: var(--bg-card);
+    border-color: var(--border-color);
+}
+
+body.dark-mode .empty-state h3 {
+    color: var(--text-white);
+}
+
+body.dark-mode .empty-state p {
+    color: var(--text-secondary);
+}
