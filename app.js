@@ -65,6 +65,8 @@ const UserSchema = new mongoose.Schema({
     progress: { type: Object, default: {} },
     phone: String,
     isVerified: { type: Boolean, default: false },
+    verificationToken: String,
+    tokenExpires: Date,
     createdAt: { type: Date, default: Date.now }
 });
 
@@ -104,23 +106,18 @@ const CourseSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now }
 });
 
-// OTP Schema
-const OTPSchema = new mongoose.Schema({
-    email: String,
-    otp: String,
-    expires: Date,
-    createdAt: { type: Date, default: Date.now, expires: 600 }
-});
-
 const User = mongoose.model('User', UserSchema);
 const Course = mongoose.model('Course', CourseSchema);
-const OTP = mongoose.model('OTP', OTPSchema);
 
 // ============================================================
 // HELPERS
 // ============================================================
 function generateId() {
     return crypto.randomBytes(16).toString('hex');
+}
+
+function generateToken() {
+    return crypto.randomBytes(32).toString('hex');
 }
 
 function sanitize(content) {
@@ -250,57 +247,7 @@ app.post('/api/ai-tutor', async (req, res) => {
 });
 
 // ============================================================
-// OTP ROUTES
-// ============================================================
-app.post('/api/send-otp', async (req, res) => {
-    const { email } = req.body;
-    if (!email) return res.status(400).json({ error: 'Email is required.' });
-
-    const otpCode = crypto.randomInt(100000, 999999).toString();
-    const expires = new Date(Date.now() + 10 * 60 * 1000);
-
-    try {
-        await OTP.findOneAndDelete({ email });
-        await OTP.create({ email, otp: otpCode, expires });
-
-        await transporter.sendMail({
-            from: process.env.EMAIL_USER,
-            to: email,
-            subject: 'SHINEX Registration Verification OTP',
-            html: `
-                <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px; background: #f8f7fc; border-radius: 10px;">
-                    <h2 style="color: #8B5CF6;">SHINEX Learning Circle</h2>
-                    <p style="color: #1e1a2b;">Your verification code is:</p>
-                    <h1 style="font-size: 2.5rem; color: #8B5CF6; letter-spacing: 5px; text-align: center;">${otpCode}</h1>
-                    <p style="color: #7a6a8f;">This code expires in <strong>10 minutes</strong>.</p>
-                    <hr style="border-color: #ede8f5;">
-                    <p style="color: #7a6a8f; font-size: 0.8rem;">If you didn't request this, please ignore this email.</p>
-                </div>
-            `
-        });
-
-        res.json({ success: true, message: 'OTP sent successfully.' });
-    } catch (error) {
-        console.error('OTP send error:', error);
-        res.status(500).json({ error: 'Failed to send OTP. Please try again.' });
-    }
-});
-
-app.post('/api/verify-otp', async (req, res) => {
-    const { email, otp } = req.body;
-    if (!email || !otp) return res.status(400).json({ error: 'Email and OTP are required.' });
-
-    const record = await OTP.findOne({ email, otp });
-    if (!record || record.expires < new Date()) {
-        return res.status(400).json({ error: 'Invalid or expired OTP.' });
-    }
-
-    await OTP.findOneAndDelete({ email });
-    res.json({ success: true, message: 'OTP verified successfully.' });
-});
-
-// ============================================================
-// REGISTRATION ROUTES
+// REGISTRATION ROUTES (Verification Link)
 // ============================================================
 app.get('/register/step1', (req, res) => {
     if (req.session.userId) return res.redirect('/dashboard');
@@ -329,50 +276,115 @@ app.post('/register/step1', async (req, res) => {
         return res.redirect('/register/step1');
     }
 
-    req.session.tempUser = {
+    // Create user with isVerified = false
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const token = generateToken();
+    const expires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+    const newUser = new User({
+        id: generateId(),
         fullName,
         email,
-        password: await bcrypt.hash(password, 10)
-    };
+        password: hashedPassword,
+        isVerified: false,
+        verificationToken: token,
+        tokenExpires: expires,
+        isAdmin: false,
+        progress: {},
+        createdAt: new Date()
+    });
 
-    // Send OTP
-    const otpCode = crypto.randomInt(100000, 999999).toString();
-    const expires = new Date(Date.now() + 10 * 60 * 1000);
-    await OTP.findOneAndDelete({ email });
-    await OTP.create({ email, otp: otpCode, expires });
+    await newUser.save();
+
+    // Send verification email
+    const baseUrl = process.env.BASE_URL || `http://localhost:${PORT}`;
+    const verifyLink = `${baseUrl}/verify-email/${token}`;
 
     try {
         await transporter.sendMail({
             from: process.env.EMAIL_USER,
             to: email,
-            subject: 'SHINEX Registration Verification OTP',
+            subject: 'Verify Your Email – SHINEX Learning Circle',
             html: `
-                <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px; background: #f8f7fc; border-radius: 10px;">
-                    <h2 style="color: #8B5CF6;">SHINEX Learning Circle</h2>
-                    <p style="color: #1e1a2b;">Your verification code is:</p>
-                    <h1 style="font-size: 2.5rem; color: #8B5CF6; letter-spacing: 5px; text-align: center;">${otpCode}</h1>
-                    <p style="color: #7a6a8f;">This code expires in <strong>10 minutes</strong>.</p>
+                <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 30px; background: #f8f7fc; border-radius: 12px;">
+                    <h2 style="color: #8B5CF6;">🎓 SHINEX Learning Circle</h2>
+                    <p style="color: #1e1a2b; font-size: 1rem;">Welcome to SHINEX Learning Circle!</p>
+                    <p style="color: #1e1a2b;">Please click the button below to verify your email and complete your registration:</p>
+                    <div style="text-align: center; margin: 24px 0;">
+                        <a href="${verifyLink}" style="display: inline-block; padding: 12px 32px; background: #8B5CF6; color: #fff; border-radius: 30px; text-decoration: none; font-weight: 600; font-size: 1rem;">Verify Email</a>
+                    </div>
+                    <p style="color: #7a6a8f; font-size: 0.85rem;">This link expires in <strong>24 hours</strong>.</p>
+                    <hr style="border-color: #ede8f5;">
+                    <p style="color: #7a6a8f; font-size: 0.75rem;">If you didn't create an account, please ignore this email.</p>
+                    <p style="color: #7a6a8f; font-size: 0.75rem;">Or copy this link into your browser:<br>
+                    <span style="color: #8B5CF6; word-break: break-all;">${verifyLink}</span></p>
                 </div>
             `
         });
-        console.log(`✅ OTP sent to ${email}`);
+        console.log(`✅ Verification email sent to ${email}`);
     } catch (error) {
-        console.error('OTP send error:', error);
+        console.error('Verification email error:', error);
+        // Still continue – user can resend verification later
     }
 
-    req.session.messages = { success: 'OTP sent to your email. Please verify.' };
+    // Store user ID in session temporarily
+    req.session.pendingUserId = newUser.id;
+    req.session.messages = { success: 'Verification link sent to your email. Please check your inbox and click the link to verify your account.' };
+    res.redirect('/login');
+});
+
+// ============================================================
+// VERIFY EMAIL ROUTE
+// ============================================================
+app.get('/verify-email/:token', async (req, res) => {
+    const { token } = req.params;
+
+    const user = await User.findOne({ verificationToken: token });
+    if (!user) {
+        req.session.messages = { error: 'Invalid or expired verification link.' };
+        return res.redirect('/register/step1');
+    }
+
+    if (user.tokenExpires < new Date()) {
+        req.session.messages = { error: 'Verification link has expired. Please register again.' };
+        return res.redirect('/register/step1');
+    }
+
+    // Mark as verified
+    user.isVerified = true;
+    user.verificationToken = null;
+    user.tokenExpires = null;
+    await user.save();
+
+    req.session.messages = { success: '✅ Email verified successfully! Please complete your profile.' };
+
+    // Store user ID for step 2
+    req.session.pendingUserId = user.id;
     res.redirect('/register/step2');
 });
 
+// ============================================================
+// REGISTER STEP 2 (Profile Completion)
+// ============================================================
 app.get('/register/step2', async (req, res) => {
     if (req.session.userId) return res.redirect('/dashboard');
-    if (!req.session.tempUser) {
-        req.session.messages = { error: 'Please start from step 1.' };
+
+    // Check if user is verified and pending
+    const userId = req.session.pendingUserId;
+    if (!userId) {
+        req.session.messages = { error: 'Please register first.' };
         return res.redirect('/register/step1');
     }
+
+    const user = await User.findOne({ id: userId });
+    if (!user || !user.isVerified) {
+        req.session.messages = { error: 'Please verify your email first.' };
+        return res.redirect('/register/step1');
+    }
+
     const courses = await Course.find();
     res.render('register-step2', {
-        tempUser: req.session.tempUser,
+        tempUser: { fullName: user.fullName, email: user.email },
         courses,
         messages: req.session.messages || {},
         showBack: true,
@@ -382,20 +394,19 @@ app.get('/register/step2', async (req, res) => {
 });
 
 app.post('/register/step2', async (req, res) => {
-    if (!req.session.tempUser) {
-        req.session.messages = { error: 'Session expired.' };
+    const userId = req.session.pendingUserId;
+    if (!userId) {
+        req.session.messages = { error: 'Please register first.' };
         return res.redirect('/register/step1');
     }
 
-    const { firstName, lastName, gender, dob, country, school, experienceLevel, courseId, interests, bio, terms, otp } = req.body;
-
-    // Verify OTP
-    const email = req.session.tempUser.email;
-    const otpRecord = await OTP.findOne({ email, otp });
-    if (!otpRecord || otpRecord.expires < new Date()) {
-        req.session.messages = { error: 'Invalid or expired OTP. Please try again.' };
-        return res.redirect('/register/step2');
+    const user = await User.findOne({ id: userId });
+    if (!user || !user.isVerified) {
+        req.session.messages = { error: 'Please verify your email first.' };
+        return res.redirect('/register/step1');
     }
+
+    const { firstName, lastName, gender, dob, country, school, experienceLevel, courseId, interests, bio, terms } = req.body;
 
     if (!firstName || !lastName || !gender || !dob || !country || !experienceLevel || !courseId || !terms) {
         req.session.messages = { error: 'All fields required.' };
@@ -407,37 +418,81 @@ app.post('/register/step2', async (req, res) => {
     }
 
     const interestsArray = interests ? (Array.isArray(interests) ? interests : [interests]) : [];
-    const temp = req.session.tempUser;
 
-    const newUser = new User({
-        id: generateId(),
-        fullName: temp.fullName,
-        email: temp.email,
-        password: temp.password,
-        firstName,
-        lastName,
-        gender,
-        dob,
-        country,
-        school: school || '',
-        experienceLevel,
-        courseId,
-        interests: interestsArray,
-        bio: bio || '',
-        termsAccepted: true,
-        isAdmin: false,
-        progress: {},
-        isVerified: true,
-        createdAt: new Date()
-    });
+    // Update user with profile data
+    user.firstName = firstName;
+    user.lastName = lastName;
+    user.gender = gender;
+    user.dob = dob;
+    user.country = country;
+    user.school = school || '';
+    user.experienceLevel = experienceLevel;
+    user.courseId = courseId;
+    user.interests = interestsArray;
+    user.bio = bio || '';
+    user.termsAccepted = true;
+    await user.save();
 
-    await newUser.save();
-    await OTP.findOneAndDelete({ email });
-
-    delete req.session.tempUser;
-    req.session.userId = newUser.id;
-    req.session.messages = { success: '🎉 Registration complete!' };
+    delete req.session.pendingUserId;
+    req.session.userId = user.id;
+    req.session.messages = { success: '🎉 Registration complete! Welcome to SHINEX Learning Circle!' };
     res.redirect('/dashboard');
+});
+
+// ============================================================
+// RESEND VERIFICATION EMAIL
+// ============================================================
+app.post('/resend-verification', async (req, res) => {
+    const { email } = req.body;
+    if (!email) {
+        req.session.messages = { error: 'Email is required.' };
+        return res.redirect('/login');
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+        req.session.messages = { error: 'No account found with this email.' };
+        return res.redirect('/login');
+    }
+
+    if (user.isVerified) {
+        req.session.messages = { success: 'This account is already verified. Please login.' };
+        return res.redirect('/login');
+    }
+
+    // Generate new token
+    const token = generateToken();
+    const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    user.verificationToken = token;
+    user.tokenExpires = expires;
+    await user.save();
+
+    const baseUrl = process.env.BASE_URL || `http://localhost:${PORT}`;
+    const verifyLink = `${baseUrl}/verify-email/${token}`;
+
+    try {
+        await transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: 'Resend: Verify Your Email – SHINEX Learning Circle',
+            html: `
+                <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 30px; background: #f8f7fc; border-radius: 12px;">
+                    <h2 style="color: #8B5CF6;">🎓 SHINEX Learning Circle</h2>
+                    <p style="color: #1e1a2b;">You requested a new verification link.</p>
+                    <div style="text-align: center; margin: 24px 0;">
+                        <a href="${verifyLink}" style="display: inline-block; padding: 12px 32px; background: #8B5CF6; color: #fff; border-radius: 30px; text-decoration: none; font-weight: 600; font-size: 1rem;">Verify Email</a>
+                    </div>
+                    <p style="color: #7a6a8f; font-size: 0.85rem;">This link expires in <strong>24 hours</strong>.</p>
+                </div>
+            `
+        });
+        req.session.messages = { success: 'Verification link sent to your email. Please check your inbox.' };
+    } catch (error) {
+        console.error('Resend verification error:', error);
+        req.session.messages = { error: 'Failed to send verification email. Please try again.' };
+    }
+
+    res.redirect('/login');
 });
 
 // ============================================================
@@ -462,6 +517,12 @@ app.post('/login', async (req, res) => {
         return res.redirect('/login');
     }
 
+    // Check if user is verified
+    if (!user.isVerified) {
+        req.session.messages = { error: 'Please verify your email first. Check your inbox for the verification link.' };
+        return res.redirect('/login');
+    }
+
     const match = await bcrypt.compare(password, user.password);
     if (!match) {
         req.session.messages = { error: 'Invalid email or password.' };
@@ -469,14 +530,14 @@ app.post('/login', async (req, res) => {
     }
 
     req.session.userId = user.id;
-    req.session.messages = { success: `Welcome back, ${user.firstName}!` };
+    req.session.messages = { success: `Welcome back, ${user.firstName || user.fullName}!` };
 
     if (user.isAdmin) return res.redirect('/shinex-admin');
     res.redirect('/dashboard');
 });
 
 // ============================================================
-// ADMIN LOGIN
+// ADMIN LOGIN (SEPARATE)
 // ============================================================
 app.get('/shinex-admin', (req, res) => {
     if (req.session.adminId) return res.redirect('/admin/dashboard');
@@ -511,7 +572,7 @@ app.get('/admin/logout', (req, res) => {
 });
 
 // ============================================================
-// FORGOT PASSWORD (Email Reset)
+// FORGOT PASSWORD (Email Reset Link)
 // ============================================================
 const resetTokens = {};
 
@@ -535,7 +596,8 @@ app.post('/forgot-password', async (req, res) => {
 
     const token = crypto.randomBytes(32).toString('hex');
     resetTokens[token] = { userId: user.id, expires: Date.now() + 3600000 };
-    const resetLink = `${req.protocol}://${req.get('host')}/reset-password/${token}`;
+    const baseUrl = process.env.BASE_URL || `http://localhost:${PORT}`;
+    const resetLink = `${baseUrl}/reset-password/${token}`;
     console.log('🔑 Reset link:', resetLink);
 
     try {
@@ -544,11 +606,15 @@ app.post('/forgot-password', async (req, res) => {
             to: email,
             subject: 'SHINEX Password Reset',
             html: `
-                <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px; background: #f8f7fc; border-radius: 10px;">
+                <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 30px; background: #f8f7fc; border-radius: 12px;">
                     <h2 style="color: #8B5CF6;">SHINEX Learning Circle</h2>
-                    <p style="color: #1e1a2b;">Click the link below to reset your password:</p>
-                    <a href="${resetLink}" style="display: inline-block; padding: 10px 20px; background: #8B5CF6; color: white; border-radius: 30px; text-decoration: none; font-weight: 600;">Reset Password</a>
-                    <p style="color: #7a6a8f; margin-top: 10px;">This link expires in <strong>1 hour</strong>.</p>
+                    <p style="color: #1e1a2b;">Click the button below to reset your password:</p>
+                    <div style="text-align: center; margin: 24px 0;">
+                        <a href="${resetLink}" style="display: inline-block; padding: 12px 32px; background: #8B5CF6; color: #fff; border-radius: 30px; text-decoration: none; font-weight: 600; font-size: 1rem;">Reset Password</a>
+                    </div>
+                    <p style="color: #7a6a8f; font-size: 0.85rem;">This link expires in <strong>1 hour</strong>.</p>
+                    <hr style="border-color: #ede8f5;">
+                    <p style="color: #7a6a8f; font-size: 0.75rem;">If you didn't request this, please ignore this email.</p>
                 </div>
             `
         });
@@ -1268,12 +1334,12 @@ app.post('/admin/make-admin/:id', requireAdmin, async (req, res) => {
 
 app.post('/admin/remove-admin/:id', requireAdmin, async (req, res) => {
     const user = await User.findOne({ id: req.params.id });
-    if (user && user.email !== 'admin@shinex.com') {
+    if (user && user.email !== 'balogunmustaphaaddeji@gmail.com') {
         user.isAdmin = false;
         await user.save();
         req.session.messages = { success: '✅ Admin privileges removed.' };
     } else {
-        req.session.messages = { error: 'Cannot remove default admin.' };
+        req.session.messages = { error: 'Cannot remove the main admin.' };
     }
     res.redirect('/admin/manage-admins');
 });
@@ -1283,13 +1349,13 @@ app.post('/admin/remove-admin/:id', requireAdmin, async (req, res) => {
 // ============================================================
 async function startServer() {
     // Create default admin if none exists
-    const adminExists = await User.findOne({ email: 'admin@shinex.com' });
+    const adminExists = await User.findOne({ email: 'balogunmustaphaaddeji@gmail.com' });
     if (!adminExists) {
-        const hashed = await bcrypt.hash('admin123', 10);
+        const hashed = await bcrypt.hash('SHINEXAdmin@2026', 10);
         const admin = new User({
             id: generateId(),
             fullName: 'Admin User',
-            email: 'admin@shinex.com',
+            email: 'balogunmustaphaaddeji@gmail.com',
             password: hashed,
             firstName: 'Admin',
             lastName: 'User',
@@ -1307,15 +1373,15 @@ async function startServer() {
             createdAt: new Date()
         });
         await admin.save();
-        console.log('✅ Admin created: admin@shinex.com / admin123');
+        console.log('✅ Admin created: balogunmustaphaaddeji@gmail.com / SHINEXAdmin@2026');
     }
 
     app.listen(PORT, () => {
         console.log(`🚀 SHINEX running on http://localhost:${PORT}`);
-        console.log(`🔐 Admin: admin@shinex.com / admin123`);
+        console.log(`🔐 Admin: balogunmustaphaaddeji@gmail.com / SHINEXAdmin@2026`);
         console.log(`📚 Admin Login: http://localhost:${PORT}/shinex-admin`);
         console.log(`📚 MongoDB connected. Data is now PERSISTENT!`);
     });
 }
 
-startServer();
+startServer();s
