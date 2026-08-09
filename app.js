@@ -2,27 +2,26 @@ const express = require('express');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
 const path = require('path');
-const fs = require('fs');
-const { v4: uuidv4 } = require('uuid');
-const sanitizeHtml = require('sanitize-html');
 const crypto = require('crypto');
+const mongoose = require('mongoose');
+const nodemailer = require('nodemailer');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// ============================================================
+// MIDDLEWARE
+// ============================================================
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// ============================================================
-// SESSION – FIXED FOR CROSS-DEVICE
-// ============================================================
 app.use(session({
-    secret: 'shinex-super-secret-key-2026',
+    secret: process.env.SESSION_SECRET || 'shinex-super-secret-key-2026',
     resave: false,
     saveUninitialized: false,
-    cookie: { 
-        maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 24 * 365,
         secure: false,
         httpOnly: true,
         sameSite: 'lax'
@@ -33,205 +32,161 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 // ============================================================
-// DATA HELPERS
+// MONGODB CONNECTION
 // ============================================================
-const DATA_DIR = path.join(__dirname, 'data');
-if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/shinex';
 
-const usersFile = path.join(DATA_DIR, 'users.json');
-const coursesFile = path.join(DATA_DIR, 'courses.json');
-
-function readUsers() {
-    try { return JSON.parse(fs.readFileSync(usersFile, 'utf8')); } catch { return []; }
-}
-function writeUsers(u) { fs.writeFileSync(usersFile, JSON.stringify(u, null, 2)); }
-
-function readCourses() {
-    try { return JSON.parse(fs.readFileSync(coursesFile, 'utf8')); } catch { return []; }
-}
-function writeCourses(c) { fs.writeFileSync(coursesFile, JSON.stringify(c, null, 2)); }
-
-function findUserByEmail(email) {
-    return readUsers().find(u => u.email.toLowerCase() === email.toLowerCase());
-}
-
-function findUserById(id) {
-    return readUsers().find(u => u.id === id);
-}
-
-function findCourseById(id) {
-    return readCourses().find(c => c.id === id);
-}
-
-function findLevelById(courseId, levelId) {
-    const course = findCourseById(courseId);
-    if (!course || !course.levels) return null;
-    return course.levels.find(l => l.id === levelId);
-}
+mongoose.connect(MONGODB_URI)
+    .then(() => console.log('✅ Connected to MongoDB'))
+    .catch(err => console.error('❌ MongoDB connection error:', err));
 
 // ============================================================
-// INIT FUNCTIONS
+// MONGODB SCHEMAS
 // ============================================================
-function initDefaultCourses() {
-    if (readCourses().length === 0) writeCourses([]);
-}
 
-async function initAdminUser() {
-    const users = readUsers();
-    if (!users.some(u => u.isAdmin)) {
-        const hashed = await bcrypt.hash('admin123', 10);
-        users.push({
-            id: uuidv4(),
-            fullName: 'Admin User',
-            email: 'admin@shinex.com',
-            password: hashed,
-            firstName: 'Admin',
-            lastName: 'User',
-            gender: 'Male',
-            dob: '1990-01-01',
-            country: 'USA',
-            experienceLevel: 'Advanced',
-            courseId: null,
-            interests: [],
-            bio: 'System Administrator',
-            termsAccepted: true,
-            isAdmin: true,
-            progress: {},
-            createdAt: new Date().toISOString()
-        });
-        writeUsers(users);
-        console.log('✅ Admin created: admin@shinex.com / admin123');
-    }
+// User Schema
+const UserSchema = new mongoose.Schema({
+    id: { type: String, unique: true },
+    fullName: String,
+    email: { type: String, unique: true },
+    password: String,
+    firstName: String,
+    lastName: String,
+    gender: String,
+    dob: String,
+    country: String,
+    school: String,
+    experienceLevel: String,
+    courseId: String,
+    interests: [String],
+    bio: String,
+    termsAccepted: Boolean,
+    isAdmin: { type: Boolean, default: false },
+    progress: { type: Object, default: {} },
+    phone: String,
+    isVerified: { type: Boolean, default: false },
+    createdAt: { type: Date, default: Date.now }
+});
+
+// Course Schema
+const CourseSchema = new mongoose.Schema({
+    id: { type: String, unique: true },
+    title: String,
+    description: String,
+    duration: String,
+    levels: [{
+        id: String,
+        name: String,
+        duration: String,
+        lessons: [{
+            id: String,
+            title: String,
+            description: String,
+            classes: [{
+                id: String,
+                title: String,
+                content: String,
+                imageUrl: String,
+                videoUrl: String,
+                externalLink: String
+            }]
+        }],
+        test: {
+            questions: [{
+                id: String,
+                question: String,
+                options: [String],
+                correct: Number
+            }]
+        }
+    }],
+    review: String,
+    createdAt: { type: Date, default: Date.now }
+});
+
+// OTP Schema
+const OTPSchema = new mongoose.Schema({
+    email: String,
+    otp: String,
+    expires: Date,
+    createdAt: { type: Date, default: Date.now, expires: 600 }
+});
+
+const User = mongoose.model('User', UserSchema);
+const Course = mongoose.model('Course', CourseSchema);
+const OTP = mongoose.model('OTP', OTPSchema);
+
+// ============================================================
+// HELPERS
+// ============================================================
+function generateId() {
+    return crypto.randomBytes(16).toString('hex');
 }
 
 function sanitize(content) {
-    return sanitizeHtml(content, {
-        allowedTags: ['b','strong','i','em','u','p','ul','ol','li','h1','h2','h3','h4','h5','h6','br','img','a','blockquote','pre','code','span','div','hr'],
-        allowedAttributes: {
-            img: ['src','alt','title','style'],
-            a: ['href','target','rel'],
-            span: ['style'],
-            div: ['style']
-        }
-    });
+    return content.replace(/<script/g, '&lt;script').replace(/<\/script>/g, '&lt;/script&gt;');
 }
 
-// ============================================================
-// PARSE CONTENT – Converts Markdown-style to HTML
-// ============================================================
 function parseContent(text) {
     if (!text) return '';
-    
-    let lines = text.split('\n');
+    const lines = text.split('\n');
     let result = [];
     let inList = false;
     let listType = null;
-    
-    for (let i = 0; i < lines.length; i++) {
-        let line = lines[i];
-        
-        if (line.trim() === '') {
-            if (inList) {
-                result.push('</' + listType + '>');
-                inList = false;
-                listType = null;
-            }
+    for (let line of lines) {
+        line = line.trim();
+        if (!line) {
+            if (inList) { result.push('</' + listType + '>'); inList = false; listType = null; }
             continue;
         }
-        
-        if (line.match(/^#\s+(.+)/)) {
-            if (inList) {
-                result.push('</' + listType + '>');
-                inList = false;
-                listType = null;
-            }
-            result.push('<h1>' + line.replace(/^#\s+/, '') + '</h1>');
+        if (line.startsWith('# ')) { result.push('<h1>' + line.slice(2) + '</h1>'); continue; }
+        if (line.startsWith('## ')) { result.push('<h2>' + line.slice(3) + '</h2>'); continue; }
+        if (line.startsWith('### ')) { result.push('<h3>' + line.slice(4) + '</h3>'); continue; }
+        if (line.match(/^---+$/)) { result.push('<hr>'); continue; }
+        if (line.match(/^(\*|-)\s/)) {
+            if (!inList) { result.push('<ul>'); inList = true; listType = 'ul'; }
+            result.push('<li>' + line.replace(/^(\*|-)\s/, '') + '</li>');
             continue;
         }
-        
-        if (line.match(/^##\s+(.+)/)) {
-            if (inList) {
-                result.push('</' + listType + '>');
-                inList = false;
-                listType = null;
-            }
-            result.push('<h2>' + line.replace(/^##\s+/, '') + '</h2>');
-            continue;
-        }
-        
-        if (line.match(/^###\s+(.+)/)) {
-            if (inList) {
-                result.push('</' + listType + '>');
-                inList = false;
-                listType = null;
-            }
-            result.push('<h3>' + line.replace(/^###\s+/, '') + '</h3>');
-            continue;
-        }
-        
-        if (line.match(/^---+$/)) {
-            if (inList) {
-                result.push('</' + listType + '>');
-                inList = false;
-                listType = null;
-            }
-            result.push('<hr>');
-            continue;
-        }
-        
-        if (line.match(/^(\*|-)\s+(.+)/)) {
-            if (!inList) {
-                result.push('<ul>');
-                inList = true;
-                listType = 'ul';
-            }
-            result.push('<li>' + line.replace(/^(\*|-)\s+/, '') + '</li>');
-            continue;
-        }
-        
-        if (line.match(/^\d+\.\s+(.+)/)) {
+        if (line.match(/^\d+\.\s/)) {
             if (!inList || listType !== 'ol') {
-                if (inList) {
-                    result.push('</' + listType + '>');
-                }
-                result.push('<ol>');
-                inList = true;
-                listType = 'ol';
+                if (inList) result.push('</' + listType + '>');
+                result.push('<ol>'); inList = true; listType = 'ol';
             }
-            result.push('<li>' + line.replace(/^\d+\.\s+/, '') + '</li>');
+            result.push('<li>' + line.replace(/^\d+\.\s/, '') + '</li>');
             continue;
         }
-        
-        if (inList) {
-            result.push('</' + listType + '>');
-            inList = false;
-            listType = null;
-        }
-        
+        if (inList) { result.push('</' + listType + '>'); inList = false; listType = null; }
         let processed = line.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
         processed = processed.replace(/_(.+?)_/g, '<em>$1</em>');
         processed = processed.replace(/`(.+?)`/g, '<code>$1</code>');
         processed = processed.replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" target="_blank">$1</a>');
-        
         result.push('<p>' + processed + '</p>');
     }
-    
-    if (inList) {
-        result.push('</' + listType + '>');
-    }
-    
+    if (inList) result.push('</' + listType + '>');
     return result.join('\n');
 }
 
 // ============================================================
+// EMAIL TRANSPORTER (Gmail)
+// ============================================================
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_APP_PASSWORD
+    }
+});
+
+// ============================================================
 // AUTH MIDDLEWARE
 // ============================================================
-function requireAuth(req, res, next) {
+async function requireAuth(req, res, next) {
     if (!req.session.userId) {
         req.session.messages = { error: 'Please log in to access this page.' };
         return res.redirect('/login');
     }
-    const user = findUserById(req.session.userId);
+    const user = await User.findOne({ id: req.session.userId });
     if (!user) {
         req.session.destroy();
         return res.redirect('/login');
@@ -240,12 +195,12 @@ function requireAuth(req, res, next) {
     next();
 }
 
-function requireAdmin(req, res, next) {
+async function requireAdmin(req, res, next) {
     if (!req.session.adminId) {
         req.session.messages = { error: 'Please log in as admin.' };
         return res.redirect('/shinex-admin');
     }
-    const admin = findUserById(req.session.adminId);
+    const admin = await User.findOne({ id: req.session.adminId });
     if (!admin || !admin.isAdmin) {
         req.session.destroy();
         req.session.messages = { error: 'Admin access required.' };
@@ -256,31 +211,100 @@ function requireAdmin(req, res, next) {
 }
 
 // ============================================================
-// HOME
+// AI TUTOR (Free – Groq API)
 // ============================================================
-app.get('/', (req, res) => {
-    const user = req.session.userId ? findUserById(req.session.userId) : null;
-    const courses = readCourses();
-    res.render('index', { 
-        user, 
-        courses, 
-        messages: req.session.messages || {}, 
-        showBack: false, 
-        title: 'Home' 
-    });
-    req.session.messages = {};
+app.post('/api/ai-tutor', async (req, res) => {
+    const { userPrompt } = req.body;
+    if (!userPrompt) return res.status(400).json({ error: 'Prompt is required.' });
+
+    const GROQ_API_KEY = process.env.GROQ_API_KEY;
+    if (!GROQ_API_KEY) return res.status(500).json({ error: 'AI service not configured.' });
+
+    try {
+        const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${GROQ_API_KEY}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                model: 'mixtral-8x7b-32768',
+                messages: [{
+                    role: 'system',
+                    content: 'You are an educational AI assistant for SHINEX Learning Circle. Explain concepts clearly and simply.'
+                }, {
+                    role: 'user',
+                    content: `Explain this clearly: ${userPrompt}`
+                }],
+                max_tokens: 500,
+                temperature: 0.7
+            })
+        });
+
+        const data = await response.json();
+        res.json({ answer: data.choices[0].message.content });
+    } catch (error) {
+        console.error('AI Tutor error:', error);
+        res.status(500).json({ error: 'AI service is currently busy. Please try again.' });
+    }
 });
 
 // ============================================================
-// REGISTRATION
+// OTP ROUTES
+// ============================================================
+app.post('/api/send-otp', async (req, res) => {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ error: 'Email is required.' });
+
+    const otpCode = crypto.randomInt(100000, 999999).toString();
+    const expires = new Date(Date.now() + 10 * 60 * 1000);
+
+    try {
+        await OTP.findOneAndDelete({ email });
+        await OTP.create({ email, otp: otpCode, expires });
+
+        await transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: 'SHINEX Registration Verification OTP',
+            html: `
+                <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px; background: #f8f7fc; border-radius: 10px;">
+                    <h2 style="color: #8B5CF6;">SHINEX Learning Circle</h2>
+                    <p style="color: #1e1a2b;">Your verification code is:</p>
+                    <h1 style="font-size: 2.5rem; color: #8B5CF6; letter-spacing: 5px; text-align: center;">${otpCode}</h1>
+                    <p style="color: #7a6a8f;">This code expires in <strong>10 minutes</strong>.</p>
+                    <hr style="border-color: #ede8f5;">
+                    <p style="color: #7a6a8f; font-size: 0.8rem;">If you didn't request this, please ignore this email.</p>
+                </div>
+            `
+        });
+
+        res.json({ success: true, message: 'OTP sent successfully.' });
+    } catch (error) {
+        console.error('OTP send error:', error);
+        res.status(500).json({ error: 'Failed to send OTP. Please try again.' });
+    }
+});
+
+app.post('/api/verify-otp', async (req, res) => {
+    const { email, otp } = req.body;
+    if (!email || !otp) return res.status(400).json({ error: 'Email and OTP are required.' });
+
+    const record = await OTP.findOne({ email, otp });
+    if (!record || record.expires < new Date()) {
+        return res.status(400).json({ error: 'Invalid or expired OTP.' });
+    }
+
+    await OTP.findOneAndDelete({ email });
+    res.json({ success: true, message: 'OTP verified successfully.' });
+});
+
+// ============================================================
+// REGISTRATION ROUTES
 // ============================================================
 app.get('/register/step1', (req, res) => {
     if (req.session.userId) return res.redirect('/dashboard');
-    res.render('register-step1', { 
-        messages: req.session.messages || {}, 
-        showBack: false, 
-        title: 'Register Step 1' 
-    });
+    res.render('register-step1', { messages: req.session.messages || {}, showBack: false, title: 'Register Step 1' });
     req.session.messages = {};
 });
 
@@ -298,31 +322,61 @@ app.post('/register/step1', async (req, res) => {
         req.session.messages = { error: 'Password must be at least 6 characters.' };
         return res.redirect('/register/step1');
     }
-    if (findUserByEmail(email)) {
+
+    const existing = await User.findOne({ email });
+    if (existing) {
         req.session.messages = { error: 'Email already registered.' };
         return res.redirect('/register/step1');
     }
+
     req.session.tempUser = {
         fullName,
         email,
         password: await bcrypt.hash(password, 10)
     };
+
+    // Send OTP
+    const otpCode = crypto.randomInt(100000, 999999).toString();
+    const expires = new Date(Date.now() + 10 * 60 * 1000);
+    await OTP.findOneAndDelete({ email });
+    await OTP.create({ email, otp: otpCode, expires });
+
+    try {
+        await transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: 'SHINEX Registration Verification OTP',
+            html: `
+                <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px; background: #f8f7fc; border-radius: 10px;">
+                    <h2 style="color: #8B5CF6;">SHINEX Learning Circle</h2>
+                    <p style="color: #1e1a2b;">Your verification code is:</p>
+                    <h1 style="font-size: 2.5rem; color: #8B5CF6; letter-spacing: 5px; text-align: center;">${otpCode}</h1>
+                    <p style="color: #7a6a8f;">This code expires in <strong>10 minutes</strong>.</p>
+                </div>
+            `
+        });
+        console.log(`✅ OTP sent to ${email}`);
+    } catch (error) {
+        console.error('OTP send error:', error);
+    }
+
+    req.session.messages = { success: 'OTP sent to your email. Please verify.' };
     res.redirect('/register/step2');
 });
 
-app.get('/register/step2', (req, res) => {
+app.get('/register/step2', async (req, res) => {
     if (req.session.userId) return res.redirect('/dashboard');
     if (!req.session.tempUser) {
         req.session.messages = { error: 'Please start from step 1.' };
         return res.redirect('/register/step1');
     }
-    const courses = readCourses();
-    res.render('register-step2', { 
-        tempUser: req.session.tempUser, 
-        courses, 
-        messages: req.session.messages || {}, 
-        showBack: true, 
-        title: 'Register Step 2' 
+    const courses = await Course.find();
+    res.render('register-step2', {
+        tempUser: req.session.tempUser,
+        courses,
+        messages: req.session.messages || {},
+        showBack: true,
+        title: 'Register Step 2'
     });
     req.session.messages = {};
 });
@@ -332,7 +386,17 @@ app.post('/register/step2', async (req, res) => {
         req.session.messages = { error: 'Session expired.' };
         return res.redirect('/register/step1');
     }
-    const { firstName, lastName, gender, dob, country, school, experienceLevel, courseId, interests, bio, terms } = req.body;
+
+    const { firstName, lastName, gender, dob, country, school, experienceLevel, courseId, interests, bio, terms, otp } = req.body;
+
+    // Verify OTP
+    const email = req.session.tempUser.email;
+    const otpRecord = await OTP.findOne({ email, otp });
+    if (!otpRecord || otpRecord.expires < new Date()) {
+        req.session.messages = { error: 'Invalid or expired OTP. Please try again.' };
+        return res.redirect('/register/step2');
+    }
+
     if (!firstName || !lastName || !gender || !dob || !country || !experienceLevel || !courseId || !terms) {
         req.session.messages = { error: 'All fields required.' };
         return res.redirect('/register/step2');
@@ -341,10 +405,12 @@ app.post('/register/step2', async (req, res) => {
         req.session.messages = { error: 'Please select Male or Female.' };
         return res.redirect('/register/step2');
     }
+
     const interestsArray = interests ? (Array.isArray(interests) ? interests : [interests]) : [];
     const temp = req.session.tempUser;
-    const newUser = {
-        id: uuidv4(),
+
+    const newUser = new User({
+        id: generateId(),
         fullName: temp.fullName,
         email: temp.email,
         password: temp.password,
@@ -361,11 +427,13 @@ app.post('/register/step2', async (req, res) => {
         termsAccepted: true,
         isAdmin: false,
         progress: {},
-        createdAt: new Date().toISOString()
-    };
-    const users = readUsers();
-    users.push(newUser);
-    writeUsers(users);
+        isVerified: true,
+        createdAt: new Date()
+    });
+
+    await newUser.save();
+    await OTP.findOneAndDelete({ email });
+
     delete req.session.tempUser;
     req.session.userId = newUser.id;
     req.session.messages = { success: '🎉 Registration complete!' };
@@ -377,11 +445,7 @@ app.post('/register/step2', async (req, res) => {
 // ============================================================
 app.get('/login', (req, res) => {
     if (req.session.userId) return res.redirect('/dashboard');
-    res.render('login', { 
-        messages: req.session.messages || {}, 
-        showBack: false, 
-        title: 'Login' 
-    });
+    res.render('login', { messages: req.session.messages || {}, showBack: false, title: 'Login' });
     req.session.messages = {};
 });
 
@@ -391,42 +455,39 @@ app.post('/login', async (req, res) => {
         req.session.messages = { error: 'Email and password required.' };
         return res.redirect('/login');
     }
-    const user = findUserByEmail(email);
+
+    const user = await User.findOne({ email });
     if (!user) {
         req.session.messages = { error: 'Invalid email or password.' };
         return res.redirect('/login');
     }
+
     const match = await bcrypt.compare(password, user.password);
     if (!match) {
         req.session.messages = { error: 'Invalid email or password.' };
         return res.redirect('/login');
     }
+
     req.session.userId = user.id;
     req.session.messages = { success: `Welcome back, ${user.firstName}!` };
+
     if (user.isAdmin) return res.redirect('/shinex-admin');
     res.redirect('/dashboard');
 });
 
 // ============================================================
-// ADMIN LOGIN (SEPARATE)
+// ADMIN LOGIN
 // ============================================================
 app.get('/shinex-admin', (req, res) => {
-    if (req.session.adminId) {
-        const admin = findUserById(req.session.adminId);
-        if (admin && admin.isAdmin) return res.redirect('/admin/dashboard');
-    }
-    res.render('admin/login', { 
-        messages: req.session.messages || {}, 
-        showBack: false, 
-        title: 'Admin Login' 
-    });
+    if (req.session.adminId) return res.redirect('/admin/dashboard');
+    res.render('admin/login', { messages: req.session.messages || {}, showBack: false, title: 'Admin Login' });
     req.session.messages = {};
 });
 
 app.post('/shinex-admin', async (req, res) => {
     const { email, password } = req.body;
-    const user = findUserByEmail(email);
-    if (!user || !user.isAdmin) {
+    const user = await User.findOne({ email, isAdmin: true });
+    if (!user) {
         req.session.messages = { error: 'Invalid admin credentials.' };
         return res.redirect('/shinex-admin');
     }
@@ -450,16 +511,12 @@ app.get('/admin/logout', (req, res) => {
 });
 
 // ============================================================
-// FORGOT PASSWORD
+// FORGOT PASSWORD (Email Reset)
 // ============================================================
 const resetTokens = {};
 
 app.get('/forgot-password', (req, res) => {
-    res.render('forgot-password', { 
-        messages: req.session.messages || {}, 
-        showBack: true, 
-        title: 'Forgot Password' 
-    });
+    res.render('forgot-password', { messages: req.session.messages || {}, showBack: true, title: 'Forgot Password' });
     req.session.messages = {};
 });
 
@@ -469,16 +526,40 @@ app.post('/forgot-password', async (req, res) => {
         req.session.messages = { error: 'Email is required.' };
         return res.redirect('/forgot-password');
     }
-    const user = findUserByEmail(email);
+
+    const user = await User.findOne({ email });
     if (!user) {
         req.session.messages = { error: 'No account with that email.' };
         return res.redirect('/forgot-password');
     }
+
     const token = crypto.randomBytes(32).toString('hex');
     resetTokens[token] = { userId: user.id, expires: Date.now() + 3600000 };
     const resetLink = `${req.protocol}://${req.get('host')}/reset-password/${token}`;
     console.log('🔑 Reset link:', resetLink);
-    req.session.messages = { success: `Reset link sent! (Check console: ${resetLink})` };
+
+    try {
+        await transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: 'SHINEX Password Reset',
+            html: `
+                <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px; background: #f8f7fc; border-radius: 10px;">
+                    <h2 style="color: #8B5CF6;">SHINEX Learning Circle</h2>
+                    <p style="color: #1e1a2b;">Click the link below to reset your password:</p>
+                    <a href="${resetLink}" style="display: inline-block; padding: 10px 20px; background: #8B5CF6; color: white; border-radius: 30px; text-decoration: none; font-weight: 600;">Reset Password</a>
+                    <p style="color: #7a6a8f; margin-top: 10px;">This link expires in <strong>1 hour</strong>.</p>
+                </div>
+            `
+        });
+        console.log(`✅ Reset link sent to ${email}`);
+    } catch (error) {
+        console.error('Reset email error:', error);
+        req.session.messages = { success: `Reset link: ${resetLink}` };
+        return res.redirect('/login');
+    }
+
+    req.session.messages = { success: 'Password reset link sent to your email!' };
     res.redirect('/login');
 });
 
@@ -489,12 +570,7 @@ app.get('/reset-password/:token', (req, res) => {
         req.session.messages = { error: 'Invalid or expired token.' };
         return res.redirect('/forgot-password');
     }
-    res.render('reset-password', { 
-        token, 
-        messages: req.session.messages || {}, 
-        showBack: true, 
-        title: 'Reset Password' 
-    });
+    res.render('reset-password', { token, messages: req.session.messages || {}, showBack: true, title: 'Reset Password' });
     req.session.messages = {};
 });
 
@@ -510,40 +586,70 @@ app.post('/reset-password/:token', async (req, res) => {
         req.session.messages = { error: 'Password must be at least 6 characters and match.' };
         return res.redirect(`/reset-password/${token}`);
     }
-    const users = readUsers();
-    const idx = users.findIndex(u => u.id === data.userId);
-    if (idx !== -1) {
-        users[idx].password = await bcrypt.hash(password, 10);
-        writeUsers(users);
-    }
+
+    await User.findOneAndUpdate(
+        { id: data.userId },
+        { password: await bcrypt.hash(password, 10) }
+    );
     delete resetTokens[token];
     req.session.messages = { success: 'Password reset successfully!' };
     res.redirect('/login');
 });
 
 // ============================================================
+// TERMS & PRIVACY
+// ============================================================
+app.get('/terms', (req, res) => {
+    res.render('terms', { user: null, messages: req.session.messages || {}, showBack: true, title: 'Terms' });
+    req.session.messages = {};
+});
+
+app.get('/privacy', (req, res) => {
+    res.render('privacy', { user: null, messages: req.session.messages || {}, showBack: true, title: 'Privacy' });
+    req.session.messages = {};
+});
+
+// ============================================================
+// HOME
+// ============================================================
+app.get('/', async (req, res) => {
+    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
+    const courses = await Course.find();
+    res.render('index', {
+        user,
+        courses,
+        messages: req.session.messages || {},
+        showBack: false,
+        title: 'Home'
+    });
+    req.session.messages = {};
+});
+
+// ============================================================
 // SETTINGS
 // ============================================================
-app.get('/settings', requireAuth, (req, res) => {
-    res.render('settings', { 
-        user: req.user, 
-        messages: req.session.messages || {}, 
-        showBack: true, 
-        title: 'Settings' 
+app.get('/settings', requireAuth, async (req, res) => {
+    const user = await User.findOne({ id: req.user.id });
+    res.render('settings', {
+        user,
+        messages: req.session.messages || {},
+        showBack: true,
+        title: 'Settings'
     });
     req.session.messages = {};
 });
 
 app.post('/settings/update', requireAuth, async (req, res) => {
     const { firstName, lastName, bio, currentPassword, newPassword, confirmPassword } = req.body;
-    const users = readUsers();
-    const idx = users.findIndex(u => u.id === req.user.id);
-    if (idx === -1) return res.redirect('/settings');
-    if (firstName) users[idx].firstName = firstName;
-    if (lastName) users[idx].lastName = lastName;
-    if (bio !== undefined) users[idx].bio = bio;
+    const user = await User.findOne({ id: req.user.id });
+    if (!user) return res.redirect('/settings');
+
+    if (firstName) user.firstName = firstName;
+    if (lastName) user.lastName = lastName;
+    if (bio !== undefined) user.bio = bio;
+
     if (currentPassword && newPassword && confirmPassword) {
-        if (!(await bcrypt.compare(currentPassword, req.user.password))) {
+        if (!(await bcrypt.compare(currentPassword, user.password))) {
             req.session.messages = { error: 'Current password is incorrect.' };
             return res.redirect('/settings');
         }
@@ -551,46 +657,22 @@ app.post('/settings/update', requireAuth, async (req, res) => {
             req.session.messages = { error: 'New password must be at least 6 characters and match.' };
             return res.redirect('/settings');
         }
-        users[idx].password = await bcrypt.hash(newPassword, 10);
+        user.password = await bcrypt.hash(newPassword, 10);
     }
-    writeUsers(users);
+
+    await user.save();
     req.session.messages = { success: 'Settings updated successfully!' };
     res.redirect('/settings');
 });
 
 // ============================================================
-// TERMS & PRIVACY
-// ============================================================
-app.get('/terms', (req, res) => {
-    const user = req.session.userId ? findUserById(req.session.userId) : null;
-    res.render('terms', { 
-        user, 
-        messages: req.session.messages || {}, 
-        showBack: true, 
-        title: 'Terms' 
-    });
-    req.session.messages = {};
-});
-
-app.get('/privacy', (req, res) => {
-    const user = req.session.userId ? findUserById(req.session.userId) : null;
-    res.render('privacy', { 
-        user, 
-        messages: req.session.messages || {}, 
-        showBack: true, 
-        title: 'Privacy' 
-    });
-    req.session.messages = {};
-});
-
-// ============================================================
 // DASHBOARD
 // ============================================================
-app.get('/dashboard', requireAuth, (req, res) => {
-    const user = req.user;
-    const courses = readCourses();
-    const enrolledCourse = user.courseId ? findCourseById(user.courseId) : null;
-    
+app.get('/dashboard', requireAuth, async (req, res) => {
+    const user = await User.findOne({ id: req.user.id });
+    const courses = await Course.find();
+    const enrolledCourse = user.courseId ? await Course.findOne({ id: user.courseId }) : null;
+
     let totalClasses = 0, completedClasses = 0, score = 0;
     if (enrolledCourse && enrolledCourse.levels) {
         enrolledCourse.levels.forEach(level => {
@@ -608,7 +690,7 @@ app.get('/dashboard', requireAuth, (req, res) => {
         score = completedClasses * 10;
     }
     const progress = totalClasses > 0 ? Math.round((completedClasses / totalClasses) * 100) : 0;
-    
+
     res.render('dashboard', {
         user,
         enrolledCourse,
@@ -624,17 +706,16 @@ app.get('/dashboard', requireAuth, (req, res) => {
 });
 
 // ============================================================
-// COURSE PAGE – Show Levels
+// COURSE PAGE (Student)
 // ============================================================
-app.get('/course/:courseId', requireAuth, (req, res) => {
-    const user = req.user;
-    const course = findCourseById(req.params.courseId);
+app.get('/course/:courseId', requireAuth, async (req, res) => {
+    const course = await Course.findOne({ id: req.params.courseId });
     if (!course) {
         req.session.messages = { error: 'Course not found.' };
         return res.redirect('/dashboard');
     }
     res.render('course', {
-        user,
+        user: req.user,
         course,
         messages: req.session.messages || {},
         showBack: true,
@@ -644,22 +725,22 @@ app.get('/course/:courseId', requireAuth, (req, res) => {
 });
 
 // ============================================================
-// LEVEL PAGE – Show Lessons & Classes
+// LEVEL PAGE (Student Learning)
 // ============================================================
-app.get('/level/:courseId/:levelId', requireAuth, (req, res) => {
-    const user = req.user;
-    const course = findCourseById(req.params.courseId);
+app.get('/level/:courseId/:levelId', requireAuth, async (req, res) => {
+    const user = await User.findOne({ id: req.user.id });
+    const course = await Course.findOne({ id: req.params.courseId });
     if (!course) {
         req.session.messages = { error: 'Course not found.' };
         return res.redirect('/dashboard');
     }
-    
-    const level = course.levels ? course.levels.find(l => l.id === req.params.levelId) : null;
+
+    const level = course.levels.find(l => l.id === req.params.levelId);
     if (!level) {
         req.session.messages = { error: 'Level not found.' };
         return res.redirect('/course/' + req.params.courseId);
     }
-    
+
     let allClasses = [];
     if (level.lessons) {
         level.lessons.forEach(lesson => {
@@ -680,19 +761,19 @@ app.get('/level/:courseId/:levelId', requireAuth, (req, res) => {
             }
         });
     }
-    
+
     let currentClassId = req.query.classId || (allClasses.length > 0 ? allClasses[0].id : null);
     let currentClass = allClasses.find(c => c.id === currentClassId);
     if (!currentClass && allClasses.length > 0) {
         currentClass = allClasses[0];
         currentClassId = currentClass.id;
     }
-    
+
     let totalClasses = allClasses.length;
     let completedClasses = allClasses.filter(c => c.completed).length;
     let score = completedClasses * 10;
     let progress = totalClasses > 0 ? Math.round((completedClasses / totalClasses) * 100) : 0;
-    
+
     let currentLesson = null;
     if (level.lessons) {
         level.lessons.forEach(lesson => {
@@ -701,7 +782,7 @@ app.get('/level/:courseId/:levelId', requireAuth, (req, res) => {
             }
         });
     }
-    
+
     res.render('level', {
         user,
         course,
@@ -723,19 +804,13 @@ app.get('/level/:courseId/:levelId', requireAuth, (req, res) => {
 // ============================================================
 // MARK CLASS COMPLETE
 // ============================================================
-app.post('/level/complete/:classId', requireAuth, (req, res) => {
-    const user = req.user;
+app.post('/level/complete/:classId', requireAuth, async (req, res) => {
+    const user = await User.findOne({ id: req.user.id });
     const { classId } = req.params;
     if (!user.progress) user.progress = {};
     user.progress[classId] = true;
-    
-    const users = readUsers();
-    const idx = users.findIndex(u => u.id === user.id);
-    if (idx !== -1) {
-        users[idx].progress = user.progress;
-        writeUsers(users);
-    }
-    
+    await user.save();
+
     req.session.messages = { success: '✅ Class completed! +10 points!' };
     res.redirect('back');
 });
@@ -743,23 +818,17 @@ app.post('/level/complete/:classId', requireAuth, (req, res) => {
 // ============================================================
 // NEXT CLASS
 // ============================================================
-app.post('/level/next/:courseId/:levelId/:classId', requireAuth, (req, res) => {
-    const user = req.user;
+app.post('/level/next/:courseId/:levelId/:classId', requireAuth, async (req, res) => {
+    const user = await User.findOne({ id: req.user.id });
     const { courseId, levelId, classId } = req.params;
-    
+
     if (!user.progress) user.progress = {};
     user.progress[classId] = true;
-    
-    const users = readUsers();
-    const idx = users.findIndex(u => u.id === user.id);
-    if (idx !== -1) {
-        users[idx].progress = user.progress;
-        writeUsers(users);
-    }
-    
-    const course = findCourseById(courseId);
-    const level = course.levels ? course.levels.find(l => l.id === levelId) : null;
-    
+    await user.save();
+
+    const course = await Course.findOne({ id: courseId });
+    const level = course.levels.find(l => l.id === levelId);
+
     let allClasses = [];
     if (level && level.lessons) {
         level.lessons.forEach(lesson => {
@@ -770,13 +839,13 @@ app.post('/level/next/:courseId/:levelId/:classId', requireAuth, (req, res) => {
             }
         });
     }
-    
+
     let currentIndex = allClasses.indexOf(classId);
     let nextClassId = null;
     if (currentIndex !== -1 && currentIndex < allClasses.length - 1) {
         nextClassId = allClasses[currentIndex + 1];
     }
-    
+
     if (nextClassId) {
         req.session.messages = { success: '✅ Class completed! Moving to next...' };
         res.redirect(`/level/${courseId}/${levelId}?classId=${nextClassId}`);
@@ -789,13 +858,13 @@ app.post('/level/next/:courseId/:levelId/:classId', requireAuth, (req, res) => {
 // ============================================================
 // ADMIN ROUTES
 // ============================================================
-app.get('/admin/dashboard', requireAdmin, (req, res) => {
-    const users = readUsers();
-    const courses = readCourses();
+app.get('/admin/dashboard', requireAdmin, async (req, res) => {
+    const users = await User.find();
+    const courses = await Course.find();
     const totalStudents = users.filter(u => !u.isAdmin).length;
     const totalCourses = courses.length;
     const totalEnrollments = users.filter(u => u.courseId && !u.isAdmin).length;
-    
+
     let totalClasses = 0;
     courses.forEach(c => {
         if (c.levels) {
@@ -808,13 +877,13 @@ app.get('/admin/dashboard', requireAdmin, (req, res) => {
             });
         }
     });
-    
+
     const studentsByCourse = {};
     courses.forEach(c => {
         const students = users.filter(u => u.courseId === c.id && !u.isAdmin);
         studentsByCourse[c.id] = { course: c, students, count: students.length };
     });
-    
+
     res.render('admin/dashboard', {
         admin: req.admin,
         totalStudents,
@@ -831,250 +900,220 @@ app.get('/admin/dashboard', requireAdmin, (req, res) => {
     req.session.messages = {};
 });
 
-app.get('/admin/students', requireAdmin, (req, res) => {
-    const users = readUsers();
+app.get('/admin/students', requireAdmin, async (req, res) => {
+    const users = await User.find();
     const students = users.filter(u => !u.isAdmin);
-    const courses = readCourses();
+    const courses = await Course.find();
     const courseMap = {};
     courses.forEach(c => { courseMap[c.id] = c.title; });
-    res.render('admin/students', { 
-        students, 
-        courseMap, 
-        messages: req.session.messages || {}, 
-        showBack: true, 
-        title: 'Students' 
+    res.render('admin/students', {
+        students,
+        courseMap,
+        messages: req.session.messages || {},
+        showBack: true,
+        title: 'Students'
     });
     req.session.messages = {};
 });
 
-// ============================================================
-// ADMIN COURSES
-// ============================================================
-app.get('/admin/courses', requireAdmin, (req, res) => {
-    const courses = readCourses();
-    const users = readUsers();
-    const coursesWithCount = courses.map(c => {
-        const count = users.filter(u => u.courseId === c.id && !u.isAdmin).length;
-        return { ...c, studentCount: count };
-    });
-    res.render('admin/courses', { 
-        courses: coursesWithCount, 
-        messages: req.session.messages || {}, 
-        showBack: true, 
-        title: 'Manage Courses' 
+app.get('/admin/courses', requireAdmin, async (req, res) => {
+    const courses = await Course.find();
+    const users = await User.find();
+    const coursesWithCount = courses.map(c => ({
+        ...c.toObject(),
+        studentCount: users.filter(u => u.courseId === c.id && !u.isAdmin).length
+    }));
+    res.render('admin/courses', {
+        courses: coursesWithCount,
+        messages: req.session.messages || {},
+        showBack: true,
+        title: 'Manage Courses'
     });
     req.session.messages = {};
 });
 
-app.post('/admin/courses/add', requireAdmin, (req, res) => {
+app.post('/admin/courses/add', requireAdmin, async (req, res) => {
     const { title, description, duration, review } = req.body;
     if (!title || !description || !duration) {
         req.session.messages = { error: 'All fields required.' };
         return res.redirect('/admin/courses');
     }
-    const courses = readCourses();
-    const newCourse = {
-        id: uuidv4(),
+
+    const newCourse = new Course({
+        id: generateId(),
         title,
         description,
         duration,
         levels: [],
         review: review || '',
-        createdAt: new Date().toISOString()
-    };
-    courses.push(newCourse);
-    writeCourses(courses);
+        createdAt: new Date()
+    });
+    await newCourse.save();
     req.session.messages = { success: '✅ Course added successfully!' };
     res.redirect('/admin/courses');
 });
 
-app.post('/admin/courses/delete/:id', requireAdmin, (req, res) => {
-    let courses = readCourses();
-    courses = courses.filter(c => c.id !== req.params.id);
-    writeCourses(courses);
-    const users = readUsers();
-    users.forEach(u => {
-        if (u.courseId === req.params.id) { u.courseId = null; u.progress = {}; }
-    });
-    writeUsers(users);
+app.post('/admin/courses/delete/:id', requireAdmin, async (req, res) => {
+    await Course.findOneAndDelete({ id: req.params.id });
+    await User.updateMany({ courseId: req.params.id }, { $set: { courseId: null, progress: {} } });
     req.session.messages = { success: '🗑️ Course deleted.' };
     res.redirect('/admin/courses');
 });
 
-app.post('/admin/courses/delete-all', requireAdmin, (req, res) => {
-    writeCourses([]);
-    const users = readUsers();
-    users.forEach(u => { u.courseId = null; u.progress = {}; });
-    writeUsers(users);
+app.post('/admin/courses/delete-all', requireAdmin, async (req, res) => {
+    await Course.deleteMany({});
+    await User.updateMany({}, { $set: { courseId: null, progress: {} } });
     req.session.messages = { success: '🗑️ All courses deleted!' };
     res.redirect('/admin/courses');
 });
 
-// ============================================================
-// ADMIN EDIT COURSE
-// ============================================================
-app.get('/admin/courses/edit/:id', requireAdmin, (req, res) => {
-    const course = findCourseById(req.params.id);
+app.get('/admin/courses/edit/:id', requireAdmin, async (req, res) => {
+    const course = await Course.findOne({ id: req.params.id });
     if (!course) {
         req.session.messages = { error: 'Course not found.' };
         return res.redirect('/admin/courses');
     }
-    res.render('admin/course-edit', { 
-        course, 
-        messages: req.session.messages || {}, 
-        showBack: true, 
-        title: 'Edit Course' 
+    res.render('admin/course-edit', {
+        course,
+        messages: req.session.messages || {},
+        showBack: true,
+        title: 'Edit Course'
     });
     req.session.messages = {};
 });
 
-app.post('/admin/courses/edit/:id', requireAdmin, (req, res) => {
+app.post('/admin/courses/edit/:id', requireAdmin, async (req, res) => {
     const { title, description, duration, review } = req.body;
-    const courses = readCourses();
-    const idx = courses.findIndex(c => c.id === req.params.id);
-    if (idx === -1) {
+    const course = await Course.findOne({ id: req.params.id });
+    if (!course) {
         req.session.messages = { error: 'Course not found.' };
         return res.redirect('/admin/courses');
     }
-    courses[idx].title = title || courses[idx].title;
-    courses[idx].description = description || courses[idx].description;
-    courses[idx].duration = duration || courses[idx].duration;
-    courses[idx].review = review || courses[idx].review;
-    writeCourses(courses);
+    course.title = title || course.title;
+    course.description = description || course.description;
+    course.duration = duration || course.duration;
+    course.review = review || course.review;
+    await course.save();
     req.session.messages = { success: '✅ Course updated!' };
     res.redirect('/admin/courses');
 });
 
 // ============================================================
-// ADMIN ADD LEVEL
+// ADMIN LEVEL ROUTES
 // ============================================================
-app.post('/admin/courses/:id/levels/add', requireAdmin, (req, res) => {
+app.post('/admin/courses/:id/levels/add', requireAdmin, async (req, res) => {
     const { name, duration } = req.body;
     if (!name || !duration) {
         req.session.messages = { error: 'Level name and duration required.' };
         return res.redirect(`/admin/courses/edit/${req.params.id}`);
     }
-    const courses = readCourses();
-    const idx = courses.findIndex(c => c.id === req.params.id);
-    if (idx === -1) {
+    const course = await Course.findOne({ id: req.params.id });
+    if (!course) {
         req.session.messages = { error: 'Course not found.' };
         return res.redirect('/admin/courses');
     }
-    if (!courses[idx].levels) courses[idx].levels = [];
-    courses[idx].levels.push({
-        id: uuidv4(),
+    if (!course.levels) course.levels = [];
+    course.levels.push({
+        id: generateId(),
         name,
         duration,
         lessons: [],
         test: { questions: [] }
     });
-    writeCourses(courses);
+    await course.save();
     req.session.messages = { success: '✅ Level added!' };
     res.redirect(`/admin/courses/edit/${req.params.id}`);
 });
 
-app.post('/admin/courses/:id/levels/delete/:levelId', requireAdmin, (req, res) => {
-    const courses = readCourses();
-    const idx = courses.findIndex(c => c.id === req.params.id);
-    if (idx === -1) {
-        req.session.messages = { error: 'Course not found.' };
-        return res.redirect('/admin/courses');
-    }
-    courses[idx].levels = courses[idx].levels.filter(l => l.id !== req.params.levelId);
-    writeCourses(courses);
-    req.session.messages = { success: '🗑️ Level deleted.' };
-    res.redirect(`/admin/courses/edit/${req.params.id}`);
-});
-
-// ============================================================
-// ADMIN EDIT LEVEL
-// ============================================================
-app.get('/admin/levels/edit/:courseId/:levelId', requireAdmin, (req, res) => {
-    const course = findCourseById(req.params.courseId);
+app.post('/admin/courses/:id/levels/delete/:levelId', requireAdmin, async (req, res) => {
+    const course = await Course.findOne({ id: req.params.id });
     if (!course) {
         req.session.messages = { error: 'Course not found.' };
         return res.redirect('/admin/courses');
     }
-    const level = course.levels ? course.levels.find(l => l.id === req.params.levelId) : null;
+    course.levels = course.levels.filter(l => l.id !== req.params.levelId);
+    await course.save();
+    req.session.messages = { success: '🗑️ Level deleted.' };
+    res.redirect(`/admin/courses/edit/${req.params.id}`);
+});
+
+app.get('/admin/levels/edit/:courseId/:levelId', requireAdmin, async (req, res) => {
+    const course = await Course.findOne({ id: req.params.courseId });
+    if (!course) {
+        req.session.messages = { error: 'Course not found.' };
+        return res.redirect('/admin/courses');
+    }
+    const level = course.levels.find(l => l.id === req.params.levelId);
     if (!level) {
         req.session.messages = { error: 'Level not found.' };
         return res.redirect(`/admin/courses/edit/${req.params.courseId}`);
     }
-    res.render('admin/level-edit', { 
-        course, 
-        level, 
-        messages: req.session.messages || {}, 
-        showBack: true, 
-        title: 'Edit Level' 
+    res.render('admin/level-edit', {
+        course,
+        level,
+        messages: req.session.messages || {},
+        showBack: true,
+        title: 'Edit Level'
     });
     req.session.messages = {};
 });
 
-// ============================================================
-// ADMIN ADD LESSON TO LEVEL
-// ============================================================
-app.post('/admin/levels/:courseId/:levelId/lessons/add', requireAdmin, (req, res) => {
+app.post('/admin/levels/:courseId/:levelId/lessons/add', requireAdmin, async (req, res) => {
     const { title, description } = req.body;
     if (!title) {
         req.session.messages = { error: 'Lesson title required.' };
         return res.redirect(`/admin/levels/edit/${req.params.courseId}/${req.params.levelId}`);
     }
-    const courses = readCourses();
-    const cIdx = courses.findIndex(c => c.id === req.params.courseId);
-    if (cIdx === -1) {
+    const course = await Course.findOne({ id: req.params.courseId });
+    if (!course) {
         req.session.messages = { error: 'Course not found.' };
         return res.redirect('/admin/courses');
     }
-    const level = courses[cIdx].levels.find(l => l.id === req.params.levelId);
+    const level = course.levels.find(l => l.id === req.params.levelId);
     if (!level) {
         req.session.messages = { error: 'Level not found.' };
         return res.redirect(`/admin/courses/edit/${req.params.courseId}`);
     }
     level.lessons.push({
-        id: uuidv4(),
+        id: generateId(),
         title,
         description: description || '',
         classes: []
     });
-    writeCourses(courses);
+    await course.save();
     req.session.messages = { success: '✅ Lesson added!' };
     res.redirect(`/admin/levels/edit/${req.params.courseId}/${req.params.levelId}`);
 });
 
-app.post('/admin/levels/:courseId/:levelId/lessons/delete/:lessonId', requireAdmin, (req, res) => {
-    const courses = readCourses();
-    const cIdx = courses.findIndex(c => c.id === req.params.courseId);
-    if (cIdx === -1) {
+app.post('/admin/levels/:courseId/:levelId/lessons/delete/:lessonId', requireAdmin, async (req, res) => {
+    const course = await Course.findOne({ id: req.params.courseId });
+    if (!course) {
         req.session.messages = { error: 'Course not found.' };
         return res.redirect('/admin/courses');
     }
-    const level = courses[cIdx].levels.find(l => l.id === req.params.levelId);
+    const level = course.levels.find(l => l.id === req.params.levelId);
     if (!level) {
         req.session.messages = { error: 'Level not found.' };
         return res.redirect(`/admin/courses/edit/${req.params.courseId}`);
     }
     level.lessons = level.lessons.filter(l => l.id !== req.params.lessonId);
-    writeCourses(courses);
+    await course.save();
     req.session.messages = { success: '🗑️ Lesson deleted.' };
     res.redirect(`/admin/levels/edit/${req.params.courseId}/${req.params.levelId}`);
 });
 
-// ============================================================
-// ADMIN ADD CLASS TO LESSON
-// ============================================================
-app.post('/admin/levels/:courseId/:levelId/lessons/:lessonId/classes/add', requireAdmin, (req, res) => {
+app.post('/admin/levels/:courseId/:levelId/lessons/:lessonId/classes/add', requireAdmin, async (req, res) => {
     const { title, content, imageUrl, videoUrl, externalLink } = req.body;
     if (!title || !content) {
         req.session.messages = { error: 'Class title and content required.' };
         return res.redirect(`/admin/levels/edit/${req.params.courseId}/${req.params.levelId}`);
     }
-    const courses = readCourses();
-    const cIdx = courses.findIndex(c => c.id === req.params.courseId);
-    if (cIdx === -1) {
+    const course = await Course.findOne({ id: req.params.courseId });
+    if (!course) {
         req.session.messages = { error: 'Course not found.' };
         return res.redirect('/admin/courses');
     }
-    const level = courses[cIdx].levels.find(l => l.id === req.params.levelId);
+    const level = course.levels.find(l => l.id === req.params.levelId);
     if (!level) {
         req.session.messages = { error: 'Level not found.' };
         return res.redirect(`/admin/courses/edit/${req.params.courseId}`);
@@ -1085,26 +1124,25 @@ app.post('/admin/levels/:courseId/:levelId/lessons/:lessonId/classes/add', requi
         return res.redirect(`/admin/levels/edit/${req.params.courseId}/${req.params.levelId}`);
     }
     lesson.classes.push({
-        id: uuidv4(),
+        id: generateId(),
         title,
         content: sanitize(content),
         imageUrl: imageUrl || '',
         videoUrl: videoUrl || '',
         externalLink: externalLink || ''
     });
-    writeCourses(courses);
+    await course.save();
     req.session.messages = { success: '✅ Class added!' };
     res.redirect(`/admin/levels/edit/${req.params.courseId}/${req.params.levelId}`);
 });
 
-app.post('/admin/levels/:courseId/:levelId/lessons/:lessonId/classes/delete/:classId', requireAdmin, (req, res) => {
-    const courses = readCourses();
-    const cIdx = courses.findIndex(c => c.id === req.params.courseId);
-    if (cIdx === -1) {
+app.post('/admin/levels/:courseId/:levelId/lessons/:lessonId/classes/delete/:classId', requireAdmin, async (req, res) => {
+    const course = await Course.findOne({ id: req.params.courseId });
+    if (!course) {
         req.session.messages = { error: 'Course not found.' };
         return res.redirect('/admin/courses');
     }
-    const level = courses[cIdx].levels.find(l => l.id === req.params.levelId);
+    const level = course.levels.find(l => l.id === req.params.levelId);
     if (!level) {
         req.session.messages = { error: 'Level not found.' };
         return res.redirect(`/admin/courses/edit/${req.params.courseId}`);
@@ -1115,20 +1153,19 @@ app.post('/admin/levels/:courseId/:levelId/lessons/:lessonId/classes/delete/:cla
         return res.redirect(`/admin/levels/edit/${req.params.courseId}/${req.params.levelId}`);
     }
     lesson.classes = lesson.classes.filter(c => c.id !== req.params.classId);
-    writeCourses(courses);
+    await course.save();
     req.session.messages = { success: '🗑️ Class deleted.' };
     res.redirect(`/admin/levels/edit/${req.params.courseId}/${req.params.levelId}`);
 });
 
-app.post('/admin/levels/:courseId/:levelId/lessons/:lessonId/classes/edit/:classId', requireAdmin, (req, res) => {
+app.post('/admin/levels/:courseId/:levelId/lessons/:lessonId/classes/edit/:classId', requireAdmin, async (req, res) => {
     const { title, content, imageUrl, videoUrl, externalLink } = req.body;
-    const courses = readCourses();
-    const cIdx = courses.findIndex(c => c.id === req.params.courseId);
-    if (cIdx === -1) {
+    const course = await Course.findOne({ id: req.params.courseId });
+    if (!course) {
         req.session.messages = { error: 'Course not found.' };
         return res.redirect('/admin/courses');
     }
-    const level = courses[cIdx].levels.find(l => l.id === req.params.levelId);
+    const level = course.levels.find(l => l.id === req.params.levelId);
     if (!level) {
         req.session.messages = { error: 'Level not found.' };
         return res.redirect(`/admin/courses/edit/${req.params.courseId}`);
@@ -1148,7 +1185,7 @@ app.post('/admin/levels/:courseId/:levelId/lessons/:lessonId/classes/edit/:class
     cls.imageUrl = imageUrl || '';
     cls.videoUrl = videoUrl || '';
     cls.externalLink = externalLink || '';
-    writeCourses(courses);
+    await course.save();
     req.session.messages = { success: '✅ Class updated!' };
     res.redirect(`/admin/levels/edit/${req.params.courseId}/${req.params.levelId}`);
 });
@@ -1156,50 +1193,48 @@ app.post('/admin/levels/:courseId/:levelId/lessons/:lessonId/classes/edit/:class
 // ============================================================
 // ADMIN TEST ROUTES
 // ============================================================
-app.post('/admin/levels/:courseId/:levelId/test/add', requireAdmin, (req, res) => {
+app.post('/admin/levels/:courseId/:levelId/test/add', requireAdmin, async (req, res) => {
     const { question, option1, option2, option3, option4, correct } = req.body;
     if (!question || !option1 || !option2 || !option3 || !option4 || correct === undefined) {
         req.session.messages = { error: 'All test fields required.' };
         return res.redirect(`/admin/levels/edit/${req.params.courseId}/${req.params.levelId}`);
     }
-    const courses = readCourses();
-    const cIdx = courses.findIndex(c => c.id === req.params.courseId);
-    if (cIdx === -1) {
+    const course = await Course.findOne({ id: req.params.courseId });
+    if (!course) {
         req.session.messages = { error: 'Course not found.' };
         return res.redirect('/admin/courses');
     }
-    const level = courses[cIdx].levels.find(l => l.id === req.params.levelId);
+    const level = course.levels.find(l => l.id === req.params.levelId);
     if (!level) {
         req.session.messages = { error: 'Level not found.' };
         return res.redirect(`/admin/courses/edit/${req.params.courseId}`);
     }
     if (!level.test) level.test = { questions: [] };
     level.test.questions.push({
-        id: uuidv4(),
+        id: generateId(),
         question,
         options: [option1, option2, option3, option4],
         correct: parseInt(correct)
     });
-    writeCourses(courses);
+    await course.save();
     req.session.messages = { success: '✅ Test question added!' };
     res.redirect(`/admin/levels/edit/${req.params.courseId}/${req.params.levelId}`);
 });
 
-app.post('/admin/levels/:courseId/:levelId/test/delete/:questionId', requireAdmin, (req, res) => {
-    const courses = readCourses();
-    const cIdx = courses.findIndex(c => c.id === req.params.courseId);
-    if (cIdx === -1) {
+app.post('/admin/levels/:courseId/:levelId/test/delete/:questionId', requireAdmin, async (req, res) => {
+    const course = await Course.findOne({ id: req.params.courseId });
+    if (!course) {
         req.session.messages = { error: 'Course not found.' };
         return res.redirect('/admin/courses');
     }
-    const level = courses[cIdx].levels.find(l => l.id === req.params.levelId);
+    const level = course.levels.find(l => l.id === req.params.levelId);
     if (!level || !level.test) {
         req.session.messages = { error: 'Level or test not found.' };
         return res.redirect(`/admin/courses/edit/${req.params.courseId}`);
     }
     level.test.questions = level.test.questions.filter(q => q.id !== req.params.questionId);
     if (level.test.questions.length === 0) level.test = null;
-    writeCourses(courses);
+    await course.save();
     req.session.messages = { success: '🗑️ Test question deleted.' };
     res.redirect(`/admin/levels/edit/${req.params.courseId}/${req.params.levelId}`);
 });
@@ -1207,37 +1242,35 @@ app.post('/admin/levels/:courseId/:levelId/test/delete/:questionId', requireAdmi
 // ============================================================
 // ADMIN MANAGE ADMINS
 // ============================================================
-app.get('/admin/manage-admins', requireAdmin, (req, res) => {
-    const users = readUsers();
+app.get('/admin/manage-admins', requireAdmin, async (req, res) => {
+    const users = await User.find();
     const admins = users.filter(u => u.isAdmin);
     const nonAdmins = users.filter(u => !u.isAdmin);
-    res.render('admin/manage-admins', { 
-        admins, 
-        nonAdmins, 
-        messages: req.session.messages || {}, 
-        showBack: true, 
-        title: 'Manage Admins' 
+    res.render('admin/manage-admins', {
+        admins,
+        nonAdmins,
+        messages: req.session.messages || {},
+        showBack: true,
+        title: 'Manage Admins'
     });
     req.session.messages = {};
 });
 
-app.post('/admin/make-admin/:id', requireAdmin, (req, res) => {
-    const users = readUsers();
-    const idx = users.findIndex(u => u.id === req.params.id);
-    if (idx !== -1) {
-        users[idx].isAdmin = true;
-        writeUsers(users);
+app.post('/admin/make-admin/:id', requireAdmin, async (req, res) => {
+    const user = await User.findOne({ id: req.params.id });
+    if (user) {
+        user.isAdmin = true;
+        await user.save();
         req.session.messages = { success: '✅ User is now an admin!' };
     }
     res.redirect('/admin/manage-admins');
 });
 
-app.post('/admin/remove-admin/:id', requireAdmin, (req, res) => {
-    const users = readUsers();
-    const idx = users.findIndex(u => u.id === req.params.id);
-    if (idx !== -1 && users[idx].email !== 'admin@shinex.com') {
-        users[idx].isAdmin = false;
-        writeUsers(users);
+app.post('/admin/remove-admin/:id', requireAdmin, async (req, res) => {
+    const user = await User.findOne({ id: req.params.id });
+    if (user && user.email !== 'admin@shinex.com') {
+        user.isAdmin = false;
+        await user.save();
         req.session.messages = { success: '✅ Admin privileges removed.' };
     } else {
         req.session.messages = { error: 'Cannot remove default admin.' };
@@ -1249,13 +1282,40 @@ app.post('/admin/remove-admin/:id', requireAdmin, (req, res) => {
 // START SERVER
 // ============================================================
 async function startServer() {
-    initDefaultCourses();
-    await initAdminUser();
+    // Create default admin if none exists
+    const adminExists = await User.findOne({ email: 'admin@shinex.com' });
+    if (!adminExists) {
+        const hashed = await bcrypt.hash('admin123', 10);
+        const admin = new User({
+            id: generateId(),
+            fullName: 'Admin User',
+            email: 'admin@shinex.com',
+            password: hashed,
+            firstName: 'Admin',
+            lastName: 'User',
+            gender: 'Male',
+            dob: '1990-01-01',
+            country: 'USA',
+            experienceLevel: 'Advanced',
+            courseId: null,
+            interests: [],
+            bio: 'System Administrator',
+            termsAccepted: true,
+            isAdmin: true,
+            progress: {},
+            isVerified: true,
+            createdAt: new Date()
+        });
+        await admin.save();
+        console.log('✅ Admin created: admin@shinex.com / admin123');
+    }
+
     app.listen(PORT, () => {
         console.log(`🚀 SHINEX running on http://localhost:${PORT}`);
         console.log(`🔐 Admin: admin@shinex.com / admin123`);
         console.log(`📚 Admin Login: http://localhost:${PORT}/shinex-admin`);
-        console.log(`📚 No default courses - add your own!`);
+        console.log(`📚 MongoDB connected. Data is now PERSISTENT!`);
     });
 }
+
 startServer();
