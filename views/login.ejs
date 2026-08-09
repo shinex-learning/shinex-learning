@@ -87,6 +87,22 @@
                             Don't have an account? <a href="/register/step1" style="color:#8B5CF6; font-weight:600;">Register</a>
                         </p>
                     </form>
+
+                    <!-- ===== RESEND VERIFICATION LINK ===== -->
+                    <div style="text-align:center; margin-top:16px; padding-top:14px; border-top:1px solid #ede8f5;">
+                        <p style="font-size:0.8rem; color:#7a6a8f;">
+                            Didn't receive verification email?
+                        </p>
+                        <form action="/resend-verification" method="POST" style="display:inline;">
+                            <input type="hidden" name="email" id="resendEmail" value="">
+                            <button type="submit" class="btn btn-secondary btn-sm" style="min-width:160px; padding:8px 20px;">
+                                <i class="fas fa-envelope"></i> Resend Verification Link
+                            </button>
+                        </form>
+                        <p style="font-size:0.7rem; color:#b0a3c4; margin-top:4px;">
+                            Enter your email above and click "Resend Verification Link"
+                        </p>
+                    </div>
                 </div>
             </div>
         </main>
@@ -107,6 +123,22 @@
                 icon.classList.add('fa-eye');
             }
         }
+
+        // Copy email from login field to resend form
+        document.getElementById('resendEmail').addEventListener('focus', function() {
+            const emailField = document.getElementById('email');
+            if (emailField && emailField.value) {
+                this.value = emailField.value;
+            }
+        });
+
+        // Also copy when login form email changes
+        document.getElementById('email').addEventListener('input', function() {
+            const resendField = document.getElementById('resendEmail');
+            if (resendField) {
+                resendField.value = this.value;
+            }
+        });
     </script>
 </body>
 </html>
