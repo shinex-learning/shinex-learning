@@ -32,6 +32,14 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 // ============================================================
+// DEVICE DETECTION – Mobile vs Desktop
+// ============================================================
+function isMobile(req) {
+    const ua = req.headers['user-agent'] || '';
+    return /Mobi|Android|iPhone|iPad|iPod|BlackBerry|Opera Mini|IEMobile/i.test(ua);
+}
+
+// ============================================================
 // MONGODB CONNECTION
 // ============================================================
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/shinex';
@@ -247,11 +255,12 @@ app.post('/api/ai-tutor', async (req, res) => {
 });
 
 // ============================================================
-// REGISTRATION ROUTES (Verification Link)
+// REGISTRATION ROUTES
 // ============================================================
 app.get('/register/step1', (req, res) => {
     if (req.session.userId) return res.redirect('/dashboard');
-    res.render('register-step1', { messages: req.session.messages || {}, showBack: false, title: 'Register Step 1' });
+    const view = isMobile(req) ? 'mobile/register-step1' : 'register-step1';
+    res.render(view, { messages: req.session.messages || {}, showBack: false, title: 'Register Step 1' });
     req.session.messages = {};
 });
 
@@ -276,10 +285,9 @@ app.post('/register/step1', async (req, res) => {
         return res.redirect('/register/step1');
     }
 
-    // Create user with isVerified = false
     const hashedPassword = await bcrypt.hash(password, 10);
     const token = generateToken();
-    const expires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+    const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
     const newUser = new User({
         id: generateId(),
@@ -296,7 +304,6 @@ app.post('/register/step1', async (req, res) => {
 
     await newUser.save();
 
-    // Send verification email
     const baseUrl = process.env.BASE_URL || `http://localhost:${PORT}`;
     const verifyLink = `${baseUrl}/verify-email/${token}`;
 
@@ -316,18 +323,14 @@ app.post('/register/step1', async (req, res) => {
                     <p style="color: #7a6a8f; font-size: 0.85rem;">This link expires in <strong>24 hours</strong>.</p>
                     <hr style="border-color: #ede8f5;">
                     <p style="color: #7a6a8f; font-size: 0.75rem;">If you didn't create an account, please ignore this email.</p>
-                    <p style="color: #7a6a8f; font-size: 0.75rem;">Or copy this link into your browser:<br>
-                    <span style="color: #8B5CF6; word-break: break-all;">${verifyLink}</span></p>
                 </div>
             `
         });
         console.log(`✅ Verification email sent to ${email}`);
     } catch (error) {
         console.error('Verification email error:', error);
-        // Still continue – user can resend verification later
     }
 
-    // Store user ID in session temporarily
     req.session.pendingUserId = newUser.id;
     req.session.messages = { success: 'Verification link sent to your email. Please check your inbox and click the link to verify your account.' };
     res.redirect('/login');
@@ -350,15 +353,12 @@ app.get('/verify-email/:token', async (req, res) => {
         return res.redirect('/register/step1');
     }
 
-    // Mark as verified
     user.isVerified = true;
     user.verificationToken = null;
     user.tokenExpires = null;
     await user.save();
 
     req.session.messages = { success: '✅ Email verified successfully! Please complete your profile.' };
-
-    // Store user ID for step 2
     req.session.pendingUserId = user.id;
     res.redirect('/register/step2');
 });
@@ -369,7 +369,6 @@ app.get('/verify-email/:token', async (req, res) => {
 app.get('/register/step2', async (req, res) => {
     if (req.session.userId) return res.redirect('/dashboard');
 
-    // Check if user is verified and pending
     const userId = req.session.pendingUserId;
     if (!userId) {
         req.session.messages = { error: 'Please register first.' };
@@ -383,7 +382,8 @@ app.get('/register/step2', async (req, res) => {
     }
 
     const courses = await Course.find();
-    res.render('register-step2', {
+    const view = isMobile(req) ? 'mobile/register-step2' : 'register-step2';
+    res.render(view, {
         tempUser: { fullName: user.fullName, email: user.email },
         courses,
         messages: req.session.messages || {},
@@ -419,7 +419,6 @@ app.post('/register/step2', async (req, res) => {
 
     const interestsArray = interests ? (Array.isArray(interests) ? interests : [interests]) : [];
 
-    // Update user with profile data
     user.firstName = firstName;
     user.lastName = lastName;
     user.gender = gender;
@@ -460,7 +459,6 @@ app.post('/resend-verification', async (req, res) => {
         return res.redirect('/login');
     }
 
-    // Generate new token
     const token = generateToken();
     const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
     user.verificationToken = token;
@@ -500,7 +498,8 @@ app.post('/resend-verification', async (req, res) => {
 // ============================================================
 app.get('/login', (req, res) => {
     if (req.session.userId) return res.redirect('/dashboard');
-    res.render('login', { messages: req.session.messages || {}, showBack: false, title: 'Login' });
+    const view = isMobile(req) ? 'mobile/login' : 'login';
+    res.render(view, { messages: req.session.messages || {}, showBack: false, title: 'Login' });
     req.session.messages = {};
 });
 
@@ -517,7 +516,6 @@ app.post('/login', async (req, res) => {
         return res.redirect('/login');
     }
 
-    // Check if user is verified
     if (!user.isVerified) {
         req.session.messages = { error: 'Please verify your email first. Check your inbox for the verification link.' };
         return res.redirect('/login');
@@ -541,6 +539,11 @@ app.post('/login', async (req, res) => {
 // ============================================================
 app.get('/shinex-admin', (req, res) => {
     if (req.session.adminId) return res.redirect('/admin/dashboard');
+    // Block admin on mobile
+    if (isMobile(req)) {
+        req.session.messages = { error: 'Admin panel is only available on desktop.' };
+        return res.redirect('/');
+    }
     res.render('admin/login', { messages: req.session.messages || {}, showBack: false, title: 'Admin Login' });
     req.session.messages = {};
 });
@@ -577,7 +580,8 @@ app.get('/admin/logout', (req, res) => {
 const resetTokens = {};
 
 app.get('/forgot-password', (req, res) => {
-    res.render('forgot-password', { messages: req.session.messages || {}, showBack: true, title: 'Forgot Password' });
+    const view = isMobile(req) ? 'mobile/forgot-password' : 'forgot-password';
+    res.render(view, { messages: req.session.messages || {}, showBack: true, title: 'Forgot Password' });
     req.session.messages = {};
 });
 
@@ -636,7 +640,8 @@ app.get('/reset-password/:token', (req, res) => {
         req.session.messages = { error: 'Invalid or expired token.' };
         return res.redirect('/forgot-password');
     }
-    res.render('reset-password', { token, messages: req.session.messages || {}, showBack: true, title: 'Reset Password' });
+    const view = isMobile(req) ? 'mobile/reset-password' : 'reset-password';
+    res.render(view, { token, messages: req.session.messages || {}, showBack: true, title: 'Reset Password' });
     req.session.messages = {};
 });
 
@@ -666,12 +671,14 @@ app.post('/reset-password/:token', async (req, res) => {
 // TERMS & PRIVACY
 // ============================================================
 app.get('/terms', (req, res) => {
-    res.render('terms', { user: null, messages: req.session.messages || {}, showBack: true, title: 'Terms' });
+    const view = isMobile(req) ? 'mobile/terms' : 'terms';
+    res.render(view, { user: null, messages: req.session.messages || {}, showBack: true, title: 'Terms' });
     req.session.messages = {};
 });
 
 app.get('/privacy', (req, res) => {
-    res.render('privacy', { user: null, messages: req.session.messages || {}, showBack: true, title: 'Privacy' });
+    const view = isMobile(req) ? 'mobile/privacy' : 'privacy';
+    res.render(view, { user: null, messages: req.session.messages || {}, showBack: true, title: 'Privacy' });
     req.session.messages = {};
 });
 
@@ -681,7 +688,8 @@ app.get('/privacy', (req, res) => {
 app.get('/', async (req, res) => {
     const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
     const courses = await Course.find();
-    res.render('index', {
+    const view = isMobile(req) ? 'mobile/index' : 'index';
+    res.render(view, {
         user,
         courses,
         messages: req.session.messages || {},
@@ -696,7 +704,8 @@ app.get('/', async (req, res) => {
 // ============================================================
 app.get('/settings', requireAuth, async (req, res) => {
     const user = await User.findOne({ id: req.user.id });
-    res.render('settings', {
+    const view = isMobile(req) ? 'mobile/settings' : 'settings';
+    res.render(view, {
         user,
         messages: req.session.messages || {},
         showBack: true,
@@ -757,7 +766,8 @@ app.get('/dashboard', requireAuth, async (req, res) => {
     }
     const progress = totalClasses > 0 ? Math.round((completedClasses / totalClasses) * 100) : 0;
 
-    res.render('dashboard', {
+    const view = isMobile(req) ? 'mobile/dashboard' : 'dashboard';
+    res.render(view, {
         user,
         enrolledCourse,
         progress,
@@ -780,7 +790,8 @@ app.get('/course/:courseId', requireAuth, async (req, res) => {
         req.session.messages = { error: 'Course not found.' };
         return res.redirect('/dashboard');
     }
-    res.render('course', {
+    const view = isMobile(req) ? 'mobile/course' : 'course';
+    res.render(view, {
         user: req.user,
         course,
         messages: req.session.messages || {},
@@ -849,7 +860,8 @@ app.get('/level/:courseId/:levelId', requireAuth, async (req, res) => {
         });
     }
 
-    res.render('level', {
+    const view = isMobile(req) ? 'mobile/level' : 'level';
+    res.render(view, {
         user,
         course,
         level,
@@ -922,9 +934,19 @@ app.post('/level/next/:courseId/:levelId/:classId', requireAuth, async (req, res
 });
 
 // ============================================================
-// ADMIN ROUTES
+// ADMIN ROUTES (All admin routes here – desktop only)
 // ============================================================
-app.get('/admin/dashboard', requireAdmin, async (req, res) => {
+
+// Admin middleware to block mobile
+function blockMobileAdmin(req, res, next) {
+    if (isMobile(req)) {
+        req.session.messages = { error: 'Admin panel is only available on desktop.' };
+        return res.redirect('/');
+    }
+    next();
+}
+
+app.get('/admin/dashboard', blockMobileAdmin, requireAdmin, async (req, res) => {
     const users = await User.find();
     const courses = await Course.find();
     const totalStudents = users.filter(u => !u.isAdmin).length;
@@ -966,7 +988,7 @@ app.get('/admin/dashboard', requireAdmin, async (req, res) => {
     req.session.messages = {};
 });
 
-app.get('/admin/students', requireAdmin, async (req, res) => {
+app.get('/admin/students', blockMobileAdmin, requireAdmin, async (req, res) => {
     const users = await User.find();
     const students = users.filter(u => !u.isAdmin);
     const courses = await Course.find();
@@ -982,7 +1004,7 @@ app.get('/admin/students', requireAdmin, async (req, res) => {
     req.session.messages = {};
 });
 
-app.get('/admin/courses', requireAdmin, async (req, res) => {
+app.get('/admin/courses', blockMobileAdmin, requireAdmin, async (req, res) => {
     const courses = await Course.find();
     const users = await User.find();
     const coursesWithCount = courses.map(c => ({
@@ -998,7 +1020,7 @@ app.get('/admin/courses', requireAdmin, async (req, res) => {
     req.session.messages = {};
 });
 
-app.post('/admin/courses/add', requireAdmin, async (req, res) => {
+app.post('/admin/courses/add', blockMobileAdmin, requireAdmin, async (req, res) => {
     const { title, description, duration, review } = req.body;
     if (!title || !description || !duration) {
         req.session.messages = { error: 'All fields required.' };
@@ -1019,21 +1041,21 @@ app.post('/admin/courses/add', requireAdmin, async (req, res) => {
     res.redirect('/admin/courses');
 });
 
-app.post('/admin/courses/delete/:id', requireAdmin, async (req, res) => {
+app.post('/admin/courses/delete/:id', blockMobileAdmin, requireAdmin, async (req, res) => {
     await Course.findOneAndDelete({ id: req.params.id });
     await User.updateMany({ courseId: req.params.id }, { $set: { courseId: null, progress: {} } });
     req.session.messages = { success: '🗑️ Course deleted.' };
     res.redirect('/admin/courses');
 });
 
-app.post('/admin/courses/delete-all', requireAdmin, async (req, res) => {
+app.post('/admin/courses/delete-all', blockMobileAdmin, requireAdmin, async (req, res) => {
     await Course.deleteMany({});
     await User.updateMany({}, { $set: { courseId: null, progress: {} } });
     req.session.messages = { success: '🗑️ All courses deleted!' };
     res.redirect('/admin/courses');
 });
 
-app.get('/admin/courses/edit/:id', requireAdmin, async (req, res) => {
+app.get('/admin/courses/edit/:id', blockMobileAdmin, requireAdmin, async (req, res) => {
     const course = await Course.findOne({ id: req.params.id });
     if (!course) {
         req.session.messages = { error: 'Course not found.' };
@@ -1048,7 +1070,7 @@ app.get('/admin/courses/edit/:id', requireAdmin, async (req, res) => {
     req.session.messages = {};
 });
 
-app.post('/admin/courses/edit/:id', requireAdmin, async (req, res) => {
+app.post('/admin/courses/edit/:id', blockMobileAdmin, requireAdmin, async (req, res) => {
     const { title, description, duration, review } = req.body;
     const course = await Course.findOne({ id: req.params.id });
     if (!course) {
@@ -1067,7 +1089,7 @@ app.post('/admin/courses/edit/:id', requireAdmin, async (req, res) => {
 // ============================================================
 // ADMIN LEVEL ROUTES
 // ============================================================
-app.post('/admin/courses/:id/levels/add', requireAdmin, async (req, res) => {
+app.post('/admin/courses/:id/levels/add', blockMobileAdmin, requireAdmin, async (req, res) => {
     const { name, duration } = req.body;
     if (!name || !duration) {
         req.session.messages = { error: 'Level name and duration required.' };
@@ -1091,7 +1113,7 @@ app.post('/admin/courses/:id/levels/add', requireAdmin, async (req, res) => {
     res.redirect(`/admin/courses/edit/${req.params.id}`);
 });
 
-app.post('/admin/courses/:id/levels/delete/:levelId', requireAdmin, async (req, res) => {
+app.post('/admin/courses/:id/levels/delete/:levelId', blockMobileAdmin, requireAdmin, async (req, res) => {
     const course = await Course.findOne({ id: req.params.id });
     if (!course) {
         req.session.messages = { error: 'Course not found.' };
@@ -1103,7 +1125,7 @@ app.post('/admin/courses/:id/levels/delete/:levelId', requireAdmin, async (req, 
     res.redirect(`/admin/courses/edit/${req.params.id}`);
 });
 
-app.get('/admin/levels/edit/:courseId/:levelId', requireAdmin, async (req, res) => {
+app.get('/admin/levels/edit/:courseId/:levelId', blockMobileAdmin, requireAdmin, async (req, res) => {
     const course = await Course.findOne({ id: req.params.courseId });
     if (!course) {
         req.session.messages = { error: 'Course not found.' };
@@ -1124,7 +1146,7 @@ app.get('/admin/levels/edit/:courseId/:levelId', requireAdmin, async (req, res) 
     req.session.messages = {};
 });
 
-app.post('/admin/levels/:courseId/:levelId/lessons/add', requireAdmin, async (req, res) => {
+app.post('/admin/levels/:courseId/:levelId/lessons/add', blockMobileAdmin, requireAdmin, async (req, res) => {
     const { title, description } = req.body;
     if (!title) {
         req.session.messages = { error: 'Lesson title required.' };
@@ -1151,7 +1173,7 @@ app.post('/admin/levels/:courseId/:levelId/lessons/add', requireAdmin, async (re
     res.redirect(`/admin/levels/edit/${req.params.courseId}/${req.params.levelId}`);
 });
 
-app.post('/admin/levels/:courseId/:levelId/lessons/delete/:lessonId', requireAdmin, async (req, res) => {
+app.post('/admin/levels/:courseId/:levelId/lessons/delete/:lessonId', blockMobileAdmin, requireAdmin, async (req, res) => {
     const course = await Course.findOne({ id: req.params.courseId });
     if (!course) {
         req.session.messages = { error: 'Course not found.' };
@@ -1168,7 +1190,7 @@ app.post('/admin/levels/:courseId/:levelId/lessons/delete/:lessonId', requireAdm
     res.redirect(`/admin/levels/edit/${req.params.courseId}/${req.params.levelId}`);
 });
 
-app.post('/admin/levels/:courseId/:levelId/lessons/:lessonId/classes/add', requireAdmin, async (req, res) => {
+app.post('/admin/levels/:courseId/:levelId/lessons/:lessonId/classes/add', blockMobileAdmin, requireAdmin, async (req, res) => {
     const { title, content, imageUrl, videoUrl, externalLink } = req.body;
     if (!title || !content) {
         req.session.messages = { error: 'Class title and content required.' };
@@ -1202,7 +1224,7 @@ app.post('/admin/levels/:courseId/:levelId/lessons/:lessonId/classes/add', requi
     res.redirect(`/admin/levels/edit/${req.params.courseId}/${req.params.levelId}`);
 });
 
-app.post('/admin/levels/:courseId/:levelId/lessons/:lessonId/classes/delete/:classId', requireAdmin, async (req, res) => {
+app.post('/admin/levels/:courseId/:levelId/lessons/:lessonId/classes/delete/:classId', blockMobileAdmin, requireAdmin, async (req, res) => {
     const course = await Course.findOne({ id: req.params.courseId });
     if (!course) {
         req.session.messages = { error: 'Course not found.' };
@@ -1224,7 +1246,7 @@ app.post('/admin/levels/:courseId/:levelId/lessons/:lessonId/classes/delete/:cla
     res.redirect(`/admin/levels/edit/${req.params.courseId}/${req.params.levelId}`);
 });
 
-app.post('/admin/levels/:courseId/:levelId/lessons/:lessonId/classes/edit/:classId', requireAdmin, async (req, res) => {
+app.post('/admin/levels/:courseId/:levelId/lessons/:lessonId/classes/edit/:classId', blockMobileAdmin, requireAdmin, async (req, res) => {
     const { title, content, imageUrl, videoUrl, externalLink } = req.body;
     const course = await Course.findOne({ id: req.params.courseId });
     if (!course) {
@@ -1259,7 +1281,7 @@ app.post('/admin/levels/:courseId/:levelId/lessons/:lessonId/classes/edit/:class
 // ============================================================
 // ADMIN TEST ROUTES
 // ============================================================
-app.post('/admin/levels/:courseId/:levelId/test/add', requireAdmin, async (req, res) => {
+app.post('/admin/levels/:courseId/:levelId/test/add', blockMobileAdmin, requireAdmin, async (req, res) => {
     const { question, option1, option2, option3, option4, correct } = req.body;
     if (!question || !option1 || !option2 || !option3 || !option4 || correct === undefined) {
         req.session.messages = { error: 'All test fields required.' };
@@ -1287,7 +1309,7 @@ app.post('/admin/levels/:courseId/:levelId/test/add', requireAdmin, async (req, 
     res.redirect(`/admin/levels/edit/${req.params.courseId}/${req.params.levelId}`);
 });
 
-app.post('/admin/levels/:courseId/:levelId/test/delete/:questionId', requireAdmin, async (req, res) => {
+app.post('/admin/levels/:courseId/:levelId/test/delete/:questionId', blockMobileAdmin, requireAdmin, async (req, res) => {
     const course = await Course.findOne({ id: req.params.courseId });
     if (!course) {
         req.session.messages = { error: 'Course not found.' };
@@ -1308,7 +1330,7 @@ app.post('/admin/levels/:courseId/:levelId/test/delete/:questionId', requireAdmi
 // ============================================================
 // ADMIN MANAGE ADMINS
 // ============================================================
-app.get('/admin/manage-admins', requireAdmin, async (req, res) => {
+app.get('/admin/manage-admins', blockMobileAdmin, requireAdmin, async (req, res) => {
     const users = await User.find();
     const admins = users.filter(u => u.isAdmin);
     const nonAdmins = users.filter(u => !u.isAdmin);
@@ -1322,7 +1344,7 @@ app.get('/admin/manage-admins', requireAdmin, async (req, res) => {
     req.session.messages = {};
 });
 
-app.post('/admin/make-admin/:id', requireAdmin, async (req, res) => {
+app.post('/admin/make-admin/:id', blockMobileAdmin, requireAdmin, async (req, res) => {
     const user = await User.findOne({ id: req.params.id });
     if (user) {
         user.isAdmin = true;
@@ -1332,7 +1354,7 @@ app.post('/admin/make-admin/:id', requireAdmin, async (req, res) => {
     res.redirect('/admin/manage-admins');
 });
 
-app.post('/admin/remove-admin/:id', requireAdmin, async (req, res) => {
+app.post('/admin/remove-admin/:id', blockMobileAdmin, requireAdmin, async (req, res) => {
     const user = await User.findOne({ id: req.params.id });
     if (user && user.email !== 'balogunmustaphaaddeji@gmail.com') {
         user.isAdmin = false;
@@ -1384,4 +1406,4 @@ async function startServer() {
     });
 }
 
-startServer();s
+startServer();

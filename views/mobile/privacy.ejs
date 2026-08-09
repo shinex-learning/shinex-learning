@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Privacy – SHINEX</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <%- include('partials/header', { user: null, showBack: true }) %>
+
+    <main class="main-content" style="padding: 8px 12px 20px;">
+        <div class="card" style="padding:16px; border-radius:14px;">
+            <h1 style="font-size:1.3rem; font-weight:800; color:#1A0A2E;">Privacy Policy</h1>
+            <p style="color:#7a6a8f; font-size:0.8rem; margin-bottom:12px;">SHINEX Learning Circle (SLC lmt.®)</p>
+
+            <div style="border-top:2px solid #ede8f5; padding-top:12px;">
+                <h3 style="font-weight:700; color:#1A0A2E; font-size:0.95rem;">1. Information We Collect</h3>
+                <ul style="color:#4a3a60; font-size:0.85rem; line-height:1.8; padding-left:16px;">
+                    <li>Name, email, date of birth, gender, country</li>
+                    <li>Course enrollments and progress</li>
+                    <li>IP address and browser info</li>
+                </ul>
+
+                <h3 style="font-weight:700; color:#1A0A2E; font-size:0.95rem; margin-top:10px;">2. How We Use Your Information</h3>
+                <ul style="color:#4a3a60; font-size:0.85rem; line-height:1.8; padding-left:16px;">
+                    <li>To create and manage your account</li>
+                    <li>To track your progress</li>
+                    <li>To improve our platform</li>
+                </ul>
+
+                <h3 style="font-weight:700; color:#1A0A2E; font-size:0.95rem; margin-top:10px;">3. Data Security</h3>
+                <ul style="color:#4a3a60; font-size:0.85rem; line-height:1.8; padding-left:16px;">
+                    <li>Your password is encrypted</li>
+                    <li>All data is stored securely</li>
+                </ul>
+
+                <h3 style="font-weight:700; color:#1A0A2E; font-size:0.95rem; margin-top:10px;">4. Data Sharing</h3>
+                <ul style="color:#4a3a60; font-size:0.85rem; line-height:1.8; padding-left:16px;">
+                    <li>We do NOT sell your data</li>
+                    <li>Data shared only with admins</li>
+                </ul>
+
+                <div style="margin-top:12px; padding:10px; background:#f8f6fc; border-radius:6px; font-size:0.8rem; color:#4a3a60;">
+                    Contact: <strong style="color:#8B5CF6;">privacy@shinex.com</strong>
+                </div>
+
+                <div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;">
+                    <a href="/register/step2" class="btn btn-primary btn-sm">Back to Registration</a>
+                    <a href="/" class="btn btn-secondary btn-sm">Home</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+</body>
+</html>

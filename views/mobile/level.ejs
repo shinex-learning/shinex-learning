@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title><%= level.name %> – SHINEX</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .mobile-level-card { background: #fff; border-radius: 14px; padding: 14px; margin-bottom: 10px; border: 1px solid #ede8f5; }
+        body.dark-mode .mobile-level-card { background: #1e1e1e; border-color: #333; }
+        .mobile-class-item { padding: 8px 10px; background: #f8f6fc; border-radius: 8px; margin-bottom: 4px; border-left: 3px solid #b0a3c4; }
+        body.dark-mode .mobile-class-item { background: #1a1a1a; border-color: #333; }
+        .mobile-class-item.completed { border-left-color: #27ae60; }
+        .mobile-class-item.active { border-left-color: #8B5CF6; background: #f0ebfb; }
+        body.dark-mode .mobile-class-item.active { background: #2a1a4a; }
+        .mobile-class-item.locked { opacity: 0.5; }
+        .mobile-class-link { display: flex; justify-content: space-between; align-items: center; text-decoration: none; color: inherit; }
+        .ai-chat-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #8B5CF6;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(139, 92, 246, 0.4);
+            z-index: 999;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .ai-chat-btn:hover { transform: scale(1.05); }
+        body.dark-mode .ai-chat-btn { background: #6a3dcf; }
+        .ai-chat-popup {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 320px;
+            max-width: 90vw;
+            max-height: 70vh;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.2);
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+            border: 1px solid #ede8f5;
+            overflow: hidden;
+        }
+        body.dark-mode .ai-chat-popup { background: #1e1e1e; border-color: #333; }
+        .ai-chat-header { background: #8B5CF6; color: #fff; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; }
+        .ai-chat-header h4 { margin: 0; font-size: 0.95rem; }
+        .ai-chat-close { background: transparent; border: none; color: #fff; font-size: 1.2rem; cursor: pointer; }
+        .ai-chat-messages { padding: 12px; flex: 1; overflow-y: auto; max-height: 300px; }
+        .ai-chat-message { margin-bottom: 8px; padding: 8px 12px; border-radius: 10px; max-width: 85%; }
+        .ai-chat-message.bot { background: #f0ebfb; color: #1A0A2E; align-self: flex-start; }
+        body.dark-mode .ai-chat-message.bot { background: #2a1a4a; color: #fff; }
+        .ai-chat-message.user { background: #8B5CF6; color: #fff; align-self: flex-end; margin-left: auto; }
+        .ai-chat-input-wrap { display: flex; padding: 8px 12px; border-top: 1px solid #ede8f5; gap: 8px; }
+        body.dark-mode .ai-chat-input-wrap { border-top-color: #333; }
+        .ai-chat-input-wrap input { flex: 1; padding: 8px 12px; border: 1px solid #ede8f5; border-radius: 20px; font-size: 0.85rem; }
+        body.dark-mode .ai-chat-input-wrap input { background: #2a2a2a; border-color: #444; color: #fff; }
+        .ai-chat-input-wrap button { background: #8B5CF6; color: #fff; border: none; border-radius: 50%; width: 36px; height: 36px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <%- include('partials/header', { user, showBack: true }) %>
+
+    <main class="main-content" style="padding: 8px 12px 20px; padding-bottom: 80px;">
+        <% if (messages && messages.error) { %>
+            <div class="alert alert-danger" style="margin-bottom:10px;"><%= messages.error %></div>
+        <% } %>
+        <% if (messages && messages.success) { %>
+            <div class="alert alert-success" style="margin-bottom:10px;"><%= messages.success %></div>
+        <% } %>
+
+        <!-- Level Header -->
+        <div class="mobile-level-card">
+            <h1 style="font-size:1.1rem; font-weight:700; color:#1A0A2E; margin:0;"><%= level.name %></h1>
+            <p style="color:#7a6a8f; font-size:0.8rem; margin:2px 0;"><%= course.title %></p>
+            <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:6px;">
+                <span class="badge badge-dark"><i class="far fa-clock"></i> <%= level.duration %></span>
+                <span class="badge badge-gold"><i class="fas fa-star"></i> Score: <%= score %></span>
+                <span class="badge badge-dark"><i class="fas fa-list-ul"></i> <%= completedClasses %>/<%= totalClasses %></span>
+            </div>
+            <div style="margin-top:6px;">
+                <div style="display:flex; justify-content:space-between; font-size:0.7rem; font-weight:500; color:#2d1a4a;">
+                    <span>Progress</span>
+                    <span><%= progress %>%</span>
+                </div>
+                <div class="progress-wrap" style="height:6px;"><div class="progress-fill" style="width:<%= progress %>%; height:100%;"></div></div>
+            </div>
+        </div>
+
+        <!-- Current Class Content -->
+        <% if (currentClass) { %>
+            <div class="mobile-level-card" style="border-left:4px solid #8B5CF6;">
+                <h2 style="font-size:1.1rem; font-weight:700; color:#1A0A2E; margin:0 0 6px;"><%= currentClass.title %></h2>
+                <div class="class-content" style="font-size:0.95rem; line-height:1.7; color:#1f2937;">
+                    <%- parseContent(currentClass.content) %>
+                </div>
+                <% if (currentClass.imageUrl) { %>
+                    <div style="margin:8px 0;"><img src="<%= currentClass.imageUrl %>" alt="" style="max-width:100%; border-radius:8px;"></div>
+                <% } %>
+                <% if (currentClass.videoUrl) { %>
+                    <a href="<%= currentClass.videoUrl %>" target="_blank" class="btn btn-secondary btn-sm"><i class="fab fa-youtube"></i> Watch Video</a>
+                <% } %>
+                <% if (currentClass.externalLink) { %>
+                    <a href="<%= currentClass.externalLink %>" target="_blank" class="btn btn-secondary btn-sm"><i class="fas fa-external-link-alt"></i> More</a>
+                <% } %>
+                <div style="margin-top:8px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+                    <span>
+                        <% if (user.progress && user.progress[currentClass.id]) { %>
+                            <span style="color:#27ae60;"><i class="fas fa-check-circle"></i> Completed</span>
+                        <% } else { %>
+                            <span style="color:#b0a3c4;"><i class="far fa-circle"></i> Not Completed</span>
+                        <% } %>
+                    </span>
+                    <% if (user.progress && user.progress[currentClass.id]) { %>
+                        <% let allClassesFlat = []; if (level.lessons) { level.lessons.forEach(function(lesson) { if (lesson.classes) { lesson.classes.forEach(function(cls) { allClassesFlat.push(cls.id); }); } }); } %>
+                        <% let currentIdx = allClassesFlat.indexOf(currentClass.id); let hasNext = currentIdx < allClassesFlat.length - 1; %>
+                        <% if (hasNext) { %>
+                            <form action="/level/next/<%= course.id %>/<%= level.id %>/<%= currentClass.id %>" method="POST">
+                                <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-arrow-right"></i> Next</button>
+                            </form>
+                        <% } else { %>
+                            <span style="color:#f39c12;">🎉 All done!</span>
+                        <% } %>
+                    <% } else { %>
+                        <form action="/level/complete/<%= currentClass.id %>" method="POST">
+                            <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-check"></i> Mark Complete</button>
+                        </form>
+                    <% } %>
+                </div>
+            </div>
+        <% } else { %>
+            <div class="mobile-level-card" style="text-align:center; padding:30px 16px;">
+                <i class="fas fa-book-open" style="font-size:2rem; color:#d4c4f0;"></i>
+                <p style="color:#7a6a8f;">Select a class from the list below.</p>
+            </div>
+        <% } %>
+
+        <!-- Class List -->
+        <div class="mobile-level-card">
+            <h4 style="font-weight:700; color:#1A0A2E; font-size:0.9rem; margin:0 0 8px;"><i class="fas fa-list-ul"></i> Lessons & Classes</h4>
+            <% if (level.lessons && level.lessons.length > 0) { %>
+                <% level.lessons.forEach(function(lesson, lIdx) { %>
+                    <div style="margin-bottom:6px;">
+                        <div style="font-weight:600; font-size:0.85rem; color:#1A0A2E; padding:4px 0;"><%= (lIdx+1) %>. <%= lesson.title %></div>
+                        <% if (lesson.classes && lesson.classes.length > 0) { %>
+                            <% lesson.classes.forEach(function(cls, cIdx) { 
+                                const isCompleted = user.progress && user.progress[cls.id];
+                                const isLocked = !isCompleted && cIdx > 0 && !(user.progress && user.progress[lesson.classes[cIdx-1].id]);
+                                const isActive = cls.id === (currentClass ? currentClass.id : null);
+                            %>
+                                <div class="mobile-class-item <%= isCompleted ? 'completed' : '' %> <%= isActive ? 'active' : '' %> <%= isLocked ? 'locked' : '' %>">
+                                    <a href="/level/<%= course.id %>/<%= level.id %>?classId=<%= cls.id %>" class="mobile-class-link" style="<%= isLocked ? 'pointer-events:none;' : '' %>">
+                                        <span style="font-size:0.8rem;">
+                                            <span style="color:#8B5CF6; font-weight:600;"><%= (lIdx+1) %>.<%= (cIdx+1) %></span> <%= cls.title %>
+                                        </span>
+                                        <span>
+                                            <% if (isCompleted) { %>
+                                                <i class="fas fa-check-circle" style="color:#27ae60;"></i>
+                                            <% } else if (isLocked) { %>
+                                                <i class="fas fa-lock" style="color:#b0a3c4;"></i>
+                                            <% } else if (isActive) { %>
+                                                <i class="fas fa-chevron-right" style="color:#8B5CF6;"></i>
+                                            <% } else { %>
+                                                <i class="far fa-circle" style="color:#b0a3c4;"></i>
+                                            <% } %>
+                                        </span>
+                                    </a>
+                                </div>
+                            <% }); %>
+                        <% } else { %>
+                            <div style="color:#b0a3c4; font-size:0.75rem; padding-left:12px;">No classes yet</div>
+                        <% } %>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <p style="color:#7a6a8f; font-size:0.8rem;">No lessons yet.</p>
+            <% } %>
+        </div>
+
+        <!-- Ad Box -->
+        <%- include('../partials/ad-box') %>
+    </main>
+
+    <!-- ===== AI CHAT FLOATING BUTTON ===== -->
+    <button class="ai-chat-btn" id="aiChatToggle" aria-label="AI Chat">
+        🧑‍🎓
+    </button>
+
+    <!-- ===== AI CHAT POPUP ===== -->
+    <div class="ai-chat-popup" id="aiChatPopup">
+        <div class="ai-chat-header">
+            <h4><i class="fas fa-robot"></i> AI Tutor</h4>
+            <button class="ai-chat-close" id="aiChatClose">&times;</button>
+        </div>
+        <div class="ai-chat-messages" id="aiChatMessages">
+            <div class="ai-chat-message bot">
+                👋 Welcome to SHINEX Learning Circle!<br>
+                I'm your AI learning assistant.<br><br>
+                Ask me anything about this course! 😊
+            </div>
+        </div>
+        <div class="ai-chat-input-wrap">
+            <input type="text" id="aiChatInput" placeholder="Ask a question...">
+            <button id="aiChatSend"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <script>
+        // AI Chat Toggle
+        const chatToggle = document.getElementById('aiChatToggle');
+        const chatPopup = document.getElementById('aiChatPopup');
+        const chatClose = document.getElementById('aiChatClose');
+        const chatInput = document.getElementById('aiChatInput');
+        const chatSend = document.getElementById('aiChatSend');
+        const chatMessages = document.getElementById('aiChatMessages');
+
+        function toggleChat() {
+            const isVisible = chatPopup.style.display === 'flex';
+            chatPopup.style.display = isVisible ? 'none' : 'flex';
+            if (!isVisible) chatInput.focus();
+        }
+
+        chatToggle.addEventListener('click', toggleChat);
+        chatClose.addEventListener('click', toggleChat);
+
+        // Send message
+        async function sendMessage() {
+            const msg = chatInput.value.trim();
+            if (!msg) return;
+
+            // Add user message
+            const userMsg = document.createElement('div');
+            userMsg.className = 'ai-chat-message user';
+            userMsg.textContent = msg;
+            chatMessages.appendChild(userMsg);
+            chatInput.value = '';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Show loading
+            const loadingMsg = document.createElement('div');
+            loadingMsg.className = 'ai-chat-message bot';
+            loadingMsg.textContent = '⏳ Thinking...';
+            chatMessages.appendChild(loadingMsg);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            try {
+                const res = await fetch('/api/ai-tutor', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        userPrompt: `Course: ${course.title}, Level: ${level.name}. ${msg}` 
+                    })
+                });
+                const data = await res.json();
+                loadingMsg.remove();
+                const botMsg = document.createElement('div');
+                botMsg.className = 'ai-chat-message bot';
+                botMsg.innerHTML = data.answer || '❌ Sorry, I could not process that.';
+                chatMessages.appendChild(botMsg);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            } catch (error) {
+                loadingMsg.remove();
+                const botMsg = document.createElement('div');
+                botMsg.className = 'ai-chat-message bot';
+                botMsg.textContent = '❌ Network error. Please try again.';
+                chatMessages.appendChild(botMsg);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        }
+
+        chatSend.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        // Locked class alert
+        document.querySelectorAll('.mobile-class-item.locked .mobile-class-link').forEach(function(link) {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                alert('🔒 This class is locked. Complete the previous class first.');
+            });
+        });
+    </script>
+
+    <%- include('partials/footer') %>
+</body>
+</html>

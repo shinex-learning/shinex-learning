@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Settings – SHINEX</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .mobile-settings-card { background: #fff; border-radius: 14px; padding: 16px; margin-bottom: 10px; border: 1px solid #ede8f5; }
+        body.dark-mode .mobile-settings-card { background: #1e1e1e; border-color: #333; }
+    </style>
+</head>
+<body>
+    <%- include('partials/header', { user, showBack: true }) %>
+
+    <main class="main-content" style="padding: 8px 12px 20px;">
+        <div class="mobile-settings-card">
+            <h2 style="font-size:1.2rem; font-weight:800; color:#1A0A2E; margin:0 0 2px;"><i class="fas fa-cog" style="color:#8B5CF6;"></i> Settings</h2>
+            <p style="color:#7a6a8f; font-size:0.8rem; margin:0 0 14px;">Update your profile</p>
+
+            <% if (messages && messages.error) { %>
+                <div class="alert alert-danger" style="margin-bottom:10px;"><%= messages.error %></div>
+            <% } %>
+            <% if (messages && messages.success) { %>
+                <div class="alert alert-success" style="margin-bottom:10px;"><%= messages.success %></div>
+            <% } %>
+
+            <form action="/settings/update" method="POST">
+                <div class="form-group"><label for="firstName">First Name</label><input type="text" id="firstName" name="firstName" class="form-control" value="<%= user.firstName %>"></div>
+                <div class="form-group"><label for="lastName">Last Name</label><input type="text" id="lastName" name="lastName" class="form-control" value="<%= user.lastName %>"></div>
+                <div class="form-group"><label for="bio">Bio</label><textarea id="bio" name="bio" class="form-control" rows="2"><%= user.bio %></textarea></div>
+
+                <hr style="margin:12px 0; border-color:#ede8f5;">
+
+                <h4 style="font-weight:700; font-size:0.9rem; margin:0 0 10px;"><i class="fas fa-lock" style="color:#8B5CF6;"></i> Change Password</h4>
+                <div class="form-group"><label for="currentPassword">Current Password</label>
+                    <div class="password-wrapper"><input type="password" id="currentPassword" name="currentPassword" class="form-control" placeholder="Current password"><i class="fas fa-eye password-toggle" onclick="togglePassword('currentPassword', this)"></i></div>
+                </div>
+                <div class="form-group"><label for="newPassword">New Password <span class="label-hint" style="font-size:0.65rem;">(min 6 chars)</span></label>
+                    <div class="password-wrapper"><input type="password" id="newPassword" name="newPassword" class="form-control" placeholder="New password"><i class="fas fa-eye password-toggle" onclick="togglePassword('newPassword', this)"></i></div>
+                </div>
+                <div class="form-group"><label for="confirmPassword">Confirm Password</label>
+                    <div class="password-wrapper"><input type="password" id="confirmPassword" name="confirmPassword" class="form-control" placeholder="Confirm password"><i class="fas fa-eye password-toggle" onclick="togglePassword('confirmPassword', this)"></i></div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width:100%; padding:14px;"><i class="fas fa-save"></i> Save</button>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        function togglePassword(id, icon) {
+            const input = document.getElementById(id);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+    </script>
+
+    <%- include('partials/footer') %>
+</body>
+</html>
