@@ -372,6 +372,21 @@ app.get('/privacy', (req, res) => {
 });
 
 // ============================================================
+// CONTACT PAGE
+// ============================================================
+app.get('/contact', (req, res) => {
+    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
+    const view = isMobile(req) ? 'mobile/contact' : 'contact';
+    res.render(view, {
+        user,
+        messages: req.session.messages || {},
+        showBack: true,
+        title: 'Contact Us'
+    });
+    req.session.messages = {};
+});
+
+// ============================================================
 // HOME
 // ============================================================
 app.get('/', async (req, res) => {

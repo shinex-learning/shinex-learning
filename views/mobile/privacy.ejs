@@ -6,50 +6,77 @@
     <title>Privacy – SHINEX</title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .mobile-privacy-card { background: #fff; border-radius: 14px; padding: 16px; margin: 8px 4px; border: 1px solid #ede8f5; }
+        body.dark-mode .mobile-privacy-card { background: #111111; border-color: #333; }
+        .mobile-privacy-card h1 { font-size: 1.2rem; font-weight: 800; color: #1A0A2E; margin: 0 0 2px; }
+        body.dark-mode .mobile-privacy-card h1 { color: #ffffff; }
+        .mobile-privacy-card .subtitle { color: #7a6a8f; font-size: 0.75rem; margin: 0 0 12px; }
+        body.dark-mode .mobile-privacy-card .subtitle { color: #b0a0c0; }
+        .mobile-privacy-card h3 { font-weight: 700; color: #1A0A2E; font-size: 0.9rem; margin: 12px 0 4px; }
+        body.dark-mode .mobile-privacy-card h3 { color: #ffffff; }
+        .mobile-privacy-card p, .mobile-privacy-card li { color: #4a3a60; font-size: 0.8rem; line-height: 1.6; }
+        body.dark-mode .mobile-privacy-card p, body.dark-mode .mobile-privacy-card li { color: #d0d0d0; }
+        .mobile-privacy-card ul { padding-left: 16px; margin: 4px 0 8px; }
+        .mobile-privacy-card hr { border: none; border-top: 2px solid #ede8f5; margin: 12px 0; }
+        body.dark-mode .mobile-privacy-card hr { border-top-color: #333; }
+        .mobile-privacy-card .contact-box { background: #f8f6fc; padding: 10px 14px; border-radius: 8px; margin: 10px 0; }
+        body.dark-mode .mobile-privacy-card .contact-box { background: #1a1a1a; }
+        .mobile-privacy-card .contact-box strong { color: #8B5CF6; }
+        .mobile-privacy-card .back-links { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+        .mobile-privacy-card .back-links .btn { flex: 1; min-width: 80px; text-align: center; }
+    </style>
 </head>
 <body>
     <%- include('partials/header', { user: null, showBack: true }) %>
 
     <main class="main-content" style="padding: 8px 12px 20px;">
-        <div class="card" style="padding:16px; border-radius:14px;">
-            <h1 style="font-size:1.3rem; font-weight:800; color:#1A0A2E;">Privacy Policy</h1>
-            <p style="color:#7a6a8f; font-size:0.8rem; margin-bottom:12px;">SHINEX Learning Circle (SLC lmt.®)</p>
+        <div class="mobile-privacy-card">
+            <h1><i class="fas fa-shield-alt" style="color:#8B5CF6;"></i> Privacy</h1>
+            <p class="subtitle">SHINEX Learning Circle (SLC lmt.®)</p>
 
-            <div style="border-top:2px solid #ede8f5; padding-top:12px;">
-                <h3 style="font-weight:700; color:#1A0A2E; font-size:0.95rem;">1. Information We Collect</h3>
-                <ul style="color:#4a3a60; font-size:0.85rem; line-height:1.8; padding-left:16px;">
-                    <li>Name, email, date of birth, gender, country</li>
-                    <li>Course enrollments and progress</li>
-                    <li>IP address and browser info</li>
-                </ul>
+            <hr>
 
-                <h3 style="font-weight:700; color:#1A0A2E; font-size:0.95rem; margin-top:10px;">2. How We Use Your Information</h3>
-                <ul style="color:#4a3a60; font-size:0.85rem; line-height:1.8; padding-left:16px;">
-                    <li>To create and manage your account</li>
-                    <li>To track your progress</li>
-                    <li>To improve our platform</li>
-                </ul>
+            <h3>1. Information We Collect</h3>
+            <ul>
+                <li>Name, email, date of birth, gender, country</li>
+                <li>Course enrollments and progress</li>
+                <li>IP address and browser info</li>
+            </ul>
 
-                <h3 style="font-weight:700; color:#1A0A2E; font-size:0.95rem; margin-top:10px;">3. Data Security</h3>
-                <ul style="color:#4a3a60; font-size:0.85rem; line-height:1.8; padding-left:16px;">
-                    <li>Your password is encrypted</li>
-                    <li>All data is stored securely</li>
-                </ul>
+            <h3>2. How We Use Your Information</h3>
+            <ul>
+                <li>To create your account</li>
+                <li>To track your progress</li>
+                <li>To improve our platform</li>
+            </ul>
 
-                <h3 style="font-weight:700; color:#1A0A2E; font-size:0.95rem; margin-top:10px;">4. Data Sharing</h3>
-                <ul style="color:#4a3a60; font-size:0.85rem; line-height:1.8; padding-left:16px;">
-                    <li>We do NOT sell your data</li>
-                    <li>Data shared only with admins</li>
-                </ul>
+            <h3>3. Data Security</h3>
+            <ul>
+                <li>Your password is encrypted</li>
+                <li>Data is stored securely</li>
+            </ul>
 
-                <div style="margin-top:12px; padding:10px; background:#f8f6fc; border-radius:6px; font-size:0.8rem; color:#4a3a60;">
-                    Contact: <strong style="color:#8B5CF6;">privacy@shinex.com</strong>
-                </div>
+            <h3>4. Data Sharing</h3>
+            <ul>
+                <li>We do NOT sell your data</li>
+                <li>Data shared only with admins</li>
+            </ul>
 
-                <div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;">
-                    <a href="/register/step2" class="btn btn-primary btn-sm">Back to Registration</a>
-                    <a href="/" class="btn btn-secondary btn-sm">Home</a>
-                </div>
+            <h3>5. Your Rights</h3>
+            <ul>
+                <li>Access, correct, delete your data</li>
+            </ul>
+
+            <div class="contact-box">
+                <strong>Contact:</strong> <a href="mailto:balogunmustaphaaddeji@gmail.com" style="color:#8B5CF6;">balogunmustaphaaddeji@gmail.com</a>
+            </div>
+
+            <div class="back-links">
+                <a href="/" class="btn btn-secondary btn-sm"><i class="fas fa-home"></i> Home</a>
+                <a href="/terms" class="btn btn-secondary btn-sm"><i class="fas fa-file-contract"></i> Terms</a>
+                <a href="/contact" class="btn btn-secondary btn-sm"><i class="fas fa-envelope"></i> Contact</a>
             </div>
         </div>
     </main>

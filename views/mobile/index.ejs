@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        /* ===== MOBILE HOMEPAGE ===== */
         .mobile-hero {
             padding: 24px 16px;
             text-align: center;
@@ -18,7 +19,9 @@
         }
         .mobile-hero h1 { font-size: 1.5rem; font-weight: 800; margin: 0; }
         .mobile-hero p { font-size: 0.85rem; color: #d4c4f0; margin: 4px 0 12px; }
-        .mobile-hero .btn { background: #fff; color: #8B5CF6; padding: 10px 20px; border-radius: 30px; font-weight: 600; }
+        .mobile-hero .btn { background: #fff; color: #8B5CF6; padding: 10px 20px; border-radius: 30px; font-weight: 600; border: none; }
+        .mobile-section-title { font-size: 1.1rem; font-weight: 700; color: #1A0A2E; margin: 16px 0 4px; }
+        body.dark-mode .mobile-section-title { color: #f0f0f0; }
         .mobile-course-card {
             background: #fff;
             border-radius: 12px;
@@ -43,20 +46,41 @@
             margin: 2px 0 6px;
         }
         body.dark-mode .mobile-course-card .course-desc { color: #a090b0; }
-        .mobile-section-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #1A0A2E;
-            margin: 12px 0 8px;
+        .mobile-course-card .course-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin: 4px 0 8px;
         }
-        body.dark-mode .mobile-section-title { color: #f0f0f0; }
+        .mobile-empty-state {
+            text-align: center;
+            padding: 30px 16px;
+            background: #f8f6fc;
+            border-radius: 12px;
+            border: 1px solid #ede8f5;
+        }
+        body.dark-mode .mobile-empty-state {
+            background: #1a1a1a;
+            border-color: #333;
+        }
+        .mobile-empty-state .empty-icon {
+            font-size: 2.5rem;
+            color: #d4c4f0;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .mobile-empty-state p {
+            color: #7a6a8f;
+            font-size: 0.85rem;
+            margin: 0;
+        }
+        body.dark-mode .mobile-empty-state p { color: #a090b0; }
     </style>
 </head>
 <body>
     <%- include('partials/header', { user, showBack: false }) %>
 
     <main class="main-content" style="padding: 8px 12px 20px;">
-        <!-- Messages -->
         <% if (messages && messages.error) { %>
             <div class="alert alert-danger" style="margin-bottom:10px;"><%= messages.error %></div>
         <% } %>
@@ -71,14 +95,13 @@
             <% if (user) { %>
                 <a href="/dashboard" class="btn">My Dashboard</a>
             <% } else { %>
-                <a href="/register/step1" class="btn" style="margin-right:8px;">Get Started</a>
-                <a href="/login" class="btn" style="background:transparent; color:#fff; border:2px solid #fff;">Login</a>
+                <a href="/" class="btn" style="background:transparent; color:#fff; border:2px solid #fff; padding:10px 24px;">Explore Courses</a>
             <% } %>
         </div>
 
-        <!-- Courses -->
+        <!-- Courses Section -->
         <div class="mobile-section-title"><i class="fas fa-graduation-cap" style="color:#8B5CF6;"></i> Our Courses</div>
-        <p style="color:#7a6a8f; font-size:0.8rem; margin:0 0 10px;">Choose a course to start learning</p>
+        <p style="color:#7a6a8f; font-size:0.8rem; margin:0 0 12px;">Choose a course to start learning</p>
 
         <% if (courses && courses.length > 0) { %>
             <% courses.forEach(function(c) { %>
@@ -89,7 +112,7 @@
                     </div>
                     <div class="course-title"><%= c.title %></div>
                     <div class="course-desc"><%= c.description %></div>
-                    <div style="display:flex; flex-wrap:wrap; gap:4px; margin:4px 0 8px;">
+                    <div class="course-meta">
                         <span class="badge badge-dark"><i class="fas fa-layer-group"></i> <%= c.levels ? c.levels.length : 0 %> Levels</span>
                         <span class="badge badge-dark">
                             <i class="fas fa-book"></i> 
@@ -108,14 +131,15 @@
                     <% } else if (user) { %>
                         <button class="btn btn-secondary btn-sm" style="width:100%;" disabled>Enroll via Admin</button>
                     <% } else { %>
-                        <a href="/login" class="btn btn-secondary btn-sm" style="width:100%;">Login to Enroll</a>
+                        <a href="/" class="btn btn-secondary btn-sm" style="width:100%;">View Course</a>
                     <% } %>
                 </div>
             <% }); %>
         <% } else { %>
-            <div style="text-align:center; padding:30px 16px; background:#f8f6fc; border-radius:12px; border:1px solid #ede8f5;">
-                <i class="fas fa-info-circle" style="font-size:2rem; color:#d4c4f0;"></i>
-                <p style="color:#7a6a8f; margin:8px 0 0;">No courses available yet.</p>
+            <div class="mobile-empty-state">
+                <span class="empty-icon"><i class="fas fa-info-circle"></i></span>
+                <p>No courses available yet.</p>
+                <p style="font-size:0.75rem; color:#b0a3c4;">Check back soon!</p>
             </div>
         <% } %>
 

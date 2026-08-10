@@ -8,15 +8,40 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        .mobile-level-card { background: #fff; border-radius: 14px; padding: 14px; margin-bottom: 10px; border: 1px solid #ede8f5; }
-        body.dark-mode .mobile-level-card { background: #1e1e1e; border-color: #333; }
-        .mobile-class-item { padding: 8px 10px; background: #f8f6fc; border-radius: 8px; margin-bottom: 4px; border-left: 3px solid #b0a3c4; }
-        body.dark-mode .mobile-class-item { background: #1a1a1a; border-color: #333; }
+        .mobile-level-card {
+            background: #fff;
+            border-radius: 14px;
+            padding: 14px;
+            margin-bottom: 10px;
+            border: 1px solid #ede8f5;
+        }
+        body.dark-mode .mobile-level-card {
+            background: #1e1e1e;
+            border-color: #333;
+        }
+        .mobile-class-item {
+            padding: 8px 10px;
+            background: #f8f6fc;
+            border-radius: 8px;
+            margin-bottom: 4px;
+            border-left: 3px solid #b0a3c4;
+        }
+        body.dark-mode .mobile-class-item {
+            background: #1a1a1a;
+            border-color: #333;
+        }
         .mobile-class-item.completed { border-left-color: #27ae60; }
         .mobile-class-item.active { border-left-color: #8B5CF6; background: #f0ebfb; }
         body.dark-mode .mobile-class-item.active { background: #2a1a4a; }
         .mobile-class-item.locked { opacity: 0.5; }
-        .mobile-class-link { display: flex; justify-content: space-between; align-items: center; text-decoration: none; color: inherit; }
+        .mobile-class-link {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-decoration: none;
+            color: inherit;
+        }
+        .mobile-class-link.locked-link { pointer-events: none; }
         .ai-chat-btn {
             position: fixed;
             bottom: 20px;
@@ -36,7 +61,6 @@
             align-items: center;
             justify-content: center;
         }
-        .ai-chat-btn:hover { transform: scale(1.05); }
         body.dark-mode .ai-chat-btn { background: #6a3dcf; }
         .ai-chat-popup {
             position: fixed;
@@ -55,19 +79,72 @@
             overflow: hidden;
         }
         body.dark-mode .ai-chat-popup { background: #1e1e1e; border-color: #333; }
-        .ai-chat-header { background: #8B5CF6; color: #fff; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; }
+        .ai-chat-header {
+            background: #8B5CF6;
+            color: #fff;
+            padding: 10px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
         .ai-chat-header h4 { margin: 0; font-size: 0.95rem; }
-        .ai-chat-close { background: transparent; border: none; color: #fff; font-size: 1.2rem; cursor: pointer; }
+        .ai-chat-close {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
         .ai-chat-messages { padding: 12px; flex: 1; overflow-y: auto; max-height: 300px; }
-        .ai-chat-message { margin-bottom: 8px; padding: 8px 12px; border-radius: 10px; max-width: 85%; }
-        .ai-chat-message.bot { background: #f0ebfb; color: #1A0A2E; align-self: flex-start; }
-        body.dark-mode .ai-chat-message.bot { background: #2a1a4a; color: #fff; }
-        .ai-chat-message.user { background: #8B5CF6; color: #fff; align-self: flex-end; margin-left: auto; }
-        .ai-chat-input-wrap { display: flex; padding: 8px 12px; border-top: 1px solid #ede8f5; gap: 8px; }
+        .ai-chat-message {
+            margin-bottom: 8px;
+            padding: 8px 12px;
+            border-radius: 10px;
+            max-width: 85%;
+        }
+        .ai-chat-message.bot {
+            background: #f0ebfb;
+            color: #1A0A2E;
+            align-self: flex-start;
+        }
+        body.dark-mode .ai-chat-message.bot {
+            background: #2a1a4a;
+            color: #fff;
+        }
+        .ai-chat-message.user {
+            background: #8B5CF6;
+            color: #fff;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+        .ai-chat-input-wrap {
+            display: flex;
+            padding: 8px 12px;
+            border-top: 1px solid #ede8f5;
+            gap: 8px;
+        }
         body.dark-mode .ai-chat-input-wrap { border-top-color: #333; }
-        .ai-chat-input-wrap input { flex: 1; padding: 8px 12px; border: 1px solid #ede8f5; border-radius: 20px; font-size: 0.85rem; }
-        body.dark-mode .ai-chat-input-wrap input { background: #2a2a2a; border-color: #444; color: #fff; }
-        .ai-chat-input-wrap button { background: #8B5CF6; color: #fff; border: none; border-radius: 50%; width: 36px; height: 36px; cursor: pointer; }
+        .ai-chat-input-wrap input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #ede8f5;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+        body.dark-mode .ai-chat-input-wrap input {
+            background: #2a2a2a;
+            border-color: #444;
+            color: #fff;
+        }
+        .ai-chat-input-wrap button {
+            background: #8B5CF6;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -85,7 +162,7 @@
         <div class="mobile-level-card">
             <h1 style="font-size:1.1rem; font-weight:700; color:#1A0A2E; margin:0;"><%= level.name %></h1>
             <p style="color:#7a6a8f; font-size:0.8rem; margin:2px 0;"><%= course.title %></p>
-            <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:6px;">
+            <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:6px;">
                 <span class="badge badge-dark"><i class="far fa-clock"></i> <%= level.duration %></span>
                 <span class="badge badge-gold"><i class="fas fa-star"></i> Score: <%= score %></span>
                 <span class="badge badge-dark"><i class="fas fa-list-ul"></i> <%= completedClasses %>/<%= totalClasses %></span>
@@ -117,13 +194,13 @@
                 <% } %>
                 <div style="margin-top:8px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
                     <span>
-                        <% if (user.progress && user.progress[currentClass.id]) { %>
+                        <% if (user && user.progress && user.progress[currentClass.id]) { %>
                             <span style="color:#27ae60;"><i class="fas fa-check-circle"></i> Completed</span>
                         <% } else { %>
                             <span style="color:#b0a3c4;"><i class="far fa-circle"></i> Not Completed</span>
                         <% } %>
                     </span>
-                    <% if (user.progress && user.progress[currentClass.id]) { %>
+                    <% if (user && user.progress && user.progress[currentClass.id]) { %>
                         <% let allClassesFlat = []; if (level.lessons) { level.lessons.forEach(function(lesson) { if (lesson.classes) { lesson.classes.forEach(function(cls) { allClassesFlat.push(cls.id); }); } }); } %>
                         <% let currentIdx = allClassesFlat.indexOf(currentClass.id); let hasNext = currentIdx < allClassesFlat.length - 1; %>
                         <% if (hasNext) { %>
@@ -156,12 +233,12 @@
                         <div style="font-weight:600; font-size:0.85rem; color:#1A0A2E; padding:4px 0;"><%= (lIdx+1) %>. <%= lesson.title %></div>
                         <% if (lesson.classes && lesson.classes.length > 0) { %>
                             <% lesson.classes.forEach(function(cls, cIdx) { 
-                                const isCompleted = user.progress && user.progress[cls.id];
-                                const isLocked = !isCompleted && cIdx > 0 && !(user.progress && user.progress[lesson.classes[cIdx-1].id]);
+                                const isCompleted = user && user.progress && user.progress[cls.id];
+                                const isLocked = !isCompleted && cIdx > 0 && !(user && user.progress && user.progress[lesson.classes[cIdx-1].id]);
                                 const isActive = cls.id === (currentClass ? currentClass.id : null);
                             %>
                                 <div class="mobile-class-item <%= isCompleted ? 'completed' : '' %> <%= isActive ? 'active' : '' %> <%= isLocked ? 'locked' : '' %>">
-                                    <a href="/level/<%= course.id %>/<%= level.id %>?classId=<%= cls.id %>" class="mobile-class-link" style="<%= isLocked ? 'pointer-events:none;' : '' %>">
+                                    <a href="/level/<%= course.id %>/<%= level.id %>?classId=<%= cls.id %>" class="mobile-class-link <%= isLocked ? 'locked-link' : '' %>">
                                         <span style="font-size:0.8rem;">
                                             <span style="color:#8B5CF6; font-weight:600;"><%= (lIdx+1) %>.<%= (cIdx+1) %></span> <%= cls.title %>
                                         </span>
@@ -193,12 +270,9 @@
         <%- include('../partials/ad-box') %>
     </main>
 
-    <!-- ===== AI CHAT FLOATING BUTTON ===== -->
-    <button class="ai-chat-btn" id="aiChatToggle" aria-label="AI Chat">
-        🧑‍🎓
-    </button>
+    <!-- ===== AI CHAT ===== -->
+    <button class="ai-chat-btn" id="aiChatToggle" aria-label="AI Chat">🧑‍🎓</button>
 
-    <!-- ===== AI CHAT POPUP ===== -->
     <div class="ai-chat-popup" id="aiChatPopup">
         <div class="ai-chat-header">
             <h4><i class="fas fa-robot"></i> AI Tutor</h4>
@@ -240,7 +314,6 @@
             const msg = chatInput.value.trim();
             if (!msg) return;
 
-            // Add user message
             const userMsg = document.createElement('div');
             userMsg.className = 'ai-chat-message user';
             userMsg.textContent = msg;
@@ -248,7 +321,6 @@
             chatInput.value = '';
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
-            // Show loading
             const loadingMsg = document.createElement('div');
             loadingMsg.className = 'ai-chat-message bot';
             loadingMsg.textContent = '⏳ Thinking...';
@@ -259,15 +331,13 @@
                 const res = await fetch('/api/ai-tutor', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        userPrompt: `Course: ${course.title}, Level: ${level.name}. ${msg}` 
-                    })
+                    body: JSON.stringify({ userPrompt: `Course: ${course.title}, Level: ${level.name}. ${msg}` })
                 });
                 const data = await res.json();
                 loadingMsg.remove();
                 const botMsg = document.createElement('div');
                 botMsg.className = 'ai-chat-message bot';
-                botMsg.innerHTML = data.answer || '❌ Sorry, I could not process that.';
+                botMsg.innerHTML = data.answer || '❌ Sorry, could not process that.';
                 chatMessages.appendChild(botMsg);
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             } catch (error) {
