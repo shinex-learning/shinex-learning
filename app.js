@@ -40,14 +40,43 @@ app.use(session({
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
-
 // ============================================================
-// DEVICE DETECTION
+// DEVICE DETECTION – Mobile vs Desktop
 // ============================================================
 function isMobile(req) {
     const ua = req.headers['user-agent'] || '';
     return /Mobi|Android|iPhone|iPad|iPod|BlackBerry|Opera Mini|IEMobile/i.test(ua);
 }
+
+// ============================================================
+// VIEW HELPERS – Auto-select mobile/desktop partials
+// ============================================================
+app.use((req, res, next) => {
+    const mobile = isMobile(req);
+    
+    // Make partials available to all views
+    res.locals.getHeader = function() {
+        return mobile ? 'partials/header-mobile' : 'partials/header';
+    };
+    res.locals.getFooter = function() {
+        return mobile ? 'partials/footer-mobile' : 'partials/footer';
+    };
+    res.locals.isMobile = mobile;
+    res.locals.getAdBox = function() {
+        return 'partials/ad-box';
+    };
+    
+    next();
+});
+
+// ============================================================
+// MONGODB CONNECTION
+// ============================================================
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/shinex';
+
+mongoose.connect(MONGODB_URI)
+    .then(() => console.log('✅ Connected to MongoDB'))
+    .catch(err => console.error('❌ MongoDB connection error:', err));
 
 // ============================================================
 // MONGODB CONNECTION
@@ -1135,6 +1164,189 @@ app.use((req, res, next) => {
     };
     
     next();
+});
+
+// ============================================================
+// PUBLIC ROUTES – No login required (AdSense Review)
+// ============================================================
+
+app.get('/', async (req, res) => {
+    const user = null; // No user for AdSense review
+    const courses = await Course.find();
+    const view = isMobile(req) ? 'mobile/index' : 'index';
+    res.render(view, {
+        user,
+        courses,
+        messages: req.session.messages || {},
+        showBack: false,
+        title: 'Home'
+    });
+    req.session.messages = {};
+});
+
+app.get('/dashboard', async (req, res) => {
+    const user = null; // No user for AdSense review
+    const courses = await Course.find();
+    const view = isMobile(req) ? 'mobile/dashboard' : 'dashboard';
+    res.render(view, {
+        user: null,
+        enrolledCourse: null,
+        progress: 0,
+        completedClasses: 0,
+        totalClasses: 0,
+        score: 0,
+        courses,
+        messages: req.session.messages || {},
+        showBack: false,
+        title: 'Dashboard'
+    });
+    req.session.messages = {};
+});
+
+app.get('/course/:courseId', async (req, res) => {
+    const user = null; // No user for AdSense review
+    const course = await Course.findOne({ id: req.params.courseId });
+    if (!course) {
+        req.session.messages = { error: 'Course not found.' };
+        return res.redirect('/');
+    }
+    const view = isMobile(req) ? 'mobile/course' : 'course';
+    res.render(view, {
+        user: null,
+        course,
+        messages: req.session.messages || {},
+        showBack: true,
+        title: course.title
+    });
+    req.session.messages = {};
+});
+
+app.get('/level/:courseId/:levelId', async (req, res) => {
+    const user = null; // No user for AdSense review
+    const course = await Course.findOne({ id: req.params.courseId });
+    if (!course) {
+        req.session.messages = { error: 'Course not found.' };
+        return res.redirect('/');
+    }
+
+    const level = course.levels.find(l => l.id === req.params.levelId);
+    if (!level) {
+        req.session.messages = { error: 'Level not found.' };
+        return res.redirect('/course/' + req.params.courseId);
+    }
+
+    let allClasses = [];
+    if (level.lessons) {
+        level.lessons.forEach(lesson => {
+            if (lesson.classes) {
+                lesson.classes.forEach(cls => {
+                    allClasses.push({
+                        id: cls.id,
+                        lessonId: lesson.id,
+                        lessonTitle: lesson.title,
+                        title: cls.title,
+                        content: cls.content,
+                        imageUrl: cls.imageUrl,
+                        videoUrl: cls.videoUrl,
+                        externalLink: cls.externalLink,
+                        completed: false // No user = no progress
+                    });
+                });
+            }
+        });
+    }
+
+    let currentClassId = req.query.classId || (allClasses.length > 0 ? allClasses[0].id : null);
+    let currentClass = allClasses.find(c => c.id === currentClassId);
+    if (!currentClass && allClasses.length > 0) {
+        currentClass = allClasses[0];
+        currentClassId = currentClass.id;
+    }
+
+    let totalClasses = allClasses.length;
+    let completedClasses = 0; // No user = no progress
+    let score = 0;
+    let progress = 0;
+
+    let currentLesson = null;
+    if (level.lessons) {
+        level.lessons.forEach(lesson => {
+            if (lesson.classes && lesson.classes.some(c => c.id === currentClassId)) {
+                currentLesson = lesson;
+            }
+        });
+    }
+
+    let currentIndex = allClasses.findIndex(c => c.id === currentClassId);
+    let prevClassId = currentIndex > 0 ? allClasses[currentIndex - 1].id : null;
+    let nextClassId = currentIndex < allClasses.length - 1 ? allClasses[currentIndex + 1].id : null;
+
+    const view = isMobile(req) ? 'mobile/level' : 'level';
+    res.render(view, {
+        user: null,
+        course,
+        level,
+        currentClass,
+        currentLesson,
+        allClasses,
+        totalClasses,
+        completedClasses,
+        progress,
+        score,
+        prevClassId,
+        nextClassId,
+        messages: req.session.messages || {},
+        showBack: true,
+        title: level.name + ' - ' + course.title
+    });
+    req.session.messages = {};
+});
+
+// Settings – Public (no login required)
+app.get('/settings', async (req, res) => {
+    const user = null; // No user for AdSense review
+    const view = isMobile(req) ? 'mobile/settings' : 'settings';
+    res.render(view, {
+        user: null,
+        messages: req.session.messages || {},
+        showBack: true,
+        title: 'Settings'
+    });
+    req.session.messages = {};
+});
+
+// Contact, Terms, Privacy – Public
+app.get('/contact', (req, res) => {
+    const view = isMobile(req) ? 'mobile/contact' : 'contact';
+    res.render(view, { 
+        user: null, 
+        messages: req.session.messages || {}, 
+        showBack: true, 
+        title: 'Contact Us' 
+    });
+    req.session.messages = {};
+});
+
+app.get('/terms', (req, res) => {
+    const view = isMobile(req) ? 'mobile/terms' : 'terms';
+    res.render(view, { 
+        user: null, 
+        messages: req.session.messages || {}, 
+        showBack: true, 
+        title: 'Terms' 
+    });
+    req.session.messages = {};
+});
+
+app.get('/privacy', (req, res) => {
+    const view = isMobile(req) ? 'mobile/privacy' : 'privacy';
+    res.render(view, { 
+        user: null, 
+        messages: req.session.messages || {}, 
+        showBack: true, 
+        title: 'Privacy' 
+    });
+    req.session.messages = {};
 });
 
     app.listen(PORT, () => {
