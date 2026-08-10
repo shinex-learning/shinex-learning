@@ -1340,6 +1340,28 @@ app.get('/privacy', (req, res) => {
     req.session.messages = {};
 });
 
+// ============================================================
+// CONTACT PAGE
+// ============================================================
+app.get('/contact', (req, res) => {
+    const view = isMobile(req) ? 'mobile/contact' : 'contact';
+    res.render(view, {
+        user: null,
+        messages: req.session.messages || {},
+        showBack: true,
+        title: 'Contact Us'
+    });
+    req.session.messages = {};
+});
+
+// Contact Form Submission (optional)
+app.post('/contact/send', (req, res) => {
+    const { name, email, subject, message } = req.body;
+    // You can add email sending logic here
+    req.session.messages = { success: '✅ Your message has been sent. We\'ll get back to you soon!' };
+    res.redirect('/contact');
+});
+
     app.listen(PORT, () => {
         console.log(`🚀 SHINEX running on http://localhost:${PORT}`);
         console.log(`🔐 Admin: balogunmustaphaaddeji@gmail.com / SHINEXAdmin@2026`);

@@ -7,30 +7,168 @@
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .whatsapp-link-mobile {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #25D366;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+        .whatsapp-link-mobile:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+            color: #fff;
+        }
+        .contact-info-item-mobile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid #ede8f5;
+        }
+        .contact-info-item-mobile:last-child {
+            border-bottom: none;
+        }
+        .contact-info-item-mobile .icon-box {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+        .contact-info-item-mobile .info-text {
+            flex: 1;
+        }
+        .contact-info-item-mobile .info-text .label {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+        .contact-info-item-mobile .info-text .value {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        .contact-info-item-mobile .info-text .value a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        body.dark-mode .contact-info-item-mobile {
+            border-color: var(--dark-border);
+        }
+        body.dark-mode .contact-info-item-mobile .info-text .value {
+            color: var(--text-light);
+        }
+    </style>
 </head>
 <body>
     <div id="page-loader"><div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div><div class="loader-text">SHINEX</div><div class="loader-sub">LEARNING CIRCLE</div></div>
     <%- include(getHeader()) %>
     <main class="main-content" style="padding:12px 0 24px;">
         <div class="container" style="padding:0 12px;">
-            <div style="background:#fff; border-radius:12px; padding:16px; border:1px solid #ede8f5;">
-                <h1 style="font-size:1.2rem; font-weight:800; color:var(--text-dark); margin:0 0 4px 0;">
+            <% if (messages && messages.error) { %>
+                <div class="alert alert-danger flash-message" data-type="error"><%= messages.error %></div>
+            <% } %>
+            <% if (messages && messages.success) { %>
+                <div class="alert alert-success flash-message" data-type="success"><%= messages.success %></div>
+            <% } %>
+
+            <div style="text-align:center; margin-bottom:12px;">
+                <h1 style="font-size:1.3rem; font-weight:800; color:var(--text-dark); margin:0;">
                     <i class="fas fa-envelope" style="color:var(--primary);"></i> Contact
                 </h1>
-                <form>
+            </div>
+
+            <!-- Contact Info -->
+            <div style="background:#fff; border-radius:12px; padding:16px; border:1px solid #ede8f5; margin-bottom:12px;">
+                <h3 style="font-size:0.95rem; font-weight:700; color:var(--text-dark); margin:0 0 8px 0;">
+                    <i class="fas fa-phone" style="color:var(--primary);"></i> Get in Touch
+                </h3>
+
+                <div class="contact-info-item-mobile">
+                    <div class="icon-box"><i class="fas fa-envelope"></i></div>
+                    <div class="info-text">
+                        <div class="label">Email</div>
+                        <div class="value"><a href="mailto:shinexlearning@gmail.com">shinexlearning@gmail.com</a></div>
+                    </div>
+                </div>
+
+                <div class="contact-info-item-mobile">
+                    <div class="icon-box"><i class="fas fa-phone"></i></div>
+                    <div class="info-text">
+                        <div class="label">Phone</div>
+                        <div class="value"><a href="tel:+2347067574479">+234 706 757 4479</a></div>
+                    </div>
+                </div>
+
+                <div class="contact-info-item-mobile">
+                    <div class="icon-box"><i class="fab fa-whatsapp"></i></div>
+                    <div class="info-text">
+                        <div class="label">WhatsApp</div>
+                        <div class="value">
+                            <a href="https://wa.me/2348025052852" target="_blank" class="whatsapp-link-mobile" style="font-size:0.8rem; padding:6px 14px;">
+                                <i class="fab fa-whatsapp"></i> +234 802 505 2852
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contact-info-item-mobile">
+                    <div class="icon-box"><i class="fas fa-globe"></i></div>
+                    <div class="info-text">
+                        <div class="label">Website</div>
+                        <div class="value"><a href="https://shinex-learning.onrender.com" target="_blank">shinex-learning.onrender.com</a></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Form -->
+            <div style="background:#fff; border-radius:12px; padding:16px; border:1px solid #ede8f5;">
+                <h3 style="font-size:0.95rem; font-weight:700; color:var(--text-dark); margin:0 0 4px 0;">
+                    <i class="fas fa-paper-plane" style="color:var(--primary);"></i> Send Message
+                </h3>
+                <form id="contactFormMobile" method="POST" action="/contact/send">
                     <div class="settings-group">
-                        <label for="contactNameM">Name</label>
-                        <input type="text" id="contactNameM" placeholder="Your name" style="font-size:0.9rem; padding:8px 12px;">
+                        <label for="contactNameM" style="font-size:0.8rem;">Full Name <span style="color:#e74c3c;">*</span></label>
+                        <input type="text" id="contactNameM" name="name" placeholder="Your name" style="font-size:0.85rem; padding:8px 12px;" required>
                     </div>
                     <div class="settings-group">
-                        <label for="contactEmailM">Email</label>
-                        <input type="email" id="contactEmailM" placeholder="your@email.com" style="font-size:0.9rem; padding:8px 12px;">
+                        <label for="contactEmailM" style="font-size:0.8rem;">Email <span style="color:#e74c3c;">*</span></label>
+                        <input type="email" id="contactEmailM" name="email" placeholder="your@email.com" style="font-size:0.85rem; padding:8px 12px;" required>
                     </div>
                     <div class="settings-group">
-                        <label for="contactMessageM">Message</label>
-                        <textarea id="contactMessageM" rows="4" placeholder="Your message..." style="font-size:0.9rem; padding:8px 12px;"></textarea>
+                        <label for="contactSubjectM" style="font-size:0.8rem;">Subject <span style="color:#e74c3c;">*</span></label>
+                        <select id="contactSubjectM" name="subject" style="font-size:0.85rem; padding:8px 12px;" required>
+                            <option value="">Select...</option>
+                            <option value="General Inquiry">General Inquiry</option>
+                            <option value="Course Question">Course Question</option>
+                            <option value="Technical Issue">Technical Issue</option>
+                            <option value="Feature Request">Feature Request</option>
+                            <option value="Partnership">Partnership</option>
+                            <option value="Other">Other</option>
+                        </select>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-block" style="font-size:0.9rem; padding:10px;"><i class="fas fa-paper-plane"></i> Send</button>
+                    <div class="settings-group">
+                        <label for="contactMessageM" style="font-size:0.8rem;">Message <span style="color:#e74c3c;">*</span></label>
+                        <textarea id="contactMessageM" name="message" rows="4" placeholder="Your message..." style="font-size:0.85rem; padding:8px 12px;" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block" style="font-size:0.9rem; padding:10px;">
+                        <i class="fas fa-paper-plane"></i> Send Message
+                    </button>
                 </form>
             </div>
         </div>

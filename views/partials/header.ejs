@@ -1,15 +1,24 @@
 <!-- ============================================================
      HEADER – DESKTOP VERSION
-     No login/register – Public mode for AdSense review
+     Purple Theme + Back Button
      ============================================================ -->
 <header class="header">
-    <a href="/" class="logo-container">
-        <div class="logo">SLC</div>
-        <div>
-            <div class="logo-text">SHINEX<span>.</span></div>
-            <div class="logo-sub">LEARNING CIRCLE</div>
-        </div>
-    </a>
+    <div style="display:flex; align-items:center; gap:12px;">
+        <!-- BACK BUTTON -->
+        <% if (showBack) { %>
+            <a href="javascript:history.back()" class="back-btn" title="Go Back">
+                <i class="fas fa-arrow-left"></i> Back
+            </a>
+        <% } %>
+        
+        <a href="/" class="logo-container">
+            <div class="logo">SLC</div>
+            <div>
+                <div class="logo-text">SHINEX<span>.</span></div>
+                <div class="logo-sub">LEARNING CIRCLE</div>
+            </div>
+        </a>
+    </div>
 
     <div class="header-actions">
         <!-- Text Size Slider -->

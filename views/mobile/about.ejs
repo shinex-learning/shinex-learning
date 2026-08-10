@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>About – SHINEX</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .about-tagline-mobile {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-align: center;
+            padding: 12px 0;
+            border-top: 2px solid #ede8f5;
+            border-bottom: 2px solid #ede8f5;
+            margin: 12px 0;
+        }
+        body.dark-mode .about-tagline-mobile {
+            border-color: var(--dark-border);
+        }
+        .about-mission-mobile {
+            background: var(--primary-bg);
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin: 12px 0;
+            border-left: 4px solid var(--primary);
+        }
+        body.dark-mode .about-mission-mobile {
+            background: #1a1a1a;
+        }
+    </style>
+</head>
+<body>
+    <div id="page-loader"><div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div><div class="loader-text">SHINEX</div><div class="loader-sub">LEARNING CIRCLE</div></div>
+    <%- include(getHeader()) %>
+    <main class="main-content" style="padding:12px 0 24px;">
+        <div class="container" style="padding:0 12px;">
+            <div style="background:#fff; border-radius:12px; padding:16px; border:1px solid #ede8f5;">
+                <h1 style="font-size:1.3rem; font-weight:800; color:var(--text-dark); margin:0 0 4px 0;">
+                    <i class="fas fa-info-circle" style="color:var(--primary);"></i> About SHINEX
+                </h1>
+
+                <div class="about-tagline-mobile">
+                    Learn. Understand. Protect.
+                </div>
+
+                <p style="font-size:0.95rem; color:var(--text-dark); margin:12px 0;">
+                    <strong>SHINEX Learning Circle (SLC)</strong> is an online learning platform created to make quality digital education more accessible, practical, and engaging.
+                </p>
+
+                <p style="color:var(--text-muted); font-size:0.9rem; margin:0 0 12px 0;">
+                    Our goal is simple: <strong style="color:var(--text-dark);">help people learn useful skills, understand technology, and build the confidence to apply what they learn.</strong>
+                </p>
+
+                <!-- Mission -->
+                <div class="about-mission-mobile">
+                    <h4 style="font-weight:700; color:var(--text-dark); margin:0 0 2px 0;">
+                        <i class="fas fa-bullseye" style="color:var(--primary);"></i> Our Mission
+                    </h4>
+                    <p style="color:var(--text-muted); margin:0; font-size:0.9rem;">
+                        To provide accessible, structured, and practical learning experiences that help students and aspiring professionals develop valuable digital and technology skills.
+                    </p>
+                </div>
+
+                <!-- What We Offer -->
+                <h4 style="font-weight:700; color:var(--text-dark); margin:14px 0 4px 0;">
+                    <i class="fas fa-gem" style="color:var(--primary);"></i> What We Offer
+                </h4>
+                <ul style="color:var(--text-dark); font-size:0.85rem; line-height:1.8; padding-left:18px;">
+                    <li>📚 Structured online courses</li>
+                    <li>🧠 Interactive lessons</li>
+                    <li>📝 Quizzes and assessments</li>
+                    <li>📊 Progress tracking</li>
+                    <li>🎓 Certification opportunities</li>
+                    <li>💻 Cybersecurity education</li>
+                </ul>
+
+                <!-- Our Focus -->
+                <h4 style="font-weight:700; color:var(--text-dark); margin:14px 0 4px 0;">
+                    <i class="fas fa-lock" style="color:var(--primary);"></i> Our Focus
+                </h4>
+                <p style="color:var(--text-muted); font-size:0.9rem; margin:0 0 4px 0;">
+                    We place strong emphasis on <strong style="color:var(--text-dark);">practical knowledge</strong>.
+                </p>
+                <ul style="color:var(--text-dark); font-size:0.85rem; line-height:1.8; padding-left:18px;">
+                    <li>🔐 Cybersecurity</li>
+                    <li>💻 Web Development</li>
+                    <li>⚙️ Programming</li>
+                    <li>🎨 UI/UX Design</li>
+                </ul>
+
+                <!-- Vision -->
+                <h4 style="font-weight:700; color:var(--text-dark); margin:14px 0 4px 0;">
+                    <i class="fas fa-globe" style="color:var(--primary);"></i> Our Vision
+                </h4>
+                <p style="color:var(--text-muted); font-size:0.9rem; margin:0;">
+                    To build a learning community where anyone can develop relevant skills and grow professionally.
+                </p>
+
+                <!-- Start Learning -->
+                <div style="text-align:center; margin-top:16px; padding:16px; background:var(--primary-bg); border-radius:10px;">
+                    <p style="font-weight:700; color:var(--text-dark); font-size:0.9rem; margin:0 0 8px 0;">
+                        <i class="fas fa-rocket" style="color:var(--primary);"></i> Start Learning
+                    </p>
+                    <a href="/" class="btn btn-primary btn-sm" style="width:100%; text-align:center;">Explore Courses</a>
+                </div>
+
+                <div style="text-align:center; margin-top:12px; padding-top:12px; border-top:2px solid #ede8f5;">
+                    <p style="font-weight:700; color:var(--text-dark); font-size:1rem; margin:0;">
+                        SHINEX Learning Circle
+                    </p>
+                    <p style="color:var(--primary); font-weight:600; font-size:0.85rem; margin:0;">
+                        Learn. Understand. Protect.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+    <%- include(getFooter()) %>
+    <script src="/js/script.js"></script>
+</body>
+</html>
