@@ -1,290 +1,32 @@
-<!-- ===== PC HEADER – NO (SLC) ===== -->
-<header class="site-header">
-    <div class="container header-flex">
-        <div class="logo-container">
-            <a href="/" class="logo-link">
-                <div class="logo-circle">SLC</div>
-                <span class="title-text">SHINEX <span class="title-light">Learning Circle</span></span>
-            </a>
+<!-- ============================================================
+     HEADER – DESKTOP VERSION
+     No login/register – Public mode for AdSense review
+     ============================================================ -->
+<header class="header">
+    <a href="/" class="logo-container">
+        <div class="logo">SLC</div>
+        <div>
+            <div class="logo-text">SHINEX<span>.</span></div>
+            <div class="logo-sub">LEARNING CIRCLE</div>
+        </div>
+    </a>
+
+    <div class="header-actions">
+        <!-- Text Size Slider -->
+        <div class="text-size-control">
+            <label><i class="fas fa-font"></i></label>
+            <input type="range" id="textSizeSlider" min="12" max="24" value="16" step="1">
+            <span class="text-size-value" id="textSizeValue">16px</span>
         </div>
 
-        <div class="header-actions">
-            <button id="darkModeToggle" class="dark-mode-toggle" aria-label="Toggle dark mode">
-                <i class="fas fa-moon"></i>
-            </button>
-            <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation">
-                <i class="fas fa-bars"></i>
-            </button>
-        </div>
+        <!-- Dark Mode Toggle -->
+        <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode">
+            🌙 <span class="toggle-label">Dark</span>
+        </button>
 
-        <nav class="main-nav">
-            <ul>
-                <% if (user) { %>
-                    <li><a href="/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                    <li><a href="/course/<%= user.courseId || '#' %>"><i class="fas fa-book"></i> My Course</a></li>
-                    <li><a href="/settings"><i class="fas fa-cog"></i> Settings</a></li>
-                    <li><a href="/logout" class="btn-logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-                <% } else { %>
-                    <li><a href="/" class="active-link"><i class="fas fa-home"></i> Home</a></li>
-                    <li><a href="/privacy"><i class="fas fa-shield-alt"></i> Privacy</a></li>
-                    <li><a href="/terms"><i class="fas fa-file-contract"></i> Terms</a></li>
-                    <li><a href="/contact"><i class="fas fa-envelope"></i> Contact</a></li>
-                <% } %>
-            </ul>
-        </nav>
+        <!-- Settings Link -->
+        <a href="/settings" class="btn btn-secondary btn-sm" style="min-height:36px; padding:6px 16px; border-radius:30px;">
+            <i class="fas fa-cog"></i> Settings
+        </a>
     </div>
 </header>
-
-<style>
-    .site-header {
-        background: #ffffff;
-        padding: 12px 0;
-        border-bottom: 2px solid #8B5CF6;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        position: sticky;
-        top: 0;
-        z-index: 100;
-        transition: background 0.3s, border-color 0.3s;
-    }
-
-    body.dark-mode .site-header {
-        background: #000000;
-        border-bottom: 2px solid #8B5CF6;
-    }
-
-    .header-flex {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 10px;
-    }
-
-    .logo-container {
-        display: flex;
-        align-items: center;
-    }
-
-    .logo-link {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        text-decoration: none;
-    }
-
-    .logo-circle {
-        width: 45px;
-        height: 45px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #8B5CF6, #6a3dcf);
-        color: #ffffff;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 800;
-        font-size: 16px;
-        letter-spacing: 1px;
-        box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
-        flex-shrink: 0;
-        transition: transform 0.3s ease;
-    }
-
-    .logo-circle:hover {
-        transform: scale(1.05);
-    }
-
-    .title-text {
-        font-size: 18px;
-        font-weight: 700;
-        color: #1A0A2E;
-        letter-spacing: -0.5px;
-    }
-
-    .title-light {
-        font-weight: 300;
-        color: #7a6a8f;
-    }
-
-    body.dark-mode .title-text {
-        color: #ffffff;
-    }
-    body.dark-mode .title-light {
-        color: #b0a0c0;
-    }
-
-    .header-actions {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .dark-mode-toggle {
-        background: transparent;
-        border: none;
-        color: #1A0A2E;
-        font-size: 1.2rem;
-        cursor: pointer;
-        padding: 6px 10px;
-        border-radius: 8px;
-        transition: all 0.2s;
-    }
-
-    body.dark-mode .dark-mode-toggle {
-        color: #ffffff;
-    }
-
-    .dark-mode-toggle:hover {
-        background: rgba(139, 92, 246, 0.15);
-    }
-
-    .mobile-toggle {
-        display: none;
-        background: transparent;
-        border: none;
-        color: #1A0A2E;
-        font-size: 1.4rem;
-        cursor: pointer;
-        padding: 4px 8px;
-    }
-
-    body.dark-mode .mobile-toggle {
-        color: #ffffff;
-    }
-
-    .main-nav ul {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        list-style: none;
-        margin: 0;
-        padding: 0;
-    }
-
-    .main-nav a {
-        color: #4a2d6b;
-        padding: 8px 14px;
-        border-radius: 8px;
-        font-size: 0.85rem;
-        font-weight: 500;
-        transition: all 0.2s;
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        text-decoration: none;
-    }
-
-    body.dark-mode .main-nav a {
-        color: #d0c0e0;
-    }
-
-    .main-nav a:hover {
-        background: rgba(139, 92, 246, 0.1);
-        color: #8B5CF6;
-    }
-
-    .main-nav .active-link {
-        color: #8B5CF6;
-        font-weight: 600;
-    }
-
-    .btn-logout {
-        color: #e74c3c !important;
-    }
-
-    .btn-logout:hover {
-        background: rgba(231, 76, 60, 0.1) !important;
-    }
-
-    @media (max-width: 768px) {
-        .mobile-toggle {
-            display: block;
-        }
-
-        .main-nav {
-            display: none;
-            width: 100%;
-            padding: 12px 0;
-            border-top: 1px solid rgba(139, 92, 246, 0.15);
-            margin-top: 8px;
-        }
-
-        .main-nav.active {
-            display: block;
-        }
-
-        .main-nav ul {
-            flex-direction: column;
-            align-items: stretch;
-            gap: 4px;
-        }
-
-        .main-nav a {
-            padding: 12px 16px;
-            width: 100%;
-            justify-content: center;
-        }
-
-        .title-text {
-            font-size: 14px;
-        }
-
-        .logo-circle {
-            width: 38px;
-            height: 38px;
-            font-size: 14px;
-        }
-
-        .logo-link {
-            gap: 8px;
-        }
-
-        .site-header {
-            padding: 10px 0;
-        }
-    }
-
-    @media (max-width: 480px) {
-        .title-light {
-            display: none;
-        }
-        .title-text {
-            font-size: 13px;
-        }
-        .logo-circle {
-            width: 34px;
-            height: 34px;
-            font-size: 12px;
-        }
-    }
-</style>
-
-<script>
-    document.getElementById('mobileToggle').addEventListener('click', function() {
-        document.querySelector('.main-nav').classList.toggle('active');
-    });
-
-    document.getElementById('darkModeToggle').addEventListener('click', function() {
-        document.body.classList.toggle('dark-mode');
-        localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
-        const icon = this.querySelector('i');
-        if (icon) {
-            icon.classList.toggle('fa-moon');
-            icon.classList.toggle('fa-sun');
-        }
-    });
-
-    if (localStorage.getItem('darkMode') === 'true') {
-        document.body.classList.add('dark-mode');
-        const icon = document.querySelector('#darkModeToggle i');
-        if (icon) {
-            icon.classList.remove('fa-moon');
-            icon.classList.add('fa-sun');
-        }
-    }
-
-    document.querySelectorAll('.main-nav a').forEach(function(link) {
-        link.addEventListener('click', function() {
-            document.querySelector('.main-nav').classList.remove('active');
-        });
-    });
-</script>

@@ -2,159 +2,139 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard – SHINEX</title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        .mobile-dash-card {
-            background: #fff;
-            border-radius: 14px;
-            padding: 16px;
-            margin-bottom: 12px;
-            border: 1px solid #ede8f5;
-        }
-        body.dark-mode .mobile-dash-card {
-            background: #1e1e1e;
-            border-color: #333;
-        }
-        .mobile-dash-welcome {
-            background: linear-gradient(135deg, #8B5CF6, #6a3dcf);
-            color: #fff;
-            border-radius: 14px;
-            padding: 16px;
-            margin-bottom: 12px;
-        }
-        .mobile-dash-welcome h2 {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin: 0;
-            color: #fff;
-        }
-        .mobile-dash-welcome p {
-            font-size: 0.8rem;
-            color: #d4c4f0;
-            margin: 2px 0 0;
-        }
-        .mobile-dash-course {
-            border-left: 4px solid #8B5CF6;
-            padding: 14px;
-        }
-        .mobile-dash-progress {
-            margin-top: 10px;
-        }
-        .mobile-class-item {
-            padding: 6px 8px;
-            background: #f8f6fc;
-            border-radius: 6px;
-            margin-bottom: 4px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.8rem;
-        }
-        body.dark-mode .mobile-class-item {
-            background: #1a1a1a;
-        }
-        .mobile-dash-empty {
-            text-align: center;
-            padding: 30px 16px;
-        }
-        .mobile-dash-empty .empty-icon {
-            font-size: 2.5rem;
-            color: #d4c4f0;
-            display: block;
-            margin-bottom: 8px;
-        }
-    </style>
 </head>
 <body>
-    <%- include('partials/header', { user, showBack: false }) %>
+    <div id="page-loader">
+        <div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div>
+        <div class="loader-text">SHINEX</div>
+        <div class="loader-sub">LEARNING CIRCLE</div>
+    </div>
 
-    <main class="main-content" style="padding: 8px 12px 20px;">
-        <% if (messages && messages.error) { %>
-            <div class="alert alert-danger" style="margin-bottom:10px;"><%= messages.error %></div>
-        <% } %>
-        <% if (messages && messages.success) { %>
-            <div class="alert alert-success" style="margin-bottom:10px;"><%= messages.success %></div>
-        <% } %>
+    <%- include(getHeader()) %>
 
-        <% if (user) { %>
-            <div class="mobile-dash-welcome">
-                <h2>👋 Welcome, <%= user.firstName || 'User' %>!</h2>
-                <p><i class="fas fa-envelope"></i> <%= user.email %></p>
-                <% if (user.school) { %>
-                    <p><i class="fas fa-school"></i> <%= user.school %></p>
-                <% } %>
-            </div>
-        <% } else { %>
-            <div class="mobile-dash-welcome">
-                <h2>👋 Welcome to SHINEX!</h2>
-                <p>Explore our courses and start learning today.</p>
-            </div>
-        <% } %>
+    <main class="main-content">
+        <div class="container">
+            <% if (messages && messages.error) { %>
+                <div class="alert alert-danger flash-message" data-type="error"><%= messages.error %></div>
+            <% } %>
+            <% if (messages && messages.success) { %>
+                <div class="alert alert-success flash-message" data-type="success"><%= messages.success %></div>
+            <% } %>
 
-        <% if (enrolledCourse) { %>
-            <div class="mobile-dash-card mobile-dash-course">
-                <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:6px;">
+            <!-- Welcome Card -->
+            <div class="dashboard-card welcome-card">
+                <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
                     <div>
-                        <h3 style="font-size:1rem; font-weight:700; color:#1A0A2E; margin:0;">
-                            <i class="fas fa-book-open" style="color:#8B5CF6;"></i> <%= enrolledCourse.title %>
+                        <div class="welcome-text">👋 Welcome to SHINEX!</div>
+                        <div class="welcome-sub"><i class="fas fa-graduation-cap" style="margin-right:6px;"></i> Explore our courses and start learning today.</div>
+                    </div>
+                    <span class="badge badge-gold" style="font-size:0.7rem; background:rgba(255,255,255,0.2); color:#fff;">
+                        <i class="fas fa-user-graduate"></i> Free Plan
+                    </span>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="dashboard-stats">
+                <div class="stat-box">
+                    <div class="stat-number"><%= courses ? courses.length : 0 %></div>
+                    <div class="stat-label">Courses</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">
+                        <% let totalClasses = 0; %>
+                        <% if (courses) { courses.forEach(c => { if (c.levels) { c.levels.forEach(l => { if (l.lessons) { l.lessons.forEach(ls => { if (ls.classes) totalClasses += ls.classes.length; }); } }); } }); } %>
+                        <%= totalClasses %>
+                    </div>
+                    <div class="stat-label">Total Classes</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">6</div>
+                    <div class="stat-label">Topics</div>
+                </div>
+            </div>
+
+            <!-- Enrolled Course (Demo for AdSense) -->
+            <div class="card" style="border-left:4px solid var(--primary);">
+                <div style="display:flex; align-items:flex-start; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+                    <div>
+                        <h3 style="font-size:1.1rem; font-weight:700; color:var(--text-dark); margin:0;">
+                            <i class="fas fa-book-open" style="color:var(--primary); margin-right:6px;"></i>
+                            Cybersecurity Fundamentals
                         </h3>
-                        <p style="color:#7a6a8f; font-size:0.75rem; margin:2px 0;">
-                            <span class="badge badge-purple"><%= enrolledCourse.level %></span>
-                            <span style="margin-left:6px;"><i class="far fa-clock"></i> <%= enrolledCourse.duration %></span>
+                        <p style="color:var(--text-muted); font-size:0.85rem; margin:2px 0 0;">
+                            <span class="badge badge-purple">Beginner</span>
+                            <span style="margin-left:8px;"><i class="far fa-clock"></i> 4 hours</span>
                         </p>
                     </div>
-                    <a href="/course/<%= enrolledCourse.id %>" class="btn btn-primary btn-sm">Go</a>
+                    <a href="/course/course1" class="btn btn-primary btn-sm"><i class="fas fa-arrow-right"></i> Continue</a>
                 </div>
-                <div class="mobile-dash-progress">
-                    <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:500;">
+                <div style="margin-top:10px;">
+                    <div style="display:flex; justify-content:space-between; font-size:0.8rem; font-weight:500; color:var(--text-dark);">
                         <span>Progress</span>
-                        <span><%= completedClasses %> / <%= totalClasses %> • <%= progress %>%</span>
+                        <span>0%</span>
                     </div>
-                    <div class="progress-wrap" style="height:6px; margin-top:3px;"><div class="progress-fill" style="width:<%= progress %>%; height:100%;"></div></div>
-                    <div style="font-size:0.8rem; color:#7a6a8f; margin-top:4px;">
-                        <i class="fas fa-star" style="color:#f39c12;"></i> Score: <strong><%= score %></strong> pts
+                    <div class="progress-wrap" style="margin-top:3px; height:8px;">
+                        <div class="progress-fill" style="width:0%; height:100%;"></div>
+                    </div>
+                    <div style="margin-top:4px; font-size:0.85rem; color:var(--text-muted);">
+                        <i class="fas fa-star" style="color:#f39c12;"></i> Score: <strong>0</strong> points
                     </div>
                 </div>
             </div>
 
-            <div class="mobile-dash-card">
-                <h4 style="font-weight:700; color:#1A0A2E; font-size:0.9rem; margin:0 0 8px 0;"><i class="fas fa-list-ul" style="color:#8B5CF6;"></i> Your Classes</h4>
-                <% let hasClasses = false; %>
-                <% if (enrolledCourse.levels) { %>
-                    <% enrolledCourse.levels.forEach(level => { if (level.lessons) { level.lessons.forEach(lesson => { if (lesson.classes) { lesson.classes.forEach(cls => { hasClasses = true; %> %>
-                        <div class="mobile-class-item">
-                            <span><%= level.name %> → <%= lesson.title %> → <%= cls.title %></span>
-                            <span>
-                                <% if (user && user.progress && user.progress[cls.id]) { %>
-                                    <span style="color:#27ae60;"><i class="fas fa-check-circle"></i></span>
-                                <% } else { %>
-                                    <span style="color:#b0a3c4;"><i class="far fa-circle"></i></span>
-                                <% } %>
-                            </span>
-                        </div>
-                    <% }); } } }); }); %>
-                <% } %>
-                <% if (!hasClasses) { %>
-                    <p style="color:#7a6a8f; font-size:0.8rem;">No classes yet.</p>
-                <% } %>
+            <!-- Available Courses -->
+            <div style="margin-top:16px;">
+                <h4 style="font-weight:700; color:var(--text-dark); font-size:0.95rem; margin:0 0 10px 0;">
+                    <i class="fas fa-list-ul" style="color:var(--primary); margin-right:6px;"></i>
+                    Available Courses
+                </h4>
+                <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(240px,1fr)); gap:12px;">
+                    <% if (courses && courses.length > 0) { %>
+                        <% courses.slice(0,4).forEach(function(c) { %>
+                            <a href="/course/<%= c.id %>" style="text-decoration:none; color:inherit;">
+                                <div style="background:#f8f6fc; border-radius:10px; padding:12px 14px; border:1px solid #ede8f5; transition:all 0.3s ease;">
+                                    <div style="font-weight:600; font-size:0.9rem; color:var(--text-dark);"><%= c.title %></div>
+                                    <div style="font-size:0.75rem; color:var(--text-muted);"><i class="far fa-clock"></i> <%= c.duration %></div>
+                                </div>
+                            </a>
+                        <% }); %>
+                    <% } else { %>
+                        <p style="color:var(--text-muted); font-size:0.85rem;">No courses available.</p>
+                    <% } %>
+                </div>
             </div>
 
-            <%- include('../partials/ad-box') %>
-
-        <% } else { %>
-            <div class="mobile-dash-card mobile-dash-empty">
-                <span class="empty-icon"><i class="fas fa-book-open"></i></span>
-                <h3 style="font-size:1rem; color:#1A0A2E;">Explore Our Courses</h3>
-                <p style="color:#7a6a8f; font-size:0.8rem;">Browse our courses and start learning today.</p>
-                <a href="/" class="btn btn-primary btn-sm" style="margin-top:8px;">Browse Courses</a>
-            </div>
-        <% } %>
+            <%- include(getAdBox()) %>
+        </div>
     </main>
 
-    <%- include('partials/footer') %>
+    <%- include(getFooter()) %>
+
+    <!-- AI Bot -->
+    <div class="ai-bot" id="aiBot">
+        <div class="ai-bot-pulse"></div>
+        <button class="ai-bot-btn" id="aiBotBtn"><i class="fas fa-robot"></i></button>
+    </div>
+
+    <div class="ai-chat-modal" id="aiChatModal">
+        <div class="ai-chat-header"><h4><i class="fas fa-robot"></i> AI Tutor</h4><button class="ai-chat-close" id="aiChatClose">&times;</button></div>
+        <div class="ai-chat-body" id="aiChatBody">
+            <div class="ai-chat-messages" id="aiChatMessages">
+                <div class="ai-chat-msg bot">👋 Hello! I'm your AI tutor. Ask me anything!</div>
+            </div>
+        </div>
+        <div class="ai-chat-footer">
+            <input type="text" id="aiChatInput" placeholder="Ask a question..." maxlength="500">
+            <button class="btn btn-primary" id="aiChatSend"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <script src="/js/script.js"></script>
 </body>
 </html>

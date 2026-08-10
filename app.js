@@ -5,17 +5,27 @@ const path = require('path');
 const crypto = require('crypto');
 const mongoose = require('mongoose');
 const nodemailer = require('nodemailer');
+const compression = require('compression');
+const helmet = require('helmet');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // ============================================================
-// MIDDLEWARE
+// SECURITY & PERFORMANCE MIDDLEWARE
 // ============================================================
+app.use(helmet({
+    contentSecurityPolicy: false,
+    crossOriginEmbedderPolicy: false
+}));
+app.use(compression());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// ============================================================
+// SESSION
+// ============================================================
 app.use(session({
     secret: process.env.SESSION_SECRET || 'shinex-super-secret-key-2026',
     resave: false,
@@ -32,7 +42,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 // ============================================================
-// DEVICE DETECTION – Mobile vs Desktop
+// DEVICE DETECTION
 // ============================================================
 function isMobile(req) {
     const ua = req.headers['user-agent'] || '';
@@ -75,6 +85,8 @@ const UserSchema = new mongoose.Schema({
     isVerified: { type: Boolean, default: false },
     verificationToken: String,
     tokenExpires: Date,
+    textSize: { type: Number, default: 16 },
+    darkMode: { type: Boolean, default: false },
     createdAt: { type: Date, default: Date.now }
 });
 
@@ -84,6 +96,7 @@ const CourseSchema = new mongoose.Schema({
     title: String,
     description: String,
     duration: String,
+    level: String,
     levels: [{
         id: String,
         name: String,
@@ -129,6 +142,7 @@ function generateToken() {
 }
 
 function sanitize(content) {
+    if (!content) return '';
     return content.replace(/<script/g, '&lt;script').replace(/<\/script>/g, '&lt;/script&gt;');
 }
 
@@ -138,6 +152,7 @@ function parseContent(text) {
     let result = [];
     let inList = false;
     let listType = null;
+    
     for (let line of lines) {
         line = line.trim();
         if (!line) {
@@ -173,7 +188,7 @@ function parseContent(text) {
 }
 
 // ============================================================
-// EMAIL TRANSPORTER (Gmail)
+// EMAIL TRANSPORTER (Optional)
 // ============================================================
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -184,7 +199,7 @@ const transporter = nodemailer.createTransport({
 });
 
 // ============================================================
-// AUTH MIDDLEWARE (Only for Admin)
+// AUTH MIDDLEWARE (Admin Only)
 // ============================================================
 async function requireAdmin(req, res, next) {
     if (!req.session.adminId) {
@@ -198,6 +213,14 @@ async function requireAdmin(req, res, next) {
         return res.redirect('/shinex-admin');
     }
     req.admin = admin;
+    next();
+}
+
+function blockMobileAdmin(req, res, next) {
+    if (isMobile(req)) {
+        req.session.messages = { error: 'Admin panel is only available on desktop.' };
+        return res.redirect('/');
+    }
     next();
 }
 
@@ -241,50 +264,27 @@ app.post('/api/ai-tutor', async (req, res) => {
 });
 
 // ============================================================
-// REGISTRATION ROUTES – REDIRECTED (AdSense Review)
+// AUTH DISABLED FOR ADSENSE REVIEW
 // ============================================================
-app.get('/register/step1', (req, res) => {
-    res.redirect('/');
-});
-app.post('/register/step1', (req, res) => {
-    res.redirect('/');
-});
-app.get('/register/step2', (req, res) => {
-    res.redirect('/');
-});
-app.post('/register/step2', (req, res) => {
-    res.redirect('/');
-});
+app.get('/register/step1', (req, res) => res.redirect('/'));
+app.post('/register/step1', (req, res) => res.redirect('/'));
+app.get('/register/step2', (req, res) => res.redirect('/'));
+app.post('/register/step2', (req, res) => res.redirect('/'));
+app.get('/verify-email/:token', (req, res) => res.redirect('/'));
+app.post('/resend-verification', (req, res) => res.redirect('/'));
+app.get('/login', (req, res) => res.redirect('/'));
+app.post('/login', (req, res) => res.redirect('/'));
+app.get('/forgot-password', (req, res) => res.redirect('/'));
+app.post('/forgot-password', (req, res) => res.redirect('/'));
+app.get('/reset-password/:token', (req, res) => res.redirect('/'));
+app.post('/reset-password/:token', (req, res) => res.redirect('/'));
 
 // ============================================================
-// VERIFY EMAIL ROUTE – REDIRECTED
-// ============================================================
-app.get('/verify-email/:token', (req, res) => {
-    res.redirect('/');
-});
-app.post('/resend-verification', (req, res) => {
-    res.redirect('/');
-});
-
-// ============================================================
-// LOGIN – REDIRECTED
-// ============================================================
-app.get('/login', (req, res) => {
-    res.redirect('/');
-});
-app.post('/login', (req, res) => {
-    res.redirect('/');
-});
-
-// ============================================================
-// ADMIN LOGIN (SEPARATE – Still Works)
+// ADMIN LOGIN (Separate – Still Works)
 // ============================================================
 app.get('/shinex-admin', (req, res) => {
     if (req.session.adminId) return res.redirect('/admin/dashboard');
-    if (isMobile(req)) {
-        // SILENT REDIRECT – NO ERROR MESSAGE
-        return res.redirect('/');
-    }
+    if (isMobile(req)) return res.redirect('/');
     res.render('admin/login', { messages: req.session.messages || {}, showBack: false, title: 'Admin Login' });
     req.session.messages = {};
 });
@@ -309,45 +309,42 @@ app.post('/shinex-admin', async (req, res) => {
 app.get('/logout', (req, res) => {
     req.session.destroy(() => res.redirect('/'));
 });
+
 app.get('/admin/logout', (req, res) => {
     req.session.adminId = null;
     res.redirect('/shinex-admin');
 });
 
 // ============================================================
-// FORGOT PASSWORD – REDIRECTED
+// PUBLIC PAGES
 // ============================================================
-app.get('/forgot-password', (req, res) => {
-    res.redirect('/');
-});
-app.post('/forgot-password', (req, res) => {
-    res.redirect('/');
-});
-app.get('/reset-password/:token', (req, res) => {
-    res.redirect('/');
-});
-app.post('/reset-password/:token', (req, res) => {
-    res.redirect('/');
-});
 
-// ============================================================
-// TERMS & PRIVACY (Public – Keep)
-// ============================================================
-app.get('/terms', (req, res) => {
+// Terms & Privacy
+app.get('/terms', async (req, res) => {
+    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
     const view = isMobile(req) ? 'mobile/terms' : 'terms';
-    res.render(view, { user: null, messages: req.session.messages || {}, showBack: true, title: 'Terms' });
+    res.render(view, { 
+        user, 
+        messages: req.session.messages || {}, 
+        showBack: true, 
+        title: 'Terms & Conditions' 
+    });
     req.session.messages = {};
 });
 
-app.get('/privacy', (req, res) => {
+app.get('/privacy', async (req, res) => {
+    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
     const view = isMobile(req) ? 'mobile/privacy' : 'privacy';
-    res.render(view, { user: null, messages: req.session.messages || {}, showBack: true, title: 'Privacy' });
+    res.render(view, { 
+        user, 
+        messages: req.session.messages || {}, 
+        showBack: true, 
+        title: 'Privacy Policy' 
+    });
     req.session.messages = {};
 });
 
-// ============================================================
-// CONTACT PAGE (Public)
-// ============================================================
+// Contact
 app.get('/contact', async (req, res) => {
     const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
     const view = isMobile(req) ? 'mobile/contact' : 'contact';
@@ -360,8 +357,92 @@ app.get('/contact', async (req, res) => {
     req.session.messages = {};
 });
 
+// Settings
+app.get('/settings', async (req, res) => {
+    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
+    const view = isMobile(req) ? 'mobile/settings' : 'settings';
+    res.render(view, {
+        user,
+        messages: req.session.messages || {},
+        showBack: true,
+        title: 'Settings'
+    });
+    req.session.messages = {};
+});
+
+app.post('/settings/update', async (req, res) => {
+    const { firstName, lastName, bio, textSize, darkMode, currentPassword, newPassword, confirmPassword } = req.body;
+    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
+    if (!user) return res.redirect('/settings');
+
+    if (firstName) user.firstName = firstName;
+    if (lastName) user.lastName = lastName;
+    if (bio !== undefined) user.bio = bio;
+    if (textSize) user.textSize = parseInt(textSize);
+    if (darkMode !== undefined) user.darkMode = darkMode === 'on' || darkMode === 'true';
+
+    if (currentPassword && newPassword && confirmPassword) {
+        if (!(await bcrypt.compare(currentPassword, user.password))) {
+            req.session.messages = { error: 'Current password is incorrect.' };
+            return res.redirect('/settings');
+        }
+        if (newPassword !== confirmPassword || newPassword.length < 6) {
+            req.session.messages = { error: 'New password must be at least 6 characters and match.' };
+            return res.redirect('/settings');
+        }
+        user.password = await bcrypt.hash(newPassword, 10);
+    }
+
+    await user.save();
+    req.session.messages = { success: '✅ Settings updated successfully!' };
+    res.redirect('/settings');
+});
+
 // ============================================================
-// HOME – PUBLIC
+// SETTINGS API (AJAX)
+// ============================================================
+app.post('/settings/update', async (req, res) => {
+    const { firstName, lastName, bio, textSize, darkMode, currentPassword, newPassword, confirmPassword } = req.body;
+    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
+    
+    if (!user) {
+        return res.json({ success: false, error: 'Please log in first.' });
+    }
+
+    try {
+        if (firstName) user.firstName = firstName;
+        if (lastName) user.lastName = lastName;
+        if (bio !== undefined) user.bio = bio;
+        if (textSize) user.textSize = parseInt(textSize);
+        if (darkMode !== undefined) user.darkMode = darkMode === 'on' || darkMode === 'true';
+
+        if (currentPassword && newPassword && confirmPassword) {
+            if (!(await bcrypt.compare(currentPassword, user.password))) {
+                return res.json({ success: false, error: 'Current password is incorrect.' });
+            }
+            if (newPassword !== confirmPassword || newPassword.length < 6) {
+                return res.json({ success: false, error: 'New password must be at least 6 characters and match.' });
+            }
+            user.password = await bcrypt.hash(newPassword, 10);
+        }
+
+        await user.save();
+        res.json({ success: true, message: 'Settings updated successfully!' });
+    } catch (error) {
+        res.json({ success: false, error: 'Something went wrong. Please try again.' });
+    }
+});
+
+// Logout all sessions
+app.post('/logout-all', async (req, res) => {
+    // This would require session store cleanup
+    // For now, just destroy current session
+    req.session.destroy();
+    res.json({ success: true });
+});
+
+// ============================================================
+// HOME
 // ============================================================
 app.get('/', async (req, res) => {
     const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
@@ -378,48 +459,7 @@ app.get('/', async (req, res) => {
 });
 
 // ============================================================
-// SETTINGS – PUBLIC (No login required)
-// ============================================================
-app.get('/settings', async (req, res) => {
-    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
-    const view = isMobile(req) ? 'mobile/settings' : 'settings';
-    res.render(view, {
-        user,
-        messages: req.session.messages || {},
-        showBack: true,
-        title: 'Settings'
-    });
-    req.session.messages = {};
-});
-
-app.post('/settings/update', async (req, res) => {
-    const { firstName, lastName, bio, currentPassword, newPassword, confirmPassword } = req.body;
-    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
-    if (!user) return res.redirect('/settings');
-
-    if (firstName) user.firstName = firstName;
-    if (lastName) user.lastName = lastName;
-    if (bio !== undefined) user.bio = bio;
-
-    if (currentPassword && newPassword && confirmPassword) {
-        if (!(await bcrypt.compare(currentPassword, user.password))) {
-            req.session.messages = { error: 'Current password is incorrect.' };
-            return res.redirect('/settings');
-        }
-        if (newPassword !== confirmPassword || newPassword.length < 6) {
-            req.session.messages = { error: 'New password must be at least 6 characters and match.' };
-            return res.redirect('/settings');
-        }
-        user.password = await bcrypt.hash(newPassword, 10);
-    }
-
-    await user.save();
-    req.session.messages = { success: 'Settings updated successfully!' };
-    res.redirect('/settings');
-});
-
-// ============================================================
-// DASHBOARD – PUBLIC (Handles null user)
+// DASHBOARD
 // ============================================================
 app.get('/dashboard', async (req, res) => {
     const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
@@ -452,6 +492,7 @@ app.get('/dashboard', async (req, res) => {
         completedClasses,
         totalClasses,
         score,
+        courses,
         messages: req.session.messages || {},
         showBack: false,
         title: 'Dashboard'
@@ -460,7 +501,7 @@ app.get('/dashboard', async (req, res) => {
 });
 
 // ============================================================
-// COURSE PAGE – PUBLIC
+// COURSE PAGE
 // ============================================================
 app.get('/course/:courseId', async (req, res) => {
     const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
@@ -481,7 +522,7 @@ app.get('/course/:courseId', async (req, res) => {
 });
 
 // ============================================================
-// LEVEL PAGE – PUBLIC
+// LEVEL PAGE
 // ============================================================
 app.get('/level/:courseId/:levelId', async (req, res) => {
     const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
@@ -539,6 +580,11 @@ app.get('/level/:courseId/:levelId', async (req, res) => {
         });
     }
 
+    // Find previous and next class IDs
+    let currentIndex = allClasses.findIndex(c => c.id === currentClassId);
+    let prevClassId = currentIndex > 0 ? allClasses[currentIndex - 1].id : null;
+    let nextClassId = currentIndex < allClasses.length - 1 ? allClasses[currentIndex + 1].id : null;
+
     const view = isMobile(req) ? 'mobile/level' : 'level';
     res.render(view, {
         user,
@@ -551,6 +597,8 @@ app.get('/level/:courseId/:levelId', async (req, res) => {
         completedClasses,
         progress,
         score,
+        prevClassId,
+        nextClassId,
         messages: req.session.messages || {},
         showBack: true,
         title: level.name + ' - ' + course.title
@@ -559,7 +607,7 @@ app.get('/level/:courseId/:levelId', async (req, res) => {
 });
 
 // ============================================================
-// MARK CLASS COMPLETE – PUBLIC
+// MARK CLASS COMPLETE
 // ============================================================
 app.post('/level/complete/:classId', async (req, res) => {
     const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
@@ -577,62 +625,43 @@ app.post('/level/complete/:classId', async (req, res) => {
 });
 
 // ============================================================
-// NEXT CLASS – PUBLIC
+// NAVIGATION: PREVIOUS / NEXT CLASS
 // ============================================================
-app.post('/level/next/:courseId/:levelId/:classId', async (req, res) => {
-    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
-    if (!user) {
-        req.session.messages = { error: 'Please log in to track progress.' };
-        return res.redirect('back');
-    }
-
-    const { courseId, levelId, classId } = req.params;
-
-    if (!user.progress) user.progress = {};
-    user.progress[classId] = true;
-    await user.save();
-
+app.get('/level/:courseId/:levelId/navigate/:direction', async (req, res) => {
+    const { courseId, levelId, direction } = req.params;
+    const currentClassId = req.query.classId;
+    
     const course = await Course.findOne({ id: courseId });
+    if (!course) return res.redirect('/dashboard');
+    
     const level = course.levels.find(l => l.id === levelId);
-
-    let allClasses = [];
-    if (level && level.lessons) {
+    if (!level) return res.redirect('/course/' + courseId);
+    
+    let allClassIds = [];
+    if (level.lessons) {
         level.lessons.forEach(lesson => {
             if (lesson.classes) {
                 lesson.classes.forEach(cls => {
-                    allClasses.push(cls.id);
+                    allClassIds.push(cls.id);
                 });
             }
         });
     }
-
-    let currentIndex = allClasses.indexOf(classId);
-    let nextClassId = null;
-    if (currentIndex !== -1 && currentIndex < allClasses.length - 1) {
-        nextClassId = allClasses[currentIndex + 1];
+    
+    let currentIndex = allClassIds.indexOf(currentClassId);
+    let targetIndex = direction === 'next' ? currentIndex + 1 : currentIndex - 1;
+    
+    if (targetIndex < 0 || targetIndex >= allClassIds.length) {
+        req.session.messages = { error: direction === 'next' ? 'You\'ve completed all classes!' : 'This is the first class.' };
+        return res.redirect('/level/' + courseId + '/' + levelId + '?classId=' + currentClassId);
     }
-
-    if (nextClassId) {
-        req.session.messages = { success: '✅ Class completed! Moving to next...' };
-        res.redirect(`/level/${courseId}/${levelId}?classId=${nextClassId}`);
-    } else {
-        req.session.messages = { success: '🎉 All classes completed! You finished this level!' };
-        res.redirect(`/course/${courseId}`);
-    }
+    
+    res.redirect('/level/' + courseId + '/' + levelId + '?classId=' + allClassIds[targetIndex]);
 });
 
 // ============================================================
-// ADMIN ROUTES (All admin routes here – desktop only)
+// ADMIN ROUTES
 // ============================================================
-
-// Admin middleware to block mobile
-function blockMobileAdmin(req, res, next) {
-    if (isMobile(req)) {
-        req.session.messages = { error: 'Admin panel is only available on desktop.' };
-        return res.redirect('/');
-    }
-    next();
-}
 
 app.get('/admin/dashboard', blockMobileAdmin, requireAdmin, async (req, res) => {
     const users = await User.find();
@@ -709,7 +738,7 @@ app.get('/admin/courses', blockMobileAdmin, requireAdmin, async (req, res) => {
 });
 
 app.post('/admin/courses/add', blockMobileAdmin, requireAdmin, async (req, res) => {
-    const { title, description, duration, review } = req.body;
+    const { title, description, duration, level, review } = req.body;
     if (!title || !description || !duration) {
         req.session.messages = { error: 'All fields required.' };
         return res.redirect('/admin/courses');
@@ -720,6 +749,7 @@ app.post('/admin/courses/add', blockMobileAdmin, requireAdmin, async (req, res) 
         title,
         description,
         duration,
+        level: level || 'Beginner',
         levels: [],
         review: review || '',
         createdAt: new Date()
@@ -759,7 +789,7 @@ app.get('/admin/courses/edit/:id', blockMobileAdmin, requireAdmin, async (req, r
 });
 
 app.post('/admin/courses/edit/:id', blockMobileAdmin, requireAdmin, async (req, res) => {
-    const { title, description, duration, review } = req.body;
+    const { title, description, duration, level, review } = req.body;
     const course = await Course.findOne({ id: req.params.id });
     if (!course) {
         req.session.messages = { error: 'Course not found.' };
@@ -768,6 +798,7 @@ app.post('/admin/courses/edit/:id', blockMobileAdmin, requireAdmin, async (req, 
     course.title = title || course.title;
     course.description = description || course.description;
     course.duration = duration || course.duration;
+    course.level = level || course.level;
     course.review = review || course.review;
     await course.save();
     req.session.messages = { success: '✅ Course updated!' };
@@ -1084,6 +1115,27 @@ async function startServer() {
         await admin.save();
         console.log('✅ Admin created: balogunmustaphaaddeji@gmail.com / SHINEXAdmin@2026');
     }
+
+// ============================================================
+// VIEW HELPERS – Auto-select mobile/desktop partials
+// ============================================================
+app.use((req, res, next) => {
+    const mobile = isMobile(req);
+    
+    // Make partials available to all views
+    res.locals.getHeader = function() {
+        return mobile ? 'partials/header-mobile' : 'partials/header';
+    };
+    res.locals.getFooter = function() {
+        return mobile ? 'partials/footer-mobile' : 'partials/footer';
+    };
+    res.locals.isMobile = mobile;
+    res.locals.getAdBox = function() {
+        return 'partials/ad-box';
+    };
+    
+    next();
+});
 
     app.listen(PORT, () => {
         console.log(`🚀 SHINEX running on http://localhost:${PORT}`);

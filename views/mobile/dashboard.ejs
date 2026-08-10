@@ -7,287 +7,98 @@
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        /* ===== MOBILE DASHBOARD ===== */
-        .mobile-dash-card {
-            background: #fff;
-            border-radius: 14px;
-            padding: 18px 16px;
-            margin-bottom: 14px;
-            border: 1px solid #ede8f5;
-        }
-        body.dark-mode .mobile-dash-card {
-            background: #1a1a1a !important;
-            border-color: #333 !important;
-        }
-        body.dark-mode .mobile-dash-card h3,
-        body.dark-mode .mobile-dash-card h4,
-        body.dark-mode .mobile-dash-card p,
-        body.dark-mode .mobile-dash-card span,
-        body.dark-mode .mobile-dash-card .course-title,
-        body.dark-mode .mobile-dash-card .class-name {
-            color: #ffffff !important;
-        }
-        body.dark-mode .mobile-dash-card .text-muted {
-            color: #b0a0c0 !important;
-        }
-        body.dark-mode .mobile-dash-card .progress-label {
-            color: #cccccc !important;
-        }
-        body.dark-mode .mobile-dash-card .score-display {
-            color: #b0a0c0 !important;
-        }
-        body.dark-mode .mobile-dash-card .empty-state p {
-            color: #b0a0c0 !important;
-        }
-        body.dark-mode .mobile-dash-card .empty-state h3 {
-            color: #ffffff !important;
-        }
-
-        .mobile-dash-welcome {
-            background: linear-gradient(135deg, #8B5CF6, #6a3dcf);
-            color: #fff;
-            border-radius: 14px;
-            padding: 20px 18px;
-            margin-bottom: 14px;
-        }
-        .mobile-dash-welcome h2 {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin: 0;
-            color: #fff;
-        }
-        .mobile-dash-welcome p {
-            font-size: 0.85rem;
-            color: #d4c4f0;
-            margin: 2px 0 0;
-        }
-
-        .mobile-dash-course {
-            border-left: 4px solid #8B5CF6;
-            padding: 16px;
-        }
-
-        .mobile-dash-progress {
-            margin-top: 12px;
-        }
-        .progress-label {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: #2d1a4a;
-            margin-bottom: 4px;
-        }
-        .score-display {
-            margin-top: 6px;
-            font-size: 0.85rem;
-            color: #7a6a8f;
-        }
-
-        .mobile-class-item {
-            padding: 10px 12px;
-            background: #f8f6fc;
-            border-radius: 8px;
-            margin-bottom: 6px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.85rem;
-        }
-        body.dark-mode .mobile-class-item {
-            background: #2a2a2a !important;
-        }
-        body.dark-mode .mobile-class-item span {
-            color: #e0e0e0 !important;
-        }
-
-        .mobile-dash-empty {
-            text-align: center;
-            padding: 40px 20px;
-        }
-        .mobile-dash-empty .empty-icon {
-            font-size: 2.5rem;
-            color: #d4c4f0;
-            display: block;
-            margin-bottom: 10px;
-        }
-
-        /* ===== TEXT SIZE SLIDER ===== */
-        .text-size-control {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 0;
-            margin: 6px 0;
-            flex-wrap: wrap;
-            background: #f8f6fc;
-            border-radius: 10px;
-            padding: 10px 14px;
-        }
-        body.dark-mode .text-size-control {
-            background: #2a2a2a !important;
-        }
-        body.dark-mode .text-size-control label {
-            color: #ffffff !important;
-        }
-        body.dark-mode .text-size-control .size-value {
-            color: #b088f9 !important;
-        }
-        .text-size-control label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #2d1a4a;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .text-size-control input[type="range"] {
-            flex: 1;
-            min-width: 100px;
-            accent-color: #8B5CF6;
-            cursor: pointer;
-            height: 6px;
-        }
-        .text-size-control .size-value {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #8B5CF6;
-            min-width: 40px;
-            text-align: center;
-        }
-
-        /* Content text sizing */
-        .dash-content {
-            transition: font-size 0.2s ease;
-        }
-
-        @media (max-width: 480px) {
-            .mobile-dash-card {
-                padding: 14px 12px;
-            }
-            .text-size-control {
-                padding: 8px 10px;
-            }
-            .text-size-control label {
-                font-size: 0.8rem;
-            }
-        }
-    </style>
 </head>
 <body>
-    <%- include('partials/header', { user, showBack: false }) %>
+    <div id="page-loader">
+        <div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div>
+        <div class="loader-text">SHINEX</div>
+        <div class="loader-sub">LEARNING CIRCLE</div>
+    </div>
 
-    <main class="main-content" style="padding: 10px 14px 30px;">
-        <% if (messages && messages.error) { %>
-            <div class="alert alert-danger" style="margin-bottom:12px;"><%= messages.error %></div>
-        <% } %>
-        <% if (messages && messages.success) { %>
-            <div class="alert alert-success" style="margin-bottom:12px;"><%= messages.success %></div>
-        <% } %>
+    <%- include(getHeader()) %>
 
-        <% if (user) { %>
-            <div class="mobile-dash-welcome">
-                <h2>👋 Welcome, <%= user.firstName || 'User' %>!</h2>
-                <p><i class="fas fa-envelope"></i> <%= user.email %></p>
-                <% if (user.school) { %>
-                    <p><i class="fas fa-school"></i> <%= user.school %></p>
-                <% } %>
-            </div>
-        <% } else { %>
-            <div class="mobile-dash-welcome">
-                <h2>👋 Welcome to SHINEX!</h2>
-                <p>Explore our courses and start learning today.</p>
-            </div>
-        <% } %>
-
-        <!-- ===== TEXT SIZE SLIDER ===== -->
-        <div class="text-size-control">
-            <label><i class="fas fa-font"></i> Text Size</label>
-            <input type="range" id="dashTextSlider" min="0.8" max="2.0" step="0.05" value="1.0">
-            <span class="size-value" id="dashTextDisplay">1.0x</span>
-        </div>
-
-        <div class="dash-content" id="dashContent">
-
-            <% if (enrolledCourse) { %>
-                <div class="mobile-dash-card mobile-dash-course">
-                    <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px;">
-                        <div>
-                            <h3 style="font-size:1rem; font-weight:700; color:#1A0A2E; margin:0;">
-                                <i class="fas fa-book-open" style="color:#8B5CF6;"></i> <%= enrolledCourse.title %>
-                            </h3>
-                            <p style="color:#7a6a8f; font-size:0.8rem; margin:2px 0;">
-                                <span class="badge badge-purple"><%= enrolledCourse.level %></span>
-                                <span style="margin-left:8px;"><i class="far fa-clock"></i> <%= enrolledCourse.duration %></span>
-                            </p>
-                        </div>
-                        <a href="/course/<%= enrolledCourse.id %>" class="btn btn-primary btn-sm">Go</a>
-                    </div>
-                    <div class="mobile-dash-progress">
-                        <div class="progress-label">
-                            <span>Progress</span>
-                            <span><%= completedClasses %> / <%= totalClasses %> • <%= progress %>%</span>
-                        </div>
-                        <div class="progress-wrap" style="height:8px; margin-top:4px;"><div class="progress-fill" style="width:<%= progress %>%; height:100%;"></div></div>
-                        <div class="score-display">
-                            <i class="fas fa-star" style="color:#f39c12;"></i> Score: <strong><%= score %></strong> pts
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mobile-dash-card">
-                    <h4 style="font-weight:700; color:#1A0A2E; font-size:0.95rem; margin:0 0 10px 0;"><i class="fas fa-list-ul" style="color:#8B5CF6;"></i> Your Classes</h4>
-                    <% let hasClasses = false; %>
-                    <% if (enrolledCourse.levels) { %>
-                        <% enrolledCourse.levels.forEach(level => { if (level.lessons) { level.lessons.forEach(lesson => { if (lesson.classes) { lesson.classes.forEach(cls => { hasClasses = true; %> %>
-                            <div class="mobile-class-item">
-                                <span class="class-name"><%= level.name %> → <%= lesson.title %> → <%= cls.title %></span>
-                                <span>
-                                    <% if (user && user.progress && user.progress[cls.id]) { %>
-                                        <span style="color:#27ae60;"><i class="fas fa-check-circle"></i></span>
-                                    <% } else { %>
-                                        <span style="color:#b0a3c4;"><i class="far fa-circle"></i></span>
-                                    <% } %>
-                                </span>
-                            </div>
-                        <% }); } } }); }); %>
-                    <% } %>
-                    <% if (!hasClasses) { %>
-                        <p style="color:#7a6a8f; font-size:0.85rem;">No classes yet.</p>
-                    <% } %>
-                </div>
-
-                <%- include('../partials/ad-box') %>
-
-            <% } else { %>
-                <div class="mobile-dash-card mobile-dash-empty">
-                    <span class="empty-icon"><i class="fas fa-book-open"></i></span>
-                    <h3 style="font-size:1rem; color:#1A0A2E;">Explore Our Courses</h3>
-                    <p style="color:#7a6a8f; font-size:0.85rem;">Browse our courses and start learning today.</p>
-                    <a href="/" class="btn btn-primary btn-sm" style="margin-top:10px;">Browse Courses</a>
-                </div>
+    <main class="main-content" style="padding:12px 0 24px;">
+        <div class="container" style="padding:0 12px;">
+            <% if (messages && messages.error) { %>
+                <div class="alert alert-danger flash-message" data-type="error"><%= messages.error %></div>
+            <% } %>
+            <% if (messages && messages.success) { %>
+                <div class="alert alert-success flash-message" data-type="success"><%= messages.success %></div>
             <% } %>
 
+            <!-- Welcome -->
+            <div style="background:linear-gradient(135deg, var(--primary), var(--primary-dark)); border-radius:12px; padding:16px 18px; color:#fff; margin-bottom:12px;">
+                <div style="font-size:1.1rem; font-weight:700;">👋 Welcome!</div>
+                <div style="font-size:0.8rem; color:#d4c4f0;">Explore our courses and start learning.</div>
+            </div>
+
+            <!-- Stats -->
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:12px;">
+                <div style="background:#f8f6fc; border-radius:8px; padding:10px; text-align:center;">
+                    <div style="font-size:1.2rem; font-weight:800; color:var(--primary);"><%= courses ? courses.length : 0 %></div>
+                    <div style="font-size:0.6rem; color:var(--text-muted);">Courses</div>
+                </div>
+                <div style="background:#f8f6fc; border-radius:8px; padding:10px; text-align:center;">
+                    <div style="font-size:1.2rem; font-weight:800; color:var(--primary);">
+                        <% let tc = 0; if (courses) { courses.forEach(c => { if (c.levels) { c.levels.forEach(l => { if (l.lessons) { l.lessons.forEach(ls => { if (ls.classes) tc += ls.classes.length; }); } }); } }); } %><%= tc %>
+                    </div>
+                    <div style="font-size:0.6rem; color:var(--text-muted);">Classes</div>
+                </div>
+                <div style="background:#f8f6fc; border-radius:8px; padding:10px; text-align:center;">
+                    <div style="font-size:1.2rem; font-weight:800; color:var(--primary);">6</div>
+                    <div style="font-size:0.6rem; color:var(--text-muted);">Topics</div>
+                </div>
+            </div>
+
+            <!-- Featured Course -->
+            <div style="background:#fff; border-radius:12px; padding:14px 16px; border:1px solid #ede8f5; margin-bottom:12px;">
+                <div style="font-weight:700; font-size:0.95rem; color:var(--text-dark);">
+                    <i class="fas fa-book-open" style="color:var(--primary);"></i> Cybersecurity
+                </div>
+                <div style="font-size:0.75rem; color:var(--text-muted);">Beginner • 4 hours</div>
+                <a href="/course/course1" class="btn btn-primary btn-sm" style="width:100%; text-align:center; margin-top:6px; font-size:0.8rem; padding:8px;">Continue Learning</a>
+            </div>
+
+            <!-- Course List -->
+            <div style="font-weight:600; font-size:0.9rem; color:var(--text-dark); margin-bottom:6px;">All Courses</div>
+            <% if (courses && courses.length > 0) { %>
+                <% courses.forEach(function(c) { %>
+                    <a href="/course/<%= c.id %>" style="text-decoration:none; color:inherit;">
+                        <div style="background:#f8f6fc; border-radius:8px; padding:10px 14px; margin-bottom:4px; border:1px solid #ede8f5;">
+                            <div style="font-weight:600; font-size:0.85rem; color:var(--text-dark);"><%= c.title %></div>
+                            <div style="font-size:0.7rem; color:var(--text-muted);"><i class="far fa-clock"></i> <%= c.duration %></div>
+                        </div>
+                    </a>
+                <% }); %>
+            <% } else { %>
+                <p style="color:var(--text-muted); font-size:0.8rem;">No courses available.</p>
+            <% } %>
+
+            <%- include(getAdBox()) %>
         </div>
     </main>
 
-    <script>
-        // ===== TEXT SIZE SLIDER =====
-        const dashSlider = document.getElementById('dashTextSlider');
-        const dashDisplay = document.getElementById('dashTextDisplay');
-        const dashContent = document.getElementById('dashContent');
+    <%- include(getFooter()) %>
 
-        if (dashSlider && dashContent) {
-            dashSlider.addEventListener('input', function() {
-                const size = parseFloat(this.value);
-                dashDisplay.textContent = size.toFixed(1) + 'x';
-                dashContent.style.fontSize = (size * 1) + 'rem';
-                dashContent.style.lineHeight = (size * 1.6) + '';
-            });
-        }
-    </script>
+    <!-- AI Bot -->
+    <div class="ai-bot" id="aiBot">
+        <div class="ai-bot-pulse"></div>
+        <button class="ai-bot-btn" id="aiBotBtn" style="width:50px; height:50px; font-size:20px;"><i class="fas fa-robot"></i></button>
+    </div>
 
-    <%- include('partials/footer') %>
+    <div class="ai-chat-modal" id="aiChatModal">
+        <div class="ai-chat-header"><h4><i class="fas fa-robot"></i> AI Tutor</h4><button class="ai-chat-close" id="aiChatClose">&times;</button></div>
+        <div class="ai-chat-body" id="aiChatBody">
+            <div class="ai-chat-messages" id="aiChatMessages">
+                <div class="ai-chat-msg bot">👋 Hi! Ask me anything!</div>
+            </div>
+        </div>
+        <div class="ai-chat-footer">
+            <input type="text" id="aiChatInput" placeholder="Ask..." maxlength="500">
+            <button class="btn btn-primary" id="aiChatSend"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <script src="/js/script.js"></script>
 </body>
 </html>

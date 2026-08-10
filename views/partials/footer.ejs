@@ -1,148 +1,54 @@
-<footer class="site-footer">
-    <div class="container footer-flex">
-        <div class="footer-brand">
-            <span class="footer-logo">SLM lmt.®</span>
-            <span class="footer-tagline">Empowering minds, shaping futures.</span>
+<!-- ============================================================
+     FOOTER – DESKTOP VERSION
+     ============================================================ -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <!-- About -->
+            <div>
+                <h5><i class="fas fa-graduation-cap" style="color:var(--primary);"></i> SHINEX</h5>
+                <p style="color:var(--text-muted); font-size:0.85rem; line-height:1.6; max-width:260px;">
+                    Empowering minds with cutting-edge courses in tech, design, and data.
+                </p>
+                <div style="display:flex; gap:12px; margin-top:12px;">
+                    <a href="#" style="display:inline-block; font-size:1.2rem;"><i class="fab fa-facebook"></i></a>
+                    <a href="#" style="display:inline-block; font-size:1.2rem;"><i class="fab fa-twitter"></i></a>
+                    <a href="#" style="display:inline-block; font-size:1.2rem;"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" style="display:inline-block; font-size:1.2rem;"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+
+            <!-- Courses -->
+            <div>
+                <h5>Courses</h5>
+                <a href="/">Cybersecurity</a>
+                <a href="/">Web Development</a>
+                <a href="/">Web Design</a>
+                <a href="/">UI/UX Design</a>
+                <a href="/">SQL Database</a>
+                <a href="/">Data Analytics</a>
+            </div>
+
+            <!-- Company -->
+            <div>
+                <h5>Company</h5>
+                <a href="/about">About Us</a>
+                <a href="/contact">Contact</a>
+                <a href="/terms">Terms</a>
+                <a href="/privacy">Privacy</a>
+            </div>
+
+            <!-- Support -->
+            <div>
+                <h5>Support</h5>
+                <a href="/faq">FAQ</a>
+                <a href="/contact">Help Center</a>
+                <a href="/contact">Report Issue</a>
+            </div>
         </div>
 
-        <div class="footer-links">
-            <a href="/privacy">Privacy</a>
-            <a href="/terms">Terms</a>
-            <a href="/contact">Contact</a>
-        </div>
-
-        <div class="footer-copy">
-            &copy; <%= new Date().getFullYear() %> SLM lmt.® All rights reserved.
+        <div class="footer-bottom">
+            <p>&copy; 2026 SHINEX Learning Circle (SLC lmt.®). All rights reserved.</p>
         </div>
     </div>
 </footer>
-
-<style>
-    /* ===== PC FOOTER – STRAIGHT LINE + PURPLE ACCENT ===== */
-    .site-footer {
-        background: #1A0A2E;
-        color: #b8a8d0;
-        padding: 16px 0;
-        margin-top: auto;
-        border-top: 3px solid #8B5CF6;
-        width: 100%;
-        transition: background 0.3s, border-color 0.3s;
-    }
-
-    body.dark-mode .site-footer {
-        background: #000000;
-        border-top: 3px solid #8B5CF6;
-    }
-
-    .footer-flex {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        gap: 16px;
-        padding: 0 16px;
-        flex-wrap: wrap;
-    }
-
-    .footer-brand {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        gap: 10px;
-        flex-wrap: wrap;
-    }
-
-    .footer-logo {
-        font-size: 1rem;
-        font-weight: 700;
-        color: #ffffff;
-    }
-
-    body.dark-mode .footer-logo {
-        color: #ffffff;
-    }
-
-    .footer-tagline {
-        font-size: 0.75rem;
-        color: #9a8ab0;
-    }
-
-    body.dark-mode .footer-tagline {
-        color: #888;
-    }
-
-    .footer-links {
-        display: flex;
-        gap: 16px;
-        flex-wrap: wrap;
-        align-items: center;
-    }
-
-    .footer-links a {
-        color: #b8a8d0;
-        font-size: 0.8rem;
-        text-decoration: none;
-        transition: color 0.2s;
-        padding: 4px 6px;
-    }
-
-    body.dark-mode .footer-links a {
-        color: #c0c0c0;
-    }
-
-    .footer-links a:hover {
-        color: #8B5CF6;
-    }
-
-    .footer-copy {
-        font-size: 0.65rem;
-        color: #7a6a8f;
-        white-space: nowrap;
-    }
-
-    body.dark-mode .footer-copy {
-        color: #888;
-    }
-
-    @media (max-width: 768px) {
-        .footer-flex {
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            gap: 10px;
-            padding: 0 12px;
-        }
-
-        .footer-brand {
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .footer-links {
-            gap: 12px;
-            justify-content: center;
-        }
-
-        .footer-links a {
-            font-size: 0.75rem;
-        }
-
-        .footer-copy {
-            font-size: 0.6rem;
-            white-space: normal;
-        }
-    }
-
-    @media (max-width: 480px) {
-        .footer-logo {
-            font-size: 0.85rem;
-        }
-        .footer-tagline {
-            font-size: 0.65rem;
-        }
-        .footer-links a {
-            font-size: 0.65rem;
-        }
-    }
-</style>

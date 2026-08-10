@@ -2,69 +2,308 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Settings – SHINEX</title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        .settings-wrapper {
-            max-width: 600px;
+        .settings-layout {
+            display: flex;
+            gap: 24px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 0 16px;
         }
-        .settings-card {
-            padding: 28px 24px;
-            border-radius: 16px;
+        
+        .settings-sidebar {
+            width: 260px;
+            min-width: 220px;
             background: #fff;
+            border-radius: 14px;
             border: 1px solid #ede8f5;
+            padding: 12px 0;
+            height: fit-content;
+            position: sticky;
+            top: 80px;
+            transition: all 0.3s ease;
         }
-        .settings-card h2 {
-            font-size: 1.4rem;
-            font-weight: 800;
-            color: #1A0A2E;
-            margin: 0 0 2px 0;
+        
+        body.dark-mode .settings-sidebar {
+            background: #1a1a1a;
+            border-color: #333;
         }
-        .settings-card .subtitle {
-            color: #7a6a8f;
+        
+        .settings-sidebar .sidebar-title {
+            padding: 8px 18px 12px;
+            font-weight: 700;
             font-size: 0.9rem;
-            margin: 0 0 20px 0;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid #ede8f5;
         }
-        .settings-card hr {
-            border: none;
-            border-top: 2px solid #ede8f5;
-            margin: 20px 0;
+        
+        body.dark-mode .settings-sidebar .sidebar-title {
+            border-color: #333;
         }
-        .settings-card .btn-primary {
-            width: 100%;
-            padding: 14px;
+        
+        .settings-nav {
+            list-style: none;
+            padding: 4px 0;
+            margin: 0;
+        }
+        
+        .settings-nav li {
+            margin: 0;
+        }
+        
+        .settings-nav a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 18px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+        
+        .settings-nav a:hover {
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+        
+        body.dark-mode .settings-nav a:hover {
+            background: #2a1a4a;
+        }
+        
+        .settings-nav a.active {
+            background: var(--primary-bg);
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+        
+        body.dark-mode .settings-nav a.active {
+            background: #2a1a4a;
+        }
+        
+        .settings-nav a i {
+            width: 20px;
+            text-align: center;
+        }
+        
+        .settings-content {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .settings-section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .settings-section.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        
+        .settings-card {
+            background: #fff;
+            border-radius: 14px;
+            border: 1px solid #ede8f5;
+            padding: 24px 28px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        body.dark-mode .settings-card {
+            background: #1a1a1a;
+            border-color: #333;
+        }
+        
+        .settings-card h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin: 0 0 4px 0;
+        }
+        
+        body.dark-mode .settings-card h3 {
+            color: var(--text-light);
+        }
+        
+        .settings-card .subtitle {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin: 0 0 18px 0;
+        }
+        
+        .settings-group {
+            margin-bottom: 16px;
+        }
+        
+        .settings-group label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-dark);
+            display: block;
+            margin-bottom: 4px;
+        }
+        
+        body.dark-mode .settings-group label {
+            color: var(--text-light);
+        }
+        
+        .settings-group .help-text {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 3px;
+        }
+        
+        .settings-group input[type="file"] {
+            padding: 8px;
+            border: 2px dashed #ede8f5;
+            border-radius: 10px;
+            background: #faf8fc;
+        }
+        
+        body.dark-mode .settings-group input[type="file"] {
+            background: #1a1a1a;
+            border-color: #333;
+        }
+        
+        .settings-group .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 0;
+        }
+        
+        .settings-group .checkbox-group input[type="checkbox"] {
+            width: auto;
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+        
+        .settings-group .checkbox-group label {
+            margin: 0;
+            font-weight: 400;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        
+        .danger-zone {
+            border: 2px solid #e74c3c;
+            border-radius: 14px;
+            padding: 20px 24px;
+            background: #fef9f8;
+        }
+        
+        body.dark-mode .danger-zone {
+            background: #2a1a1a;
+            border-color: #e74c3c;
+        }
+        
+        .danger-zone h4 {
+            color: #e74c3c;
             font-size: 1rem;
+            font-weight: 700;
+            margin: 0 0 4px 0;
         }
+        
+        .danger-zone p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin: 0 0 12px 0;
+        }
+        
+        .btn-danger-zone {
+            background: #e74c3c;
+            color: #fff;
+            padding: 10px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-danger-zone:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+        
+        .settings-toggle-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: var(--text-dark);
+            padding: 8px;
+            cursor: pointer;
+        }
+        
+        body.dark-mode .settings-toggle-btn {
+            color: var(--text-light);
+        }
+        
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .settings-layout {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .settings-sidebar {
+                width: 100%;
+                min-width: unset;
+                position: relative;
+                top: 0;
+                max-height: 0;
+                overflow: hidden;
+                padding: 0;
+                transition: max-height 0.3s ease, padding 0.3s ease;
+            }
+            
+            .settings-sidebar.open {
+                max-height: 500px;
+                padding: 12px 0;
+                overflow-y: auto;
+            }
+            
+            .settings-toggle-btn {
+                display: block;
+            }
+            
+            .settings-card {
+                padding: 16px 18px;
+            }
+            
+            .settings-nav a {
+                padding: 6px 14px;
+                font-size: 0.8rem;
+            }
+        }
+        
         @media (max-width: 480px) {
             .settings-card {
-                padding: 16px 12px;
-                margin: 0 4px;
+                padding: 12px 14px;
             }
-            .settings-card h2 {
-                font-size: 1.2rem;
+            
+            .settings-group input,
+            .settings-group select,
+            .settings-group textarea {
+                font-size: 0.85rem;
+                padding: 8px 12px;
             }
-        }
-        /* Dark mode */
-        body.dark-mode .settings-card {
-            background: #111111 !important;
-            border-color: #333 !important;
-        }
-        body.dark-mode .settings-card h2 {
-            color: #ffffff !important;
-        }
-        body.dark-mode .settings-card .subtitle {
-            color: #cccccc !important;
-        }
-        body.dark-mode .settings-card hr {
-            border-top-color: #444 !important;
-        }
-        body.dark-mode .settings-card h4 {
-            color: #ffffff !important;
         }
     </style>
 </head>
@@ -72,82 +311,512 @@
     <%- include('partials/header', { user, showBack: true }) %>
 
     <main class="main-content">
-        <div class="settings-wrapper">
-            <div class="settings-card">
-                <h2><i class="fas fa-cog" style="color:#8B5CF6;"></i> Settings</h2>
-                <p class="subtitle">Update your personal information and password</p>
+        <div class="container">
+            
+            <!-- Flash Messages -->
+            <% if (messages && messages.error) { %>
+                <div class="alert alert-danger flash-message" data-type="error"><%= messages.error %></div>
+            <% } %>
+            <% if (messages && messages.success) { %>
+                <div class="alert alert-success flash-message" data-type="success"><%= messages.success %></div>
+            <% } %>
 
-                <% if (messages && messages.error) { %>
-                    <div class="alert alert-danger" style="margin-bottom:12px;"><%= messages.error %></div>
-                <% } %>
-                <% if (messages && messages.success) { %>
-                    <div class="alert alert-success" style="margin-bottom:12px;"><%= messages.success %></div>
-                <% } %>
-
-                <form action="/settings/update" method="POST" autocomplete="off">
-                    <div class="form-group">
-                        <label for="firstName">First Name</label>
-                        <input type="text" id="firstName" name="firstName" class="form-control" value="<%= user.firstName %>" placeholder="Enter first name">
-                    </div>
-                    <div class="form-group">
-                        <label for="lastName">Last Name</label>
-                        <input type="text" id="lastName" name="lastName" class="form-control" value="<%= user.lastName %>" placeholder="Enter last name">
-                    </div>
-                    <div class="form-group">
-                        <label for="bio">Bio</label>
-                        <textarea id="bio" name="bio" class="form-control" rows="3" placeholder="Tell us about yourself"><%= user.bio %></textarea>
-                    </div>
-
-                    <hr>
-
-                    <h4 style="font-weight:700; font-size:1rem; margin:0 0 16px 0;">
-                        <i class="fas fa-lock" style="color:#8B5CF6;"></i> Change Password
-                    </h4>
-                    <div class="form-group">
-                        <label for="currentPassword">Current Password</label>
-                        <div class="password-wrapper">
-                            <input type="password" id="currentPassword" name="currentPassword" class="form-control" placeholder="Enter current password">
-                            <i class="fas fa-eye password-toggle" onclick="togglePassword('currentPassword', this)"></i>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="newPassword">New Password <span class="label-hint">(min 6 chars)</span></label>
-                        <div class="password-wrapper">
-                            <input type="password" id="newPassword" name="newPassword" class="form-control" placeholder="Enter new password">
-                            <i class="fas fa-eye password-toggle" onclick="togglePassword('newPassword', this)"></i>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="confirmPassword">Confirm New Password</label>
-                        <div class="password-wrapper">
-                            <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" placeholder="Confirm new password">
-                            <i class="fas fa-eye password-toggle" onclick="togglePassword('confirmPassword', this)"></i>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Save Changes
-                    </button>
-                </form>
+            <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:20px;">
+                <div>
+                    <h1 style="font-size:1.6rem; font-weight:800; color:var(--text-dark); margin:0;">
+                        <i class="fas fa-cog" style="color:var(--primary);"></i> Settings
+                    </h1>
+                    <p style="color:var(--text-muted); font-size:0.9rem; margin:0;">Manage your account preferences and settings</p>
+                </div>
+                <button class="settings-toggle-btn" id="settingsToggle" aria-label="Toggle settings menu">
+                    <i class="fas fa-bars"></i> Menu
+                </button>
             </div>
+
+            <div class="settings-layout">
+                <!-- ===== SIDEBAR ===== -->
+                <aside class="settings-sidebar" id="settingsSidebar">
+                    <div class="sidebar-title"><i class="fas fa-sliders-h"></i> Settings</div>
+                    <ul class="settings-nav">
+                        <li><a href="#" data-target="section-profile" class="active"><i class="fas fa-user"></i> Profile</a></li>
+                        <li><a href="#" data-target="section-account"><i class="fas fa-lock"></i> Account</a></li>
+                        <li><a href="#" data-target="section-security"><i class="fas fa-shield-alt"></i> Security</a></li>
+                        <li><a href="#" data-target="section-appearance"><i class="fas fa-palette"></i> Appearance</a></li>
+                        <li><a href="#" data-target="section-notifications"><i class="fas fa-bell"></i> Notifications</a></li>
+                        <li><a href="#" data-target="section-privacy"><i class="fas fa-eye"></i> Privacy</a></li>
+                        <li><a href="#" data-target="section-learning"><i class="fas fa-graduation-cap"></i> Learning</a></li>
+                        <li><a href="#" data-target="section-billing"><i class="fas fa-credit-card"></i> Billing</a></li>
+                        <li><a href="#" data-target="section-support"><i class="fas fa-headset"></i> Support</a></li>
+                        <li><a href="#" data-target="section-danger" style="color:#e74c3c;"><i class="fas fa-exclamation-triangle"></i> Danger Zone</a></li>
+                    </ul>
+                </aside>
+
+                <!-- ===== CONTENT ===== -->
+                <div class="settings-content">
+
+                    <!-- ===== PROFILE SECTION ===== -->
+                    <div class="settings-section active" id="section-profile">
+                        <div class="settings-card">
+                            <h3><i class="fas fa-user" style="color:var(--primary);"></i> Profile</h3>
+                            <p class="subtitle">Update your personal information</p>
+                            
+                            <form id="profileForm" method="POST" action="/settings/update">
+                                <div class="settings-group">
+                                    <label for="firstName">First Name</label>
+                                    <input type="text" id="firstName" name="firstName" value="<%= user ? user.firstName : '' %>" placeholder="Your first name">
+                                </div>
+                                
+                                <div class="settings-group">
+                                    <label for="lastName">Last Name</label>
+                                    <input type="text" id="lastName" name="lastName" value="<%= user ? user.lastName : '' %>" placeholder="Your last name">
+                                </div>
+                                
+                                <div class="settings-group">
+                                    <label for="bio">Bio</label>
+                                    <textarea id="bio" name="bio" rows="3" placeholder="Tell us about yourself"><%= user ? user.bio : '' %></textarea>
+                                    <div class="help-text">Brief description about yourself (max 200 characters)</div>
+                                </div>
+                                
+                                <div class="settings-group">
+                                    <label for="email">Email Address</label>
+                                    <input type="email" id="email" name="email" value="<%= user ? user.email : '' %>" disabled>
+                                    <div class="help-text">Email cannot be changed. Contact support for assistance.</div>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Profile</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- ===== ACCOUNT SECTION ===== -->
+                    <div class="settings-section" id="section-account">
+                        <div class="settings-card">
+                            <h3><i class="fas fa-lock" style="color:var(--primary);"></i> Account</h3>
+                            <p class="subtitle">Change your password and account settings</p>
+                            
+                            <form id="passwordForm" method="POST" action="/settings/update">
+                                <div class="settings-group">
+                                    <label for="currentPassword">Current Password</label>
+                                    <input type="password" id="currentPassword" name="currentPassword" placeholder="Enter current password">
+                                </div>
+                                
+                                <div class="settings-group">
+                                    <label for="newPassword">New Password</label>
+                                    <input type="password" id="newPassword" name="newPassword" placeholder="Enter new password (min 6 characters)">
+                                </div>
+                                
+                                <div class="settings-group">
+                                    <label for="confirmPassword">Confirm New Password</label>
+                                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm new password">
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Change Password</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- ===== SECURITY SECTION ===== -->
+                    <div class="settings-section" id="section-security">
+                        <div class="settings-card">
+                            <h3><i class="fas fa-shield-alt" style="color:var(--primary);"></i> Security</h3>
+                            <p class="subtitle">Protect your account</p>
+                            
+                            <div class="settings-group">
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="twoFactor">
+                                    <label for="twoFactor">Enable Two-Factor Authentication (2FA)</label>
+                                </div>
+                                <div class="help-text">Add an extra layer of security to your account.</div>
+                            </div>
+                            
+                            <div class="settings-group" style="margin-top:16px;">
+                                <label>Login Activity</label>
+                                <div style="background:#f8f6fc; border-radius:8px; padding:12px; font-size:0.85rem; color:var(--text-muted);">
+                                    <i class="fas fa-circle" style="color:#27ae60; font-size:8px;"></i> Current session: <strong>Chrome on Windows</strong> - <span id="currentTime"></span>
+                                </div>
+                                <div style="background:#f8f6fc; border-radius:8px; padding:12px; font-size:0.85rem; color:var(--text-muted); margin-top:4px;">
+                                    <i class="fas fa-circle" style="color:#b0a3c4; font-size:8px;"></i> Chrome on Mac - 2 days ago
+                                </div>
+                            </div>
+                            
+                            <button class="btn btn-secondary" id="logoutAllBtn"><i class="fas fa-sign-out-alt"></i> Logout from all sessions</button>
+                        </div>
+                    </div>
+
+                    <!-- ===== APPEARANCE SECTION ===== -->
+                    <div class="settings-section" id="section-appearance">
+                        <div class="settings-card">
+                            <h3><i class="fas fa-palette" style="color:var(--primary);"></i> Appearance</h3>
+                            <p class="subtitle">Customize your visual experience</p>
+                            
+                            <div class="settings-group">
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="darkModeSetting" <%= (user && user.darkMode) ? 'checked' : '' %>>
+                                    <label for="darkModeSetting"><i class="fas fa-moon"></i> Dark Mode</label>
+                                </div>
+                                <div class="help-text">Switch between light and dark theme.</div>
+                            </div>
+                            
+                            <div class="settings-group" style="margin-top:16px;">
+                                <label for="textSizeSetting">Font Size: <span id="textSizeLabel">16px</span></label>
+                                <input type="range" id="textSizeSetting" min="12" max="24" value="<%= user && user.textSize ? user.textSize : 16 %>" step="1">
+                                <div class="help-text">Adjust the text size for better readability.</div>
+                            </div>
+                            
+                            <button class="btn btn-primary" id="saveAppearance"><i class="fas fa-save"></i> Save Appearance</button>
+                        </div>
+                    </div>
+
+                    <!-- ===== NOTIFICATIONS SECTION ===== -->
+                    <div class="settings-section" id="section-notifications">
+                        <div class="settings-card">
+                            <h3><i class="fas fa-bell" style="color:var(--primary);"></i> Notifications</h3>
+                            <p class="subtitle">Manage your notification preferences</p>
+                            
+                            <div class="settings-group">
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="notifEmail" checked>
+                                    <label for="notifEmail">Email Notifications</label>
+                                </div>
+                                <div class="help-text">Receive updates via email.</div>
+                            </div>
+                            
+                            <div class="settings-group">
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="notifBrowser" checked>
+                                    <label for="notifBrowser">Browser Notifications</label>
+                                </div>
+                                <div class="help-text">Receive notifications in your browser.</div>
+                            </div>
+                            
+                            <div class="settings-group">
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="notifCourse" checked>
+                                    <label for="notifCourse">Course Updates & Announcements</label>
+                                </div>
+                                <div class="help-text">Get notified about new lessons and course updates.</div>
+                            </div>
+                            
+                            <div class="settings-group">
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="notifMarketing">
+                                    <label for="notifMarketing">Marketing Messages</label>
+                                </div>
+                                <div class="help-text">Receive promotional offers and updates.</div>
+                            </div>
+                            
+                            <button class="btn btn-primary"><i class="fas fa-save"></i> Save Notifications</button>
+                        </div>
+                    </div>
+
+                    <!-- ===== PRIVACY SECTION ===== -->
+                    <div class="settings-section" id="section-privacy">
+                        <div class="settings-card">
+                            <h3><i class="fas fa-eye" style="color:var(--primary);"></i> Privacy</h3>
+                            <p class="subtitle">Control your privacy settings</p>
+                            
+                            <div class="settings-group">
+                                <label for="profileVisibility">Profile Visibility</label>
+                                <select id="profileVisibility">
+                                    <option value="public">Public</option>
+                                    <option value="private" selected>Private</option>
+                                    <option value="courses-only">Only Course Progress</option>
+                                </select>
+                                <div class="help-text">Who can view your profile and activity.</div>
+                            </div>
+                            
+                            <div class="settings-group">
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="dataSharing" checked>
+                                    <label for="dataSharing">Allow data sharing for course improvements</label>
+                                </div>
+                                <div class="help-text">Help us improve by sharing anonymous usage data.</div>
+                            </div>
+                            
+                            <button class="btn btn-primary"><i class="fas fa-save"></i> Save Privacy</button>
+                        </div>
+                    </div>
+
+                    <!-- ===== LEARNING SECTION ===== -->
+                    <div class="settings-section" id="section-learning">
+                        <div class="settings-card">
+                            <h3><i class="fas fa-graduation-cap" style="color:var(--primary);"></i> Learning Settings</h3>
+                            <p class="subtitle">Customize your learning experience</p>
+                            
+                            <div class="settings-group">
+                                <label for="prefLevel">Preferred Course Level</label>
+                                <select id="prefLevel" name="experienceLevel">
+                                    <option value="Beginner" <%= (user && user.experienceLevel === 'Beginner') ? 'selected' : '' %>>Beginner</option>
+                                    <option value="Intermediate" <%= (user && user.experienceLevel === 'Intermediate') ? 'selected' : '' %>>Intermediate</option>
+                                    <option value="Advanced" <%= (user && user.experienceLevel === 'Advanced') ? 'selected' : '' %>>Advanced</option>
+                                </select>
+                            </div>
+                            
+                            <div class="settings-group">
+                                <label>Areas of Interest</label>
+                                <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:4px;">
+                                    <label style="display:flex; align-items:center; gap:4px; font-weight:400; font-size:0.85rem; padding:4px 12px; background:var(--primary-bg); border-radius:20px; cursor:pointer;">
+                                        <input type="checkbox" value="cybersecurity" style="width:auto; margin:0;"> Cybersecurity
+                                    </label>
+                                    <label style="display:flex; align-items:center; gap:4px; font-weight:400; font-size:0.85rem; padding:4px 12px; background:var(--primary-bg); border-radius:20px; cursor:pointer;">
+                                        <input type="checkbox" value="programming" style="width:auto; margin:0;"> Programming
+                                    </label>
+                                    <label style="display:flex; align-items:center; gap:4px; font-weight:400; font-size:0.85rem; padding:4px 12px; background:var(--primary-bg); border-radius:20px; cursor:pointer;">
+                                        <input type="checkbox" value="design" style="width:auto; margin:0;"> UI/UX Design
+                                    </label>
+                                    <label style="display:flex; align-items:center; gap:4px; font-weight:400; font-size:0.85rem; padding:4px 12px; background:var(--primary-bg); border-radius:20px; cursor:pointer;">
+                                        <input type="checkbox" value="data" style="width:auto; margin:0;"> Data Analytics
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="settings-group">
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="autoplay">
+                                    <label for="autoplay">Auto-play next lesson</label>
+                                </div>
+                                <div class="help-text">Automatically play the next lesson when available.</div>
+                            </div>
+                            
+                            <button class="btn btn-primary"><i class="fas fa-save"></i> Save Learning Settings</button>
+                        </div>
+                    </div>
+
+                    <!-- ===== BILLING SECTION ===== -->
+                    <div class="settings-section" id="section-billing">
+                        <div class="settings-card">
+                            <h3><i class="fas fa-credit-card" style="color:var(--primary);"></i> Billing</h3>
+                            <p class="subtitle">Manage your subscription and payments</p>
+                            
+                            <div style="padding:20px; background:var(--primary-bg); border-radius:10px; text-align:center; margin-bottom:16px;">
+                                <p style="font-size:1.2rem; font-weight:700; color:var(--primary);">Free Plan</p>
+                                <p style="color:var(--text-muted); font-size:0.85rem;">You are currently on the free plan</p>
+                                <button class="btn btn-primary" style="margin-top:8px;">Upgrade to Premium</button>
+                            </div>
+                            
+                            <div class="settings-group">
+                                <label>Payment Methods</label>
+                                <p style="color:var(--text-muted); font-size:0.85rem;">No payment methods added yet.</p>
+                                <button class="btn btn-secondary btn-sm">Add Payment Method</button>
+                            </div>
+                            
+                            <div class="settings-group">
+                                <label>Billing History</label>
+                                <p style="color:var(--text-muted); font-size:0.85rem;">No billing history available.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ===== SUPPORT SECTION ===== -->
+                    <div class="settings-section" id="section-support">
+                        <div class="settings-card">
+                            <h3><i class="fas fa-headset" style="color:var(--primary);"></i> Help & Support</h3>
+                            <p class="subtitle">Get help with your account</p>
+                            
+                            <div class="settings-group">
+                                <a href="/contact" class="btn btn-primary btn-block"><i class="fas fa-envelope"></i> Contact Support</a>
+                            </div>
+                            
+                            <div class="settings-group">
+                                <a href="#" class="btn btn-secondary btn-block"><i class="fas fa-bug"></i> Report an Issue</a>
+                            </div>
+                            
+                            <div class="settings-group">
+                                <a href="#" class="btn btn-secondary btn-block"><i class="fas fa-question-circle"></i> Frequently Asked Questions (FAQ)</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ===== DANGER ZONE ===== -->
+                    <div class="settings-section" id="section-danger">
+                        <div class="settings-card danger-zone">
+                            <h4><i class="fas fa-exclamation-triangle"></i> Danger Zone</h4>
+                            <p>These actions are irreversible. Please proceed with caution.</p>
+                            
+                            <div style="display:flex; flex-wrap:wrap; gap:12px; margin-top:8px;">
+                                <button class="btn-danger-zone" id="deleteAccountBtn"><i class="fas fa-trash"></i> Delete Account</button>
+                                <button class="btn-danger-zone" style="background:#f39c12;"><i class="fas fa-download"></i> Export Data</button>
+                            </div>
+                            <div class="help-text" style="margin-top:8px; color:#e74c3c;">Deleting your account will permanently remove all your data.</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ===== AD BOX ===== -->
+            <%- include('partials/ad-box') %>
+
         </div>
     </main>
 
-    <script>
-        function togglePassword(id, icon) {
-            const input = document.getElementById(id);
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            } else {
-                input.type = 'password';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-            }
-        }
-    </script>
-
     <%- include('partials/footer') %>
+
+    <script>
+        // ===== SETTINGS PAGE JAVASCRIPT =====
+        document.addEventListener('DOMContentLoaded', function() {
+            // ===== SIDEBAR NAVIGATION =====
+            const navLinks = document.querySelectorAll('.settings-nav a');
+            const sections = document.querySelectorAll('.settings-section');
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = this.getAttribute('data-target');
+                    
+                    // Update active state
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show target section
+                    sections.forEach(section => {
+                        section.classList.remove('active');
+                        if (section.id === target) {
+                            section.classList.add('active');
+                        }
+                    });
+                    
+                    // Close sidebar on mobile
+                    const sidebar = document.getElementById('settingsSidebar');
+                    if (window.innerWidth <= 768 && sidebar) {
+                        sidebar.classList.remove('open');
+                    }
+                });
+            });
+            
+            // ===== RESPONSIVE TOGGLE =====
+            const toggleBtn = document.getElementById('settingsToggle');
+            const sidebar = document.getElementById('settingsSidebar');
+            
+            if (toggleBtn && sidebar) {
+                toggleBtn.addEventListener('click', function() {
+                    sidebar.classList.toggle('open');
+                });
+            }
+            
+            // ===== DARK MODE IN SETTINGS =====
+            const darkModeSetting = document.getElementById('darkModeSetting');
+            const textSizeSetting = document.getElementById('textSizeSetting');
+            const textSizeLabel = document.getElementById('textSizeLabel');
+            
+            // Load saved dark mode
+            const savedDark = localStorage.getItem('shinex-dark-mode');
+            if (savedDark === 'true' && darkModeSetting) {
+                darkModeSetting.checked = true;
+                document.body.classList.add('dark-mode');
+            }
+            
+            // Dark mode toggle in settings
+            if (darkModeSetting) {
+                darkModeSetting.addEventListener('change', function() {
+                    const body = document.body;
+                    body.classList.toggle('dark-mode', this.checked);
+                    localStorage.setItem('shinex-dark-mode', this.checked);
+                    
+                    // Sync with header toggle
+                    const headerToggle = document.getElementById('darkToggle');
+                    if (headerToggle) {
+                        if (this.checked) {
+                            headerToggle.innerHTML = '☀️ <span class="toggle-label">Light</span>';
+                        } else {
+                            headerToggle.innerHTML = '🌙 <span class="toggle-label">Dark</span>';
+                        }
+                    }
+                    
+                    showToast(this.checked ? '🌙 Dark mode enabled' : '☀️ Light mode enabled', 'success');
+                });
+            }
+            
+            // ===== TEXT SIZE SLIDER =====
+            if (textSizeSetting && textSizeLabel) {
+                const savedSize = localStorage.getItem('shinex-text-size') || 16;
+                textSizeSetting.value = savedSize;
+                textSizeLabel.textContent = savedSize + 'px';
+                document.body.style.fontSize = savedSize + 'px';
+                
+                textSizeSetting.addEventListener('input', function() {
+                    const size = this.value;
+                    textSizeLabel.textContent = size + 'px';
+                    document.body.style.fontSize = size + 'px';
+                    localStorage.setItem('shinex-text-size', size);
+                });
+            }
+            
+            // ===== SAVE APPEARANCE =====
+            const saveAppearance = document.getElementById('saveAppearance');
+            if (saveAppearance) {
+                saveAppearance.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const darkMode = darkModeSetting ? darkModeSetting.checked : false;
+                    const textSize = textSizeSetting ? textSizeSetting.value : 16;
+                    
+                    fetch('/settings/update', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            darkMode: darkMode,
+                            textSize: textSize
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            showToast('✅ Appearance settings saved!', 'success');
+                            document.body.style.fontSize = textSize + 'px';
+                            localStorage.setItem('shinex-text-size', textSize);
+                            localStorage.setItem('shinex-dark-mode', darkMode);
+                        } else {
+                            showToast('❌ ' + data.error, 'error');
+                        }
+                    })
+                    .catch(() => {
+                        showToast('❌ Something went wrong.', 'error');
+                    });
+                });
+            }
+            
+            // ===== DELETE ACCOUNT =====
+            const deleteBtn = document.getElementById('deleteAccountBtn');
+            if (deleteBtn) {
+                deleteBtn.addEventListener('click', function() {
+                    if (confirm('⚠️ Are you sure you want to delete your account?')) {
+                        if (confirm('Type "DELETE" to confirm:')) {
+                            if (prompt('Please type "DELETE" to confirm:') === 'DELETE') {
+                                showToast('⚠️ Account deletion request submitted.', 'error');
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // ===== LOGOUT ALL =====
+            const logoutAllBtn = document.getElementById('logoutAllBtn');
+            if (logoutAllBtn) {
+                logoutAllBtn.addEventListener('click', function() {
+                    if (confirm('Are you sure you want to logout from all devices?')) {
+                        fetch('/logout-all', { method: 'POST' })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                showToast('✅ Logged out from all sessions.', 'success');
+                                setTimeout(() => {
+                                    window.location.href = '/';
+                                }, 1500);
+                            }
+                        });
+                    }
+                });
+            }
+            
+            // ===== CURRENT TIME =====
+            const timeElement = document.getElementById('currentTime');
+            if (timeElement) {
+                const now = new Date();
+                timeElement.textContent = now.toLocaleString();
+            }
+        });
+    </script>
 </body>
 </html>

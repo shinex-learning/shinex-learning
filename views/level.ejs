@@ -2,728 +2,204 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= level.name %> – SHINEX</title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        /* ===== LEVEL PAGE STYLES ===== */
-        .level-container {
-            display: flex;
-            gap: 20px;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 16px;
-        }
-        .level-sidebar {
-            width: 300px;
-            min-width: 260px;
-            background: #fff;
-            border-radius: 14px;
-            border: 1px solid #ede8f5;
-            padding: 12px 0;
-            height: fit-content;
-            max-height: 80vh;
-            overflow-y: auto;
-            position: sticky;
-            top: 80px;
-            box-shadow: 0 4px 20px rgba(26, 10, 46, 0.05);
-            transition: background 0.3s, border-color 0.3s;
-        }
-        .sidebar-header {
-            padding: 0 14px 10px 14px;
-            border-bottom: 1px solid #ede8f5;
-            font-weight: 700;
-            font-size: 0.95rem;
-            color: #1A0A2E;
-        }
-        .sidebar-header .level-badge {
-            font-size: 0.7rem;
-            background: #8B5CF6;
-            color: #fff;
-            padding: 2px 10px;
-            border-radius: 20px;
-            margin-left: 8px;
-        }
-        .sidebar-nav {
-            padding: 6px 0;
-        }
-        .sidebar-lesson {
-            margin-bottom: 2px;
-        }
-        .lesson-header {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 14px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            color: #1A0A2E;
-            background: #f8f6fc;
-            border-left: 3px solid transparent;
-            transition: background 0.2s, color 0.2s;
-        }
-        .lesson-header.active {
-            border-left-color: #8B5CF6;
-            background: #f0ebfb;
-        }
-        .lesson-number {
-            font-weight: 700;
-            color: #8B5CF6;
-            min-width: 22px;
-            font-size: 0.8rem;
-        }
-        .lesson-title {
-            flex: 1;
-            font-size: 0.85rem;
-        }
-        .class-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .class-item {
-            padding: 0;
-            border-bottom: 1px solid #f0ebfb;
-        }
-        .class-item:last-child {
-            border-bottom: none;
-        }
-        .class-link {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 5px 14px 5px 32px;
-            font-size: 0.8rem;
-            color: #4a3a60;
-            transition: all 0.2s;
-            cursor: pointer;
-            text-decoration: none;
-        }
-        .class-link:hover:not(.disabled) {
-            background: #f0ebfb;
-        }
-        .class-link.disabled {
-            color: #b0a3c4;
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
-        .class-link .class-number {
-            font-weight: 600;
-            color: #8B5CF6;
-            min-width: 28px;
-            font-size: 0.75rem;
-        }
-        .class-link .class-title {
-            flex: 1;
-        }
-        .class-link .class-status {
-            font-size: 0.7rem;
-        }
-        .class-item.active .class-link {
-            background: #f0ebfb;
-            border-left: 3px solid #8B5CF6;
-            padding-left: 29px;
-        }
-        .class-item.completed .class-link {
-            color: #27ae60;
-        }
-        .class-item.completed .class-link .class-number {
-            color: #27ae60;
-        }
-        .level-content {
-            flex: 1;
-            min-width: 0;
-        }
-        .content-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 14px 20px;
-            background: #fff;
-            border-radius: 14px 14px 0 0;
-            border: 1px solid #ede8f5;
-            border-bottom: none;
-            transition: background 0.3s, border-color 0.3s;
-        }
-        .content-header h1 {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #1A0A2E;
-            margin: 0;
-        }
-        .content-header .level-name-badge {
-            background: #8B5CF6;
-            color: #fff;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: 600;
-        }
-        .content-body {
-            background: #fff;
-            padding: 20px 24px;
-            border: 1px solid #ede8f5;
-            border-top: none;
-            border-radius: 0 0 14px 14px;
-            transition: background 0.3s, border-color 0.3s;
-        }
-        .content-body .class-title {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #1A0A2E;
-            margin: 0 0 12px 0;
-        }
-        .class-content {
-            font-size: 1.05rem;
-            line-height: 1.8;
-            color: #1f2937;
-            transition: color 0.3s;
-        }
-        .class-content h1, .class-content h2, .class-content h3 {
-            color: #1A0A2E;
-            margin-top: 1.2rem;
-            margin-bottom: 0.5rem;
-        }
-        .class-content p {
-            margin-bottom: 0.8rem;
-        }
-        .class-content ul, .class-content ol {
-            padding-left: 1.5rem;
-            margin-bottom: 0.8rem;
-        }
-        .class-content li {
-            margin-bottom: 0.3rem;
-        }
-        .class-content strong, .class-content b {
-            font-weight: 700;
-            color: #1A0A2E;
-        }
-        .class-content hr {
-            border: none;
-            border-top: 2px solid #ede8f5;
-            margin: 1rem 0;
-        }
-        .class-content img {
-            max-width: 100%;
-            border-radius: 8px;
-            margin: 0.5rem 0;
-        }
-        .class-image {
-            margin: 12px 0;
-        }
-        .class-image img {
-            max-width: 100%;
-            border-radius: 8px;
-            border: 1px solid #ede8f5;
-        }
-        .class-video, .class-external {
-            margin: 8px 0;
-        }
-        .class-status-bar {
-            margin-top: 16px;
-            padding-top: 12px;
-            border-top: 1px solid #ede8f5;
-            display: flex;
-            justify-content: flex-end;
-            font-size: 0.85rem;
-        }
-        .status-completed {
-            color: #27ae60;
-            font-weight: 600;
-        }
-        .status-pending {
-            color: #b0a3c4;
-            font-weight: 600;
-        }
-        .content-footer {
-            margin-top: 16px;
-            padding: 16px 20px;
-            background: #fff;
-            border-radius: 14px;
-            border: 1px solid #ede8f5;
-            transition: background 0.3s, border-color 0.3s;
-        }
-        .next-button-wrapper {
-            display: flex;
-            justify-content: flex-end;
-            margin-bottom: 12px;
-        }
-        .next-btn {
-            padding: 10px 28px;
-            font-size: 0.95rem;
-            min-width: 160px;
-        }
-        .course-complete-msg {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #f39c12;
-            text-align: right;
-        }
-        .progress-bar-wrapper {
-            border-top: 1px solid #ede8f5;
-            padding-top: 12px;
-        }
-        .progress-label {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: #2d1a4a;
-            margin-bottom: 3px;
-        }
-        .score-display {
-            margin-top: 6px;
-            font-size: 0.85rem;
-            color: #7a6a8f;
-        }
-        .test-section {
-            margin-top: 16px;
-            padding: 16px 20px;
-            background: #fffbf0;
-            border: 2px solid #f7d44a;
-            border-radius: 14px;
-            transition: background 0.3s, border-color 0.3s;
-        }
-        .test-section h4 {
-            font-weight: 700;
-            color: #1A0A2E;
-            font-size: 1rem;
-            margin: 0 0 6px 0;
-        }
-        .test-section p {
-            font-size: 0.85rem;
-            color: #7a6a8f;
-            margin: 0 0 10px 0;
-        }
-        .test-section .btn {
-            cursor: not-allowed;
-        }
-        .content-empty {
-            text-align: center;
-            padding: 40px 20px;
-            background: #fff;
-            border-radius: 14px;
-            border: 1px solid #ede8f5;
-            transition: background 0.3s, border-color 0.3s;
-        }
-        .content-empty h3 {
-            margin: 12px 0 6px;
-            color: #1A0A2E;
-        }
-        .content-empty p {
-            color: #7a6a8f;
-        }
-        .level-sidebar::-webkit-scrollbar {
-            width: 4px;
-        }
-        .level-sidebar::-webkit-scrollbar-track {
-            background: #f0ebfb;
-            border-radius: 10px;
-        }
-        .level-sidebar::-webkit-scrollbar-thumb {
-            background: #8B5CF6;
-            border-radius: 10px;
-        }
-
-        /* ===== TEXT SIZE SLIDER ===== */
-        .text-size-control {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 8px 0;
-            margin: 8px 0;
-            flex-wrap: wrap;
-        }
-        .text-size-control label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #2d1a4a;
-        }
-        .text-size-control input[type="range"] {
-            flex: 1;
-            min-width: 120px;
-            accent-color: #8B5CF6;
-            cursor: pointer;
-        }
-        .text-size-control .size-value {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #8B5CF6;
-            min-width: 40px;
-            text-align: center;
-        }
-
-        /* ===== DARK MODE FIXES ===== */
-        body.dark-mode .level-sidebar {
-            background: #111111 !important;
-            border-color: #333 !important;
-        }
-        body.dark-mode .sidebar-header {
-            color: #ffffff !important;
-            border-bottom-color: #333 !important;
-        }
-        body.dark-mode .lesson-header {
-            color: #ffffff !important;
-            background: #1a1a1a !important;
-        }
-        body.dark-mode .lesson-header.active {
-            background: #2a1a4a !important;
-            border-left-color: #b088f9 !important;
-        }
-        body.dark-mode .class-link {
-            color: #cccccc !important;
-        }
-        body.dark-mode .class-link:hover:not(.disabled) {
-            background: #2a2a2a !important;
-        }
-        body.dark-mode .class-link .class-number {
-            color: #b088f9 !important;
-        }
-        body.dark-mode .class-item.active .class-link {
-            background: #2a1a4a !important;
-            border-left-color: #b088f9 !important;
-        }
-        body.dark-mode .class-link.disabled {
-            color: #666 !important;
-        }
-        body.dark-mode .level-content .content-header {
-            background: #111111 !important;
-            border-color: #333 !important;
-        }
-        body.dark-mode .level-content .content-header h1 {
-            color: #ffffff !important;
-        }
-        body.dark-mode .level-content .content-body {
-            background: #111111 !important;
-            border-color: #333 !important;
-        }
-        body.dark-mode .level-content .content-body .class-title {
-            color: #ffffff !important;
-        }
-        body.dark-mode .level-content .content-footer {
-            background: #111111 !important;
-            border-color: #333 !important;
-        }
-        body.dark-mode .level-content .course-complete-msg {
-            color: #f0c040 !important;
-        }
-        body.dark-mode .test-section {
-            background: #2a251a !important;
-            border-color: #f39c12 !important;
-        }
-        body.dark-mode .test-section h4 {
-            color: #ffffff !important;
-        }
-        body.dark-mode .test-section p {
-            color: #cccccc !important;
-        }
-        body.dark-mode .content-empty {
-            background: #111111 !important;
-            border-color: #333 !important;
-        }
-        body.dark-mode .content-empty h3 {
-            color: #ffffff !important;
-        }
-        body.dark-mode .content-empty p {
-            color: #cccccc !important;
-        }
-        body.dark-mode .progress-label {
-            color: #cccccc !important;
-        }
-        body.dark-mode .score-display {
-            color: #cccccc !important;
-        }
-        body.dark-mode .class-status-bar {
-            border-top-color: #333 !important;
-        }
-        body.dark-mode .progress-bar-wrapper {
-            border-top-color: #333 !important;
-        }
-        body.dark-mode .class-content {
-            color: #f0f0f0 !important;
-        }
-        body.dark-mode .class-content h1,
-        body.dark-mode .class-content h2,
-        body.dark-mode .class-content h3 {
-            color: #ffffff !important;
-        }
-        body.dark-mode .class-content strong,
-        body.dark-mode .class-content b {
-            color: #d4bfff !important;
-        }
-        body.dark-mode .class-content p {
-            color: #e0e0e0 !important;
-        }
-        body.dark-mode .class-content li {
-            color: #e0e0e0 !important;
-        }
-        body.dark-mode .text-size-control label {
-            color: #ffffff !important;
-        }
-
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 1024px) {
-            .level-sidebar { width: 260px; min-width: 220px; }
-        }
-        @media (max-width: 768px) {
-            .level-container { flex-direction: column; padding: 0 12px; }
-            .level-sidebar { width: 100%; min-width: unset; max-height: none; position: static; margin-bottom: 14px; }
-            .sidebar-nav { max-height: 250px; overflow-y: auto; }
-            .content-body { padding: 14px 16px; }
-            .content-footer { padding: 14px 16px; }
-            .next-button-wrapper { justify-content: center; }
-            .next-btn { width: 100%; }
-            .content-header { flex-wrap: wrap; gap: 6px; padding: 12px 16px; }
-            .content-header h1 { font-size: 1rem; }
-            .content-body .class-title { font-size: 1.1rem; }
-            .class-content { font-size: 0.95rem; }
-        }
-        @media (max-width: 480px) {
-            .content-body { padding: 10px 12px; }
-            .content-footer { padding: 10px 12px; }
-            .class-link { padding: 4px 10px 4px 24px; font-size: 0.75rem; }
-            .lesson-header { padding: 4px 10px; font-size: 0.8rem; }
-            .class-link .class-number { min-width: 22px; font-size: 0.7rem; }
-        }
-    </style>
 </head>
 <body>
-    <%- include('partials/header', { user, showBack: true }) %>
+    <div id="page-loader">
+        <div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div>
+        <div class="loader-text">SHINEX</div>
+        <div class="loader-sub">LEARNING CIRCLE</div>
+    </div>
+
+    <%- include(getHeader()) %>
 
     <main class="main-content">
-        <div class="level-container">
+        <div class="container">
+            <% if (messages && messages.error) { %>
+                <div class="alert alert-danger flash-message" data-type="error"><%= messages.error %></div>
+            <% } %>
+            <% if (messages && messages.success) { %>
+                <div class="alert alert-success flash-message" data-type="success"><%= messages.success %></div>
+            <% } %>
 
-            <!-- ===== LEFT SIDEBAR ===== -->
-            <aside class="level-sidebar">
-                <div class="sidebar-header">
-                    <span><%= course.title %></span>
-                    <span class="level-badge"><%= level.name %></span>
-                </div>
-                <nav class="sidebar-nav">
-                    <% if (level.lessons && level.lessons.length > 0) { %>
-                        <% level.lessons.forEach(function(lesson, lIdx) { %>
-                            <div class="sidebar-lesson">
-                                <div class="lesson-header <%= lesson.id === (currentLesson ? currentLesson.id : null) ? 'active' : '' %>">
-                                    <span class="lesson-number"><%= lIdx + 1 %></span>
-                                    <span class="lesson-title"><%= lesson.title %></span>
-                                    <% 
-                                        let allCompleted = true;
-                                        if (lesson.classes) {
-                                            lesson.classes.forEach(function(cls) {
-                                                if (!(user.progress && user.progress[cls.id])) allCompleted = false;
-                                            });
-                                        } else {
-                                            allCompleted = false;
-                                        }
-                                    %>
-                                    <% if (allCompleted && lesson.classes && lesson.classes.length > 0) { %>
-                                        <span style="font-size:0.6rem; color:#27ae60;"><i class="fas fa-check-circle"></i></span>
+            <div class="level-container">
+                <!-- ===== SIDEBAR ===== -->
+                <aside class="sidebar">
+                    <div class="sidebar-header">
+                        <i class="fas fa-list-ul"></i> <%= level.name %>
+                        <span class="level-badge"><%= course.level || 'Beginner' %></span>
+                    </div>
+                    <div class="sidebar-nav">
+                        <% if (level.lessons && level.lessons.length > 0) { %>
+                            <% level.lessons.forEach(function(lesson, lessonIdx) { %>
+                                <div class="sidebar-lesson">
+                                    <div class="lesson-header <%= (currentLesson && currentLesson.id === lesson.id) ? 'active' : '' %>">
+                                        <span class="lesson-number"><%= lessonIdx + 1 %></span>
+                                        <span class="lesson-title"><%= lesson.title %></span>
+                                    </div>
+                                    <% if (lesson.classes && lesson.classes.length > 0) { %>
+                                        <ul class="class-list">
+                                            <% lesson.classes.forEach(function(cls, classIdx) { %>
+                                                <% let isActive = currentClass && currentClass.id === cls.id; %>
+                                                <% let isCompleted = false; // No user = no progress %>
+                                                <li class="class-item <%= isActive ? 'active' : '' %> <%= isCompleted ? 'completed' : '' %>">
+                                                    <a href="/level/<%= course.id %>/<%= level.id %>?classId=<%= cls.id %>" 
+                                                       class="class-link <%= isActive ? 'active' : '' %>">
+                                                        <span class="class-number"><%= String.fromCharCode(97 + classIdx) %></span>
+                                                        <span class="class-title"><%= cls.title %></span>
+                                                        <% if (isCompleted) { %>
+                                                            <span class="class-status"><i class="fas fa-check-circle" style="color:#27ae60;"></i></span>
+                                                        <% } %>
+                                                    </a>
+                                                </li>
+                                            <% }); %>
+                                        </ul>
                                     <% } %>
                                 </div>
-                                <% if (lesson.classes && lesson.classes.length > 0) { %>
-                                    <ul class="class-list">
-                                        <% lesson.classes.forEach(function(cls, cIdx) { 
-                                            const isCompleted = user.progress && user.progress[cls.id];
-                                            const isLocked = !isCompleted && cIdx > 0 && !(user.progress && user.progress[lesson.classes[cIdx - 1].id]);
-                                            const isActive = cls.id === (currentClass ? currentClass.id : null);
-                                        %>
-                                        <li class="class-item <%= isActive ? 'active' : '' %> <%= isLocked ? 'locked' : '' %> <%= isCompleted ? 'completed' : '' %>">
-                                            <a href="/level/<%= course.id %>/<%= level.id %>?classId=<%= cls.id %>" class="class-link <%= isLocked ? 'disabled' : '' %>">
-                                                <span class="class-number"><%= (lIdx+1) %>.<%= (cIdx+1) %></span>
-                                                <span class="class-title"><%= cls.title %></span>
-                                                <% if (isCompleted) { %>
-                                                    <span class="class-status"><i class="fas fa-check-circle" style="color:#27ae60;"></i></span>
-                                                <% } else if (isLocked) { %>
-                                                    <span class="class-status"><i class="fas fa-lock" style="color:#b0a3c4;"></i></span>
-                                                <% } %>
-                                            </a>
-                                        </li>
-                                        <% }); %>
-                                    </ul>
-                                <% } else { %>
-                                    <div style="padding:4px 14px 4px 32px; font-size:0.75rem; color:#b0a3c4;">No classes yet</div>
-                                <% } %>
-                            </div>
-                        <% }); %>
-                    <% } else { %>
-                        <div style="padding:12px 14px; color:#7a6a8f; font-size:0.85rem;">No lessons yet.</div>
-                    <% } %>
-                </nav>
-            </aside>
-
-            <!-- ===== MAIN CONTENT ===== -->
-            <section class="level-content">
-
-                <% if (currentClass) { %>
-
-                    <!-- Header -->
-                    <div class="content-header">
-                        <h1><%= currentLesson ? currentLesson.title : 'Class' %></h1>
-                        <span class="level-name-badge"><%= level.name %></span>
+                            <% }); %>
+                        <% } else { %>
+                            <p style="padding:12px 16px; color:var(--text-muted); font-size:0.85rem;">No lessons available.</p>
+                        <% } %>
                     </div>
+                </aside>
 
-                    <!-- Content Body -->
-                    <div class="content-body">
-                        <h2 class="class-title"><%= currentClass.title %></h2>
-
-                        <!-- ===== TEXT SIZE SLIDER ===== -->
-                        <div class="text-size-control">
-                            <label><i class="fas fa-font"></i> Text Size</label>
-                            <input type="range" id="textSizeSlider" min="0.8" max="2.0" step="0.05" value="1.0">
-                            <span class="size-value" id="textSizeDisplay">1.0x</span>
+                <!-- ===== CONTENT ===== -->
+                <div class="level-content">
+                    <% if (currentClass) { %>
+                        <div class="content-header">
+                            <h1><%= currentLesson ? currentLesson.title : '' %>: <%= currentClass.title %></h1>
+                            <span class="level-name-badge"><%= level.name %></span>
                         </div>
 
-                        <div class="class-content" id="classContent">
-                            <%- parseContent(currentClass.content) %>
-                        </div>
-
-                        <!-- Image -->
-                        <% if (currentClass.imageUrl) { %>
-                            <div class="class-image">
-                                <img src="<%= currentClass.imageUrl %>" alt="<%= currentClass.title %>">
-                            </div>
-                        <% } %>
-
-                        <!-- Video -->
-                        <% if (currentClass.videoUrl) { %>
-                            <div class="class-video">
-                                <a href="<%= currentClass.videoUrl %>" target="_blank" class="btn btn-secondary btn-sm">
-                                    <i class="fab fa-youtube"></i> Watch Video
-                                </a>
-                            </div>
-                        <% } %>
-
-                        <!-- External Link -->
-                        <% if (currentClass.externalLink) { %>
-                            <div class="class-external">
-                                <a href="<%= currentClass.externalLink %>" target="_blank" class="btn btn-secondary btn-sm">
-                                    <i class="fas fa-external-link-alt"></i> More Resources
-                                </a>
-                            </div>
-                        <% } %>
-
-                        <!-- Status -->
-                        <div class="class-status-bar">
-                            <% if (user && user.progress && user.progress[currentClass.id]) { %>
-                                <span class="status-completed"><i class="fas fa-check-circle"></i> Completed</span>
-                            <% } else { %>
-                                <span class="status-pending"><i class="far fa-circle"></i> Not Completed</span>
-                            <% } %>
-                        </div>
-                    </div>
-
-                    <!-- Footer -->
-                    <div class="content-footer">
-                        <div class="next-button-wrapper">
-                            <% 
-                                let allClassesFlat = [];
-                                if (level.lessons) {
-                                    level.lessons.forEach(function(lesson) {
-                                        if (lesson.classes) {
-                                            lesson.classes.forEach(function(cls) {
-                                                allClassesFlat.push({
-                                                    id: cls.id,
-                                                    lessonId: lesson.id
-                                                });
-                                            });
-                                        }
-                                    });
-                                }
-                                let currentIdx = allClassesFlat.findIndex(c => c.id === currentClass.id);
-                                let hasNext = currentIdx < allClassesFlat.length - 1;
-                            %>
-                            <% if (user && user.progress && user.progress[currentClass.id]) { %>
-                                <% if (hasNext) { %>
-                                    <form action="/level/next/<%= course.id %>/<%= level.id %>/<%= currentClass.id %>" method="POST">
-                                        <button type="submit" class="btn btn-primary next-btn">
-                                            <i class="fas fa-arrow-right"></i> Next Class
-                                        </button>
-                                    </form>
-                                <% } else { %>
-                                    <div class="course-complete-msg">
-                                        <i class="fas fa-trophy" style="color:#f39c12;"></i> All classes completed! 🎉
+                        <div class="content-body">
+                            <div class="class-title"><%= currentClass.title %></div>
+                            
+                            <div class="class-content">
+                                <% if (currentClass.videoUrl) { %>
+                                    <div class="class-video">
+                                        <iframe src="<%= currentClass.videoUrl %>" frameborder="0" allowfullscreen></iframe>
                                     </div>
                                 <% } %>
-                            <% } else { %>
-                                <form action="/level/complete/<%= currentClass.id %>" method="POST">
-                                    <button type="submit" class="btn btn-success next-btn">
-                                        <i class="fas fa-check"></i> Mark Complete
-                                    </button>
-                                </form>
-                            <% } %>
+                                
+                                <% if (currentClass.imageUrl) { %>
+                                    <div class="class-image">
+                                        <img src="<%= currentClass.imageUrl %>" alt="<%= currentClass.title %>">
+                                    </div>
+                                <% } %>
+                                
+                                <%- currentClass.content || 'No content available for this class.' %>
+                                
+                                <% if (currentClass.externalLink) { %>
+                                    <div class="class-external">
+                                        <a href="<%= currentClass.externalLink %>" target="_blank" class="btn btn-secondary btn-sm">
+                                            <i class="fas fa-external-link-alt"></i> Visit Resource
+                                        </a>
+                                    </div>
+                                <% } %>
+                            </div>
+
+                            <div class="class-status-bar">
+                                <span class="status-pending"><i class="far fa-circle"></i> Not completed</span>
+                            </div>
+
+                            <!-- Progress -->
+                            <div class="progress-bar-wrapper">
+                                <div class="progress-label">
+                                    <span>Progress</span>
+                                    <span><%= completedClasses %> / <%= totalClasses %> • <%= progress %>%</span>
+                                </div>
+                                <div class="progress-wrap">
+                                    <div class="progress-fill" style="width:<%= progress %>%;"></div>
+                                </div>
+                                <div class="score-display">
+                                    <i class="fas fa-star" style="color:#f39c12;"></i> Score: <strong><%= score %></strong> points
+                                </div>
+                            </div>
                         </div>
 
-                        <!-- Progress -->
-                        <div class="progress-bar-wrapper">
-                            <div class="progress-label">
-                                <span>Progress</span>
-                                <span><%= completedClasses %> / <%= totalClasses %> classes</span>
-                            </div>
-                            <div class="progress-wrap" style="height:8px;">
-                                <div class="progress-fill" style="width: <%= progress %>%; height:100%;"></div>
-                            </div>
-                            <div class="score-display">
-                                <i class="fas fa-star" style="color:#f39c12;"></i> Score: <strong><%= score %></strong> points
+                        <!-- ===== NAVIGATION BUTTONS ===== -->
+                        <div class="content-footer">
+                            <div class="nav-buttons">
+                                <% if (prevClassId) { %>
+                                    <a href="/level/<%= course.id %>/<%= level.id %>?classId=<%= prevClassId %>" class="btn btn-secondary">
+                                        <i class="fas fa-arrow-left"></i> Previous
+                                    </a>
+                                <% } else { %>
+                                    <span></span>
+                                <% } %>
+
+                                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                                    <a href="/course/<%= course.id %>" class="btn btn-outline btn-sm">
+                                        <i class="fas fa-list"></i> All Levels
+                                    </a>
+                                </div>
+
+                                <% if (nextClassId) { %>
+                                    <a href="/level/<%= course.id %>/<%= level.id %>?classId=<%= nextClassId %>" class="btn btn-primary">
+                                        Next <i class="fas fa-arrow-right"></i>
+                                    </a>
+                                <% } else { %>
+                                    <a href="/course/<%= course.id %>" class="btn btn-success">
+                                        <i class="fas fa-check-circle"></i> Complete Level
+                                    </a>
+                                <% } %>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Test -->
-                    <% if (level.test && level.test.questions && level.test.questions.length > 0) { %>
-                        <div class="test-section">
-                            <h4><i class="fas fa-pencil-alt" style="color:#f39c12;"></i> Test Your Knowledge</h4>
-                            <p><%= level.test.questions.length %> questions available.</p>
-                            <button class="btn btn-primary btn-sm" disabled>
-                                <i class="fas fa-lock"></i> Coming Soon
-                            </button>
+                    <% } else { %>
+                        <div class="card" style="padding:40px 20px; text-align:center;">
+                            <h3 style="color:var(--text-dark);">No classes available</h3>
+                            <p style="color:var(--text-muted);">This level doesn't have any classes yet.</p>
+                            <a href="/course/<%= course.id %>" class="btn btn-primary">Back to Course</a>
                         </div>
                     <% } %>
 
-                <% } else { %>
+                    <!-- ===== TEST SECTION (if available) ===== -->
+                    <% if (level.test && level.test.questions && level.test.questions.length > 0) { %>
+                        <div class="test-section">
+                            <h4><i class="fas fa-puzzle-piece"></i> Level Test</h4>
+                            <p>Test your knowledge after completing all classes!</p>
+                            <div style="margin-top:10px;">
+                                <button class="btn btn-gold" onclick="alert('Test feature coming soon!')">
+                                    <i class="fas fa-play"></i> Start Test
+                                </button>
+                            </div>
+                        </div>
+                    <% } %>
 
-                    <!-- Empty State -->
-                    <div class="content-empty">
-                        <i class="fas fa-book-open" style="font-size:2.5rem; color:#d4c4f0;"></i>
-                        <h3>Select a class from the sidebar</h3>
-                        <p>Click on any unlocked class to start learning.</p>
-                    </div>
+                    <!-- ===== AD BOX ===== -->
+                    <%- include(getAdBox()) %>
 
-                <% } %>
-
-                <!-- Ad Box -->
-                <%- include('partials/ad-box') %>
-
-            </section>
-
+                </div>
+            </div>
         </div>
     </main>
 
-    <%- include('partials/footer') %>
+    <%- include(getFooter()) %>
 
-    <script>
-        // ===== TEXT SIZE SLIDER =====
-        const slider = document.getElementById('textSizeSlider');
-        const display = document.getElementById('textSizeDisplay');
-        const content = document.getElementById('classContent');
+    <!-- AI Bot -->
+    <div class="ai-bot" id="aiBot">
+        <div class="ai-bot-pulse"></div>
+        <button class="ai-bot-btn" id="aiBotBtn"><i class="fas fa-robot"></i></button>
+    </div>
 
-        if (slider && content) {
-            slider.addEventListener('input', function() {
-                const size = parseFloat(this.value);
-                display.textContent = size.toFixed(1) + 'x';
-                content.style.fontSize = (size * 1.05) + 'rem';
-                content.style.lineHeight = (size * 1.6) + '';
-            });
-        }
+    <div class="ai-chat-modal" id="aiChatModal">
+        <div class="ai-chat-header"><h4><i class="fas fa-robot"></i> AI Tutor</h4><button class="ai-chat-close" id="aiChatClose">&times;</button></div>
+        <div class="ai-chat-body" id="aiChatBody">
+            <div class="ai-chat-messages" id="aiChatMessages">
+                <div class="ai-chat-msg bot">👋 Ask me about this class!</div>
+            </div>
+        </div>
+        <div class="ai-chat-footer">
+            <input type="text" id="aiChatInput" placeholder="Ask a question..." maxlength="500">
+            <button class="btn btn-primary" id="aiChatSend"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
 
-        // ===== LOCKED CLASS ALERT =====
-        document.querySelectorAll('.class-link.disabled').forEach(function(link) {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                alert('🔒 This class is locked. Complete the previous class first.');
-            });
-        });
-    </script>
+    <script src="/js/script.js"></script>
 </body>
 </html>

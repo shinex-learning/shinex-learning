@@ -7,165 +7,46 @@
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        .hero-section {
-            padding: 40px 36px;
-            text-align: center;
-            margin-bottom: 32px;
-        }
-        .hero-section h1 {
-            font-size: 2.4rem;
-            font-weight: 800;
-            color: #fff;
-            letter-spacing: -1px;
-        }
-        .hero-section p {
-            color: #d4c4f0;
-            font-size: 1.1rem;
-            max-width: 600px;
-            margin: 8px auto 0;
-        }
-        .hero-buttons {
-            margin-top: 20px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            justify-content: center;
-            align-items: center;
-        }
-        .hero-buttons .btn {
-            min-height: 48px;
-            padding: 12px 28px;
-            font-size: 1rem;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            border-radius: 30px;
-            min-width: 180px;
-        }
-        .course-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 24px;
-            margin-top: 12px;
-        }
-        .course-card {
-            background: #fff;
-            border-radius: 14px;
-            padding: 20px 18px;
-            border: 1px solid #ede8f5;
-            transition: all 0.3s ease;
-        }
-        .course-card:hover {
-            border-color: #8B5CF6;
-            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.08);
-        }
-        body.dark-mode .course-card {
-            background: #1e1e1e;
-            border-color: #333;
-        }
-        .course-card .course-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #1A0A2E;
-            margin: 6px 0 2px;
-        }
-        body.dark-mode .course-card .course-title {
-            color: #f0f0f0;
-        }
-        .course-card .course-desc {
-            font-size: 0.85rem;
-            color: #5a4a70;
-            margin: 4px 0 8px;
-        }
-        body.dark-mode .course-card .course-desc {
-            color: #a090b0;
-        }
-        .course-card .course-meta {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin: 6px 0 10px;
-        }
-        .course-card .course-action .btn {
-            width: 100%;
-            text-align: center;
-        }
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            background: #f8f6fc;
-            border-radius: 14px;
-            border: 1px solid #ede8f5;
-            grid-column: 1 / -1;
-        }
-        body.dark-mode .empty-state {
-            background: #1a1a1a;
-            border-color: #333;
-        }
-        .empty-state .empty-icon {
-            font-size: 2.5rem;
-            color: #d4c4f0;
-            display: block;
-            margin-bottom: 8px;
-        }
-        .empty-state h3 {
-            font-size: 1.2rem;
-            color: #1A0A2E;
-            margin: 0 0 4px;
-        }
-        body.dark-mode .empty-state h3 {
-            color: #f0f0f0;
-        }
-        .empty-state p {
-            color: #7a6a8f;
-            font-size: 0.9rem;
-            margin: 0;
-        }
-        body.dark-mode .empty-state p {
-            color: #a090b0;
-        }
-        @media (max-width: 768px) {
-            .hero-section { padding: 24px 16px; }
-            .hero-section h1 { font-size: 1.5rem; }
-            .course-grid { grid-template-columns: 1fr; }
-            .hero-buttons .btn { min-width: 100%; }
-        }
-        @media (min-width: 769px) and (max-width: 1024px) {
-            .course-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-    </style>
 </head>
 <body>
-    <%- include('partials/header', { user, showBack: false }) %>
+    <!-- PAGE LOADER -->
+    <div id="page-loader">
+        <div class="loader-logo">
+            <span>SLC</span>
+            <div class="loader-water"></div>
+        </div>
+        <div class="loader-text">SHINEX</div>
+        <div class="loader-sub">LEARNING CIRCLE</div>
+    </div>
+
+    <%- include(getHeader()) %>
 
     <main class="main-content">
         <div class="container">
-
+            <!-- Flash Messages -->
             <% if (messages && messages.error) { %>
-                <div class="alert alert-danger" style="margin-bottom:12px;"><%= messages.error %></div>
+                <div class="alert alert-danger flash-message" data-type="error"><%= messages.error %></div>
             <% } %>
             <% if (messages && messages.success) { %>
-                <div class="alert alert-success" style="margin-bottom:12px;"><%= messages.success %></div>
+                <div class="alert alert-success flash-message" data-type="success"><%= messages.success %></div>
             <% } %>
 
-            <!-- ===== HERO ===== -->
+            <!-- ===== HERO SECTION ===== -->
             <div class="card card-purple hero-section">
                 <h1>SHINEX Learning Circle</h1>
                 <p>Empowering minds with cutting-edge courses in tech, design, and data.</p>
                 <div class="hero-buttons">
-                    <a href="/dashboard" class="btn btn-primary" style="background:#fff; color:#8B5CF6;">
-                        <i class="fas fa-arrow-right"></i> Explore Courses
-                    </a>
+                    <span style="color:#d4c4f0; font-size:1rem; padding:8px 16px;">
+                        <i class="fas fa-arrow-down"></i> Browse courses below
+                    </span>
                 </div>
             </div>
 
-            <!-- ===== COURSES ===== -->
-            <h3 style="font-size:1.2rem; font-weight:700; color:#1A0A2E; margin:0 0 4px 0;">
-                <i class="fas fa-graduation-cap" style="color:#8B5CF6;"></i> Our Courses
+            <!-- ===== COURSES SECTION ===== -->
+            <h3 style="font-size:1.2rem; font-weight:700; color:var(--text-dark); margin:0 0 4px 0;">
+                <i class="fas fa-graduation-cap" style="color:var(--primary);"></i> Our Courses
             </h3>
-            <p style="color:#7a6a8f; font-size:0.85rem; margin:0 0 12px 0;">
+            <p style="color:var(--text-muted); font-size:0.85rem; margin:0 0 12px 0;">
                 Choose a course and start your learning journey today.
             </p>
 
@@ -175,7 +56,7 @@
                         <div class="course-card">
                             <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                                 <span class="badge badge-purple"><%= c.level || 'Beginner' %></span>
-                                <span style="font-size:0.75rem; color:#7a6a8f;">
+                                <span style="font-size:0.75rem; color:var(--text-muted);">
                                     <i class="far fa-clock"></i> <%= c.duration || 'N/A' %>
                                 </span>
                             </div>
@@ -193,9 +74,6 @@
                                     <% } %>
                                     <%= totalClasses %> Classes
                                 </span>
-                                <% if (user && user.courseId === c.id) { %>
-                                    <span class="badge badge-green"><i class="fas fa-check-circle"></i> Enrolled</span>
-                                <% } %>
                             </div>
                             <div class="course-action">
                                 <a href="/course/<%= c.id %>" class="btn btn-primary btn-sm">
@@ -213,12 +91,39 @@
                 <% } %>
             </div>
 
-            <!-- Ad Box -->
-            <%- include('partials/ad-box') %>
+            <!-- ===== AD BOX ===== -->
+            <%- include(getAdBox()) %>
 
         </div>
     </main>
 
-    <%- include('partials/footer') %>
+    <%- include(getFooter()) %>
+
+    <!-- ===== FLOATING AI BOT ===== -->
+    <div class="ai-bot" id="aiBot">
+        <div class="ai-bot-pulse"></div>
+        <button class="ai-bot-btn" id="aiBotBtn" aria-label="AI Tutor">
+            <i class="fas fa-robot"></i>
+        </button>
+    </div>
+
+    <!-- ===== AI CHAT MODAL ===== -->
+    <div class="ai-chat-modal" id="aiChatModal">
+        <div class="ai-chat-header">
+            <h4><i class="fas fa-robot"></i> AI Tutor</h4>
+            <button class="ai-chat-close" id="aiChatClose">&times;</button>
+        </div>
+        <div class="ai-chat-body" id="aiChatBody">
+            <div class="ai-chat-messages" id="aiChatMessages">
+                <div class="ai-chat-msg bot">👋 Hello! I'm your AI tutor. Ask me anything about your courses!</div>
+            </div>
+        </div>
+        <div class="ai-chat-footer">
+            <input type="text" id="aiChatInput" placeholder="Ask a question..." maxlength="500">
+            <button class="btn btn-primary" id="aiChatSend"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <script src="/js/script.js"></script>
 </body>
 </html>

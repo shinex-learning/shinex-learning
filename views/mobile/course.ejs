@@ -7,119 +7,85 @@
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        .mobile-course-card {
-            background: #fff;
-            border-radius: 14px;
-            padding: 16px;
-            margin-bottom: 12px;
-            border: 1px solid #ede8f5;
-        }
-        body.dark-mode .mobile-course-card {
-            background: #1e1e1e;
-            border-color: #333;
-        }
-        .mobile-level-card {
-            background: #f8f6fc;
-            border-radius: 10px;
-            padding: 14px;
-            text-align: center;
-            border: 1px solid #ede8f5;
-        }
-        body.dark-mode .mobile-level-card {
-            background: #1a1a1a;
-            border-color: #333;
-        }
-        .mobile-level-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 8px;
-        }
-        @media (max-width: 380px) {
-            .mobile-level-grid { grid-template-columns: 1fr; }
-        }
-        .mobile-course-header h1 {
-            font-size: 1.2rem;
-            font-weight: 800;
-            color: #1A0A2E;
-            margin: 0;
-        }
-        body.dark-mode .mobile-course-header h1 { color: #ffffff; }
-        .mobile-course-header .desc {
-            color: #5a4a70;
-            font-size: 0.85rem;
-            margin: 4px 0 6px;
-        }
-        body.dark-mode .mobile-course-header .desc { color: #a090b0; }
-        .mobile-course-header .review {
-            margin-top: 6px;
-            padding: 8px;
-            background: #f0ebfb;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            color: #4a2d6b;
-        }
-        body.dark-mode .mobile-course-header .review {
-            background: #2a1a4a;
-            color: #c4b5e6;
-        }
-    </style>
 </head>
 <body>
-    <%- include('partials/header', { user, showBack: true }) %>
+    <div id="page-loader">
+        <div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div>
+        <div class="loader-text">SHINEX</div>
+        <div class="loader-sub">LEARNING CIRCLE</div>
+    </div>
 
-    <main class="main-content" style="padding: 8px 12px 20px;">
-        <% if (messages && messages.error) { %>
-            <div class="alert alert-danger" style="margin-bottom:10px;"><%= messages.error %></div>
-        <% } %>
-        <% if (messages && messages.success) { %>
-            <div class="alert alert-success" style="margin-bottom:10px;"><%= messages.success %></div>
-        <% } %>
+    <%- include(getHeader()) %>
 
-        <!-- Course Info -->
-        <div class="mobile-course-card mobile-course-header" style="border-left:4px solid #8B5CF6;">
-            <h1><%= course.title %></h1>
-            <div class="desc"><%= course.description %></div>
-            <div style="display:flex; flex-wrap:wrap; gap:6px;">
-                <span class="badge badge-purple"><%= course.level %></span>
-                <span class="badge badge-dark"><i class="far fa-clock"></i> <%= course.duration %></span>
-                <span class="badge badge-dark"><i class="fas fa-layer-group"></i> <%= course.levels ? course.levels.length : 0 %> Levels</span>
-            </div>
-            <% if (course.review) { %>
-                <div class="review"><i class="fas fa-edit" style="color:#8B5CF6;"></i> <%= course.review %></div>
+    <main class="main-content" style="padding:12px 0 24px;">
+        <div class="container" style="padding:0 12px;">
+            <% if (messages && messages.error) { %>
+                <div class="alert alert-danger flash-message" data-type="error"><%= messages.error %></div>
             <% } %>
-        </div>
+            <% if (messages && messages.success) { %>
+                <div class="alert alert-success flash-message" data-type="success"><%= messages.success %></div>
+            <% } %>
 
-        <!-- Levels -->
-        <div class="mobile-course-card">
-            <h2 style="font-size:1rem; font-weight:700; color:#1A0A2E; margin:0 0 2px;"><i class="fas fa-layer-group" style="color:#8B5CF6;"></i> Choose Your Level</h2>
-            <p style="color:#7a6a8f; font-size:0.75rem; margin:0 0 8px;">Select a level to start learning</p>
+            <!-- Course Info -->
+            <div style="background:#fff; border-radius:12px; padding:16px; border:1px solid #ede8f5; margin-bottom:12px;">
+                <h1 style="font-size:1.2rem; font-weight:800; color:var(--text-dark); margin:0;"><%= course.title %></h1>
+                <div style="color:var(--text-muted); font-size:0.85rem; margin:4px 0 6px;"><%= course.description %></div>
+                <div style="display:flex; flex-wrap:wrap; gap:6px;">
+                    <span class="badge badge-purple" style="font-size:0.65rem;"><%= course.level || 'Beginner' %></span>
+                    <span class="badge badge-dark" style="font-size:0.65rem;"><i class="far fa-clock"></i> <%= course.duration %></span>
+                    <span class="badge badge-dark" style="font-size:0.65rem;"><i class="fas fa-layer-group"></i> <%= course.levels ? course.levels.length : 0 %> Levels</span>
+                </div>
+            </div>
+
+            <!-- Levels -->
+            <div style="font-weight:700; font-size:0.95rem; color:var(--text-dark); margin:0 0 6px;">
+                <i class="fas fa-layer-group" style="color:var(--primary);"></i> Levels
+            </div>
 
             <% if (course.levels && course.levels.length > 0) { %>
-                <div class="mobile-level-grid">
+                <div style="display:flex; flex-direction:column; gap:10px;">
                     <% course.levels.forEach(function(level) { %>
-                        <div class="mobile-level-card">
-                            <div style="font-weight:700; font-size:1rem; color:#1A0A2E;"><%= level.name %></div>
-                            <div style="font-size:0.7rem; color:#7a6a8f;"><i class="far fa-clock"></i> <%= level.duration %></div>
-                            <div style="font-size:0.65rem; color:#7a6a8f; margin:2px 0 6px;">
+                        <div style="background:#f8f6fc; border-radius:10px; padding:14px 16px; border:1px solid #ede8f5; text-align:center;">
+                            <div style="font-weight:700; font-size:1rem; color:var(--text-dark);"><%= level.name %></div>
+                            <div style="font-size:0.8rem; color:var(--text-muted);"><i class="far fa-clock"></i> <%= level.duration %></div>
+                            <div style="font-size:0.75rem; color:var(--text-muted); margin:4px 0 8px;">
                                 <i class="fas fa-book"></i> 
-                                <% let lessonCount = 0, classCount = 0; if (level.lessons) { level.lessons.forEach(function(l) { lessonCount++; if (l.classes) classCount += l.classes.length; }); } %>
-                                <%= lessonCount %> lessons • <%= classCount %> classes
+                                <% let lc = 0, cc = 0; if (level.lessons) { level.lessons.forEach(function(l) { lc++; if (l.classes) cc += l.classes.length; }); } %>
+                                <%= lc %> lessons • <%= cc %> classes
                             </div>
-                            <a href="/level/<%= course.id %>/<%= level.id %>" class="btn btn-primary btn-sm" style="width:100%;">Start</a>
+                            <a href="/level/<%= course.id %>/<%= level.id %>" class="btn btn-primary btn-sm" style="width:100%; font-size:0.8rem; padding:8px;">Start</a>
                         </div>
                     <% }); %>
                 </div>
             <% } else { %>
-                <p style="color:#7a6a8f; text-align:center; padding:12px 0;">No levels yet.</p>
+                <p style="color:var(--text-muted); text-align:center; padding:16px 0;">No levels available.</p>
             <% } %>
-        </div>
 
-        <!-- Ad Box -->
-        <%- include('../partials/ad-box') %>
+            <%- include(getAdBox()) %>
+        </div>
     </main>
 
-    <%- include('partials/footer') %>
+    <%- include(getFooter()) %>
+
+    <!-- AI Bot -->
+    <div class="ai-bot" id="aiBot">
+        <div class="ai-bot-pulse"></div>
+        <button class="ai-bot-btn" id="aiBotBtn" style="width:50px; height:50px; font-size:20px;"><i class="fas fa-robot"></i></button>
+    </div>
+
+    <div class="ai-chat-modal" id="aiChatModal">
+        <div class="ai-chat-header"><h4><i class="fas fa-robot"></i> AI Tutor</h4><button class="ai-chat-close" id="aiChatClose">&times;</button></div>
+        <div class="ai-chat-body" id="aiChatBody">
+            <div class="ai-chat-messages" id="aiChatMessages">
+                <div class="ai-chat-msg bot">👋 Ask me about this course!</div>
+            </div>
+        </div>
+        <div class="ai-chat-footer">
+            <input type="text" id="aiChatInput" placeholder="Ask..." maxlength="500">
+            <button class="btn btn-primary" id="aiChatSend"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <script src="/js/script.js"></script>
 </body>
 </html>

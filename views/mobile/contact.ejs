@@ -3,70 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Contact Us – SHINEX</title>
+    <title>Contact – SHINEX</title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        .mobile-contact-card { background: #fff; border-radius: 14px; padding: 16px; margin: 8px 4px; border: 1px solid #ede8f5; }
-        body.dark-mode .mobile-contact-card { background: #111111; border-color: #333; }
-        .mobile-contact-card h1 { font-size: 1.2rem; font-weight: 800; color: #1A0A2E; margin: 0 0 2px; }
-        body.dark-mode .mobile-contact-card h1 { color: #ffffff; }
-        .mobile-contact-card .subtitle { color: #7a6a8f; font-size: 0.8rem; margin: 0 0 12px; }
-        body.dark-mode .mobile-contact-card .subtitle { color: #b0a0c0; }
-        .mobile-contact-item { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #ede8f5; }
-        body.dark-mode .mobile-contact-item { border-bottom-color: #333; }
-        .mobile-contact-item:last-child { border-bottom: none; }
-        .mobile-contact-icon { width: 36px; height: 36px; border-radius: 50%; background: #f0ebfb; display: flex; align-items: center; justify-content: center; color: #8B5CF6; font-size: 0.9rem; flex-shrink: 0; }
-        body.dark-mode .mobile-contact-icon { background: #2a1a4a; }
-        .mobile-contact-info .label { font-size: 0.65rem; color: #7a6a8f; font-weight: 500; text-transform: uppercase; }
-        body.dark-mode .mobile-contact-info .label { color: #999; }
-        .mobile-contact-info .value { font-size: 0.8rem; font-weight: 500; color: #1A0A2E; }
-        body.dark-mode .mobile-contact-info .value { color: #ffffff; }
-        .mobile-contact-info .value a { color: #8B5CF6; text-decoration: none; }
-        .mobile-back-links { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
-    </style>
 </head>
 <body>
-    <%- include('partials/header', { user, showBack: true }) %>
-
-    <main class="main-content" style="padding: 8px 12px 20px;">
-        <div class="mobile-contact-card">
-            <h1><i class="fas fa-envelope" style="color:#8B5CF6;"></i> Contact Us</h1>
-            <p class="subtitle">Get in touch with SHINEX Learning Circle</p>
-
-            <div class="mobile-contact-item">
-                <div class="mobile-contact-icon"><i class="fas fa-envelope"></i></div>
-                <div class="mobile-contact-info">
-                    <div class="label">Email</div>
-                    <div class="value"><a href="mailto:shinexlearning@gmail.com">shinexlearning@gmail.com</a></div>
-                </div>
-            </div>
-
-            <div class="mobile-contact-item">
-                <div class="mobile-contact-icon"><i class="fas fa-phone"></i></div>
-                <div class="mobile-contact-info">
-                    <div class="label">Phone</div>
-                    <div class="value"><a href="tel:+2347067574479">+234 706 757 4479</a></div>
-                </div>
-            </div>
-
-            <div class="mobile-contact-item">
-                <div class="mobile-contact-icon"><i class="fas fa-globe"></i></div>
-                <div class="mobile-contact-info">
-                    <div class="label">Website</div>
-                    <div class="value"><a href="/" style="color:#8B5CF6;">shinex-learning.onrender.com</a></div>
-                </div>
-            </div>
-
-            <div class="mobile-back-links">
-                <a href="/" class="btn btn-secondary btn-sm"><i class="fas fa-home"></i> Home</a>
-                <a href="/privacy" class="btn btn-secondary btn-sm"><i class="fas fa-shield-alt"></i> Privacy</a>
-                <a href="/terms" class="btn btn-secondary btn-sm"><i class="fas fa-file-contract"></i> Terms</a>
+    <div id="page-loader"><div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div><div class="loader-text">SHINEX</div><div class="loader-sub">LEARNING CIRCLE</div></div>
+    <%- include(getHeader()) %>
+    <main class="main-content" style="padding:12px 0 24px;">
+        <div class="container" style="padding:0 12px;">
+            <div style="background:#fff; border-radius:12px; padding:16px; border:1px solid #ede8f5;">
+                <h1 style="font-size:1.2rem; font-weight:800; color:var(--text-dark); margin:0 0 4px 0;">
+                    <i class="fas fa-envelope" style="color:var(--primary);"></i> Contact
+                </h1>
+                <form>
+                    <div class="settings-group">
+                        <label for="contactNameM">Name</label>
+                        <input type="text" id="contactNameM" placeholder="Your name" style="font-size:0.9rem; padding:8px 12px;">
+                    </div>
+                    <div class="settings-group">
+                        <label for="contactEmailM">Email</label>
+                        <input type="email" id="contactEmailM" placeholder="your@email.com" style="font-size:0.9rem; padding:8px 12px;">
+                    </div>
+                    <div class="settings-group">
+                        <label for="contactMessageM">Message</label>
+                        <textarea id="contactMessageM" rows="4" placeholder="Your message..." style="font-size:0.9rem; padding:8px 12px;"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block" style="font-size:0.9rem; padding:10px;"><i class="fas fa-paper-plane"></i> Send</button>
+                </form>
             </div>
         </div>
     </main>
-
-    <%- include('partials/footer') %>
+    <%- include(getFooter()) %>
+    <script src="/js/script.js"></script>
 </body>
 </html>

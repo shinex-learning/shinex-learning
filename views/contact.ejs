@@ -7,78 +7,47 @@
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        .contact-container { max-width: 600px; margin: 0 auto; padding: 20px 16px; }
-        .contact-card { background: #fff; border-radius: 14px; padding: 28px 24px; border: 1px solid #ede8f5; }
-        body.dark-mode .contact-card { background: #111111; border-color: #333; }
-        .contact-card h1 { font-size: 1.6rem; font-weight: 800; color: #1A0A2E; margin: 0 0 2px; }
-        body.dark-mode .contact-card h1 { color: #ffffff; }
-        .contact-card .subtitle { color: #7a6a8f; font-size: 0.9rem; margin: 0 0 16px; }
-        body.dark-mode .contact-card .subtitle { color: #b0a0c0; }
-        .contact-item { display: flex; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px solid #ede8f5; }
-        body.dark-mode .contact-item { border-bottom-color: #333; }
-        .contact-item:last-child { border-bottom: none; }
-        .contact-icon { width: 44px; height: 44px; border-radius: 50%; background: #f0ebfb; display: flex; align-items: center; justify-content: center; color: #8B5CF6; font-size: 1.2rem; flex-shrink: 0; }
-        body.dark-mode .contact-icon { background: #2a1a4a; }
-        .contact-info { flex: 1; }
-        .contact-info .label { font-size: 0.75rem; color: #7a6a8f; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
-        body.dark-mode .contact-info .label { color: #999; }
-        .contact-info .value { font-size: 0.95rem; font-weight: 500; color: #1A0A2E; }
-        body.dark-mode .contact-info .value { color: #ffffff; }
-        .contact-info .value a { color: #8B5CF6; text-decoration: none; }
-        .contact-info .value a:hover { text-decoration: underline; }
-        .back-links { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
-        @media (max-width: 480px) {
-            .contact-card { padding: 16px 12px; margin: 0 4px; }
-            .contact-card h1 { font-size: 1.3rem; }
-            .contact-item { padding: 10px 0; gap: 10px; }
-            .contact-icon { width: 36px; height: 36px; font-size: 1rem; }
-            .contact-info .value { font-size: 0.85rem; }
-        }
-    </style>
 </head>
 <body>
-    <%- include('partials/header', { user, showBack: true }) %>
-
+    <div id="page-loader"><div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div><div class="loader-text">SHINEX</div><div class="loader-sub">LEARNING CIRCLE</div></div>
+    <%- include(getHeader()) %>
     <main class="main-content">
-        <div class="contact-container">
-            <div class="contact-card">
-                <h1><i class="fas fa-envelope" style="color:#8B5CF6;"></i> Contact Us</h1>
-                <p class="subtitle">Get in touch with SHINEX Learning Circle</p>
-
-                <div class="contact-item">
-                    <div class="contact-icon"><i class="fas fa-envelope"></i></div>
-                    <div class="contact-info">
-                        <div class="label">Email</div>
-                        <div class="value"><a href="mailto:shinexlearning@gmail.com">shinexlearning@gmail.com</a></div>
+        <div class="container" style="max-width:700px;">
+            <div class="card">
+                <h1 style="font-size:1.4rem; font-weight:800; color:var(--text-dark); margin:0 0 4px 0;">
+                    <i class="fas fa-envelope" style="color:var(--primary);"></i> Contact Us
+                </h1>
+                <p style="color:var(--text-muted); font-size:0.9rem; margin:0 0 16px 0;">Have questions? We'd love to hear from you.</p>
+                
+                <form>
+                    <div class="settings-group">
+                        <label for="contactName">Full Name</label>
+                        <input type="text" id="contactName" placeholder="Your full name">
                     </div>
-                </div>
-
-                <div class="contact-item">
-                    <div class="contact-icon"><i class="fas fa-phone"></i></div>
-                    <div class="contact-info">
-                        <div class="label">Phone</div>
-                        <div class="value"><a href="tel:+2347067574479">+234 706 757 4479</a></div>
+                    <div class="settings-group">
+                        <label for="contactEmail">Email Address</label>
+                        <input type="email" id="contactEmail" placeholder="your@email.com">
                     </div>
-                </div>
-
-                <div class="contact-item">
-                    <div class="contact-icon"><i class="fas fa-globe"></i></div>
-                    <div class="contact-info">
-                        <div class="label">Website</div>
-                        <div class="value"><a href="/" style="color:#8B5CF6;">shinex-learning.onrender.com</a></div>
+                    <div class="settings-group">
+                        <label for="contactSubject">Subject</label>
+                        <select id="contactSubject">
+                            <option>General Inquiry</option>
+                            <option>Course Question</option>
+                            <option>Technical Issue</option>
+                            <option>Billing</option>
+                            <option>Other</option>
+                        </select>
                     </div>
-                </div>
-
-                <div class="back-links">
-                    <a href="/" class="btn btn-secondary btn-sm"><i class="fas fa-home"></i> Home</a>
-                    <a href="/privacy" class="btn btn-secondary btn-sm"><i class="fas fa-shield-alt"></i> Privacy</a>
-                    <a href="/terms" class="btn btn-secondary btn-sm"><i class="fas fa-file-contract"></i> Terms</a>
-                </div>
+                    <div class="settings-group">
+                        <label for="contactMessage">Message</label>
+                        <textarea id="contactMessage" rows="5" placeholder="Your message..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-paper-plane"></i> Send Message</button>
+                </form>
             </div>
         </div>
     </main>
-
-    <%- include('partials/footer') %>
+    <%- include(getFooter()) %>
+    <script src="/js/script.js"></script>
 </body>
 </html>

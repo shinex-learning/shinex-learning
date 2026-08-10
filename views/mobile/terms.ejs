@@ -7,76 +7,26 @@
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        .mobile-terms-card { background: #fff; border-radius: 14px; padding: 16px; margin: 8px 4px; border: 1px solid #ede8f5; }
-        body.dark-mode .mobile-terms-card { background: #111111; border-color: #333; }
-        .mobile-terms-card h1 { font-size: 1.2rem; font-weight: 800; color: #1A0A2E; margin: 0 0 2px; }
-        body.dark-mode .mobile-terms-card h1 { color: #ffffff; }
-        .mobile-terms-card .subtitle { color: #7a6a8f; font-size: 0.75rem; margin: 0 0 12px; }
-        body.dark-mode .mobile-terms-card .subtitle { color: #b0a0c0; }
-        .mobile-terms-card h3 { font-weight: 700; color: #1A0A2E; font-size: 0.9rem; margin: 12px 0 4px; }
-        body.dark-mode .mobile-terms-card h3 { color: #ffffff; }
-        .mobile-terms-card p, .mobile-terms-card li { color: #4a3a60; font-size: 0.8rem; line-height: 1.6; }
-        body.dark-mode .mobile-terms-card p, body.dark-mode .mobile-terms-card li { color: #d0d0d0; }
-        .mobile-terms-card ul { padding-left: 16px; margin: 4px 0 8px; }
-        .mobile-terms-card hr { border: none; border-top: 2px solid #ede8f5; margin: 12px 0; }
-        body.dark-mode .mobile-terms-card hr { border-top-color: #333; }
-        .mobile-terms-card .contact-box { background: #f8f6fc; padding: 10px 14px; border-radius: 8px; margin: 10px 0; }
-        body.dark-mode .mobile-terms-card .contact-box { background: #1a1a1a; }
-        .mobile-terms-card .contact-box strong { color: #8B5CF6; }
-        .mobile-terms-card .back-links { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
-        .mobile-terms-card .back-links .btn { flex: 1; min-width: 80px; text-align: center; }
-    </style>
 </head>
 <body>
-    <%- include('partials/header', { user: null, showBack: true }) %>
-
-    <main class="main-content" style="padding: 8px 12px 20px;">
-        <div class="mobile-terms-card">
-            <h1><i class="fas fa-file-contract" style="color:#8B5CF6;"></i> Terms</h1>
-            <p class="subtitle">SHINEX Learning Circle (SLC lmt.®)</p>
-
-            <hr>
-
-            <h3>1. Acceptance</h3>
-            <p>By registering, you agree to these terms.</p>
-
-            <h3>2. User Accounts</h3>
-            <ul>
-                <li>Provide accurate information.</li>
-                <li>You are responsible for your account.</li>
-            </ul>
-
-            <h3>3. Course Enrollment</h3>
-            <ul>
-                <li>Progress is tracked.</li>
-                <li>Certificates may be awarded.</li>
-            </ul>
-
-            <h3>4. Privacy</h3>
-            <ul>
-                <li>Your data is secure.</li>
-                <li>We do not share your data.</li>
-            </ul>
-
-            <h3>5. Code of Conduct</h3>
-            <ul>
-                <li>Respect others.</li>
-                <li>No cheating.</li>
-            </ul>
-
-            <div class="contact-box">
-                <strong>Contact:</strong> <a href="mailto:balogunmustaphaaddeji@gmail.com" style="color:#8B5CF6;">balogunmustaphaaddeji@gmail.com</a>
-            </div>
-
-            <div class="back-links">
-                <a href="/" class="btn btn-secondary btn-sm"><i class="fas fa-home"></i> Home</a>
-                <a href="/privacy" class="btn btn-secondary btn-sm"><i class="fas fa-shield-alt"></i> Privacy</a>
-                <a href="/contact" class="btn btn-secondary btn-sm"><i class="fas fa-envelope"></i> Contact</a>
+    <div id="page-loader"><div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div><div class="loader-text">SHINEX</div><div class="loader-sub">LEARNING CIRCLE</div></div>
+    <%- include(getHeader()) %>
+    <main class="main-content" style="padding:12px 0 24px;">
+        <div class="container" style="padding:0 12px;">
+            <div style="background:#fff; border-radius:12px; padding:16px; border:1px solid #ede8f5;">
+                <h1 style="font-size:1.1rem; font-weight:800; color:var(--text-dark); margin:0 0 4px 0;">
+                    <i class="fas fa-file-contract" style="color:var(--primary);"></i> Terms
+                </h1>
+                <div style="font-size:0.85rem; line-height:1.7; color:var(--text-dark);">
+                    <p><strong>1.</strong> By using SHINEX, you agree to these terms.</p>
+                    <p><strong>2.</strong> Use the platform for educational purposes only.</p>
+                    <p><strong>3.</strong> All content is property of SHINEX.</p>
+                    <p><strong>4.</strong> Your data is handled per our Privacy Policy.</p>
+                </div>
             </div>
         </div>
     </main>
-
-    <%- include('partials/footer') %>
+    <%- include(getFooter()) %>
+    <script src="/js/script.js"></script>
 </body>
 </html>
