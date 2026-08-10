@@ -184,7 +184,7 @@ const transporter = nodemailer.createTransport({
 });
 
 // ============================================================
-// AUTH MIDDLEWARE (KEPT FOR ADMIN ONLY)
+// AUTH MIDDLEWARE (Only for Admin)
 // ============================================================
 async function requireAdmin(req, res, next) {
     if (!req.session.adminId) {
@@ -246,15 +246,12 @@ app.post('/api/ai-tutor', async (req, res) => {
 app.get('/register/step1', (req, res) => {
     res.redirect('/');
 });
-
 app.post('/register/step1', (req, res) => {
     res.redirect('/');
 });
-
 app.get('/register/step2', (req, res) => {
     res.redirect('/');
 });
-
 app.post('/register/step2', (req, res) => {
     res.redirect('/');
 });
@@ -265,10 +262,6 @@ app.post('/register/step2', (req, res) => {
 app.get('/verify-email/:token', (req, res) => {
     res.redirect('/');
 });
-
-// ============================================================
-// RESEND VERIFICATION EMAIL – REDIRECTED
-// ============================================================
 app.post('/resend-verification', (req, res) => {
     res.redirect('/');
 });
@@ -279,7 +272,6 @@ app.post('/resend-verification', (req, res) => {
 app.get('/login', (req, res) => {
     res.redirect('/');
 });
-
 app.post('/login', (req, res) => {
     res.redirect('/');
 });
@@ -290,7 +282,7 @@ app.post('/login', (req, res) => {
 app.get('/shinex-admin', (req, res) => {
     if (req.session.adminId) return res.redirect('/admin/dashboard');
     if (isMobile(req)) {
-        req.session.messages = { error: 'Admin panel is only available on desktop.' };
+        // SILENT REDIRECT – NO ERROR MESSAGE
         return res.redirect('/');
     }
     res.render('admin/login', { messages: req.session.messages || {}, showBack: false, title: 'Admin Login' });
@@ -317,7 +309,6 @@ app.post('/shinex-admin', async (req, res) => {
 app.get('/logout', (req, res) => {
     req.session.destroy(() => res.redirect('/'));
 });
-
 app.get('/admin/logout', (req, res) => {
     req.session.adminId = null;
     res.redirect('/shinex-admin');
@@ -329,15 +320,12 @@ app.get('/admin/logout', (req, res) => {
 app.get('/forgot-password', (req, res) => {
     res.redirect('/');
 });
-
 app.post('/forgot-password', (req, res) => {
     res.redirect('/');
 });
-
 app.get('/reset-password/:token', (req, res) => {
     res.redirect('/');
 });
-
 app.post('/reset-password/:token', (req, res) => {
     res.redirect('/');
 });
@@ -358,7 +346,7 @@ app.get('/privacy', (req, res) => {
 });
 
 // ============================================================
-// CONTACT PAGE (FIXED – Added async)
+// CONTACT PAGE (Public)
 // ============================================================
 app.get('/contact', async (req, res) => {
     const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
@@ -373,7 +361,7 @@ app.get('/contact', async (req, res) => {
 });
 
 // ============================================================
-// HOME – PUBLIC (NO LOGIN)
+// HOME – PUBLIC
 // ============================================================
 app.get('/', async (req, res) => {
     const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
@@ -390,7 +378,7 @@ app.get('/', async (req, res) => {
 });
 
 // ============================================================
-// SETTINGS – PUBLIC (NO LOGIN)
+// SETTINGS – PUBLIC (No login required)
 // ============================================================
 app.get('/settings', async (req, res) => {
     const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
@@ -431,7 +419,7 @@ app.post('/settings/update', async (req, res) => {
 });
 
 // ============================================================
-// DASHBOARD – PUBLIC (NO LOGIN)
+// DASHBOARD – PUBLIC (Handles null user)
 // ============================================================
 app.get('/dashboard', async (req, res) => {
     const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
@@ -472,7 +460,7 @@ app.get('/dashboard', async (req, res) => {
 });
 
 // ============================================================
-// COURSE PAGE – PUBLIC (NO LOGIN)
+// COURSE PAGE – PUBLIC
 // ============================================================
 app.get('/course/:courseId', async (req, res) => {
     const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
@@ -493,7 +481,7 @@ app.get('/course/:courseId', async (req, res) => {
 });
 
 // ============================================================
-// LEVEL PAGE – PUBLIC (NO LOGIN)
+// LEVEL PAGE – PUBLIC
 // ============================================================
 app.get('/level/:courseId/:levelId', async (req, res) => {
     const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
@@ -571,7 +559,7 @@ app.get('/level/:courseId/:levelId', async (req, res) => {
 });
 
 // ============================================================
-// MARK CLASS COMPLETE – PUBLIC (NO LOGIN)
+// MARK CLASS COMPLETE – PUBLIC
 // ============================================================
 app.post('/level/complete/:classId', async (req, res) => {
     const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
@@ -589,7 +577,7 @@ app.post('/level/complete/:classId', async (req, res) => {
 });
 
 // ============================================================
-// NEXT CLASS – PUBLIC (NO LOGIN)
+// NEXT CLASS – PUBLIC
 // ============================================================
 app.post('/level/next/:courseId/:levelId/:classId', async (req, res) => {
     const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
