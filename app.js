@@ -372,9 +372,9 @@ app.get('/privacy', (req, res) => {
 });
 
 // ============================================================
-// CONTACT PAGE
+// CONTACT PAGE (FIXED – Added async)
 // ============================================================
-app.get('/contact', (req, res) => {
+app.get('/contact', async (req, res) => {
     const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
     const view = isMobile(req) ? 'mobile/contact' : 'contact';
     res.render(view, {
