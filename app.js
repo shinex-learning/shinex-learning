@@ -40,6 +40,7 @@ app.use(session({
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+
 // ============================================================
 // DEVICE DETECTION – Mobile vs Desktop
 // ============================================================
@@ -54,7 +55,6 @@ function isMobile(req) {
 app.use((req, res, next) => {
     const mobile = isMobile(req);
     
-    // Make partials available to all views
     res.locals.getHeader = function() {
         return mobile ? 'partials/header-mobile' : 'partials/header';
     };
@@ -336,140 +336,15 @@ app.get('/admin/logout', (req, res) => {
 });
 
 // ============================================================
-// PUBLIC PAGES
+// PUBLIC ROUTES – No login required (AdSense Review)
 // ============================================================
 
-// Terms & Privacy
-app.get('/terms', async (req, res) => {
-    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
-    const view = isMobile(req) ? 'mobile/terms' : 'terms';
-    res.render(view, { 
-        user, 
-        messages: req.session.messages || {}, 
-        showBack: true, 
-        title: 'Terms & Conditions' 
-    });
-    req.session.messages = {};
-});
-
-app.get('/privacy', async (req, res) => {
-    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
-    const view = isMobile(req) ? 'mobile/privacy' : 'privacy';
-    res.render(view, { 
-        user, 
-        messages: req.session.messages || {}, 
-        showBack: true, 
-        title: 'Privacy Policy' 
-    });
-    req.session.messages = {};
-});
-
-// Contact
-app.get('/contact', async (req, res) => {
-    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
-    const view = isMobile(req) ? 'mobile/contact' : 'contact';
-    res.render(view, {
-        user,
-        messages: req.session.messages || {},
-        showBack: true,
-        title: 'Contact Us'
-    });
-    req.session.messages = {};
-});
-
-// Settings
-app.get('/settings', async (req, res) => {
-    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
-    const view = isMobile(req) ? 'mobile/settings' : 'settings';
-    res.render(view, {
-        user,
-        messages: req.session.messages || {},
-        showBack: true,
-        title: 'Settings'
-    });
-    req.session.messages = {};
-});
-
-app.post('/settings/update', async (req, res) => {
-    const { firstName, lastName, bio, textSize, darkMode, currentPassword, newPassword, confirmPassword } = req.body;
-    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
-    if (!user) return res.redirect('/settings');
-
-    if (firstName) user.firstName = firstName;
-    if (lastName) user.lastName = lastName;
-    if (bio !== undefined) user.bio = bio;
-    if (textSize) user.textSize = parseInt(textSize);
-    if (darkMode !== undefined) user.darkMode = darkMode === 'on' || darkMode === 'true';
-
-    if (currentPassword && newPassword && confirmPassword) {
-        if (!(await bcrypt.compare(currentPassword, user.password))) {
-            req.session.messages = { error: 'Current password is incorrect.' };
-            return res.redirect('/settings');
-        }
-        if (newPassword !== confirmPassword || newPassword.length < 6) {
-            req.session.messages = { error: 'New password must be at least 6 characters and match.' };
-            return res.redirect('/settings');
-        }
-        user.password = await bcrypt.hash(newPassword, 10);
-    }
-
-    await user.save();
-    req.session.messages = { success: '✅ Settings updated successfully!' };
-    res.redirect('/settings');
-});
-
-// ============================================================
-// SETTINGS API (AJAX)
-// ============================================================
-app.post('/settings/update', async (req, res) => {
-    const { firstName, lastName, bio, textSize, darkMode, currentPassword, newPassword, confirmPassword } = req.body;
-    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
-    
-    if (!user) {
-        return res.json({ success: false, error: 'Please log in first.' });
-    }
-
-    try {
-        if (firstName) user.firstName = firstName;
-        if (lastName) user.lastName = lastName;
-        if (bio !== undefined) user.bio = bio;
-        if (textSize) user.textSize = parseInt(textSize);
-        if (darkMode !== undefined) user.darkMode = darkMode === 'on' || darkMode === 'true';
-
-        if (currentPassword && newPassword && confirmPassword) {
-            if (!(await bcrypt.compare(currentPassword, user.password))) {
-                return res.json({ success: false, error: 'Current password is incorrect.' });
-            }
-            if (newPassword !== confirmPassword || newPassword.length < 6) {
-                return res.json({ success: false, error: 'New password must be at least 6 characters and match.' });
-            }
-            user.password = await bcrypt.hash(newPassword, 10);
-        }
-
-        await user.save();
-        res.json({ success: true, message: 'Settings updated successfully!' });
-    } catch (error) {
-        res.json({ success: false, error: 'Something went wrong. Please try again.' });
-    }
-});
-
-// Logout all sessions
-app.post('/logout-all', async (req, res) => {
-    // This would require session store cleanup
-    // For now, just destroy current session
-    req.session.destroy();
-    res.json({ success: true });
-});
-
-// ============================================================
 // HOME
-// ============================================================
 app.get('/', async (req, res) => {
-    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
     const courses = await Course.find();
     const view = isMobile(req) ? 'mobile/index' : 'index';
     res.render(view, {
-        user,
+        user: null,
         courses,
         messages: req.session.messages || {},
         showBack: false,
@@ -478,40 +353,17 @@ app.get('/', async (req, res) => {
     req.session.messages = {};
 });
 
-// ============================================================
 // DASHBOARD
-// ============================================================
 app.get('/dashboard', async (req, res) => {
-    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
     const courses = await Course.find();
-    const enrolledCourse = user && user.courseId ? await Course.findOne({ id: user.courseId }) : null;
-
-    let totalClasses = 0, completedClasses = 0, score = 0;
-    if (enrolledCourse && enrolledCourse.levels && user && user.progress) {
-        enrolledCourse.levels.forEach(level => {
-            if (level.lessons) {
-                level.lessons.forEach(lesson => {
-                    if (lesson.classes) {
-                        lesson.classes.forEach(cls => {
-                            totalClasses++;
-                            if (user.progress && user.progress[cls.id]) completedClasses++;
-                        });
-                    }
-                });
-            }
-        });
-        score = completedClasses * 10;
-    }
-    const progress = totalClasses > 0 ? Math.round((completedClasses / totalClasses) * 100) : 0;
-
     const view = isMobile(req) ? 'mobile/dashboard' : 'dashboard';
     res.render(view, {
-        user,
-        enrolledCourse,
-        progress,
-        completedClasses,
-        totalClasses,
-        score,
+        user: null,
+        enrolledCourse: null,
+        progress: 0,
+        completedClasses: 0,
+        totalClasses: 0,
+        score: 0,
         courses,
         messages: req.session.messages || {},
         showBack: false,
@@ -520,19 +372,16 @@ app.get('/dashboard', async (req, res) => {
     req.session.messages = {};
 });
 
-// ============================================================
 // COURSE PAGE
-// ============================================================
 app.get('/course/:courseId', async (req, res) => {
-    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
     const course = await Course.findOne({ id: req.params.courseId });
     if (!course) {
         req.session.messages = { error: 'Course not found.' };
-        return res.redirect('/dashboard');
+        return res.redirect('/');
     }
     const view = isMobile(req) ? 'mobile/course' : 'course';
     res.render(view, {
-        user,
+        user: null,
         course,
         messages: req.session.messages || {},
         showBack: true,
@@ -541,15 +390,12 @@ app.get('/course/:courseId', async (req, res) => {
     req.session.messages = {};
 });
 
-// ============================================================
 // LEVEL PAGE
-// ============================================================
 app.get('/level/:courseId/:levelId', async (req, res) => {
-    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
     const course = await Course.findOne({ id: req.params.courseId });
     if (!course) {
         req.session.messages = { error: 'Course not found.' };
-        return res.redirect('/dashboard');
+        return res.redirect('/');
     }
 
     const level = course.levels.find(l => l.id === req.params.levelId);
@@ -572,7 +418,7 @@ app.get('/level/:courseId/:levelId', async (req, res) => {
                         imageUrl: cls.imageUrl,
                         videoUrl: cls.videoUrl,
                         externalLink: cls.externalLink,
-                        completed: !!(user && user.progress && user.progress[cls.id])
+                        completed: false
                     });
                 });
             }
@@ -587,9 +433,9 @@ app.get('/level/:courseId/:levelId', async (req, res) => {
     }
 
     let totalClasses = allClasses.length;
-    let completedClasses = allClasses.filter(c => c.completed).length;
-    let score = completedClasses * 10;
-    let progress = totalClasses > 0 ? Math.round((completedClasses / totalClasses) * 100) : 0;
+    let completedClasses = 0;
+    let score = 0;
+    let progress = 0;
 
     let currentLesson = null;
     if (level.lessons) {
@@ -600,14 +446,13 @@ app.get('/level/:courseId/:levelId', async (req, res) => {
         });
     }
 
-    // Find previous and next class IDs
     let currentIndex = allClasses.findIndex(c => c.id === currentClassId);
     let prevClassId = currentIndex > 0 ? allClasses[currentIndex - 1].id : null;
     let nextClassId = currentIndex < allClasses.length - 1 ? allClasses[currentIndex + 1].id : null;
 
     const view = isMobile(req) ? 'mobile/level' : 'level';
     res.render(view, {
-        user,
+        user: null,
         course,
         level,
         currentClass,
@@ -626,57 +471,87 @@ app.get('/level/:courseId/:levelId', async (req, res) => {
     req.session.messages = {};
 });
 
-// ============================================================
-// MARK CLASS COMPLETE
-// ============================================================
-app.post('/level/complete/:classId', async (req, res) => {
-    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
-    if (!user) {
-        req.session.messages = { error: 'Please log in to track progress.' };
-        return res.redirect('back');
-    }
-    const { classId } = req.params;
-    if (!user.progress) user.progress = {};
-    user.progress[classId] = true;
-    await user.save();
+// SETTINGS
+app.get('/settings', async (req, res) => {
+    const view = isMobile(req) ? 'mobile/settings' : 'settings';
+    res.render(view, {
+        user: null,
+        messages: req.session.messages || {},
+        showBack: true,
+        title: 'Settings'
+    });
+    req.session.messages = {};
+});
 
-    req.session.messages = { success: '✅ Class completed! +10 points!' };
-    res.redirect('back');
+// CONTACT
+app.get('/contact', (req, res) => {
+    const view = isMobile(req) ? 'mobile/contact' : 'contact';
+    res.render(view, { 
+        user: null, 
+        messages: req.session.messages || {}, 
+        showBack: true, 
+        title: 'Contact Us' 
+    });
+    req.session.messages = {};
+});
+
+// CONTACT FORM SUBMISSION
+app.post('/contact/send', (req, res) => {
+    const { name, email, subject, message } = req.body;
+    req.session.messages = { success: '✅ Your message has been sent. We\'ll get back to you soon!' };
+    res.redirect('/contact');
+});
+
+// TERMS
+app.get('/terms', (req, res) => {
+    const view = isMobile(req) ? 'mobile/terms' : 'terms';
+    res.render(view, { 
+        user: null, 
+        messages: req.session.messages || {}, 
+        showBack: true, 
+        title: 'Terms & Conditions' 
+    });
+    req.session.messages = {};
+});
+
+// PRIVACY
+app.get('/privacy', (req, res) => {
+    const view = isMobile(req) ? 'mobile/privacy' : 'privacy';
+    res.render(view, { 
+        user: null, 
+        messages: req.session.messages || {}, 
+        showBack: true, 
+        title: 'Privacy Policy' 
+    });
+    req.session.messages = {};
 });
 
 // ============================================================
-// NAVIGATION: PREVIOUS / NEXT CLASS
+// FAQ PAGE
 // ============================================================
-app.get('/level/:courseId/:levelId/navigate/:direction', async (req, res) => {
-    const { courseId, levelId, direction } = req.params;
-    const currentClassId = req.query.classId;
-    
-    const course = await Course.findOne({ id: courseId });
-    if (!course) return res.redirect('/dashboard');
-    
-    const level = course.levels.find(l => l.id === levelId);
-    if (!level) return res.redirect('/course/' + courseId);
-    
-    let allClassIds = [];
-    if (level.lessons) {
-        level.lessons.forEach(lesson => {
-            if (lesson.classes) {
-                lesson.classes.forEach(cls => {
-                    allClassIds.push(cls.id);
-                });
-            }
-        });
-    }
-    
-    let currentIndex = allClassIds.indexOf(currentClassId);
-    let targetIndex = direction === 'next' ? currentIndex + 1 : currentIndex - 1;
-    
-    if (targetIndex < 0 || targetIndex >= allClassIds.length) {
-        req.session.messages = { error: direction === 'next' ? 'You\'ve completed all classes!' : 'This is the first class.' };
-        return res.redirect('/level/' + courseId + '/' + levelId + '?classId=' + currentClassId);
-    }
-    
-    res.redirect('/level/' + courseId + '/' + levelId + '?classId=' + allClassIds[targetIndex]);
+app.get('/faq', (req, res) => {
+    const view = isMobile(req) ? 'mobile/faq' : 'faq';
+    res.render(view, {
+        user: null,
+        messages: req.session.messages || {},
+        showBack: true,
+        title: 'FAQ'
+    });
+    req.session.messages = {};
+});
+
+// ============================================================
+// ABOUT US PAGE
+// ============================================================
+app.get('/about', (req, res) => {
+    const view = isMobile(req) ? 'mobile/about' : 'about';
+    res.render(view, {
+        user: null,
+        messages: req.session.messages || {},
+        showBack: true,
+        title: 'About Us'
+    });
+    req.session.messages = {};
 });
 
 // ============================================================
@@ -1106,6 +981,157 @@ app.post('/admin/remove-admin/:id', blockMobileAdmin, requireAdmin, async (req, 
 });
 
 // ============================================================
+// SETTINGS API (AJAX)
+// ============================================================
+app.post('/settings/update', async (req, res) => {
+    const { firstName, lastName, bio, textSize, darkMode, currentPassword, newPassword, confirmPassword } = req.body;
+    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
+    
+    if (!user) {
+        return res.json({ success: false, error: 'Please log in first.' });
+    }
+
+    try {
+        if (firstName) user.firstName = firstName;
+        if (lastName) user.lastName = lastName;
+        if (bio !== undefined) user.bio = bio;
+        if (textSize) user.textSize = parseInt(textSize);
+        if (darkMode !== undefined) user.darkMode = darkMode === 'on' || darkMode === 'true';
+
+        if (currentPassword && newPassword && confirmPassword) {
+            if (!(await bcrypt.compare(currentPassword, user.password))) {
+                return res.json({ success: false, error: 'Current password is incorrect.' });
+            }
+            if (newPassword !== confirmPassword || newPassword.length < 6) {
+                return res.json({ success: false, error: 'New password must be at least 6 characters and match.' });
+            }
+            user.password = await bcrypt.hash(newPassword, 10);
+        }
+
+        await user.save();
+        res.json({ success: true, message: 'Settings updated successfully!' });
+    } catch (error) {
+        res.json({ success: false, error: 'Something went wrong. Please try again.' });
+    }
+});
+
+// Logout all sessions
+app.post('/logout-all', async (req, res) => {
+    req.session.destroy();
+    res.json({ success: true });
+});
+
+// ============================================================
+// PROGRESS TRACKING ROUTES
+// ============================================================
+
+// Mark class complete
+app.post('/level/complete/:classId', async (req, res) => {
+    const { classId } = req.params;
+    
+    if (!req.session.progress) {
+        req.session.progress = {};
+    }
+    req.session.progress[classId] = true;
+    
+    const totalCompleted = Object.keys(req.session.progress).length;
+    
+    req.session.messages = { 
+        success: `✅ Class completed! +10 points! (${totalCompleted} classes done)` 
+    };
+    
+    res.redirect('back');
+});
+
+// Next class
+app.get('/level/:courseId/:levelId/next/:classId', async (req, res) => {
+    const { courseId, levelId, classId } = req.params;
+    
+    if (!req.session.progress) {
+        req.session.progress = {};
+    }
+    req.session.progress[classId] = true;
+    
+    const course = await Course.findOne({ id: courseId });
+    if (!course) {
+        req.session.messages = { error: 'Course not found.' };
+        return res.redirect('/');
+    }
+    
+    const level = course.levels.find(l => l.id === levelId);
+    if (!level) {
+        req.session.messages = { error: 'Level not found.' };
+        return res.redirect('/course/' + courseId);
+    }
+    
+    let allClassIds = [];
+    if (level.lessons) {
+        level.lessons.forEach(lesson => {
+            if (lesson.classes) {
+                lesson.classes.forEach(cls => {
+                    allClassIds.push(cls.id);
+                });
+            }
+        });
+    }
+    
+    const currentIndex = allClassIds.indexOf(classId);
+    const nextClassId = currentIndex < allClassIds.length - 1 ? allClassIds[currentIndex + 1] : null;
+    const totalCompleted = Object.keys(req.session.progress).length;
+    
+    req.session.messages = { 
+        success: `✅ Class completed! (${totalCompleted} classes done)` 
+    };
+    
+    if (nextClassId) {
+        res.redirect(`/level/${courseId}/${levelId}?classId=${nextClassId}`);
+    } else {
+        req.session.messages = { 
+            success: `🎉 All classes completed! You finished this level!` 
+        };
+        res.redirect(`/course/${courseId}`);
+    }
+});
+
+// Previous class
+app.get('/level/:courseId/:levelId/prev/:classId', async (req, res) => {
+    const { courseId, levelId, classId } = req.params;
+    
+    const course = await Course.findOne({ id: courseId });
+    if (!course) {
+        req.session.messages = { error: 'Course not found.' };
+        return res.redirect('/');
+    }
+    
+    const level = course.levels.find(l => l.id === levelId);
+    if (!level) {
+        req.session.messages = { error: 'Level not found.' };
+        return res.redirect('/course/' + courseId);
+    }
+    
+    let allClassIds = [];
+    if (level.lessons) {
+        level.lessons.forEach(lesson => {
+            if (lesson.classes) {
+                lesson.classes.forEach(cls => {
+                    allClassIds.push(cls.id);
+                });
+            }
+        });
+    }
+    
+    const currentIndex = allClassIds.indexOf(classId);
+    const prevClassId = currentIndex > 0 ? allClassIds[currentIndex - 1] : null;
+    
+    if (prevClassId) {
+        res.redirect(`/level/${courseId}/${levelId}?classId=${prevClassId}`);
+    } else {
+        req.session.messages = { error: 'This is the first class.' };
+        res.redirect(`/level/${courseId}/${levelId}?classId=${classId}`);
+    }
+});
+
+// ============================================================
 // START SERVER
 // ============================================================
 async function startServer() {
@@ -1135,232 +1161,6 @@ async function startServer() {
         await admin.save();
         console.log('✅ Admin created: balogunmustaphaaddeji@gmail.com / SHINEXAdmin@2026');
     }
-
-// ============================================================
-// VIEW HELPERS – Auto-select mobile/desktop partials
-// ============================================================
-app.use((req, res, next) => {
-    const mobile = isMobile(req);
-    
-    // Make partials available to all views
-    res.locals.getHeader = function() {
-        return mobile ? 'partials/header-mobile' : 'partials/header';
-    };
-    res.locals.getFooter = function() {
-        return mobile ? 'partials/footer-mobile' : 'partials/footer';
-    };
-    res.locals.isMobile = mobile;
-    res.locals.getAdBox = function() {
-        return 'partials/ad-box';
-    };
-    
-    next();
-});
-
-// ============================================================
-// PUBLIC ROUTES – No login required (AdSense Review)
-// ============================================================
-
-app.get('/', async (req, res) => {
-    const user = null; // No user for AdSense review
-    const courses = await Course.find();
-    const view = isMobile(req) ? 'mobile/index' : 'index';
-    res.render(view, {
-        user,
-        courses,
-        messages: req.session.messages || {},
-        showBack: false,
-        title: 'Home'
-    });
-    req.session.messages = {};
-});
-
-app.get('/dashboard', async (req, res) => {
-    const user = null; // No user for AdSense review
-    const courses = await Course.find();
-    const view = isMobile(req) ? 'mobile/dashboard' : 'dashboard';
-    res.render(view, {
-        user: null,
-        enrolledCourse: null,
-        progress: 0,
-        completedClasses: 0,
-        totalClasses: 0,
-        score: 0,
-        courses,
-        messages: req.session.messages || {},
-        showBack: false,
-        title: 'Dashboard'
-    });
-    req.session.messages = {};
-});
-
-app.get('/course/:courseId', async (req, res) => {
-    const user = null; // No user for AdSense review
-    const course = await Course.findOne({ id: req.params.courseId });
-    if (!course) {
-        req.session.messages = { error: 'Course not found.' };
-        return res.redirect('/');
-    }
-    const view = isMobile(req) ? 'mobile/course' : 'course';
-    res.render(view, {
-        user: null,
-        course,
-        messages: req.session.messages || {},
-        showBack: true,
-        title: course.title
-    });
-    req.session.messages = {};
-});
-
-app.get('/level/:courseId/:levelId', async (req, res) => {
-    const user = null; // No user for AdSense review
-    const course = await Course.findOne({ id: req.params.courseId });
-    if (!course) {
-        req.session.messages = { error: 'Course not found.' };
-        return res.redirect('/');
-    }
-
-    const level = course.levels.find(l => l.id === req.params.levelId);
-    if (!level) {
-        req.session.messages = { error: 'Level not found.' };
-        return res.redirect('/course/' + req.params.courseId);
-    }
-
-    let allClasses = [];
-    if (level.lessons) {
-        level.lessons.forEach(lesson => {
-            if (lesson.classes) {
-                lesson.classes.forEach(cls => {
-                    allClasses.push({
-                        id: cls.id,
-                        lessonId: lesson.id,
-                        lessonTitle: lesson.title,
-                        title: cls.title,
-                        content: cls.content,
-                        imageUrl: cls.imageUrl,
-                        videoUrl: cls.videoUrl,
-                        externalLink: cls.externalLink,
-                        completed: false // No user = no progress
-                    });
-                });
-            }
-        });
-    }
-
-    let currentClassId = req.query.classId || (allClasses.length > 0 ? allClasses[0].id : null);
-    let currentClass = allClasses.find(c => c.id === currentClassId);
-    if (!currentClass && allClasses.length > 0) {
-        currentClass = allClasses[0];
-        currentClassId = currentClass.id;
-    }
-
-    let totalClasses = allClasses.length;
-    let completedClasses = 0; // No user = no progress
-    let score = 0;
-    let progress = 0;
-
-    let currentLesson = null;
-    if (level.lessons) {
-        level.lessons.forEach(lesson => {
-            if (lesson.classes && lesson.classes.some(c => c.id === currentClassId)) {
-                currentLesson = lesson;
-            }
-        });
-    }
-
-    let currentIndex = allClasses.findIndex(c => c.id === currentClassId);
-    let prevClassId = currentIndex > 0 ? allClasses[currentIndex - 1].id : null;
-    let nextClassId = currentIndex < allClasses.length - 1 ? allClasses[currentIndex + 1].id : null;
-
-    const view = isMobile(req) ? 'mobile/level' : 'level';
-    res.render(view, {
-        user: null,
-        course,
-        level,
-        currentClass,
-        currentLesson,
-        allClasses,
-        totalClasses,
-        completedClasses,
-        progress,
-        score,
-        prevClassId,
-        nextClassId,
-        messages: req.session.messages || {},
-        showBack: true,
-        title: level.name + ' - ' + course.title
-    });
-    req.session.messages = {};
-});
-
-// Settings – Public (no login required)
-app.get('/settings', async (req, res) => {
-    const user = null; // No user for AdSense review
-    const view = isMobile(req) ? 'mobile/settings' : 'settings';
-    res.render(view, {
-        user: null,
-        messages: req.session.messages || {},
-        showBack: true,
-        title: 'Settings'
-    });
-    req.session.messages = {};
-});
-
-// Contact, Terms, Privacy – Public
-app.get('/contact', (req, res) => {
-    const view = isMobile(req) ? 'mobile/contact' : 'contact';
-    res.render(view, { 
-        user: null, 
-        messages: req.session.messages || {}, 
-        showBack: true, 
-        title: 'Contact Us' 
-    });
-    req.session.messages = {};
-});
-
-app.get('/terms', (req, res) => {
-    const view = isMobile(req) ? 'mobile/terms' : 'terms';
-    res.render(view, { 
-        user: null, 
-        messages: req.session.messages || {}, 
-        showBack: true, 
-        title: 'Terms' 
-    });
-    req.session.messages = {};
-});
-
-app.get('/privacy', (req, res) => {
-    const view = isMobile(req) ? 'mobile/privacy' : 'privacy';
-    res.render(view, { 
-        user: null, 
-        messages: req.session.messages || {}, 
-        showBack: true, 
-        title: 'Privacy' 
-    });
-    req.session.messages = {};
-});
-
-// ============================================================
-// CONTACT PAGE
-// ============================================================
-app.get('/contact', (req, res) => {
-    const view = isMobile(req) ? 'mobile/contact' : 'contact';
-    res.render(view, {
-        user: null,
-        messages: req.session.messages || {},
-        showBack: true,
-        title: 'Contact Us'
-    });
-    req.session.messages = {};
-});
-
-// Contact Form Submission (optional)
-app.post('/contact/send', (req, res) => {
-    const { name, email, subject, message } = req.body;
-    // You can add email sending logic here
-    req.session.messages = { success: '✅ Your message has been sent. We\'ll get back to you soon!' };
-    res.redirect('/contact');
-});
 
     app.listen(PORT, () => {
         console.log(`🚀 SHINEX running on http://localhost:${PORT}`);
