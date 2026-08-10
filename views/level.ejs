@@ -62,7 +62,7 @@
             color: #1A0A2E;
             background: #f8f6fc;
             border-left: 3px solid transparent;
-            transition: background 0.2s, border-color 0.2s, color 0.2s;
+            transition: background 0.2s, color 0.2s;
         }
         .lesson-header.active {
             border-left-color: #8B5CF6;
@@ -132,8 +132,6 @@
         .class-item.completed .class-link .class-number {
             color: #27ae60;
         }
-
-        /* Main Content */
         .level-content {
             flex: 1;
             min-width: 0;
@@ -181,6 +179,7 @@
             font-size: 1.05rem;
             line-height: 1.8;
             color: #1f2937;
+            transition: color 0.3s;
         }
         .class-content h1, .class-content h2, .class-content h3 {
             color: #1A0A2E;
@@ -238,8 +237,6 @@
             color: #b0a3c4;
             font-weight: 600;
         }
-
-        /* Footer */
         .content-footer {
             margin-top: 16px;
             padding: 16px 20px;
@@ -281,8 +278,6 @@
             font-size: 0.85rem;
             color: #7a6a8f;
         }
-
-        /* Test Section */
         .test-section {
             margin-top: 16px;
             padding: 16px 20px;
@@ -305,8 +300,6 @@
         .test-section .btn {
             cursor: not-allowed;
         }
-
-        /* Empty State */
         .content-empty {
             text-align: center;
             padding: 40px 20px;
@@ -322,8 +315,6 @@
         .content-empty p {
             color: #7a6a8f;
         }
-
-        /* Scrollbar */
         .level-sidebar::-webkit-scrollbar {
             width: 4px;
         }
@@ -336,7 +327,35 @@
             border-radius: 10px;
         }
 
-        /* ===== DARK MODE OVERRIDES ===== */
+        /* ===== TEXT SIZE SLIDER ===== */
+        .text-size-control {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 0;
+            margin: 8px 0;
+            flex-wrap: wrap;
+        }
+        .text-size-control label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #2d1a4a;
+        }
+        .text-size-control input[type="range"] {
+            flex: 1;
+            min-width: 120px;
+            accent-color: #8B5CF6;
+            cursor: pointer;
+        }
+        .text-size-control .size-value {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #8B5CF6;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        /* ===== DARK MODE FIXES ===== */
         body.dark-mode .level-sidebar {
             background: #111111 !important;
             border-color: #333 !important;
@@ -421,6 +440,27 @@
         }
         body.dark-mode .progress-bar-wrapper {
             border-top-color: #333 !important;
+        }
+        body.dark-mode .class-content {
+            color: #f0f0f0 !important;
+        }
+        body.dark-mode .class-content h1,
+        body.dark-mode .class-content h2,
+        body.dark-mode .class-content h3 {
+            color: #ffffff !important;
+        }
+        body.dark-mode .class-content strong,
+        body.dark-mode .class-content b {
+            color: #d4bfff !important;
+        }
+        body.dark-mode .class-content p {
+            color: #e0e0e0 !important;
+        }
+        body.dark-mode .class-content li {
+            color: #e0e0e0 !important;
+        }
+        body.dark-mode .text-size-control label {
+            color: #ffffff !important;
         }
 
         /* ===== RESPONSIVE ===== */
@@ -527,8 +567,15 @@
                     <!-- Content Body -->
                     <div class="content-body">
                         <h2 class="class-title"><%= currentClass.title %></h2>
-                        
-                        <div class="class-content">
+
+                        <!-- ===== TEXT SIZE SLIDER ===== -->
+                        <div class="text-size-control">
+                            <label><i class="fas fa-font"></i> Text Size</label>
+                            <input type="range" id="textSizeSlider" min="0.8" max="2.0" step="0.05" value="1.0">
+                            <span class="size-value" id="textSizeDisplay">1.0x</span>
+                        </div>
+
+                        <div class="class-content" id="classContent">
                             <%- parseContent(currentClass.content) %>
                         </div>
 
@@ -559,7 +606,7 @@
 
                         <!-- Status -->
                         <div class="class-status-bar">
-                            <% if (user.progress && user.progress[currentClass.id]) { %>
+                            <% if (user && user.progress && user.progress[currentClass.id]) { %>
                                 <span class="status-completed"><i class="fas fa-check-circle"></i> Completed</span>
                             <% } else { %>
                                 <span class="status-pending"><i class="far fa-circle"></i> Not Completed</span>
@@ -567,7 +614,7 @@
                         </div>
                     </div>
 
-                    <!-- ===== FOOTER ===== -->
+                    <!-- Footer -->
                     <div class="content-footer">
                         <div class="next-button-wrapper">
                             <% 
@@ -587,7 +634,7 @@
                                 let currentIdx = allClassesFlat.findIndex(c => c.id === currentClass.id);
                                 let hasNext = currentIdx < allClassesFlat.length - 1;
                             %>
-                            <% if (user.progress && user.progress[currentClass.id]) { %>
+                            <% if (user && user.progress && user.progress[currentClass.id]) { %>
                                 <% if (hasNext) { %>
                                     <form action="/level/next/<%= course.id %>/<%= level.id %>/<%= currentClass.id %>" method="POST">
                                         <button type="submit" class="btn btn-primary next-btn">
@@ -623,7 +670,7 @@
                         </div>
                     </div>
 
-                    <!-- ===== TEST SECTION ===== -->
+                    <!-- Test -->
                     <% if (level.test && level.test.questions && level.test.questions.length > 0) { %>
                         <div class="test-section">
                             <h4><i class="fas fa-pencil-alt" style="color:#f39c12;"></i> Test Your Knowledge</h4>
@@ -645,7 +692,7 @@
 
                 <% } %>
 
-                <!-- ===== AD BOX ===== -->
+                <!-- Ad Box -->
                 <%- include('partials/ad-box') %>
 
             </section>
@@ -656,13 +703,25 @@
     <%- include('partials/footer') %>
 
     <script>
-        // Clicking on a locked class shows a message
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.class-link.disabled').forEach(function(link) {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    alert('🔒 This class is locked. Complete the previous class first.');
-                });
+        // ===== TEXT SIZE SLIDER =====
+        const slider = document.getElementById('textSizeSlider');
+        const display = document.getElementById('textSizeDisplay');
+        const content = document.getElementById('classContent');
+
+        if (slider && content) {
+            slider.addEventListener('input', function() {
+                const size = parseFloat(this.value);
+                display.textContent = size.toFixed(1) + 'x';
+                content.style.fontSize = (size * 1.05) + 'rem';
+                content.style.lineHeight = (size * 1.6) + '';
+            });
+        }
+
+        // ===== LOCKED CLASS ALERT =====
+        document.querySelectorAll('.class-link.disabled').forEach(function(link) {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                alert('🔒 This class is locked. Complete the previous class first.');
             });
         });
     </script>
