@@ -184,22 +184,8 @@ const transporter = nodemailer.createTransport({
 });
 
 // ============================================================
-// AUTH MIDDLEWARE
+// AUTH MIDDLEWARE (KEPT FOR ADMIN ONLY)
 // ============================================================
-async function requireAuth(req, res, next) {
-    if (!req.session.userId) {
-        req.session.messages = { error: 'Please log in to access this page.' };
-        return res.redirect('/login');
-    }
-    const user = await User.findOne({ id: req.session.userId });
-    if (!user) {
-        req.session.destroy();
-        return res.redirect('/login');
-    }
-    req.user = user;
-    next();
-}
-
 async function requireAdmin(req, res, next) {
     if (!req.session.adminId) {
         req.session.messages = { error: 'Please log in as admin.' };
@@ -387,7 +373,7 @@ app.get('/contact', async (req, res) => {
 });
 
 // ============================================================
-// HOME
+// HOME – PUBLIC (NO LOGIN)
 // ============================================================
 app.get('/', async (req, res) => {
     const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
@@ -404,10 +390,10 @@ app.get('/', async (req, res) => {
 });
 
 // ============================================================
-// SETTINGS
+// SETTINGS – PUBLIC (NO LOGIN)
 // ============================================================
-app.get('/settings', requireAuth, async (req, res) => {
-    const user = await User.findOne({ id: req.user.id });
+app.get('/settings', async (req, res) => {
+    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
     const view = isMobile(req) ? 'mobile/settings' : 'settings';
     res.render(view, {
         user,
@@ -418,9 +404,9 @@ app.get('/settings', requireAuth, async (req, res) => {
     req.session.messages = {};
 });
 
-app.post('/settings/update', requireAuth, async (req, res) => {
+app.post('/settings/update', async (req, res) => {
     const { firstName, lastName, bio, currentPassword, newPassword, confirmPassword } = req.body;
-    const user = await User.findOne({ id: req.user.id });
+    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
     if (!user) return res.redirect('/settings');
 
     if (firstName) user.firstName = firstName;
@@ -445,15 +431,15 @@ app.post('/settings/update', requireAuth, async (req, res) => {
 });
 
 // ============================================================
-// DASHBOARD
+// DASHBOARD – PUBLIC (NO LOGIN)
 // ============================================================
-app.get('/dashboard', requireAuth, async (req, res) => {
-    const user = await User.findOne({ id: req.user.id });
+app.get('/dashboard', async (req, res) => {
+    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
     const courses = await Course.find();
-    const enrolledCourse = user.courseId ? await Course.findOne({ id: user.courseId }) : null;
+    const enrolledCourse = user && user.courseId ? await Course.findOne({ id: user.courseId }) : null;
 
     let totalClasses = 0, completedClasses = 0, score = 0;
-    if (enrolledCourse && enrolledCourse.levels) {
+    if (enrolledCourse && enrolledCourse.levels && user && user.progress) {
         enrolledCourse.levels.forEach(level => {
             if (level.lessons) {
                 level.lessons.forEach(lesson => {
@@ -486,9 +472,10 @@ app.get('/dashboard', requireAuth, async (req, res) => {
 });
 
 // ============================================================
-// COURSE PAGE (Student)
+// COURSE PAGE – PUBLIC (NO LOGIN)
 // ============================================================
-app.get('/course/:courseId', requireAuth, async (req, res) => {
+app.get('/course/:courseId', async (req, res) => {
+    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
     const course = await Course.findOne({ id: req.params.courseId });
     if (!course) {
         req.session.messages = { error: 'Course not found.' };
@@ -496,7 +483,7 @@ app.get('/course/:courseId', requireAuth, async (req, res) => {
     }
     const view = isMobile(req) ? 'mobile/course' : 'course';
     res.render(view, {
-        user: req.user,
+        user,
         course,
         messages: req.session.messages || {},
         showBack: true,
@@ -506,10 +493,10 @@ app.get('/course/:courseId', requireAuth, async (req, res) => {
 });
 
 // ============================================================
-// LEVEL PAGE (Student Learning)
+// LEVEL PAGE – PUBLIC (NO LOGIN)
 // ============================================================
-app.get('/level/:courseId/:levelId', requireAuth, async (req, res) => {
-    const user = await User.findOne({ id: req.user.id });
+app.get('/level/:courseId/:levelId', async (req, res) => {
+    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
     const course = await Course.findOne({ id: req.params.courseId });
     if (!course) {
         req.session.messages = { error: 'Course not found.' };
@@ -536,7 +523,7 @@ app.get('/level/:courseId/:levelId', requireAuth, async (req, res) => {
                         imageUrl: cls.imageUrl,
                         videoUrl: cls.videoUrl,
                         externalLink: cls.externalLink,
-                        completed: !!(user.progress && user.progress[cls.id])
+                        completed: !!(user && user.progress && user.progress[cls.id])
                     });
                 });
             }
@@ -584,10 +571,14 @@ app.get('/level/:courseId/:levelId', requireAuth, async (req, res) => {
 });
 
 // ============================================================
-// MARK CLASS COMPLETE
+// MARK CLASS COMPLETE – PUBLIC (NO LOGIN)
 // ============================================================
-app.post('/level/complete/:classId', requireAuth, async (req, res) => {
-    const user = await User.findOne({ id: req.user.id });
+app.post('/level/complete/:classId', async (req, res) => {
+    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
+    if (!user) {
+        req.session.messages = { error: 'Please log in to track progress.' };
+        return res.redirect('back');
+    }
     const { classId } = req.params;
     if (!user.progress) user.progress = {};
     user.progress[classId] = true;
@@ -598,10 +589,15 @@ app.post('/level/complete/:classId', requireAuth, async (req, res) => {
 });
 
 // ============================================================
-// NEXT CLASS
+// NEXT CLASS – PUBLIC (NO LOGIN)
 // ============================================================
-app.post('/level/next/:courseId/:levelId/:classId', requireAuth, async (req, res) => {
-    const user = await User.findOne({ id: req.user.id });
+app.post('/level/next/:courseId/:levelId/:classId', async (req, res) => {
+    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
+    if (!user) {
+        req.session.messages = { error: 'Please log in to track progress.' };
+        return res.redirect('back');
+    }
+
     const { courseId, levelId, classId } = req.params;
 
     if (!user.progress) user.progress = {};

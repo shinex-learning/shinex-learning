@@ -1,10 +1,10 @@
-<!-- ===== PC HEADER – NO LOGIN/REGISTER ===== -->
+<!-- ===== PC HEADER – NO (SLC) ===== -->
 <header class="site-header">
     <div class="container header-flex">
         <div class="logo-container">
             <a href="/" class="logo-link">
                 <div class="logo-circle">SLC</div>
-                <span class="title-text">(SLC) SHINEX <span class="title-light">Learning Circle</span></span>
+                <span class="title-text">SHINEX <span class="title-light">Learning Circle</span></span>
             </a>
         </div>
 
@@ -17,7 +17,6 @@
             </button>
         </div>
 
-        <!-- ===== NAVIGATION – NO LOGIN/REGISTER ===== -->
         <nav class="main-nav">
             <ul>
                 <% if (user) { %>
@@ -26,7 +25,6 @@
                     <li><a href="/settings"><i class="fas fa-cog"></i> Settings</a></li>
                     <li><a href="/logout" class="btn-logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                 <% } else { %>
-                    <!-- ===== PUBLIC MENU (No Login/Register) ===== -->
                     <li><a href="/" class="active-link"><i class="fas fa-home"></i> Home</a></li>
                     <li><a href="/privacy"><i class="fas fa-shield-alt"></i> Privacy</a></li>
                     <li><a href="/terms"><i class="fas fa-file-contract"></i> Terms</a></li>
@@ -38,7 +36,6 @@
 </header>
 
 <style>
-    /* ===== PC HEADER STYLES ===== */
     .site-header {
         background: #ffffff;
         padding: 12px 0;
@@ -198,7 +195,6 @@
         background: rgba(231, 76, 60, 0.1) !important;
     }
 
-    /* ===== RESPONSIVE ===== */
     @media (max-width: 768px) {
         .mobile-toggle {
             display: block;

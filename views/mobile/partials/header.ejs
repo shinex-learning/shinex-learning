@@ -1,10 +1,10 @@
-<!-- ===== MOBILE HEADER – NO LOGIN/REGISTER ===== -->
+<!-- ===== MOBILE HEADER – SHINEX Learning Circle ===== -->
 <header class="mobile-header">
     <div class="mobile-header-flex">
         <div class="mobile-logo-container">
             <a href="/" class="mobile-logo-link">
                 <div class="mobile-logo-circle">SLC</div>
-                <span class="mobile-title-text">(SLC) SHINEX</span>
+                <span class="mobile-title-text">SHINEX <span class="mobile-title-light">Learning Circle</span></span>
             </a>
         </div>
 
@@ -17,7 +17,6 @@
             </button>
         </div>
 
-        <!-- ===== MOBILE NAV – NO LOGIN/REGISTER ===== -->
         <nav class="mobile-nav" id="mobileNav">
             <ul>
                 <% if (user) { %>
@@ -26,7 +25,6 @@
                     <li><a href="/settings"><i class="fas fa-cog"></i> Settings</a></li>
                     <li><a href="/logout" class="mobile-btn-logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                 <% } else { %>
-                    <!-- ===== PUBLIC MOBILE MENU (No Login/Register) ===== -->
                     <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
                     <li><a href="/privacy"><i class="fas fa-shield-alt"></i> Privacy</a></li>
                     <li><a href="/terms"><i class="fas fa-file-contract"></i> Terms</a></li>
@@ -38,7 +36,6 @@
 </header>
 
 <style>
-    /* ===== MOBILE HEADER STYLES ===== */
     .mobile-header {
         background: #ffffff;
         padding: 10px 12px;
@@ -114,8 +111,16 @@
         color: #1A0A2E;
     }
 
+    .mobile-title-light {
+        font-weight: 300;
+        color: #7a6a8f;
+    }
+
     body.dark-mode .mobile-title-text {
         color: #ffffff;
+    }
+    body.dark-mode .mobile-title-light {
+        color: #b0a0c0;
     }
 
     .mobile-header-actions {
@@ -204,6 +209,9 @@
         }
         .mobile-title-text {
             font-size: 12px;
+        }
+        .mobile-title-light {
+            display: none;
         }
     }
 </style>
