@@ -1,10 +1,8 @@
 <!-- ============================================================
      HEADER – MOBILE VERSION
-     Purple Theme + Back Button
      ============================================================ -->
 <header class="header" style="padding:10px 12px; flex-wrap:wrap; gap:6px;">
     <div style="display:flex; align-items:center; gap:8px; flex:1;">
-        <!-- BACK BUTTON -->
         <% if (showBack) { %>
             <a href="javascript:history.back()" class="back-btn" style="font-size:0.75rem; padding:4px 8px; color:rgba(255,255,255,0.9);">
                 <i class="fas fa-arrow-left"></i>
@@ -21,19 +19,22 @@
     </div>
 
     <div class="header-actions" style="gap:4px; flex-wrap:wrap;">
-        <!-- Text Size Slider -->
         <div class="text-size-control" style="padding:2px 8px; background:rgba(255,255,255,0.15);">
             <label style="font-size:0.6rem; color:rgba(255,255,255,0.8);"><i class="fas fa-font"></i></label>
             <input type="range" id="textSizeSliderMobile" min="12" max="24" value="16" step="1" style="width:50px;">
             <span class="text-size-value" id="textSizeValueMobile" style="font-size:0.6rem; min-width:24px; color:#fff;">16px</span>
         </div>
 
-        <!-- Dark Mode Toggle -->
         <button class="dark-toggle" id="darkToggleMobile" aria-label="Toggle dark mode" style="font-size:1rem; padding:4px 6px; color:#fff; background:rgba(255,255,255,0.15); border-radius:30px;">
             🌙
         </button>
 
-        <!-- Settings Link -->
+        <!-- Services Link (Mobile) -->
+        <a href="/services" class="btn btn-secondary btn-sm" style="min-height:32px; padding:4px 10px; border-radius:30px; font-size:0.75rem; background:rgba(255,255,255,0.2); color:#fff;">
+            <i class="fas fa-cogs"></i>
+        </a>
+
+        <!-- Settings Link (Mobile) -->
         <a href="/settings" class="btn btn-secondary btn-sm" style="min-height:32px; padding:4px 10px; border-radius:30px; font-size:0.75rem; background:rgba(255,255,255,0.2); color:#fff;">
             <i class="fas fa-cog"></i>
         </a>

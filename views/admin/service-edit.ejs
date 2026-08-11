@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Service – SHINEX Admin</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <%- include('../partials/admin-header') %>
+    
+    <main class="main-content">
+        <div class="container" style="max-width:600px;">
+            <% if (messages && messages.error) { %>
+                <div class="alert alert-danger flash-message" data-type="error"><%= messages.error %></div>
+            <% } %>
+            <% if (messages && messages.success) { %>
+                <div class="alert alert-success flash-message" data-type="success"><%= messages.success %></div>
+            <% } %>
+
+            <div class="card">
+                <h1 style="font-size:1.4rem; font-weight:800; color:var(--text-dark); margin:0 0 4px 0;">
+                    <i class="fas fa-edit" style="color:var(--primary);"></i> Edit Service
+                </h1>
+                <p style="color:var(--text-muted); font-size:0.85rem; margin:0 0 16px 0;">
+                    Update service details
+                </p>
+
+                <form action="/admin/services/edit/<%= service.id %>" method="POST">
+                    <div class="settings-group">
+                        <label for="serviceName">Service Name <span style="color:#e74c3c;">*</span></label>
+                        <input type="text" id="serviceName" name="name" value="<%= service.name %>" required>
+                    </div>
+                    <div class="settings-group">
+                        <label for="servicePrice">Price (₦)</label>
+                        <input type="number" id="servicePrice" name="price" value="<%= service.price %>">
+                    </div>
+                    <div class="settings-group">
+                        <label for="serviceDesc">Description</label>
+                        <textarea id="serviceDesc" name="description" rows="3"><%= service.description || '' %></textarea>
+                    </div>
+                    <div class="settings-group">
+                        <label for="serviceCategory">Category</label>
+                        <select id="serviceCategory" name="category">
+                            <option value="registration" <%= service.category === 'registration' ? 'selected' : '' %>>Registration</option>
+                            <option value="campaign" <%= service.category === 'campaign' ? 'selected' : '' %>>SUG Campaign</option>
+                            <option value="design" <%= service.category === 'design' ? 'selected' : '' %>>Graphic Design</option>
+                            <option value="website" <%= service.category === 'website' ? 'selected' : '' %>>Website Design</option>
+                            <option value="other" <%= service.category === 'other' ? 'selected' : '' %>>Other</option>
+                        </select>
+                    </div>
+                    
+                    <div style="display:flex; gap:12px; margin-top:16px;">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                        <a href="/admin/services" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+    
+    <%- include('../partials/footer') %>
+    <script src="/js/script.js"></script>
+</body>
+</html>

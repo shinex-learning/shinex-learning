@@ -147,8 +147,24 @@ const CourseSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now }
 });
 
+// Service Schema
+const ServiceSchema = new mongoose.Schema({
+    id: { type: String, unique: true },
+    name: { type: String, required: true },
+    description: String,
+    price: { type: Number, default: 0 },
+    category: { 
+        type: String, 
+        enum: ['registration', 'design', 'campaign', 'website', 'other'],
+        default: 'other'
+    },
+    isActive: { type: Boolean, default: true },
+    createdAt: { type: Date, default: Date.now }
+});
+
 const User = mongoose.model('User', UserSchema);
 const Course = mongoose.model('Course', CourseSchema);
+const Service = mongoose.model('Service', ServiceSchema);
 
 // ============================================================
 // HELPERS
@@ -342,10 +358,12 @@ app.get('/admin/logout', (req, res) => {
 // HOME
 app.get('/', async (req, res) => {
     const courses = await Course.find();
+    const services = await Service.find({ isActive: true });
     const view = isMobile(req) ? 'mobile/index' : 'index';
     res.render(view, {
         user: null,
         courses,
+        services,
         messages: req.session.messages || {},
         showBack: false,
         title: 'Home'
@@ -555,12 +573,27 @@ app.get('/about', (req, res) => {
 });
 
 // ============================================================
+// SERVICES PAGE
+// ============================================================
+app.get('/services', (req, res) => {
+    const view = isMobile(req) ? 'mobile/services' : 'services';
+    res.render(view, {
+        user: null,
+        messages: req.session.messages || {},
+        showBack: true,
+        title: 'Our Services'
+    });
+    req.session.messages = {};
+});
+
+// ============================================================
 // ADMIN ROUTES
 // ============================================================
 
 app.get('/admin/dashboard', blockMobileAdmin, requireAdmin, async (req, res) => {
     const users = await User.find();
     const courses = await Course.find();
+    const services = await Service.find();
     const totalStudents = users.filter(u => !u.isAdmin).length;
     const totalCourses = courses.length;
     const totalEnrollments = users.filter(u => u.courseId && !u.isAdmin).length;
@@ -590,9 +623,11 @@ app.get('/admin/dashboard', blockMobileAdmin, requireAdmin, async (req, res) => 
         totalCourses,
         totalEnrollments,
         totalClasses,
+        totalServices: services.length,
         studentsByCourse,
         courses,
         users,
+        services,
         messages: req.session.messages || {},
         showBack: true,
         title: 'Admin Dashboard'
@@ -978,6 +1013,101 @@ app.post('/admin/remove-admin/:id', blockMobileAdmin, requireAdmin, async (req, 
         req.session.messages = { error: 'Cannot remove the main admin.' };
     }
     res.redirect('/admin/manage-admins');
+});
+
+// ============================================================
+// ADMIN SERVICES MANAGEMENT
+// ============================================================
+
+// View all services
+app.get('/admin/services', blockMobileAdmin, requireAdmin, async (req, res) => {
+    const services = await Service.find().sort({ createdAt: -1 });
+    res.render('admin/services', {
+        admin: req.admin,
+        services,
+        messages: req.session.messages || {},
+        showBack: true,
+        title: 'Manage Services'
+    });
+    req.session.messages = {};
+});
+
+// Add service
+app.post('/admin/services/add', blockMobileAdmin, requireAdmin, async (req, res) => {
+    const { name, description, price, category } = req.body;
+    
+    if (!name) {
+        req.session.messages = { error: 'Service name is required.' };
+        return res.redirect('/admin/services');
+    }
+    
+    const newService = new Service({
+        id: generateId(),
+        name,
+        description: description || '',
+        price: parseInt(price) || 0,
+        category: category || 'other',
+        isActive: true,
+        createdAt: new Date()
+    });
+    
+    await newService.save();
+    req.session.messages = { success: '✅ Service added successfully!' };
+    res.redirect('/admin/services');
+});
+
+// Delete service
+app.get('/admin/services/delete/:id', blockMobileAdmin, requireAdmin, async (req, res) => {
+    await Service.findOneAndDelete({ id: req.params.id });
+    req.session.messages = { success: '🗑️ Service deleted.' };
+    res.redirect('/admin/services');
+});
+
+// Toggle service active status
+app.post('/admin/services/toggle/:id', blockMobileAdmin, requireAdmin, async (req, res) => {
+    const service = await Service.findOne({ id: req.params.id });
+    if (service) {
+        service.isActive = !service.isActive;
+        await service.save();
+        req.session.messages = { success: `✅ Service ${service.isActive ? 'activated' : 'deactivated'}.` };
+    }
+    res.redirect('/admin/services');
+});
+
+// Edit service
+app.get('/admin/services/edit/:id', blockMobileAdmin, requireAdmin, async (req, res) => {
+    const service = await Service.findOne({ id: req.params.id });
+    if (!service) {
+        req.session.messages = { error: 'Service not found.' };
+        return res.redirect('/admin/services');
+    }
+    res.render('admin/service-edit', {
+        admin: req.admin,
+        service,
+        messages: req.session.messages || {},
+        showBack: true,
+        title: 'Edit Service'
+    });
+    req.session.messages = {};
+});
+
+app.post('/admin/services/edit/:id', blockMobileAdmin, requireAdmin, async (req, res) => {
+    const { name, description, price, category } = req.body;
+    const service = await Service.findOne({ id: req.params.id });
+    
+    if (!service) {
+        req.session.messages = { error: 'Service not found.' };
+        return res.redirect('/admin/services');
+    }
+    
+    if (name) service.name = name;
+    if (description !== undefined) service.description = description;
+    if (price !== undefined) service.price = parseInt(price) || 0;
+    if (category) service.category = category;
+    
+    await service.save();
+    req.session.messages = { success: '✅ Service updated successfully!' };
+    res.redirect('/admin/services');
 });
 
 // ============================================================
