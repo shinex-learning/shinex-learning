@@ -7,13 +7,432 @@
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* ===== LOCKED/UNLOCKED STYLES ===== */
+        .class-link.locked {
+            color: #b0a3c4;
+            cursor: not-allowed;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        .class-link.locked::after {
+            content: ' 🔒';
+            font-size: 0.7rem;
+        }
+        .class-link.unlocked {
+            color: var(--text-dark);
+            cursor: pointer;
+        }
+        body.dark-mode .class-link.unlocked {
+            color: var(--text-light);
+        }
+        .class-link.unlocked::after {
+            content: ' 🔓';
+            font-size: 0.7rem;
+        }
+        .class-link.completed {
+            color: #27ae60 !important;
+        }
+        .class-link.completed::after {
+            content: ' ✅';
+            font-size: 0.7rem;
+        }
+        .class-link.current {
+            background: var(--primary-bg);
+            border-left: 3px solid var(--primary);
+            font-weight: 600;
+        }
+        body.dark-mode .class-link.current {
+            background: #2a1a4a;
+        }
+        .class-link {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 14px 5px 32px;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            border-left: 3px solid transparent;
+        }
+        .class-link:hover:not(.locked):not(.completed) {
+            background: #f0ebfb;
+        }
+        body.dark-mode .class-link:hover:not(.locked):not(.completed) {
+            background: #2a1a4a;
+        }
+        .lesson-header.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .lesson-header .lock-icon {
+            margin-left: auto;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+        .lesson-header .check-icon {
+            margin-left: auto;
+            font-size: 0.7rem;
+            color: #27ae60;
+        }
+        .progress-fill {
+            transition: width 0.8s ease;
+        }
+        .auto-complete-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            background: var(--primary-bg);
+            color: var(--primary);
+            font-weight: 600;
+        }
+        body.dark-mode .auto-complete-badge {
+            background: #2a1a4a;
+        }
+        .btn.loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        /* ===== LEVEL PAGE SIDEBAR ===== */
+        .level-container {
+            display: flex;
+            gap: 24px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .sidebar {
+            width: 300px;
+            min-width: 260px;
+            background: #fff;
+            border-radius: 14px;
+            border: 1px solid #ede8f5;
+            padding: 12px 0;
+            height: fit-content;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: sticky;
+            top: 80px;
+            box-shadow: 0 4px 20px rgba(26, 10, 46, 0.08);
+            transition: all 0.3s ease;
+        }
+        body.dark-mode .sidebar {
+            background: #1a1a1a;
+            border-color: #333;
+        }
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-track { background: #f0f0f0; border-radius: 10px; }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
+        .sidebar-header {
+            padding: 0 14px 10px 14px;
+            border-bottom: 1px solid #ede8f5;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--text-dark);
+        }
+        body.dark-mode .sidebar-header {
+            border-color: #333;
+            color: var(--text-light);
+        }
+        .sidebar-header .level-badge {
+            font-size: 0.7rem;
+            background: var(--primary);
+            color: #fff;
+            padding: 2px 10px;
+            border-radius: 20px;
+            margin-left: 8px;
+        }
+        .sidebar-nav { padding: 6px 0; }
+        .sidebar-lesson { margin-bottom: 2px; }
+        .lesson-header {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-dark);
+            background: #f8f6fc;
+            border-left: 3px solid transparent;
+            transition: all 0.2s ease;
+            cursor: default;
+        }
+        body.dark-mode .lesson-header {
+            color: var(--text-light);
+            background: #1a1a1a;
+        }
+        .lesson-header.active {
+            border-left-color: var(--primary);
+            background: var(--primary-bg);
+        }
+        body.dark-mode .lesson-header.active {
+            background: #2a1a4a;
+        }
+        .lesson-number {
+            font-weight: 700;
+            color: var(--primary);
+            min-width: 22px;
+            font-size: 0.8rem;
+        }
+        .lesson-title { flex: 1; font-size: 0.85rem; }
+        .class-list { list-style: none; padding: 0; margin: 0; }
+        .class-item { padding: 0; border-bottom: 1px solid #f0ebfb; }
+        .class-item:last-child { border-bottom: none; }
+        body.dark-mode .class-item { border-color: #333; }
+
+        /* ===== CONTENT AREA ===== */
+        .level-content { flex: 1; min-width: 0; }
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 20px;
+            background: #fff;
+            border-radius: 14px 14px 0 0;
+            border: 1px solid #ede8f5;
+            border-bottom: none;
+            transition: all 0.3s ease;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        body.dark-mode .content-header {
+            background: #1a1a1a;
+            border-color: #333;
+        }
+        .content-header h1 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin: 0;
+        }
+        body.dark-mode .content-header h1 { color: var(--text-light); }
+        .content-header .level-name-badge {
+            background: var(--primary);
+            color: #fff;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .content-body {
+            background: #fff;
+            padding: 24px 28px;
+            border: 1px solid #ede8f5;
+            border-top: none;
+            border-radius: 0 0 14px 14px;
+            transition: all 0.3s ease;
+        }
+        body.dark-mode .content-body {
+            background: #1a1a1a;
+            border-color: #333;
+        }
+        .content-body .class-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin: 0 0 16px 0;
+        }
+        body.dark-mode .content-body .class-title { color: var(--text-light); }
+        .class-content {
+            font-size: 1.05rem;
+            line-height: 1.9;
+            color: #1f2937;
+            transition: color 0.3s ease;
+        }
+        body.dark-mode .class-content { color: #d0d0d0; }
+        .class-content h1, .class-content h2, .class-content h3 {
+            color: var(--text-dark);
+            margin-top: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+        body.dark-mode .class-content h1,
+        body.dark-mode .class-content h2,
+        body.dark-mode .class-content h3 { color: var(--text-light); }
+        .class-content p { margin-bottom: 0.8rem; }
+        .class-content ul, .class-content ol { padding-left: 1.5rem; margin-bottom: 0.8rem; }
+        .class-content li { margin-bottom: 0.3rem; }
+        .class-content strong, .class-content b {
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+        body.dark-mode .class-content strong,
+        body.dark-mode .class-content b { color: var(--text-light); }
+        .class-content hr {
+            border: none;
+            border-top: 2px solid #ede8f5;
+            margin: 1rem 0;
+        }
+        body.dark-mode .class-content hr { border-color: #333; }
+        .class-content img { max-width: 100%; border-radius: 8px; margin: 0.5rem 0; }
+        .class-image { margin: 12px 0; }
+        .class-image img { max-width: 100%; border-radius: 8px; border: 1px solid #ede8f5; }
+        body.dark-mode .class-image img { border-color: #333; }
+        .class-video, .class-external { margin: 8px 0; }
+        .class-video iframe {
+            width: 100%;
+            border-radius: 10px;
+            aspect-ratio: 16/9;
+        }
+        .class-status-bar {
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 1px solid #ede8f5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        body.dark-mode .class-status-bar { border-color: #333; }
+        .status-completed { color: #27ae60; font-weight: 600; }
+        .status-pending { color: #b0a3c4; font-weight: 600; }
+
+        /* ===== NAVIGATION BUTTONS ===== */
+        .content-footer {
+            margin-top: 20px;
+            padding: 16px 20px;
+            background: #fff;
+            border-radius: 14px;
+            border: 1px solid #ede8f5;
+            transition: all 0.3s ease;
+        }
+        body.dark-mode .content-footer {
+            background: #1a1a1a;
+            border-color: #333;
+        }
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .nav-buttons .btn { min-width: 120px; }
+        .course-complete-msg { font-size: 1.1rem; font-weight: 700; color: #f39c12; }
+
+        /* ===== PROGRESS BAR ===== */
+        .progress-bar-wrapper {
+            border-top: 1px solid #ede8f5;
+            padding-top: 12px;
+            margin-top: 4px;
+        }
+        body.dark-mode .progress-bar-wrapper { border-color: #333; }
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-dark);
+            margin-bottom: 3px;
+        }
+        body.dark-mode .progress-label { color: #b0a0c0; }
+        .progress-wrap {
+            background: #ede8f5;
+            border-radius: 20px;
+            overflow: hidden;
+            height: 8px;
+        }
+        body.dark-mode .progress-wrap { background: #2a2a2a; }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            border-radius: 20px;
+            transition: width 0.8s ease;
+        }
+        .score-display {
+            margin-top: 6px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        body.dark-mode .score-display { color: var(--text-muted-light); }
+
+        /* ===== TEST SECTION ===== */
+        .test-section {
+            margin-top: 20px;
+            padding: 20px 24px;
+            background: #fffbf0;
+            border: 2px solid #f7d44a;
+            border-radius: 14px;
+            transition: all 0.3s ease;
+        }
+        body.dark-mode .test-section {
+            background: #2a1a2a;
+            border-color: #f7d44a;
+        }
+        .test-section h4 {
+            font-weight: 700;
+            color: var(--text-dark);
+            font-size: 1rem;
+            margin: 0 0 6px 0;
+        }
+        body.dark-mode .test-section h4 { color: var(--text-light); }
+        .test-section p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        body.dark-mode .test-section p { color: #b0a0c0; }
+        .test-question {
+            padding: 12px 0;
+            border-bottom: 1px solid #ede8f5;
+        }
+        .test-question:last-child { border-bottom: none; }
+        .test-question .q-text {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-dark);
+        }
+        .test-options {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-top: 4px;
+        }
+        .test-options label {
+            font-weight: 400;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: background 0.2s ease;
+        }
+        .test-options label:hover { background: var(--primary-bg); }
+        .test-options input[type="radio"] {
+            width: auto;
+            accent-color: var(--primary);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .level-container { flex-direction: column; }
+            .sidebar {
+                width: 100%;
+                min-width: unset;
+                max-height: 300px;
+                position: relative;
+                top: 0;
+            }
+        }
+        @media (max-width: 768px) {
+            .content-body { padding: 16px; }
+            .content-body .class-title { font-size: 1.2rem; }
+            .class-content { font-size: 0.95rem; }
+            .nav-buttons { flex-direction: column; align-items: stretch; }
+            .nav-buttons .btn { min-width: unset; width: 100%; }
+            .content-header { flex-direction: column; align-items: flex-start; }
+        }
+        @media (max-width: 480px) {
+            .container { padding: 0 12px; }
+            .main-content { padding: 16px 0 30px; }
+            .card { padding: 14px 16px; }
+        }
+    </style>
 </head>
 <body>
-    <div id="page-loader">
-        <div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div>
-        <div class="loader-text">SHINEX</div>
-        <div class="loader-sub">LEARNING CIRCLE</div>
-    </div>
+    <%- include('partials/loader.ejs') %>
 
     <%- include(getHeader()) %>
 
@@ -32,27 +451,96 @@
                     <div class="sidebar-header">
                         <i class="fas fa-list-ul"></i> <%= level.name %>
                         <span class="level-badge"><%= course.level || 'Beginner' %></span>
+                        <span class="auto-complete-badge" style="display:block; margin-top:6px;">
+                            <i class="fas fa-robot"></i> Auto-Complete
+                        </span>
                     </div>
                     <div class="sidebar-nav">
                         <% if (level.lessons && level.lessons.length > 0) { %>
-                            <% level.lessons.forEach(function(lesson, lessonIdx) { %>
+                            <% 
+                                // Build list of all class IDs in order
+                                let allClassIds = [];
+                                level.lessons.forEach(function(lesson) {
+                                    if (lesson.classes) {
+                                        lesson.classes.forEach(function(cls) {
+                                            allClassIds.push(cls.id);
+                                        });
+                                    }
+                                });
+                            %>
+                            <% level.lessons.forEach(function(lesson, lessonIdx) { 
+                                // Check if all classes in this lesson are completed
+                                let allCompleted = true;
+                                let hasClasses = false;
+                                if (lesson.classes && lesson.classes.length > 0) {
+                                    hasClasses = true;
+                                    lesson.classes.forEach(function(cls) {
+                                        if (!(session && session.progress && session.progress[cls.id])) {
+                                            allCompleted = false;
+                                        }
+                                    });
+                                }
+                                // Check if previous lesson is completed (for locking)
+                                let isLocked = false;
+                                if (lessonIdx > 0) {
+                                    let prevLesson = level.lessons[lessonIdx - 1];
+                                    if (prevLesson && prevLesson.classes) {
+                                        let prevCompleted = true;
+                                        prevLesson.classes.forEach(function(cls) {
+                                            if (!(session && session.progress && session.progress[cls.id])) {
+                                                prevCompleted = false;
+                                            }
+                                        });
+                                        if (!prevCompleted) {
+                                            isLocked = true;
+                                        }
+                                    }
+                                }
+                            %>
                                 <div class="sidebar-lesson">
-                                    <div class="lesson-header <%= (currentLesson && currentLesson.id === lesson.id) ? 'active' : '' %>">
+                                    <div class="lesson-header <%= (currentLesson && currentLesson.id === lesson.id) ? 'active' : '' %> <%= isLocked ? 'locked' : '' %>">
                                         <span class="lesson-number"><%= lessonIdx + 1 %></span>
                                         <span class="lesson-title"><%= lesson.title %></span>
+                                        <% if (isLocked) { %>
+                                            <span class="lock-icon"><i class="fas fa-lock"></i></span>
+                                        <% } else if (allCompleted && hasClasses) { %>
+                                            <span class="check-icon"><i class="fas fa-check-circle"></i></span>
+                                        <% } else if (hasClasses) { %>
+                                            <span class="lock-icon" style="color:var(--primary);"><i class="fas fa-arrow-right"></i></span>
+                                        <% } %>
                                     </div>
                                     <% if (lesson.classes && lesson.classes.length > 0) { %>
                                         <ul class="class-list">
-                                            <% lesson.classes.forEach(function(cls, classIdx) { %>
-                                                <% let isActive = currentClass && currentClass.id === cls.id; %>
-                                                <% let isCompleted = false; // No user = no progress %>
-                                                <li class="class-item <%= isActive ? 'active' : '' %> <%= isCompleted ? 'completed' : '' %>">
-                                                    <a href="/level/<%= course.id %>/<%= level.id %>?classId=<%= cls.id %>" 
-                                                       class="class-link <%= isActive ? 'active' : '' %>">
-                                                        <span class="class-number"><%= String.fromCharCode(97 + classIdx) %></span>
+                                            <% lesson.classes.forEach(function(cls) { 
+                                                let isCompleted = session && session.progress && session.progress[cls.id];
+                                                let isCurrent = currentClass && currentClass.id === cls.id;
+                                                let isLockedClass = false;
+                                                
+                                                // Check if previous class is completed
+                                                let currentIndex = allClassIds.indexOf(cls.id);
+                                                if (currentIndex > 0) {
+                                                    let prevClassId = allClassIds[currentIndex - 1];
+                                                    if (!(session && session.progress && session.progress[prevClassId])) {
+                                                        isLockedClass = true;
+                                                    }
+                                                }
+                                                // If this is the first class, it's always unlocked
+                                                if (currentIndex === 0) {
+                                                    isLockedClass = false;
+                                                }
+                                            %>
+                                                <li class="class-item <%= isCurrent ? 'active' : '' %> <%= isCompleted ? 'completed' : '' %>">
+                                                    <a href="<%= isLockedClass ? '#' : '/level/' + course.id + '/' + level.id + '?classId=' + cls.id %>" 
+                                                       class="class-link <%= isLockedClass ? 'locked' : '' %> <%= isCompleted ? 'completed' : '' %> <%= isCurrent ? 'current' : '' %>"
+                                                       <% if (isLockedClass) { %>onclick="return false;"<% } %>>
+                                                        <span class="class-number"><%= String.fromCharCode(97 + currentIndex) %></span>
                                                         <span class="class-title"><%= cls.title %></span>
                                                         <% if (isCompleted) { %>
                                                             <span class="class-status"><i class="fas fa-check-circle" style="color:#27ae60;"></i></span>
+                                                        <% } else if (isLockedClass) { %>
+                                                            <span class="class-status"><i class="fas fa-lock" style="color:#b0a3c4;"></i></span>
+                                                        <% } else if (isCurrent) { %>
+                                                            <span class="class-status"><i class="fas fa-arrow-right" style="color:var(--primary);"></i></span>
                                                         <% } %>
                                                     </a>
                                                 </li>
@@ -69,7 +557,27 @@
 
                 <!-- ===== CONTENT ===== -->
                 <div class="level-content">
-                    <% if (currentClass) { %>
+                    <% if (currentClass) { 
+                        // Check if current class is locked
+                        let allClassIds = [];
+                        if (level.lessons) {
+                            level.lessons.forEach(function(lesson) {
+                                if (lesson.classes) {
+                                    lesson.classes.forEach(function(cls) {
+                                        allClassIds.push(cls.id);
+                                    });
+                                }
+                            });
+                        }
+                        let currentIndex = allClassIds.indexOf(currentClass.id);
+                        let isClassLocked = false;
+                        if (currentIndex > 0) {
+                            let prevClassId = allClassIds[currentIndex - 1];
+                            if (!(session && session.progress && session.progress[prevClassId])) {
+                                isClassLocked = true;
+                            }
+                        }
+                    %>
                         <div class="content-header">
                             <h1><%= currentLesson ? currentLesson.title : '' %>: <%= currentClass.title %></h1>
                             <span class="level-name-badge"><%= level.name %></span>
@@ -103,20 +611,39 @@
                             </div>
 
                             <div class="class-status-bar">
-                                <span class="status-pending"><i class="far fa-circle"></i> Not completed</span>
+                                <% if (isClassLocked) { %>
+                                    <span style="color:#b0a3c4;"><i class="fas fa-lock"></i> Complete previous class to unlock</span>
+                                <% } else if (session && session.progress && session.progress[currentClass.id]) { %>
+                                    <span class="status-completed"><i class="fas fa-check-circle"></i> Completed ✓</span>
+                                <% } else { %>
+                                    <span class="status-pending"><i class="far fa-circle"></i> Not completed</span>
+                                <% } %>
                             </div>
 
-                            <!-- Progress -->
+                            <!-- ===== PROGRESS BAR ===== -->
                             <div class="progress-bar-wrapper">
                                 <div class="progress-label">
                                     <span>Progress</span>
-                                    <span><%= completedClasses %> / <%= totalClasses %> • <%= progress %>%</span>
+                                    <span>
+                                        <% 
+                                            let completed = 0;
+                                            let total = allClassIds.length;
+                                            if (session && session.progress) {
+                                                allClassIds.forEach(function(id) {
+                                                    if (session.progress[id]) completed++;
+                                                });
+                                            }
+                                            let progressPercent = total > 0 ? Math.round((completed / total) * 100) : 0;
+                                        %>
+                                        <%= completed %> / <%= total %> • <%= progressPercent %>% 
+                                    </span>
                                 </div>
                                 <div class="progress-wrap">
-                                    <div class="progress-fill" style="width:<%= progress %>%;"></div>
+                                    <div class="progress-fill" style="width:<%= progressPercent %>%;"></div>
                                 </div>
                                 <div class="score-display">
-                                    <i class="fas fa-star" style="color:#f39c12;"></i> Score: <strong><%= score %></strong> points
+                                    <i class="fas fa-star" style="color:#f39c12;"></i> 
+                                    Score: <strong><%= completed * 10 %></strong> points
                                 </div>
                             </div>
                         </div>
@@ -124,8 +651,8 @@
                         <!-- ===== NAVIGATION BUTTONS ===== -->
                         <div class="content-footer">
                             <div class="nav-buttons">
-                                <% if (prevClassId) { %>
-                                    <a href="/level/<%= course.id %>/<%= level.id %>?classId=<%= prevClassId %>" class="btn btn-secondary">
+                                <% if (prevClassId && !isClassLocked) { %>
+                                    <a href="/level/<%= course.id %>/<%= level.id %>/prev/<%= currentClass.id %>" class="btn btn-secondary">
                                         <i class="fas fa-arrow-left"></i> Previous
                                     </a>
                                 <% } else { %>
@@ -138,10 +665,21 @@
                                     </a>
                                 </div>
 
-                                <% if (nextClassId) { %>
+                                <% if (!isClassLocked && !(session && session.progress && session.progress[currentClass.id])) { %>
+                                    <!-- AUTO-COMPLETE & NEXT BUTTON -->
+                                    <a href="/level/<%= course.id %>/<%= level.id %>/next/<%= currentClass.id %>" 
+                                       class="btn btn-primary next-btn" 
+                                       onclick="this.classList.add('loading'); this.innerHTML='<i class=\'fas fa-spinner fa-spin\'></i> Loading...';">
+                                        <i class="fas fa-check"></i> Complete & Next
+                                    </a>
+                                <% } else if (nextClassId && !isClassLocked) { %>
                                     <a href="/level/<%= course.id %>/<%= level.id %>?classId=<%= nextClassId %>" class="btn btn-primary">
                                         Next <i class="fas fa-arrow-right"></i>
                                     </a>
+                                <% } else if (isClassLocked) { %>
+                                    <span class="btn btn-secondary" style="opacity:0.5; cursor:not-allowed;">
+                                        <i class="fas fa-lock"></i> Locked
+                                    </span>
                                 <% } else { %>
                                     <a href="/course/<%= course.id %>" class="btn btn-success">
                                         <i class="fas fa-check-circle"></i> Complete Level
@@ -158,15 +696,39 @@
                         </div>
                     <% } %>
 
-                    <!-- ===== TEST SECTION (if available) ===== -->
-                    <% if (level.test && level.test.questions && level.test.questions.length > 0) { %>
+                    <!-- ===== TEST SECTION ===== -->
+                    <% if (level.test && level.test.questions && level.test.questions.length > 0) { 
+                        // Check if all classes are completed to unlock test
+                        let allCompleted = true;
+                        let allClassIds = [];
+                        if (level.lessons) {
+                            level.lessons.forEach(function(lesson) {
+                                if (lesson.classes) {
+                                    lesson.classes.forEach(function(cls) {
+                                        allClassIds.push(cls.id);
+                                    });
+                                }
+                            });
+                        }
+                        if (session && session.progress) {
+                            allClassIds.forEach(function(id) {
+                                if (!session.progress[id]) allCompleted = false;
+                            });
+                        }
+                    %>
                         <div class="test-section">
                             <h4><i class="fas fa-puzzle-piece"></i> Level Test</h4>
                             <p>Test your knowledge after completing all classes!</p>
                             <div style="margin-top:10px;">
-                                <button class="btn btn-gold" onclick="alert('Test feature coming soon!')">
-                                    <i class="fas fa-play"></i> Start Test
-                                </button>
+                                <% if (allCompleted) { %>
+                                    <button class="btn btn-gold" onclick="alert('Test feature coming soon!')">
+                                        <i class="fas fa-play"></i> Start Test
+                                    </button>
+                                <% } else { %>
+                                    <span style="color:var(--text-muted); font-size:0.85rem;">
+                                        <i class="fas fa-lock"></i> Complete all classes to unlock test
+                                    </span>
+                                <% } %>
                             </div>
                         </div>
                     <% } %>

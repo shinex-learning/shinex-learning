@@ -6,26 +6,7 @@
     <title>Contact – SHINEX</title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        .whatsapp-link-mobile {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: #25D366;
-            color: #fff;
-            padding: 8px 16px;
-            border-radius: 30px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.85rem;
-            transition: all 0.3s ease;
-        }
-        .whatsapp-link-mobile:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
-            color: #fff;
-        }
         .contact-info-item-mobile {
             display: flex;
             align-items: center;
@@ -33,9 +14,7 @@
             padding: 10px 0;
             border-bottom: 1px solid #ede8f5;
         }
-        .contact-info-item-mobile:last-child {
-            border-bottom: none;
-        }
+        .contact-info-item-mobile:last-child { border-bottom: none; }
         .contact-info-item-mobile .icon-box {
             width: 36px;
             height: 36px;
@@ -73,24 +52,79 @@
         body.dark-mode .contact-info-item-mobile .info-text .value {
             color: var(--text-light);
         }
+        .whatsapp-link-mobile {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #25D366;
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+        .whatsapp-link-mobile:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(37,211,102,0.3);
+            color: #fff;
+        }
+        .settings-group {
+            margin-bottom: 12px;
+        }
+        .settings-group label {
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: var(--text-dark);
+            display: block;
+            margin-bottom: 4px;
+        }
+        body.dark-mode .settings-group label {
+            color: var(--text-light);
+        }
+        .settings-group input,
+        .settings-group textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 2px solid #ede8f5;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: #fff;
+            color: var(--text-dark);
+        }
+        body.dark-mode .settings-group input,
+        body.dark-mode .settings-group textarea {
+            background: #2a2a2a;
+            color: var(--text-light);
+            border-color: var(--dark-border);
+        }
+        .settings-group input:focus,
+        .settings-group textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.12);
+            outline: none;
+        }
     </style>
 </head>
 <body>
-    <div id="page-loader"><div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div><div class="loader-text">SHINEX</div><div class="loader-sub">LEARNING CIRCLE</div></div>
-    <%- include(getHeader()) %>
+    <div id="page-loader">
+        <div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div>
+        <div class="loader-text">SHINEX</div>
+        <div class="loader-sub">LEARNING CIRCLE</div>
+    </div>
+
+    <%- include('../partials/header-mobile') %>
+
     <main class="main-content" style="padding:12px 0 24px;">
         <div class="container" style="padding:0 12px;">
-            <% if (messages && messages.error) { %>
-                <div class="alert alert-danger flash-message" data-type="error"><%= messages.error %></div>
-            <% } %>
-            <% if (messages && messages.success) { %>
-                <div class="alert alert-success flash-message" data-type="success"><%= messages.success %></div>
-            <% } %>
-
             <div style="text-align:center; margin-bottom:12px;">
                 <h1 style="font-size:1.3rem; font-weight:800; color:var(--text-dark); margin:0;">
                     <i class="fas fa-envelope" style="color:var(--primary);"></i> Contact
                 </h1>
+                <p style="color:var(--text-muted); font-size:0.8rem; margin:4px 0 0;">We'd love to hear from you</p>
             </div>
 
             <!-- Contact Info -->
@@ -120,7 +154,7 @@
                     <div class="info-text">
                         <div class="label">WhatsApp</div>
                         <div class="value">
-                            <a href="https://wa.me/2348025052852" target="_blank" class="whatsapp-link-mobile" style="font-size:0.8rem; padding:6px 14px;">
+                            <a href="https://wa.me/2348025052852" target="_blank" class="whatsapp-link-mobile">
                                 <i class="fab fa-whatsapp"></i> +234 802 505 2852
                             </a>
                         </div>
@@ -141,39 +175,41 @@
                 <h3 style="font-size:0.95rem; font-weight:700; color:var(--text-dark); margin:0 0 4px 0;">
                     <i class="fas fa-paper-plane" style="color:var(--primary);"></i> Send Message
                 </h3>
-                <form id="contactFormMobile" method="POST" action="/contact/send">
+                <p style="font-size:0.75rem; color:var(--text-muted); margin:0 0 12px 0;">We'll get back to you within 24 hours</p>
+                <form>
                     <div class="settings-group">
-                        <label for="contactNameM" style="font-size:0.8rem;">Full Name <span style="color:#e74c3c;">*</span></label>
-                        <input type="text" id="contactNameM" name="name" placeholder="Your name" style="font-size:0.85rem; padding:8px 12px;" required>
+                        <label for="contactNameM">Full Name <span style="color:#e74c3c;">*</span></label>
+                        <input type="text" id="contactNameM" placeholder="Your full name" required>
                     </div>
                     <div class="settings-group">
-                        <label for="contactEmailM" style="font-size:0.8rem;">Email <span style="color:#e74c3c;">*</span></label>
-                        <input type="email" id="contactEmailM" name="email" placeholder="your@email.com" style="font-size:0.85rem; padding:8px 12px;" required>
+                        <label for="contactEmailM">Email Address <span style="color:#e74c3c;">*</span></label>
+                        <input type="email" id="contactEmailM" placeholder="your@email.com" required>
                     </div>
                     <div class="settings-group">
-                        <label for="contactSubjectM" style="font-size:0.8rem;">Subject <span style="color:#e74c3c;">*</span></label>
-                        <select id="contactSubjectM" name="subject" style="font-size:0.85rem; padding:8px 12px;" required>
-                            <option value="">Select...</option>
+                        <label for="contactSubjectM">Subject <span style="color:#e74c3c;">*</span></label>
+                        <select id="contactSubjectM" style="width:100%; padding:8px 12px; border:2px solid #ede8f5; border-radius:8px; font-size:0.85rem; background:#fff;">
+                            <option value="">Select a subject...</option>
                             <option value="General Inquiry">General Inquiry</option>
                             <option value="Course Question">Course Question</option>
                             <option value="Technical Issue">Technical Issue</option>
-                            <option value="Feature Request">Feature Request</option>
-                            <option value="Partnership">Partnership</option>
+                            <option value="Service Request">Service Request</option>
                             <option value="Other">Other</option>
                         </select>
                     </div>
                     <div class="settings-group">
-                        <label for="contactMessageM" style="font-size:0.8rem;">Message <span style="color:#e74c3c;">*</span></label>
-                        <textarea id="contactMessageM" name="message" rows="4" placeholder="Your message..." style="font-size:0.85rem; padding:8px 12px;" required></textarea>
+                        <label for="contactMessageM">Message <span style="color:#e74c3c;">*</span></label>
+                        <textarea id="contactMessageM" rows="4" placeholder="Your message..." required></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-block" style="font-size:0.9rem; padding:10px;">
+                    <button type="submit" class="btn btn-primary btn-block" style="width:100%; font-size:0.9rem; padding:10px; border-radius:30px; background:#8B5CF6; color:#fff; border:none; font-weight:600;">
                         <i class="fas fa-paper-plane"></i> Send Message
                     </button>
                 </form>
             </div>
         </div>
     </main>
-    <%- include(getFooter()) %>
+
+    <%- include('../partials/footer-mobile') %>
+
     <script src="/js/script.js"></script>
 </body>
 </html>

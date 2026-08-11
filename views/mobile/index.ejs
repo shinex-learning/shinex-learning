@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>SHINEX – Home</title>
+    <title>SHINEX – Learn Anywhere</title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="page-loader">
@@ -15,73 +14,70 @@
         <div class="loader-sub">LEARNING CIRCLE</div>
     </div>
 
-    <%- include(getHeader()) %>
+    <%- include('../partials/header-mobile') %>
 
     <main class="main-content" style="padding:12px 0 24px;">
         <div class="container" style="padding:0 12px;">
-            <% if (messages && messages.error) { %>
-                <div class="alert alert-danger flash-message" data-type="error"><%= messages.error %></div>
-            <% } %>
-            <% if (messages && messages.success) { %>
-                <div class="alert alert-success flash-message" data-type="success"><%= messages.success %></div>
-            <% } %>
-
-            <!-- Hero -->
-            <div class="card card-purple" style="padding:20px 16px; text-align:center; margin-bottom:16px; border-radius:12px;">
-                <h1 style="font-size:1.4rem; font-weight:800; color:#fff; margin:0;">SHINEX</h1>
-                <p style="color:#d4c4f0; font-size:0.9rem; margin:4px 0 0;">Learn. Grow. Succeed.</p>
+            
+            <div style="background:linear-gradient(135deg, #8B5CF6, #6a3dcf); border-radius:12px; padding:20px 16px; text-align:center; color:#fff; margin-bottom:16px;">
+                <h1 style="font-size:1.3rem; font-weight:800; margin:0;">SHINEX Learning</h1>
+                <p style="font-size:0.9rem; opacity:0.8; margin:4px 0 0;">Learn. Grow. Succeed.</p>
             </div>
 
-            <!-- Courses -->
-            <h3 style="font-size:1rem; font-weight:700; color:var(--text-dark); margin:0 0 2px 0;">
+            <h3 style="font-size:1rem; font-weight:700; color:var(--text-dark); margin:0 0 8px 0;">
                 <i class="fas fa-graduation-cap" style="color:var(--primary);"></i> Courses
             </h3>
 
-            <div style="display:flex; flex-direction:column; gap:12px; margin-top:8px;">
-                <% if (courses && courses.length > 0) { %>
-                    <% courses.forEach(function(c) { %>
-                        <div style="background:#fff; border-radius:12px; padding:14px 16px; border:1px solid #ede8f5;">
-                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                                <span class="badge badge-purple" style="font-size:0.6rem;"><%= c.level || 'Beginner' %></span>
-                                <span style="font-size:0.7rem; color:var(--text-muted);"><i class="far fa-clock"></i> <%= c.duration || 'N/A' %></span>
-                            </div>
-                            <div style="font-size:1rem; font-weight:700; color:var(--text-dark); margin:4px 0 2px;"><%= c.title %></div>
-                            <div style="font-size:0.8rem; color:var(--text-muted); margin:0 0 6px;"><%= c.description ? c.description.substring(0,60) + '...' : '' %></div>
-                            <a href="/course/<%= c.id %>" class="btn btn-primary btn-sm" style="width:100%; text-align:center; font-size:0.8rem; padding:8px;"><i class="fas fa-eye"></i> View</a>
+            <% if (courses && courses.length > 0) { %>
+                <% courses.forEach(function(c) { %>
+                    <div style="background:#fff; border-radius:10px; padding:14px 16px; border:1px solid #ede8f5; margin-bottom:10px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span class="badge badge-purple" style="font-size:0.6rem;"><%= c.level || 'Beginner' %></span>
+                            <span style="font-size:0.65rem; color:var(--text-muted);"><i class="far fa-clock"></i> <%= c.duration || 'N/A' %></span>
                         </div>
-                    <% }); %>
-                <% } else { %>
-                    <div class="empty-state" style="padding:24px 16px;">
-                        <span class="empty-icon"><i class="fas fa-info-circle"></i></span>
-                        <h3 style="font-size:1rem;">No courses yet</h3>
+                        <div style="font-weight:700; font-size:1rem; color:var(--text-dark); margin:4px 0 2px;"><%= c.title %></div>
+                        <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:8px;"><%= c.description ? c.description.substring(0,50) + '...' : '' %></div>
+                        <a href="/course/<%= c.id %>" class="btn btn-primary btn-sm" style="width:100%; text-align:center; font-size:0.8rem; padding:8px;">
+                            <i class="fas fa-eye"></i> View Course
+                        </a>
                     </div>
-                <% } %>
+                <% }); %>
+            <% } else { %>
+                <div style="text-align:center; padding:30px 16px; color:var(--text-muted);">
+                    <p>No courses available yet.</p>
+                </div>
+            <% } %>
+
+            <h3 style="font-size:1rem; font-weight:700; color:var(--text-dark); margin:16px 0 8px 0;">
+                <i class="fas fa-cogs" style="color:var(--primary);"></i> Services
+            </h3>
+
+            <div style="background:#fff; border-radius:10px; padding:14px 16px; border:1px solid #ede8f5; margin-bottom:10px; border-left:4px solid var(--primary);">
+                <div style="font-weight:700; font-size:0.9rem; color:var(--text-dark);">
+                    <i class="fas fa-university" style="color:var(--primary);"></i> TASUED Registration
+                </div>
+                <div style="font-size:0.75rem; color:var(--text-muted);">Full registration + O'Level verification</div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
+                    <span style="font-weight:700; color:var(--primary); font-size:0.9rem;">₦20,000</span>
+                    <a href="/services" class="btn btn-primary btn-sm" style="font-size:0.7rem; padding:4px 12px;">Order</a>
+                </div>
             </div>
 
-            <%- include(getAdBox()) %>
+            <div style="background:#fff; border-radius:10px; padding:14px 16px; border:1px solid #ede8f5; margin-bottom:10px; border-left:4px solid #f39c12;">
+                <div style="font-weight:700; font-size:0.9rem; color:var(--text-dark);">
+                    <i class="fas fa-flag" style="color:#f39c12;"></i> SUG Campaign
+                </div>
+                <div style="font-size:0.75rem; color:var(--text-muted);">Flyers, posters, social media</div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
+                    <span style="font-weight:700; color:#f39c12; font-size:0.9rem;">From ₦5,000</span>
+                    <a href="/services" class="btn btn-primary btn-sm" style="font-size:0.7rem; padding:4px 12px; background:#f39c12;">Order</a>
+                </div>
+            </div>
+
         </div>
     </main>
 
-    <%- include(getFooter()) %>
-
-    <!-- AI Bot -->
-    <div class="ai-bot" id="aiBot">
-        <div class="ai-bot-pulse"></div>
-        <button class="ai-bot-btn" id="aiBotBtn" style="width:50px; height:50px; font-size:20px;"><i class="fas fa-robot"></i></button>
-    </div>
-
-    <div class="ai-chat-modal" id="aiChatModal">
-        <div class="ai-chat-header"><h4><i class="fas fa-robot"></i> AI Tutor</h4><button class="ai-chat-close" id="aiChatClose">&times;</button></div>
-        <div class="ai-chat-body" id="aiChatBody">
-            <div class="ai-chat-messages" id="aiChatMessages">
-                <div class="ai-chat-msg bot">👋 Hi! Ask me anything!</div>
-            </div>
-        </div>
-        <div class="ai-chat-footer">
-            <input type="text" id="aiChatInput" placeholder="Ask..." maxlength="500">
-            <button class="btn btn-primary" id="aiChatSend"><i class="fas fa-paper-plane"></i></button>
-        </div>
-    </div>
+    <%- include('../partials/footer-mobile') %>
 
     <script src="/js/script.js"></script>
 </body>

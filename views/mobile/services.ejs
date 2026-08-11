@@ -8,8 +8,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <%- include('../partials/loader.ejs') %>
-    <%- include(getHeader()) %>
+    <div id="page-loader">
+        <div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div>
+        <div class="loader-text">SHINEX</div>
+        <div class="loader-sub">LEARNING CIRCLE</div>
+    </div>
+
+    <%- include('../partials/header-mobile') %>
+
     <main class="main-content" style="padding:12px 0 24px;">
         <div class="container" style="padding:0 12px;">
             <div style="background:#fff; border-radius:12px; padding:16px; border:1px solid #ede8f5;">
@@ -52,7 +58,9 @@
             </div>
         </div>
     </main>
-    <%- include(getFooter()) %>
+
+    <%- include('../partials/footer-mobile') %>
+
     <script src="/js/script.js"></script>
 </body>
 </html>

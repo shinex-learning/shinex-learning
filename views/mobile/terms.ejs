@@ -6,27 +6,55 @@
     <title>Terms – SHINEX</title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div id="page-loader"><div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div><div class="loader-text">SHINEX</div><div class="loader-sub">LEARNING CIRCLE</div></div>
-    <%- include(getHeader()) %>
+    <div id="page-loader">
+        <div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div>
+        <div class="loader-text">SHINEX</div>
+        <div class="loader-sub">LEARNING CIRCLE</div>
+    </div>
+
+    <%- include('../partials/header-mobile') %>
+
     <main class="main-content" style="padding:12px 0 24px;">
         <div class="container" style="padding:0 12px;">
             <div style="background:#fff; border-radius:12px; padding:16px; border:1px solid #ede8f5;">
                 <h1 style="font-size:1.1rem; font-weight:800; color:var(--text-dark); margin:0 0 4px 0;">
-                    <i class="fas fa-file-contract" style="color:var(--primary);"></i> Terms
+                    <i class="fas fa-file-contract" style="color:var(--primary);"></i> Terms & Conditions
                 </h1>
-                <div style="font-size:0.85rem; line-height:1.7; color:var(--text-dark);">
-                    <p><strong>1.</strong> By using SHINEX, you agree to these terms.</p>
-                    <p><strong>2.</strong> Use the platform for educational purposes only.</p>
-                    <p><strong>3.</strong> All content is property of SHINEX.</p>
-                    <p><strong>4.</strong> Your data is handled per our Privacy Policy.</p>
+                <p style="color:var(--text-muted); font-size:0.7rem; margin:0 0 12px 0;">Last updated: August 2026</p>
+                <div style="font-size:0.85rem; line-height:1.8; color:var(--text-dark);">
+                    <p style="margin-bottom:12px;">
+                        <strong>1. Acceptance of Terms</strong><br>
+                        By using SHINEX Learning Circle, you agree to these terms.
+                    </p>
+                    <p style="margin-bottom:12px;">
+                        <strong>2. Use of Platform</strong><br>
+                        You agree to use the platform for educational purposes only.
+                    </p>
+                    <p style="margin-bottom:12px;">
+                        <strong>3. Content Ownership</strong><br>
+                        All course content is the property of SHINEX Learning Circle.
+                    </p>
+                    <p style="margin-bottom:12px;">
+                        <strong>4. Privacy</strong><br>
+                        Your data is handled according to our Privacy Policy.
+                    </p>
+                    <p style="margin-bottom:12px;">
+                        <strong>5. Contact</strong><br>
+                        For questions, contact us through our <a href="/contact" style="color:var(--primary);">Contact page</a>.
+                    </p>
+                    <p style="margin-bottom:0;">
+                        <strong>6. Changes to Terms</strong><br>
+                        We may update these terms from time to time.
+                    </p>
                 </div>
             </div>
         </div>
     </main>
-    <%- include(getFooter()) %>
+
+    <%- include('../partials/footer-mobile') %>
+
     <script src="/js/script.js"></script>
 </body>
 </html>

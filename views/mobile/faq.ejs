@@ -6,63 +6,71 @@
     <title>FAQ – SHINEX</title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div id="page-loader"><div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div><div class="loader-text">SHINEX</div><div class="loader-sub">LEARNING CIRCLE</div></div>
-    <%- include(getHeader()) %>
+    <div id="page-loader">
+        <div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div>
+        <div class="loader-text">SHINEX</div>
+        <div class="loader-sub">LEARNING CIRCLE</div>
+    </div>
+
+    <%- include('../partials/header-mobile') %>
+
     <main class="main-content" style="padding:12px 0 24px;">
         <div class="container" style="padding:0 12px;">
-            <div style="background:#fff; border-radius:12px; padding:14px 16px; border:1px solid #ede8f5;">
+            <div style="background:#fff; border-radius:12px; padding:16px; border:1px solid #ede8f5;">
                 <h1 style="font-size:1.2rem; font-weight:800; color:var(--text-dark); margin:0 0 4px 0;">
-                    <i class="fas fa-question-circle" style="color:var(--primary);"></i> FAQ
+                    <i class="fas fa-question-circle" style="color:var(--primary);"></i> Frequently Asked Questions
                 </h1>
-                <p style="color:var(--text-muted); font-size:0.8rem; margin:0 0 12px 0;">Find answers to common questions.</p>
+                <p style="color:var(--text-muted); font-size:0.75rem; margin:0 0 12px 0;">Find answers to common questions</p>
 
-                <!-- Search -->
-                <input type="text" id="faqSearchMobile" placeholder="Search FAQ..." style="width:100%; padding:8px 12px; border-radius:8px; border:2px solid #ede8f5; font-size:0.85rem; margin-bottom:12px;">
-
-                <!-- FAQ Items - Simplified -->
-                <div style="font-size:0.85rem; line-height:1.7; color:var(--text-dark);">
-                    <div style="border-bottom:1px solid #ede8f5; padding:10px 0;">
-                        <strong>What is SHINEX Learning Circle?</strong>
-                        <p style="color:var(--text-muted); margin:4px 0 0; font-size:0.8rem;">An online learning platform for practical skills.</p>
-                    </div>
-                    <div style="border-bottom:1px solid #ede8f5; padding:10px 0;">
-                        <strong>Are the courses free?</strong>
-                        <p style="color:var(--text-muted); margin:4px 0 0; font-size:0.8rem;">Some courses are free, others may require payment.</p>
-                    </div>
-                    <div style="border-bottom:1px solid #ede8f5; padding:10px 0;">
-                        <strong>Can I learn on my phone?</strong>
-                        <p style="color:var(--text-muted); margin:4px 0 0; font-size:0.8rem;">Yes, SLC works on phones, tablets, and computers.</p>
-                    </div>
-                    <div style="border-bottom:1px solid #ede8f5; padding:10px 0;">
-                        <strong>How do I create an account?</strong>
-                        <p style="color:var(--text-muted); margin:4px 0 0; font-size:0.8rem;">Click Register and follow the steps.</p>
-                    </div>
-                    <div style="border-bottom:1px solid #ede8f5; padding:10px 0;">
-                        <strong>How do I turn on Dark Mode?</strong>
-                        <p style="color:var(--text-muted); margin:4px 0 0; font-size:0.8rem;">Go to Settings → Appearance → Dark Mode.</p>
-                    </div>
-                    <div style="border-bottom:1px solid #ede8f5; padding:10px 0;">
-                        <strong>Can I change my password?</strong>
-                        <p style="color:var(--text-muted); margin:4px 0 0; font-size:0.8rem;">Yes, go to Settings → Security → Change Password.</p>
-                    </div>
-                    <div style="padding:10px 0;">
-                        <strong>How do I contact support?</strong>
-                        <p style="color:var(--text-muted); margin:4px 0 0; font-size:0.8rem;"><a href="/contact" style="color:var(--primary);">Contact Us</a> page.</p>
-                    </div>
+                <div style="border-bottom:1px solid #ede8f5; padding:10px 0;">
+                    <p style="font-weight:700; font-size:0.85rem; color:var(--text-dark); margin:0 0 4px 0;">What is SHINEX?</p>
+                    <p style="font-size:0.8rem; color:var(--text-muted); margin:0;">An online learning platform offering courses in tech, design, cybersecurity, and data analytics.</p>
                 </div>
 
-                <!-- Need Help -->
-                <div style="margin-top:16px; padding:14px; background:var(--primary-bg); border-radius:10px; text-align:center;">
-                    <p style="font-weight:600; font-size:0.85rem; margin:0 0 4px 0;">Still Need Help?</p>
-                    <a href="/contact" class="btn btn-primary btn-sm" style="font-size:0.8rem; padding:6px 20px;"><i class="fas fa-envelope"></i> Contact Us</a>
+                <div style="border-bottom:1px solid #ede8f5; padding:10px 0;">
+                    <p style="font-weight:700; font-size:0.85rem; color:var(--text-dark); margin:0 0 4px 0;">Are courses free?</p>
+                    <p style="font-size:0.8rem; color:var(--text-muted); margin:0;">Yes, all courses are currently free.</p>
+                </div>
+
+                <div style="border-bottom:1px solid #ede8f5; padding:10px 0;">
+                    <p style="font-weight:700; font-size:0.85rem; color:var(--text-dark); margin:0 0 4px 0;">What topics do you offer?</p>
+                    <p style="font-size:0.8rem; color:var(--text-muted); margin:0;">Cybersecurity, Web Development, Web Design, UI/UX Design, SQL Database, Data Analytics.</p>
+                </div>
+
+                <div style="border-bottom:1px solid #ede8f5; padding:10px 0;">
+                    <p style="font-weight:700; font-size:0.85rem; color:var(--text-dark); margin:0 0 4px 0;">How do I contact support?</p>
+                    <p style="font-size:0.8rem; color:var(--text-muted); margin:0;">Visit our <a href="/contact" style="color:var(--primary);">Contact page</a>.</p>
+                </div>
+
+                <div style="border-bottom:1px solid #ede8f5; padding:10px 0;">
+                    <p style="font-weight:700; font-size:0.85rem; color:var(--text-dark); margin:0 0 4px 0;">How do I track my progress?</p>
+                    <p style="font-size:0.8rem; color:var(--text-muted); margin:0;">Your progress is automatically tracked as you complete each class.</p>
+                </div>
+
+                <div style="border-bottom:1px solid #ede8f5; padding:10px 0;">
+                    <p style="font-weight:700; font-size:0.85rem; color:var(--text-dark); margin:0 0 4px 0;">Do you offer certificates?</p>
+                    <p style="font-size:0.8rem; color:var(--text-muted); margin:0;">We are currently working on introducing certificates.</p>
+                </div>
+
+                <div style="padding:10px 0;">
+                    <p style="font-weight:700; font-size:0.85rem; color:var(--text-dark); margin:0 0 4px 0;">How do I change the text size?</p>
+                    <p style="font-size:0.8rem; color:var(--text-muted); margin:0;">Use the text size slider in the top header.</p>
+                </div>
+
+                <div style="margin-top:12px; padding-top:12px; border-top:2px solid #ede8f5; text-align:center;">
+                    <p style="font-size:0.8rem; color:var(--text-muted); margin:0;">
+                        <i class="fas fa-headset" style="color:var(--primary);"></i> 
+                        Still have questions? <a href="/contact" style="color:var(--primary);">Contact us</a>
+                    </p>
                 </div>
             </div>
         </div>
     </main>
-    <%- include(getFooter()) %>
+
+    <%- include('../partials/footer-mobile') %>
+
     <script src="/js/script.js"></script>
 </body>
 </html>
