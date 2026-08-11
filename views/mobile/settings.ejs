@@ -6,6 +6,72 @@
     <title>Settings – SHINEX</title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .settings-group { margin-bottom: 12px; }
+        .settings-group label { font-weight: 600; font-size: 0.8rem; color: var(--text-dark); display: block; margin-bottom: 4px; }
+        body.dark-mode .settings-group label { color: var(--text-light); }
+        .settings-group input, .settings-group textarea, .settings-group select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 2px solid #ede8f5;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-family: inherit;
+            background: #fff;
+            color: var(--text-dark);
+        }
+        body.dark-mode .settings-group input, body.dark-mode .settings-group textarea, body.dark-mode .settings-group select {
+            background: #2a2a2a;
+            color: var(--text-light);
+            border-color: var(--dark-border);
+        }
+        .settings-group input:focus, .settings-group textarea:focus, .settings-group select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(139,92,246,0.12);
+            outline: none;
+        }
+        .settings-card {
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #ede8f5;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        body.dark-mode .settings-card {
+            background: #1a1a1a;
+            border-color: #333;
+        }
+        .settings-card h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin: 0 0 4px 0;
+        }
+        body.dark-mode .settings-card h3 { color: var(--text-light); }
+        .settings-card .subtitle {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin: 0 0 12px 0;
+        }
+        .danger-zone {
+            border: 2px solid #e74c3c !important;
+        }
+        .danger-zone h4 {
+            color: #e74c3c !important;
+        }
+        .btn-danger-zone {
+            background: #e74c3c;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            font-size: 0.85rem;
+        }
+        .btn-danger-zone:hover { background: #c0392b; }
+    </style>
 </head>
 <body>
     <div id="page-loader">
@@ -14,28 +80,55 @@
         <div class="loader-sub">LEARNING CIRCLE</div>
     </div>
 
-    <%- include('../partials/header-mobile') %>
+    <!-- HEADER -->
+    <header class="header" style="padding:10px 12px; flex-wrap:wrap; gap:6px;">
+        <div style="display:flex; align-items:center; gap:8px; flex:1;">
+            <% if (showBack) { %>
+                <a href="javascript:history.back()" class="back-btn" style="font-size:0.75rem; padding:4px 8px; color:rgba(255,255,255,0.9);"><i class="fas fa-arrow-left"></i></a>
+            <% } %>
+            <a href="/" class="logo-container" style="gap:8px;">
+                <div class="logo" style="width:36px; height:36px; font-size:11px; background:rgba(255,255,255,0.2);">SLC</div>
+                <div>
+                    <div class="logo-text" style="font-size:15px; color:#fff;">SHINEX<span>.</span></div>
+                    <div class="logo-sub" style="font-size:7px; color:rgba(255,255,255,0.7);">LEARNING CIRCLE</div>
+                </div>
+            </a>
+        </div>
+        <div class="header-actions" style="gap:4px; flex-wrap:wrap;">
+            <div class="text-size-control" style="padding:2px 8px; background:rgba(255,255,255,0.15);">
+                <label style="font-size:0.6rem; color:rgba(255,255,255,0.8);"><i class="fas fa-font"></i></label>
+                <input type="range" id="textSizeSliderMobile" min="12" max="24" value="16" step="1" style="width:50px;">
+                <span class="text-size-value" id="textSizeValueMobile" style="font-size:0.6rem; min-width:24px; color:#fff;">16px</span>
+            </div>
+            <button class="dark-toggle" id="darkToggleMobile" style="font-size:1rem; padding:4px 6px; color:#fff; background:rgba(255,255,255,0.15); border-radius:30px;">🌙</button>
+            <a href="/settings" class="btn btn-secondary btn-sm" style="min-height:32px; padding:4px 10px; border-radius:30px; font-size:0.75rem; background:rgba(255,255,255,0.2); color:#fff;"><i class="fas fa-cog"></i></a>
+        </div>
+    </header>
 
+    <!-- CONTENT -->
     <main class="main-content" style="padding:12px 0 24px;">
         <div class="container" style="padding:0 12px;">
             <h1 style="font-size:1.2rem; font-weight:800; color:var(--text-dark); margin:0 0 4px 0;">
                 <i class="fas fa-cog" style="color:var(--primary);"></i> Settings
             </h1>
-            
-            <!-- Profile Section -->
-            <div style="background:#fff; border-radius:12px; padding:16px; border:1px solid #ede8f5; margin-bottom:12px;">
-                <h3 style="font-size:0.95rem; font-weight:700; color:var(--text-dark); margin:0 0 4px 0;">
-                    <i class="fas fa-user" style="color:var(--primary);"></i> Profile
-                </h3>
-                <p style="font-size:0.75rem; color:var(--text-muted); margin:0 0 12px 0;">Update your personal information</p>
+            <p style="color:var(--text-muted); font-size:0.8rem; margin:0 0 12px 0;">Manage your account preferences</p>
+
+            <!-- Profile -->
+            <div class="settings-card">
+                <h3><i class="fas fa-user" style="color:var(--primary);"></i> Profile</h3>
+                <p class="subtitle">Update your personal information</p>
                 <form>
-                    <div style="margin-bottom:12px;">
-                        <label style="font-size:0.8rem; font-weight:600; display:block; margin-bottom:4px;">First Name</label>
-                        <input type="text" placeholder="Your first name" style="width:100%; font-size:0.85rem; padding:8px 12px; border:2px solid #ede8f5; border-radius:8px;">
+                    <div class="settings-group">
+                        <label>First Name</label>
+                        <input type="text" placeholder="Your first name">
                     </div>
-                    <div style="margin-bottom:12px;">
-                        <label style="font-size:0.8rem; font-weight:600; display:block; margin-bottom:4px;">Last Name</label>
-                        <input type="text" placeholder="Your last name" style="width:100%; font-size:0.85rem; padding:8px 12px; border:2px solid #ede8f5; border-radius:8px;">
+                    <div class="settings-group">
+                        <label>Last Name</label>
+                        <input type="text" placeholder="Your last name">
+                    </div>
+                    <div class="settings-group">
+                        <label>Bio</label>
+                        <textarea rows="2" placeholder="Tell us about yourself"></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary btn-block" style="width:100%; font-size:0.85rem; padding:10px; border-radius:30px; background:#8B5CF6; color:#fff; border:none; font-weight:600;">
                         <i class="fas fa-save"></i> Save Profile
@@ -43,12 +136,33 @@
                 </form>
             </div>
 
-            <!-- Appearance Section -->
-            <div style="background:#fff; border-radius:12px; padding:16px; border:1px solid #ede8f5; margin-bottom:12px;">
-                <h3 style="font-size:0.95rem; font-weight:700; color:var(--text-dark); margin:0 0 4px 0;">
-                    <i class="fas fa-palette" style="color:var(--primary);"></i> Appearance
-                </h3>
-                <p style="font-size:0.75rem; color:var(--text-muted); margin:0 0 12px 0;">Customize your visual experience</p>
+            <!-- Account -->
+            <div class="settings-card">
+                <h3><i class="fas fa-lock" style="color:var(--primary);"></i> Account</h3>
+                <p class="subtitle">Change your password</p>
+                <form>
+                    <div class="settings-group">
+                        <label>Current Password</label>
+                        <input type="password" placeholder="Enter current password">
+                    </div>
+                    <div class="settings-group">
+                        <label>New Password</label>
+                        <input type="password" placeholder="Enter new password (min 6)">
+                    </div>
+                    <div class="settings-group">
+                        <label>Confirm New Password</label>
+                        <input type="password" placeholder="Confirm new password">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block" style="width:100%; font-size:0.85rem; padding:10px; border-radius:30px; background:#8B5CF6; color:#fff; border:none; font-weight:600;">
+                        <i class="fas fa-save"></i> Change Password
+                    </button>
+                </form>
+            </div>
+
+            <!-- Appearance -->
+            <div class="settings-card">
+                <h3><i class="fas fa-palette" style="color:var(--primary);"></i> Appearance</h3>
+                <p class="subtitle">Customize your visual experience</p>
                 <div style="display:flex; align-items:center; gap:12px; padding:8px 0;">
                     <label style="font-size:0.8rem; font-weight:500; margin:0; cursor:pointer;">
                         <i class="fas fa-moon"></i> Dark Mode
@@ -58,108 +172,49 @@
                 <div style="margin-top:8px;">
                     <label style="font-size:0.8rem; font-weight:600; display:block; margin-bottom:4px;">Font Size</label>
                     <input type="range" min="12" max="24" value="16" step="1" style="width:100%; accent-color:#8B5CF6;">
-                    <div style="display:flex; justify-content:space-between; font-size:0.6rem; color:var(--text-muted);">
-                        <span>Small</span>
-                        <span>Medium</span>
-                        <span>Large</span>
-                    </div>
                 </div>
                 <button class="btn btn-primary btn-block" style="width:100%; font-size:0.85rem; padding:10px; border-radius:30px; background:#8B5CF6; color:#fff; border:none; font-weight:600; margin-top:8px;">
                     <i class="fas fa-save"></i> Save Appearance
                 </button>
             </div>
 
-            <!-- Security Section -->
-            <div style="background:#fff; border-radius:12px; padding:16px; border:1px solid #ede8f5; margin-bottom:12px;">
-                <h3 style="font-size:0.95rem; font-weight:700; color:var(--text-dark); margin:0 0 4px 0;">
-                    <i class="fas fa-shield-alt" style="color:var(--primary);"></i> Security
-                </h3>
-                <p style="font-size:0.75rem; color:var(--text-muted); margin:0 0 12px 0;">Protect your account</p>
-                <div style="display:flex; align-items:center; gap:12px; padding:8px 0;">
-                    <input type="checkbox" id="twoFactorMobile" style="width:auto; height:18px; width:18px; accent-color:#8B5CF6; cursor:pointer;">
-                    <label style="font-size:0.8rem; font-weight:500; margin:0; cursor:pointer;">Enable Two-Factor Authentication (2FA)</label>
-                </div>
-                <button class="btn btn-secondary btn-block" style="width:100%; font-size:0.85rem; padding:10px; border-radius:30px; background:#ede8f5; color:#1A0A2E; border:none; font-weight:600; margin-top:8px;">
-                    <i class="fas fa-sign-out-alt"></i> Logout from all sessions
-                </button>
-            </div>
-
-            <!-- Notifications Section -->
-            <div style="background:#fff; border-radius:12px; padding:16px; border:1px solid #ede8f5; margin-bottom:12px;">
-                <h3 style="font-size:0.95rem; font-weight:700; color:var(--text-dark); margin:0 0 4px 0;">
-                    <i class="fas fa-bell" style="color:var(--primary);"></i> Notifications
-                </h3>
-                <p style="font-size:0.75rem; color:var(--text-muted); margin:0 0 12px 0;">Manage your notification preferences</p>
-                <div style="display:flex; align-items:center; gap:12px; padding:6px 0;">
-                    <input type="checkbox" id="notifEmailM" checked style="width:auto; height:18px; width:18px; accent-color:#8B5CF6; cursor:pointer;">
-                    <label style="font-size:0.8rem; font-weight:400; margin:0; cursor:pointer;">Email Notifications</label>
-                </div>
-                <div style="display:flex; align-items:center; gap:12px; padding:6px 0;">
-                    <input type="checkbox" id="notifBrowserM" checked style="width:auto; height:18px; width:18px; accent-color:#8B5CF6; cursor:pointer;">
-                    <label style="font-size:0.8rem; font-weight:400; margin:0; cursor:pointer;">Browser Notifications</label>
-                </div>
-                <div style="display:flex; align-items:center; gap:12px; padding:6px 0;">
-                    <input type="checkbox" id="notifCourseM" checked style="width:auto; height:18px; width:18px; accent-color:#8B5CF6; cursor:pointer;">
-                    <label style="font-size:0.8rem; font-weight:400; margin:0; cursor:pointer;">Course Updates</label>
-                </div>
-                <button class="btn btn-primary btn-block" style="width:100%; font-size:0.85rem; padding:10px; border-radius:30px; background:#8B5CF6; color:#fff; border:none; font-weight:600; margin-top:8px;">
-                    <i class="fas fa-save"></i> Save Notifications
-                </button>
-            </div>
-
-            <!-- Privacy Section -->
-            <div style="background:#fff; border-radius:12px; padding:16px; border:1px solid #ede8f5; margin-bottom:12px;">
-                <h3 style="font-size:0.95rem; font-weight:700; color:var(--text-dark); margin:0 0 4px 0;">
-                    <i class="fas fa-eye" style="color:var(--primary);"></i> Privacy
-                </h3>
-                <p style="font-size:0.75rem; color:var(--text-muted); margin:0 0 12px 0;">Control your privacy settings</p>
-                <div style="margin-bottom:8px;">
-                    <label style="font-size:0.8rem; font-weight:600; display:block; margin-bottom:4px;">Profile Visibility</label>
-                    <select style="width:100%; font-size:0.85rem; padding:8px 12px; border:2px solid #ede8f5; border-radius:8px; background:#fff;">
-                        <option value="public">Public</option>
-                        <option value="private" selected>Private</option>
-                    </select>
-                </div>
-                <button class="btn btn-primary btn-block" style="width:100%; font-size:0.85rem; padding:10px; border-radius:30px; background:#8B5CF6; color:#fff; border:none; font-weight:600;">
-                    <i class="fas fa-save"></i> Save Privacy
-                </button>
-            </div>
-
-            <!-- Learning Settings Section -->
-            <div style="background:#fff; border-radius:12px; padding:16px; border:1px solid #ede8f5; margin-bottom:12px;">
-                <h3 style="font-size:0.95rem; font-weight:700; color:var(--text-dark); margin:0 0 4px 0;">
-                    <i class="fas fa-graduation-cap" style="color:var(--primary);"></i> Learning Settings
-                </h3>
-                <p style="font-size:0.75rem; color:var(--text-muted); margin:0 0 12px 0;">Customize your learning experience</p>
-                <div style="margin-bottom:8px;">
-                    <label style="font-size:0.8rem; font-weight:600; display:block; margin-bottom:4px;">Preferred Course Level</label>
-                    <select style="width:100%; font-size:0.85rem; padding:8px 12px; border:2px solid #ede8f5; border-radius:8px; background:#fff;">
-                        <option value="Beginner">Beginner</option>
-                        <option value="Intermediate">Intermediate</option>
-                        <option value="Advanced">Advanced</option>
-                    </select>
-                </div>
-                <button class="btn btn-primary btn-block" style="width:100%; font-size:0.85rem; padding:10px; border-radius:30px; background:#8B5CF6; color:#fff; border:none; font-weight:600;">
-                    <i class="fas fa-save"></i> Save Learning Settings
-                </button>
-            </div>
-
             <!-- Danger Zone -->
-            <div style="background:#fff; border-radius:12px; padding:16px; border:2px solid #e74c3c; margin-bottom:12px;">
-                <h3 style="font-size:0.95rem; font-weight:700; color:#e74c3c; margin:0 0 4px 0;">
-                    <i class="fas fa-exclamation-triangle"></i> Danger Zone
-                </h3>
-                <p style="font-size:0.75rem; color:var(--text-muted); margin:0 0 12px 0;">These actions are irreversible. Proceed with caution.</p>
-                <button class="btn btn-danger btn-block" style="width:100%; font-size:0.85rem; padding:10px; border-radius:30px; background:#e74c3c; color:#fff; border:none; font-weight:600;">
-                    <i class="fas fa-trash"></i> Delete Account
-                </button>
+            <div class="settings-card danger-zone">
+                <h4><i class="fas fa-exclamation-triangle"></i> Danger Zone</h4>
+                <p style="font-size:0.75rem; color:var(--text-muted); margin:0 0 12px 0;">These actions are irreversible.</p>
+                <button class="btn-danger-zone"><i class="fas fa-trash"></i> Delete Account</button>
                 <p style="font-size:0.65rem; color:#e74c3c; margin-top:6px; text-align:center;">Deleting your account will permanently remove all your data.</p>
             </div>
-
         </div>
     </main>
 
-    <%- include('../partials/footer-mobile') %>
+    <!-- FOOTER -->
+    <footer class="footer" style="padding:20px 0 16px; margin-top:20px;">
+        <div class="container">
+            <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:10px 16px; margin-bottom:12px;">
+                <a href="/" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-home"></i> Home</a>
+                <a href="/about" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-info-circle"></i> About</a>
+                <a href="/faq" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-question-circle"></i> FAQ</a>
+                <a href="/services" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-cogs"></i> Services</a>
+                <a href="/contact" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-envelope"></i> Contact</a>
+                <a href="/terms" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-file-contract"></i> Terms</a>
+                <a href="/privacy" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-shield-alt"></i> Privacy</a>
+            </div>
+            <div style="display:flex; justify-content:center; gap:14px; margin-bottom:12px;">
+                <a href="#" style="color:rgba(255,255,255,0.6); font-size:1rem;"><i class="fab fa-facebook"></i></a>
+                <a href="#" style="color:rgba(255,255,255,0.6); font-size:1rem;"><i class="fab fa-twitter"></i></a>
+                <a href="#" style="color:rgba(255,255,255,0.6); font-size:1rem;"><i class="fab fa-linkedin"></i></a>
+                <a href="#" style="color:rgba(255,255,255,0.6); font-size:1rem;"><i class="fab fa-youtube"></i></a>
+            </div>
+            <div style="text-align:center; margin-bottom:8px;">
+                <span style="color:#fff; font-weight:700; font-size:1rem;">SHINEX</span>
+                <span style="color:rgba(255,255,255,0.5); font-size:0.65rem; display:block;">Learning Circle</span>
+            </div>
+            <div style="text-align:center; font-size:0.65rem; color:rgba(255,255,255,0.5); border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
+                <p style="margin:0;">&copy; 2026 SHINEX Learning Circle</p>
+            </div>
+        </div>
+    </footer>
 
     <script src="/js/script.js"></script>
 </body>

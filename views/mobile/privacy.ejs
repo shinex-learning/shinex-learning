@@ -14,8 +14,32 @@
         <div class="loader-sub">LEARNING CIRCLE</div>
     </div>
 
-    <%- include('../partials/header-mobile') %>
+    <!-- HEADER -->
+    <header class="header" style="padding:10px 12px; flex-wrap:wrap; gap:6px;">
+        <div style="display:flex; align-items:center; gap:8px; flex:1;">
+            <% if (showBack) { %>
+                <a href="javascript:history.back()" class="back-btn" style="font-size:0.75rem; padding:4px 8px; color:rgba(255,255,255,0.9);"><i class="fas fa-arrow-left"></i></a>
+            <% } %>
+            <a href="/" class="logo-container" style="gap:8px;">
+                <div class="logo" style="width:36px; height:36px; font-size:11px; background:rgba(255,255,255,0.2);">SLC</div>
+                <div>
+                    <div class="logo-text" style="font-size:15px; color:#fff;">SHINEX<span>.</span></div>
+                    <div class="logo-sub" style="font-size:7px; color:rgba(255,255,255,0.7);">LEARNING CIRCLE</div>
+                </div>
+            </a>
+        </div>
+        <div class="header-actions" style="gap:4px; flex-wrap:wrap;">
+            <div class="text-size-control" style="padding:2px 8px; background:rgba(255,255,255,0.15);">
+                <label style="font-size:0.6rem; color:rgba(255,255,255,0.8);"><i class="fas fa-font"></i></label>
+                <input type="range" id="textSizeSliderMobile" min="12" max="24" value="16" step="1" style="width:50px;">
+                <span class="text-size-value" id="textSizeValueMobile" style="font-size:0.6rem; min-width:24px; color:#fff;">16px</span>
+            </div>
+            <button class="dark-toggle" id="darkToggleMobile" style="font-size:1rem; padding:4px 6px; color:#fff; background:rgba(255,255,255,0.15); border-radius:30px;">🌙</button>
+            <a href="/settings" class="btn btn-secondary btn-sm" style="min-height:32px; padding:4px 10px; border-radius:30px; font-size:0.75rem; background:rgba(255,255,255,0.2); color:#fff;"><i class="fas fa-cog"></i></a>
+        </div>
+    </header>
 
+    <!-- CONTENT -->
     <main class="main-content" style="padding:12px 0 24px;">
         <div class="container" style="padding:0 12px;">
             <div style="background:#fff; border-radius:12px; padding:16px; border:1px solid #ede8f5;">
@@ -49,7 +73,33 @@
         </div>
     </main>
 
-    <%- include('../partials/footer-mobile') %>
+    <!-- FOOTER -->
+    <footer class="footer" style="padding:20px 0 16px; margin-top:20px;">
+        <div class="container">
+            <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:10px 16px; margin-bottom:12px;">
+                <a href="/" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-home"></i> Home</a>
+                <a href="/about" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-info-circle"></i> About</a>
+                <a href="/faq" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-question-circle"></i> FAQ</a>
+                <a href="/services" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-cogs"></i> Services</a>
+                <a href="/contact" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-envelope"></i> Contact</a>
+                <a href="/terms" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-file-contract"></i> Terms</a>
+                <a href="/privacy" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-shield-alt"></i> Privacy</a>
+            </div>
+            <div style="display:flex; justify-content:center; gap:14px; margin-bottom:12px;">
+                <a href="#" style="color:rgba(255,255,255,0.6); font-size:1rem;"><i class="fab fa-facebook"></i></a>
+                <a href="#" style="color:rgba(255,255,255,0.6); font-size:1rem;"><i class="fab fa-twitter"></i></a>
+                <a href="#" style="color:rgba(255,255,255,0.6); font-size:1rem;"><i class="fab fa-linkedin"></i></a>
+                <a href="#" style="color:rgba(255,255,255,0.6); font-size:1rem;"><i class="fab fa-youtube"></i></a>
+            </div>
+            <div style="text-align:center; margin-bottom:8px;">
+                <span style="color:#fff; font-weight:700; font-size:1rem;">SHINEX</span>
+                <span style="color:rgba(255,255,255,0.5); font-size:0.65rem; display:block;">Learning Circle</span>
+            </div>
+            <div style="text-align:center; font-size:0.65rem; color:rgba(255,255,255,0.5); border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
+                <p style="margin:0;">&copy; 2026 SHINEX Learning Circle</p>
+            </div>
+        </div>
+    </footer>
 
     <script src="/js/script.js"></script>
 </body>
