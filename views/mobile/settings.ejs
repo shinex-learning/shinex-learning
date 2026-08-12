@@ -7,179 +7,60 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
     <style>
-        .mobile-settings-container {
-            padding: 12px 12px 24px;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-        .mobile-settings-card {
-            padding: 16px 14px !important;
-            border-radius: 12px !important;
-            margin-bottom: 12px !important;
-        }
-        .mobile-settings-card h3 {
-            font-size: 1rem !important;
-            font-weight: 700 !important;
-            margin: 0 0 4px !important;
-        }
-        .mobile-settings-card p {
-            font-size: 0.8rem !important;
-            margin: 0 0 12px !important;
-            color: var(--text-muted);
-        }
-        .mobile-settings-card label {
-            font-size: 0.82rem !important;
-        }
-        .mobile-settings-card input,
-        .mobile-settings-card select,
-        .mobile-settings-card textarea {
-            font-size: 0.9rem !important;
-            padding: 10px 12px !important;
-            min-height: 40px !important;
-            border-radius: 8px !important;
-        }
-        .mobile-settings-card .btn {
-            font-size: 0.85rem !important;
-            padding: 10px !important;
-            min-height: 44px !important;
-            width: 100%;
-            justify-content: center;
-        }
-        .mobile-settings-card .help-text {
-            font-size: 0.7rem !important;
-        }
-        .mobile-settings-toggle {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 0;
-        }
-        .mobile-settings-toggle input[type="checkbox"] {
-            width: 44px !important;
-            height: 24px !important;
-            min-height: unset !important;
-            appearance: none;
-            background: #ccc;
-            border-radius: 12px;
-            position: relative;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            padding: 0 !important;
-            flex-shrink: 0;
-        }
-        .mobile-settings-toggle input[type="checkbox"]:checked {
-            background: var(--primary);
-        }
-        .mobile-settings-toggle input[type="checkbox"]::before {
-            content: '';
-            position: absolute;
-            width: 18px;
-            height: 18px;
-            background: #fff;
-            border-radius: 50%;
-            top: 3px;
-            left: 3px;
-            transition: all 0.3s ease;
-        }
-        .mobile-settings-toggle input[type="checkbox"]:checked::before {
-            left: 23px;
-        }
-        body.dark-mode .mobile-settings-toggle input[type="checkbox"] {
-            background: #444;
-        }
-        .mobile-text-size {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 8px 0;
-        }
-        .mobile-text-size input[type="range"] {
-            flex: 1;
-            min-height: unset !important;
-            padding: 0 !important;
-            height: 4px !important;
-            background: var(--primary-bg);
-            border-radius: 4px;
-            appearance: none;
-        }
-        .mobile-text-size input[type="range"]::-webkit-slider-thumb {
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: var(--primary);
-            cursor: pointer;
-        }
-        .mobile-text-size input[type="range"]::-moz-range-thumb {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: var(--primary);
-            cursor: pointer;
-        }
-        .mobile-text-size .text-size-value {
-            font-weight: 700;
-            color: var(--primary);
-            min-width: 40px;
-            font-size: 0.85rem;
-        }
-        .mobile-danger-zone {
-            border: 2px solid #e74c3c !important;
-            border-radius: 12px !important;
-            padding: 16px !important;
-            margin-top: 4px;
-        }
-        .mobile-danger-zone h4 {
-            color: #e74c3c;
-            font-size: 0.95rem !important;
-            margin: 0 0 4px !important;
-        }
-        .mobile-danger-zone p {
-            font-size: 0.8rem !important;
-            margin: 0 0 10px !important;
-        }
-        .btn-danger-zone-mobile {
-            background: #e74c3c;
-            color: #fff;
-            padding: 10px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            width: 100%;
-            font-size: 0.85rem;
-            cursor: pointer;
-            min-height: 44px;
-        }
-        .btn-danger-zone-mobile:hover {
-            background: #c0392b;
-        }
-        .mobile-grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-        @media (max-width: 400px) {
-            .mobile-grid-2 {
-                grid-template-columns: 1fr;
-                gap: 0;
-            }
-        }
-        .mobile-section-divider {
-            height: 1px;
-            background: #ede8f5;
-            margin: 4px 0 12px;
-        }
-        body.dark-mode .mobile-section-divider {
-            background: var(--dark-border);
-        }
+        .mobile-settings-container { padding: 12px 12px 24px; max-width: 500px; margin: 0 auto; }
+        .mobile-settings-card { padding: 16px 14px !important; border-radius: 12px !important; margin-bottom: 12px !important; background: var(--bg-light) !important; border: 1px solid #ede8f5 !important; }
+        .mobile-settings-card h3 { font-size: 1rem !important; font-weight: 700 !important; margin: 0 0 4px !important; color: var(--text-dark); }
+        .mobile-settings-card p { font-size: 0.8rem !important; margin: 0 0 12px !important; color: var(--text-muted); }
+        .mobile-settings-card label { font-size: 0.82rem !important; color: var(--text-dark); }
+        .mobile-settings-card input, .mobile-settings-card select, .mobile-settings-card textarea { font-size: 0.9rem !important; padding: 10px 12px !important; min-height: 40px !important; border-radius: 8px !important; border: 2px solid #ede8f5 !important; background: #fff !important; color: var(--text-dark) !important; width: 100% !important; }
+        .mobile-settings-card .btn { font-size: 0.85rem !important; padding: 10px !important; min-height: 44px !important; border-radius: 30px !important; background: #8B5CF6 !important; color: #fff !important; border: none !important; width: 100% !important; cursor: pointer !important; }
+        .mobile-settings-card .help-text { font-size: 0.7rem !important; color: var(--text-muted); }
+        .mobile-settings-toggle { display: flex; align-items: center; gap: 10px; padding: 8px 0; }
+        .mobile-settings-toggle input[type="checkbox"] { width: 44px !important; height: 24px !important; min-height: unset !important; appearance: none; background: #ccc; border-radius: 12px; position: relative; cursor: pointer; transition: all 0.3s ease; padding: 0 !important; flex-shrink: 0; border: none !important; }
+        .mobile-settings-toggle input[type="checkbox"]:checked { background: #8B5CF6; }
+        .mobile-settings-toggle input[type="checkbox"]::before { content: ''; position: absolute; width: 18px; height: 18px; background: #fff; border-radius: 50%; top: 3px; left: 3px; transition: all 0.3s ease; }
+        .mobile-settings-toggle input[type="checkbox"]:checked::before { left: 23px; }
+        .mobile-settings-toggle label { margin: 0 !important; font-weight: 600 !important; font-size: 0.85rem !important; color: var(--text-dark); cursor: pointer; }
+        body.dark-mode .mobile-settings-toggle input[type="checkbox"] { background: #444; }
+        .mobile-text-size { display: flex; align-items: center; gap: 12px; padding: 8px 0; }
+        .mobile-text-size input[type="range"] { flex: 1; min-height: unset !important; padding: 0 !important; height: 4px !important; background: #ede8f5; border-radius: 4px; appearance: none; border: none !important; }
+        .mobile-text-size input[type="range"]::-webkit-slider-thumb { appearance: none; width: 20px; height: 20px; border-radius: 50%; background: #8B5CF6; cursor: pointer; }
+        .mobile-text-size input[type="range"]::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; background: #8B5CF6; cursor: pointer; }
+        .mobile-text-size .text-size-value { font-weight: 700; color: #8B5CF6; min-width: 40px; font-size: 0.85rem; }
+        .mobile-danger-zone { border: 2px solid #e74c3c !important; border-radius: 12px !important; padding: 16px !important; margin-top: 4px; background: var(--bg-light) !important; }
+        .mobile-danger-zone h4 { color: #e74c3c; font-size: 0.95rem !important; margin: 0 0 4px !important; }
+        .mobile-danger-zone p { font-size: 0.8rem !important; margin: 0 0 10px !important; color: var(--text-muted); }
+        .btn-danger-zone-mobile { background: #e74c3c; color: #fff; padding: 10px; border: none; border-radius: 8px; font-weight: 600; width: 100%; font-size: 0.85rem; cursor: pointer; min-height: 44px; }
+        .btn-danger-zone-mobile:hover { background: #c0392b; }
+        .mobile-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .mobile-section-divider { height: 1px; background: #ede8f5; margin: 4px 0 12px; }
+        body.dark-mode .mobile-section-divider { background: var(--dark-border); }
+        body.dark-mode .mobile-settings-card { background: var(--dark-card) !important; border-color: var(--dark-border) !important; }
+        body.dark-mode .mobile-settings-card input, body.dark-mode .mobile-settings-card select, body.dark-mode .mobile-settings-card textarea { background: #2a2a2a !important; border-color: var(--dark-border) !important; color: var(--text-light) !important; }
+        body.dark-mode .mobile-danger-zone { background: var(--dark-card) !important; }
+        body.dark-mode .mobile-text-size input[type="range"] { background: #333; }
+        @media (max-width: 400px) { .mobile-grid-2 { grid-template-columns: 1fr; gap: 0; } }
     </style>
 </head>
 <body>
-    <%- include('partials/header-mobile', { showBack: true }) %>
+    <!-- ===== MOBILE HEADER ===== -->
+    <header class="header" style="padding:8px 12px; flex-wrap:nowrap;">
+        <div style="display:flex; align-items:center; gap:8px; flex:1; min-width:0;">
+            <a href="javascript:history.back()" class="back-btn" style="font-size:0.75rem; padding:4px 8px; color:rgba(255,255,255,0.9); text-decoration:none; display:flex; align-items:center; gap:4px;"><i class="fas fa-arrow-left"></i></a>
+            <a href="/" class="logo-container" style="gap:8px; text-decoration:none;">
+                <div class="logo" style="width:32px; height:32px; border-radius:50%; background:rgba(255,255,255,0.2); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:10px;">SLC</div>
+                <div style="line-height:1.1;"><div class="logo-text" style="font-size:13px; color:#fff;">SHINEX<span style="color:#fff;">.</span></div><div class="logo-sub" style="font-size:6px; color:rgba(255,255,255,0.7);">LEARNING</div></div>
+            </a>
+        </div>
+        <div class="header-actions" style="gap:4px; flex-wrap:nowrap;">
+            <button class="dark-toggle" id="darkToggleMobile" onclick="toggleDarkModeMobile()" style="padding:4px 8px; font-size:1rem; background:rgba(255,255,255,0.15); border:none; border-radius:30px; color:#fff; cursor:pointer;">🌙</button>
+        </div>
+    </header>
 
+    <!-- ===== MAIN CONTENT ===== -->
     <main class="main-content">
         <div class="mobile-settings-container">
-            <h2 style="font-size:1.3rem; font-weight:700; margin:0 0 2px;">⚙️ Settings</h2>
+            <h2 style="font-size:1.3rem; font-weight:700; margin:0 0 2px; color:var(--text-dark);">⚙️ Settings</h2>
             <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:12px;">Manage your account and preferences.</p>
 
             <% if (messages && messages.success) { %>
@@ -191,7 +72,7 @@
 
             <!-- ===== 1. PROFILE ===== -->
             <div class="card mobile-settings-card">
-                <h3><i class="fas fa-user" style="color:var(--primary);"></i> Profile</h3>
+                <h3><i class="fas fa-user" style="color:#8B5CF6;"></i> Profile</h3>
                 <p>Update your personal information.</p>
                 <form id="profileFormMobile">
                     <div class="mobile-grid-2">
@@ -210,17 +91,15 @@
                     </div>
                     <div class="settings-group">
                         <label>Student ID</label>
-                        <input type="text" value="<%= user.studentId || '' %>" disabled style="background:#f0f0f0;">
+                        <input type="text" value="<%= user.studentId || '' %>" disabled style="background:#f0f0f0; opacity:0.7;">
                     </div>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Save Profile
-                    </button>
+                    <button type="submit" class="btn"><i class="fas fa-save"></i> Save Profile</button>
                 </form>
             </div>
 
             <!-- ===== 2. ACCOUNT ===== -->
             <div class="card mobile-settings-card">
-                <h3><i class="fas fa-key" style="color:var(--primary);"></i> Account</h3>
+                <h3><i class="fas fa-key" style="color:#8B5CF6;"></i> Account</h3>
                 <p>Change your password.</p>
                 <form id="passwordFormMobile">
                     <div class="settings-group">
@@ -235,37 +114,33 @@
                         <label for="confirmPasswordMobile">Confirm New Password</label>
                         <input type="password" id="confirmPasswordMobile" name="confirmPassword" placeholder="Confirm new password">
                     </div>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Change Password
-                    </button>
+                    <button type="submit" class="btn"><i class="fas fa-save"></i> Change Password</button>
                 </form>
             </div>
 
             <!-- ===== 3. SECURITY ===== -->
             <div class="card mobile-settings-card">
-                <h3><i class="fas fa-shield-alt" style="color:var(--primary);"></i> Security</h3>
+                <h3><i class="fas fa-shield-alt" style="color:#8B5CF6;"></i> Security</h3>
                 <p>Protect your account with additional security.</p>
                 <div class="mobile-settings-toggle">
                     <input type="checkbox" id="twoFactorMobile" name="twoFactorEnabled" <%= user.twoFactorEnabled ? 'checked' : '' %>>
-                    <label for="twoFactorMobile" style="margin:0; font-weight:600;">Two-Factor Authentication (2FA)</label>
+                    <label for="twoFactorMobile">Two-Factor Authentication (2FA)</label>
                 </div>
                 <p class="help-text">Add an extra layer of security to your account.</p>
-                <button id="logoutAllMobile" class="btn btn-secondary" style="margin-top:4px;">
-                    <i class="fas fa-sign-out-alt"></i> Logout from All Sessions
-                </button>
+                <button id="logoutAllMobile" class="btn btn-secondary" style="margin-top:4px; background:#ede8f5; color:#1A0A2E;"><i class="fas fa-sign-out-alt"></i> Logout from All Sessions</button>
             </div>
 
             <!-- ===== 4. APPEARANCE ===== -->
             <div class="card mobile-settings-card">
-                <h3><i class="fas fa-palette" style="color:var(--primary);"></i> Appearance</h3>
+                <h3><i class="fas fa-palette" style="color:#8B5CF6;"></i> Appearance</h3>
                 <p>Customize how SHINEX looks.</p>
                 <div class="mobile-settings-toggle">
                     <input type="checkbox" id="darkModeMobileSetting" name="darkMode" <%= user.darkMode ? 'checked' : '' %>>
-                    <label for="darkModeMobileSetting" style="margin:0; font-weight:600;">Dark Mode</label>
+                    <label for="darkModeMobileSetting">Dark Mode</label>
                 </div>
                 <p class="help-text">Toggle between light and dark mode.</p>
                 <div class="mobile-text-size">
-                    <i class="fas fa-font" style="color:var(--primary);"></i>
+                    <i class="fas fa-font" style="color:#8B5CF6;"></i>
                     <input type="range" class="text-size-slider" min="12" max="24" value="<%= user.textSize || 16 %>" step="1">
                     <span class="text-size-value"><%= user.textSize || 16 %>px</span>
                 </div>
@@ -273,25 +148,25 @@
 
             <!-- ===== 5. NOTIFICATIONS ===== -->
             <div class="card mobile-settings-card">
-                <h3><i class="fas fa-bell" style="color:var(--primary);"></i> Notifications</h3>
+                <h3><i class="fas fa-bell" style="color:#8B5CF6;"></i> Notifications</h3>
                 <p>Choose how you receive updates.</p>
                 <div class="mobile-settings-toggle">
                     <input type="checkbox" id="emailNotifMobile" name="emailNotifications" class="notification-checkbox" <%= user.emailNotifications ? 'checked' : '' %>>
-                    <label for="emailNotifMobile" style="margin:0; font-weight:600;">Email Notifications</label>
+                    <label for="emailNotifMobile">Email Notifications</label>
                 </div>
                 <div class="mobile-settings-toggle">
                     <input type="checkbox" id="browserNotifMobile" name="browserNotifications" class="notification-checkbox" <%= user.browserNotifications ? 'checked' : '' %>>
-                    <label for="browserNotifMobile" style="margin:0; font-weight:600;">Browser Notifications</label>
+                    <label for="browserNotifMobile">Browser Notifications</label>
                 </div>
                 <div class="mobile-settings-toggle">
                     <input type="checkbox" id="courseUpdateMobile" name="courseUpdates" class="notification-checkbox" <%= user.courseUpdates ? 'checked' : '' %>>
-                    <label for="courseUpdateMobile" style="margin:0; font-weight:600;">Course Updates</label>
+                    <label for="courseUpdateMobile">Course Updates</label>
                 </div>
             </div>
 
             <!-- ===== 6. PRIVACY ===== -->
             <div class="card mobile-settings-card">
-                <h3><i class="fas fa-lock" style="color:var(--primary);"></i> Privacy</h3>
+                <h3><i class="fas fa-lock" style="color:#8B5CF6;"></i> Privacy</h3>
                 <p>Control who can see your information.</p>
                 <div class="settings-group">
                     <label for="profileVisibilityMobile">Profile Visibility</label>
@@ -304,7 +179,7 @@
 
             <!-- ===== 7. LEARNING ===== -->
             <div class="card mobile-settings-card">
-                <h3><i class="fas fa-graduation-cap" style="color:var(--primary);"></i> Learning</h3>
+                <h3><i class="fas fa-graduation-cap" style="color:#8B5CF6;"></i> Learning</h3>
                 <p>Customize your learning experience.</p>
                 <div class="settings-group">
                     <label for="learningLevelMobile">Learning Level</label>
@@ -323,33 +198,100 @@
 
             <!-- ===== 8. HELP & SUPPORT ===== -->
             <div class="card mobile-settings-card">
-                <h3><i class="fas fa-headset" style="color:var(--primary);"></i> Help & Support</h3>
+                <h3><i class="fas fa-headset" style="color:#8B5CF6;"></i> Help & Support</h3>
                 <p>Need help? We're here for you.</p>
-                <a href="/faq" class="btn btn-secondary" style="margin-bottom:6px;">
-                    <i class="fas fa-question-circle"></i> View FAQs
-                </a>
-                <a href="/contact" class="btn btn-primary">
-                    <i class="fas fa-envelope"></i> Contact Support
-                </a>
+                <a href="/faq" class="btn btn-secondary" style="margin-bottom:6px; background:#ede8f5; color:#1A0A2E; display:block; text-align:center; text-decoration:none;"><i class="fas fa-question-circle"></i> View FAQs</a>
+                <a href="/contact" class="btn" style="display:block; text-align:center; text-decoration:none;"><i class="fas fa-envelope"></i> Contact Support</a>
             </div>
 
             <!-- ===== 9. DANGER ZONE ===== -->
             <div class="mobile-danger-zone">
                 <h4><i class="fas fa-exclamation-triangle"></i> Danger Zone</h4>
                 <p>Once you delete your account, there is no going back.</p>
-                <button id="deleteAccountMobile" class="btn-danger-zone-mobile">
-                    <i class="fas fa-trash-alt"></i> Delete Account
-                </button>
+                <button id="deleteAccountMobile" class="btn-danger-zone-mobile"><i class="fas fa-trash-alt"></i> Delete Account</button>
             </div>
         </div>
     </main>
 
-    <%- include('partials/footer-mobile') %>
+    <!-- ===== MOBILE FOOTER ===== -->
+    <footer class="footer" style="background:linear-gradient(135deg, #6a3dcf, #4a1a8a); padding:24px 0 16px; margin-top:24px;">
+        <div class="container">
+            <div style="text-align:center;">
+                <div style="display:flex; justify-content:center; align-items:center; gap:8px; margin-bottom:6px;">
+                    <div class="logo" style="width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.2); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:11px;">SLC</div>
+                    <div><div class="logo-text" style="font-size:14px; color:#fff;">SHINEX<span style="color:#fff;">.</span></div></div>
+                </div>
+                <p style="color:rgba(255,255,255,0.7); font-size:0.8rem; margin:4px 0 8px;">Learn. Understand. Protect.</p>
+                <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:8px 16px; margin:12px 0;">
+                    <a href="/" style="color:rgba(255,255,255,0.7); font-size:0.75rem; text-decoration:none;">Home</a>
+                    <a href="/courses" style="color:rgba(255,255,255,0.7); font-size:0.75rem; text-decoration:none;">Courses</a>
+                    <a href="/services" style="color:rgba(255,255,255,0.7); font-size:0.75rem; text-decoration:none;">Services</a>
+                    <a href="/about" style="color:rgba(255,255,255,0.7); font-size:0.75rem; text-decoration:none;">About</a>
+                    <a href="/contact" style="color:rgba(255,255,255,0.7); font-size:0.75rem; text-decoration:none;">Contact</a>
+                    <a href="/faq" style="color:rgba(255,255,255,0.7); font-size:0.75rem; text-decoration:none;">FAQ</a>
+                </div>
+                <div style="display:flex; justify-content:center; gap:12px; margin:8px 0 12px;">
+                    <a href="#" style="color:rgba(255,255,255,0.7); font-size:1.2rem;"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" style="color:rgba(255,255,255,0.7); font-size:1.2rem;"><i class="fab fa-twitter"></i></a>
+                    <a href="#" style="color:rgba(255,255,255,0.7); font-size:1.2rem;"><i class="fab fa-instagram"></i></a>
+                    <a href="#" style="color:rgba(255,255,255,0.7); font-size:1.2rem;"><i class="fab fa-whatsapp"></i></a>
+                </div>
+                <div class="footer-bottom" style="border-top:1px solid rgba(255,255,255,0.1); padding-top:10px; font-size:0.7rem; color:rgba(255,255,255,0.6);">&copy; <%= new Date().getFullYear() %> SHINEX Learning Circle</div>
+            </div>
+        </div>
+    </footer>
 
+    <!-- ===== AI BOT ===== -->
+    <div class="ai-bot" id="aiBot" style="position:fixed; bottom:30px; right:30px; z-index:999; cursor:pointer;">
+        <button class="ai-bot-btn" id="aiBotBtn" style="width:60px; height:60px; border-radius:50%; background:linear-gradient(135deg, #8B5CF6, #6a3dcf); color:#fff; border:none; font-size:26px; box-shadow:0 8px 30px rgba(139,92,246,0.4); cursor:pointer; position:relative; z-index:2;">🤖<span class="ai-bot-pulse" style="position:absolute; width:60px; height:60px; border-radius:50%; background:rgba(139,92,246,0.3); animation:pulseRing 2s ease-out infinite; z-index:1; top:0; left:0;"></span></button>
+    </div>
+    <div class="ai-chat-modal" id="aiChatModal" style="position:fixed; bottom:100px; right:30px; width:380px; max-width:calc(100vw - 40px); max-height:500px; background:#fff; border-radius:14px; border:1px solid #ede8f5; box-shadow:0 20px 60px rgba(0,0,0,0.15); z-index:1000; display:none; flex-direction:column; overflow:hidden;">
+        <div class="ai-chat-header" style="padding:14px 18px; background:#8B5CF6; color:#fff; display:flex; justify-content:space-between; align-items:center;">
+            <h4 style="font-size:0.95rem; font-weight:700; margin:0;">🤖 AI Tutor</h4>
+            <button class="ai-chat-close" id="aiChatClose" style="background:none; border:none; color:#fff; font-size:1.2rem; cursor:pointer; padding:4px;">&times;</button>
+        </div>
+        <div class="ai-chat-body" id="aiChatBody" style="padding:16px 18px; flex:1; overflow-y:auto; max-height:300px;">
+            <div class="ai-chat-messages" id="aiChatMessages" style="display:flex; flex-direction:column; gap:8px;">
+                <div class="ai-chat-msg bot" style="padding:10px 14px; border-radius:10px; font-size:0.9rem; max-width:85%; line-height:1.5; background:#f0ebfb; color:#1A0A2E; align-self:flex-start; border-bottom-left-radius:4px;">👋 Hi! I'm your SHINEX AI Tutor. Ask me anything!</div>
+            </div>
+        </div>
+        <div class="ai-chat-footer" style="padding:12px 18px; border-top:1px solid #ede8f5; display:flex; gap:8px;">
+            <input type="text" id="aiChatInput" placeholder="Ask a question..." autocomplete="off" style="flex:1; padding:8px 12px; border-radius:8px; border:1px solid #ede8f5; font-size:0.85rem;">
+            <button class="btn btn-primary" id="aiChatSend" style="padding:8px 16px; border:none; border-radius:30px; background:#8B5CF6; color:#fff; font-weight:600; cursor:pointer;">Send</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"></script>
+    <script src="/js/main.js"></script>
     <script>
-        // Re-initialize settings for mobile
+        // ===== DARK MODE TOGGLE =====
+        function toggleDarkModeMobile() {
+            const body = document.body;
+            body.classList.toggle('dark-mode');
+            const isDark = body.classList.contains('dark-mode');
+            localStorage.setItem('shinex-dark-mode', isDark);
+            const btn = document.getElementById('darkToggleMobile');
+            if (btn) btn.textContent = isDark ? '☀️' : '🌙';
+            
+            // Update settings checkbox
+            const darkModeSetting = document.getElementById('darkModeMobileSetting');
+            if (darkModeSetting) darkModeSetting.checked = isDark;
+        }
+        
+        // Load saved dark mode on page load
         document.addEventListener('DOMContentLoaded', function() {
-            // Profile form
+            const savedDark = localStorage.getItem('shinex-dark-mode');
+            if (savedDark === 'true') {
+                document.body.classList.add('dark-mode');
+                const btn = document.getElementById('darkToggleMobile');
+                if (btn) btn.textContent = '☀️';
+                const darkModeSetting = document.getElementById('darkModeMobileSetting');
+                if (darkModeSetting) darkModeSetting.checked = true;
+            }
+        });
+
+        // ===== PROFILE FORM =====
+        document.addEventListener('DOMContentLoaded', function() {
             const profileForm = document.getElementById('profileFormMobile');
             if (profileForm) {
                 profileForm.addEventListener('submit', function(e) {
@@ -371,7 +313,7 @@
                 });
             }
 
-            // Password form
+            // ===== PASSWORD FORM =====
             const passwordForm = document.getElementById('passwordFormMobile');
             if (passwordForm) {
                 passwordForm.addEventListener('submit', function(e) {
@@ -406,19 +348,20 @@
                 });
             }
 
-            // Dark mode toggle
+            // ===== DARK MODE SETTING =====
             const darkModeSetting = document.getElementById('darkModeMobileSetting');
             if (darkModeSetting) {
                 darkModeSetting.addEventListener('change', function() {
                     const body = document.body;
                     body.classList.toggle('dark-mode', this.checked);
                     localStorage.setItem('shinex-dark-mode', this.checked);
-                    updateAllToggles(this.checked);
+                    const btn = document.getElementById('darkToggleMobile');
+                    if (btn) btn.textContent = this.checked ? '☀️' : '🌙';
                     showToast(this.checked ? '🌙 Dark mode enabled' : '☀️ Light mode enabled', 'success');
                 });
             }
 
-            // 2FA toggle
+            // ===== 2FA TOGGLE =====
             const twoFactor = document.getElementById('twoFactorMobile');
             if (twoFactor) {
                 twoFactor.addEventListener('change', function() {
@@ -438,7 +381,7 @@
                 });
             }
 
-            // Notification checkboxes
+            // ===== NOTIFICATION CHECKBOXES =====
             document.querySelectorAll('.notification-checkbox').forEach(cb => {
                 cb.addEventListener('change', function() {
                     const formData = new FormData();
@@ -457,7 +400,7 @@
                 });
             });
 
-            // Privacy
+            // ===== PRIVACY =====
             const privacySelect = document.getElementById('profileVisibilityMobile');
             if (privacySelect) {
                 privacySelect.addEventListener('change', function() {
@@ -477,7 +420,7 @@
                 });
             }
 
-            // Learning level
+            // ===== LEARNING LEVEL =====
             const levelSelect = document.getElementById('learningLevelMobile');
             if (levelSelect) {
                 levelSelect.addEventListener('change', function() {
@@ -497,7 +440,7 @@
                 });
             }
 
-            // Learning interests
+            // ===== LEARNING INTERESTS =====
             const interests = document.getElementById('learningInterestsMobile');
             if (interests) {
                 let timeoutId;
@@ -521,7 +464,7 @@
                 });
             }
 
-            // Logout all
+            // ===== LOGOUT ALL =====
             const logoutAll = document.getElementById('logoutAllMobile');
             if (logoutAll) {
                 logoutAll.addEventListener('click', function() {
@@ -535,7 +478,7 @@
                 });
             }
 
-            // Delete account
+            // ===== DELETE ACCOUNT =====
             const deleteBtn = document.getElementById('deleteAccountMobile');
             if (deleteBtn) {
                 deleteBtn.addEventListener('click', function() {
@@ -558,8 +501,42 @@
                 });
             }
         });
-    </script>
 
-    <script src="/js/main.js"></script>
+        // ===== TOAST FUNCTION =====
+        function showToast(message, type) {
+            const existing = document.querySelector('.toast-notification');
+            if (existing) existing.remove();
+            
+            const toast = document.createElement('div');
+            toast.className = 'toast-notification toast-' + type;
+            toast.innerHTML = message;
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 100px;
+                left: 50%;
+                transform: translateX(-50%);
+                padding: 14px 28px;
+                border-radius: 12px;
+                font-weight: 600;
+                font-size: 0.95rem;
+                z-index: 99999;
+                background: ${type === 'success' ? '#27ae60' : type === 'error' ? '#e74c3c' : '#3498db'};
+                color: #fff;
+                box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+                animation: slideUp 0.4s ease;
+                max-width: 90%;
+                text-align: center;
+                font-family: 'Inter', sans-serif;
+            `;
+            document.body.appendChild(toast);
+            
+            setTimeout(function() {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(-50%) translateY(20px)';
+                toast.style.transition = 'all 0.4s ease';
+                setTimeout(function() { toast.remove(); }, 400);
+            }, 3500);
+        }
+    </script>
 </body>
 </html>

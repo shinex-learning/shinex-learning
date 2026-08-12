@@ -95,15 +95,13 @@ const COURSE_CODES = {
 };
 
 // ============================================================
-// MONGODB SCHEMAS – UPDATED WITH NEW FIELDS
+// MONGODB SCHEMAS
 // ============================================================
 
-// User Schema – with new settings fields + testResults
 const UserSchema = new mongoose.Schema({
     id: { type: String, unique: true },
     studentId: { type: String, unique: true },
     
-    // Personal Information
     firstName: { type: String, required: true },
     middleName: String,
     lastName: { type: String, required: true },
@@ -113,63 +111,44 @@ const UserSchema = new mongoose.Schema({
     state: String,
     city: String,
     
-    // Contact Information
     email: { type: String, unique: true, required: true },
     phone: String,
     whatsapp: String,
     homeAddress: String,
     
-    // Academic Information
     school: String,
     department: String,
     currentLevel: String,
     studentStatus: String,
     
-    // Course & Learning
     courseId: String,
     courseName: String,
     learningLevel: { type: String, enum: ['Beginner', 'Intermediate', 'Advanced'], default: 'Beginner' },
     
-    // Account
     password: { type: String, required: true },
     isVerified: { type: Boolean, default: false },
     verificationToken: String,
     tokenExpires: Date,
     
-    // Progress & Test Results
     progress: { type: Object, default: {} },
-    testResults: { type: Object, default: {} }, // key: levelId, value: { score, total, passed }
+    testResults: { type: Object, default: {} },
     
-    // Admin
     isAdmin: { type: Boolean, default: false },
     
-    // ===== NEW SETTINGS FIELDS =====
-    // Appearance
     textSize: { type: Number, default: 16 },
     darkMode: { type: Boolean, default: false },
-    
-    // Security
     twoFactorEnabled: { type: Boolean, default: false },
-    
-    // Notifications
     emailNotifications: { type: Boolean, default: true },
     browserNotifications: { type: Boolean, default: false },
     courseUpdates: { type: Boolean, default: true },
-    
-    // Privacy
     profileVisibility: { type: String, enum: ['public', 'private'], default: 'public' },
-    
-    // Learning interests (free text or array)
     learningInterests: { type: String, default: '' },
-    
-    // Legacy / Misc
     bio: { type: String, default: '' },
     notifications: { type: Array, default: [] },
     
     createdAt: { type: Date, default: Date.now }
 });
 
-// Contact Message Schema
 const ContactMessageSchema = new mongoose.Schema({
     id: { type: String, unique: true },
     name: { type: String, required: true },
@@ -182,7 +161,6 @@ const ContactMessageSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now }
 });
 
-// Course Schema
 const CourseSchema = new mongoose.Schema({
     id: { type: String, unique: true },
     title: String,
@@ -219,7 +197,6 @@ const CourseSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now }
 });
 
-// Service Schema
 const ServiceSchema = new mongoose.Schema({
     id: { type: String, unique: true },
     name: { type: String, required: true },
@@ -250,7 +227,6 @@ function generateToken() {
     return crypto.randomBytes(32).toString('hex');
 }
 
-// ===== STUDENT ID GENERATOR =====
 async function generateStudentId(courseCode, year = new Date().getFullYear()) {
     const courseCodePadded = String(courseCode).padStart(2, '0');
     const regex = new RegExp(`SLC-${year}-${courseCodePadded}-`);
@@ -318,29 +294,67 @@ function parseContent(text) {
 }
 
 // ============================================================
-// EMAIL TRANSPORTER
+// EMAIL TRANSPORTER - FIXED
 // ============================================================
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_APP_PASSWORD
-    }
-});
 
+// Check if email credentials exist
+const hasEmailConfig = process.env.EMAIL_USER && process.env.EMAIL_APP_PASSWORD;
+
+// Create transporter only if credentials exist
+let transporter = null;
+
+if (hasEmailConfig) {
+    try {
+        transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_APP_PASSWORD
+            },
+            // Add these to prevent timeout issues
+            pool: true,
+            maxConnections: 1,
+            rateDelta: 1000,
+            rateLimit: 5
+        });
+        console.log('✅ Email transporter configured successfully');
+    } catch (error) {
+        console.error('❌ Email transporter configuration error:', error.message);
+        transporter = null;
+    }
+} else {
+    console.log('⚠️ Email credentials not found. Emails will be logged instead.');
+}
+
+// ===== SEND EMAIL FUNCTION - FIXED =====
 async function sendEmail(to, subject, html, from = process.env.EMAIL_USER) {
+    // If no transporter, just log the email
+    if (!transporter) {
+        console.log('📧 EMAIL WOULD BE SENT (no transporter):');
+        console.log('   To:', to);
+        console.log('   Subject:', subject);
+        console.log('   From:', from);
+        console.log('   HTML length:', html ? html.length : 0);
+        return { success: true, info: { messageId: 'simulated-' + Date.now() } };
+    }
+
     try {
         const mailOptions = {
-            from: from || process.env.EMAIL_USER,
+            from: from || `"SHINEX Learning Circle" <${process.env.EMAIL_USER}>`,
             to: to,
             subject: subject,
             html: html
         };
+        
         const info = await transporter.sendMail(mailOptions);
         console.log('✅ Email sent to:', to);
         return { success: true, info };
     } catch (error) {
-        console.error('❌ Email error:', error);
+        console.error('❌ Email error:', error.message);
+        // Log the email instead of failing
+        console.log('📧 Email content (logged due to error):');
+        console.log('   To:', to);
+        console.log('   Subject:', subject);
         return { success: false, error: error.message };
     }
 }
@@ -557,7 +571,6 @@ app.post('/register', async (req, res) => {
             password: hashedPassword,
             isVerified: false,
             verificationToken: verificationToken,
-            // Default settings
             darkMode: false,
             textSize: 16,
             twoFactorEnabled: false,
@@ -950,7 +963,6 @@ app.post('/enroll', requireAuth, async (req, res) => {
         return res.redirect('/enroll');
     }
     
-    // Reset progress if switching courses
     user.courseId = course.id;
     user.courseName = course.title;
     user.progress = {};
@@ -1054,7 +1066,6 @@ app.get('/level/:courseId/:levelId', async (req, res) => {
         return res.redirect('/course/' + req.params.courseId);
     }
 
-    // Build allClasses with locked flag
     let allClasses = [];
     let classIndex = 0;
     if (level.lessons) {
@@ -1062,7 +1073,6 @@ app.get('/level/:courseId/:levelId', async (req, res) => {
             if (lesson.classes) {
                 lesson.classes.forEach(cls => {
                     const isCompleted = user && user.progress && user.progress[cls.id] || false;
-                    // Lock if previous class exists and is NOT completed
                     let isLocked = false;
                     if (classIndex > 0) {
                         const prevClass = allClasses[classIndex - 1];
@@ -1096,13 +1106,11 @@ app.get('/level/:courseId/:levelId', async (req, res) => {
         currentClassId = currentClass.id;
     }
 
-    // If the current class is locked, redirect to the first unlocked one (or the first class)
     if (currentClass && currentClass.locked) {
         const firstUnlocked = allClasses.find(c => !c.locked);
         if (firstUnlocked) {
             return res.redirect(`/level/${course.id}/${level.id}?classId=${firstUnlocked.id}`);
         } else {
-            // All locked? Just go to first class (should not happen normally)
             return res.redirect(`/level/${course.id}/${level.id}?classId=${allClasses[0].id}`);
         }
     }
@@ -1125,7 +1133,6 @@ app.get('/level/:courseId/:levelId', async (req, res) => {
     let prevClassId = currentIndex > 0 ? allClasses[currentIndex - 1].id : null;
     let nextClassId = currentIndex < allClasses.length - 1 ? allClasses[currentIndex + 1].id : null;
 
-    // Check if next class is locked (i.e., current class not completed)
     let nextLocked = false;
     if (nextClassId) {
         const nextClass = allClasses.find(c => c.id === nextClassId);
@@ -1160,7 +1167,7 @@ app.get('/level/:courseId/:levelId', async (req, res) => {
 app.post('/level/:courseId/:levelId/test/submit', requireAuth, async (req, res) => {
     const { courseId, levelId } = req.params;
     const user = req.user;
-    const answers = req.body; // answers[questionId] = optionIndex
+    const answers = req.body;
 
     const course = await Course.findOne({ id: courseId });
     if (!course) {
@@ -1177,16 +1184,15 @@ app.post('/level/:courseId/:levelId/test/submit', requireAuth, async (req, res) 
     let correct = 0;
     const total = level.test.questions.length;
 
-    level.test.questions.forEach((q, index) => {
+    level.test.questions.forEach((q) => {
         const userAnswer = parseInt(answers['q_' + q.id]);
         if (userAnswer === q.correct) {
             correct++;
         }
     });
 
-    const passed = correct >= (total * 0.6); // 60% to pass
+    const passed = correct >= (total * 0.6);
 
-    // Save result
     if (!user.testResults) user.testResults = {};
     user.testResults[levelId] = {
         score: correct,
@@ -1306,7 +1312,7 @@ app.get('/level/:courseId/:levelId/prev/:classId', requireAuth, async (req, res)
 });
 
 // ============================================================
-// SETTINGS ROUTE – UPDATED to handle new fields
+// SETTINGS ROUTE
 // ============================================================
 app.get('/settings', requireAuth, async (req, res) => {
     const view = isMobile(req) ? 'mobile/settings' : 'settings';
@@ -1332,21 +1338,17 @@ app.post('/settings/update', requireAuth, async (req, res) => {
     } = req.body;
 
     try {
-        // Profile
         if (firstName) user.firstName = firstName;
         if (lastName) user.lastName = lastName;
         if (bio !== undefined) user.bio = bio;
 
-        // Appearance
         if (textSize) user.textSize = parseInt(textSize);
         if (darkMode !== undefined) user.darkMode = darkMode === 'on' || darkMode === 'true';
 
-        // Security
         if (twoFactorEnabled !== undefined) {
             user.twoFactorEnabled = twoFactorEnabled === 'on' || twoFactorEnabled === 'true';
         }
 
-        // Notifications
         if (emailNotifications !== undefined) {
             user.emailNotifications = emailNotifications === 'on' || emailNotifications === 'true';
         }
@@ -1357,13 +1359,9 @@ app.post('/settings/update', requireAuth, async (req, res) => {
             user.courseUpdates = courseUpdates === 'on' || courseUpdates === 'true';
         }
 
-        // Privacy
         if (profileVisibility) user.profileVisibility = profileVisibility;
-
-        // Learning
         if (learningInterests !== undefined) user.learningInterests = learningInterests;
 
-        // Password change
         if (currentPassword && newPassword && confirmPassword) {
             if (!(await bcrypt.compare(currentPassword, user.password))) {
                 return res.json({ success: false, error: 'Current password is incorrect.' });
@@ -1446,7 +1444,7 @@ app.get('/services', (req, res) => {
 });
 
 // ============================================================
-// ADMIN ROUTES – (All original, unchanged)
+// ADMIN ROUTES
 // ============================================================
 app.get('/admin/dashboard', blockMobileAdmin, requireAdmin, async (req, res) => {
     const users = await User.find();
@@ -1952,30 +1950,41 @@ app.post('/admin/remove-admin/:id', blockMobileAdmin, requireAdmin, async (req, 
 // START SERVER
 // ============================================================
 async function startServer() {
-    const adminExists = await User.findOne({ email: 'balogunmustaphaaddeji@gmail.com' });
-    if (!adminExists) {
-        const hashed = await bcrypt.hash('SHINEXAdmin@2026', 10);
-        const admin = new User({
-            id: generateId(),
-            firstName: 'Admin',
-            lastName: 'User',
-            email: 'balogunmustaphaaddeji@gmail.com',
-            password: hashed,
-            studentId: 'SLC-2026-ADMIN-001',
-            isAdmin: true,
-            isVerified: true,
-            createdAt: new Date()
-        });
-        await admin.save();
-        console.log('✅ Admin created: balogunmustaphaaddeji@gmail.com / SHINEXAdmin@2026');
-    }
+    try {
+        const adminExists = await User.findOne({ email: 'balogunmustaphaaddeji@gmail.com' });
+        if (!adminExists) {
+            const hashed = await bcrypt.hash('SHINEXAdmin@2026', 10);
+            const admin = new User({
+                id: generateId(),
+                firstName: 'Admin',
+                lastName: 'User',
+                email: 'balogunmustaphaaddeji@gmail.com',
+                password: hashed,
+                studentId: 'SLC-2026-ADMIN-001',
+                isAdmin: true,
+                isVerified: true,
+                createdAt: new Date()
+            });
+            await admin.save();
+            console.log('✅ Admin created: balogunmustaphaaddeji@gmail.com / SHINEXAdmin@2026');
+        }
 
-    app.listen(PORT, () => {
-        console.log(`🚀 SHINEX running on http://localhost:${PORT}`);
-        console.log(`🔐 Admin: balogunmustaphaaddeji@gmail.com / SHINEXAdmin@2026`);
-        console.log(`📚 Admin Login: http://localhost:${PORT}/shinex-admin`);
-        console.log(`📚 MongoDB connected. Data is now PERSISTENT!`);
-    });
+        app.listen(PORT, () => {
+            console.log(`🚀 SHINEX running on http://localhost:${PORT}`);
+            console.log(`🔐 Admin: balogunmustaphaaddeji@gmail.com / SHINEXAdmin@2026`);
+            console.log(`📚 Admin Login: http://localhost:${PORT}/shinex-admin`);
+            console.log(`📚 MongoDB connected. Data is now PERSISTENT!`);
+            
+            // Show email status
+            if (process.env.EMAIL_USER && process.env.EMAIL_APP_PASSWORD) {
+                console.log(`📧 Email configured: ${process.env.EMAIL_USER}`);
+            } else {
+                console.log('⚠️ Email not configured. Set EMAIL_USER and EMAIL_APP_PASSWORD in .env');
+            }
+        });
+    } catch (error) {
+        console.error('❌ Server startup error:', error);
+    }
 }
 
 startServer();

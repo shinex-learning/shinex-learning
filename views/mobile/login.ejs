@@ -7,87 +7,123 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
     <style>
-        .mobile-login-container {
-            padding: 16px 16px 30px;
-            max-width: 420px;
-            margin: 0 auto;
-        }
-        .mobile-login-box {
-            padding: 24px 20px !important;
-            border-radius: 14px !important;
-        }
-        .mobile-login-box h2 {
-            font-size: 1.4rem !important;
-        }
-        .mobile-login-box p {
-            font-size: 0.85rem !important;
-        }
-        .mobile-login-box input {
-            font-size: 0.95rem !important;
-            padding: 12px 14px !important;
-            min-height: 44px !important;
-        }
-        .mobile-login-box .btn {
-            font-size: 0.95rem !important;
-            padding: 12px !important;
-            min-height: 48px !important;
-        }
-        .mobile-login-box label {
-            font-size: 0.85rem !important;
-        }
-        .back-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 0.85rem;
-            margin-bottom: 12px;
-            padding: 6px 0;
-        }
-        .back-link:hover {
-            color: var(--primary);
-        }
+        .mobile-login-container { padding: 16px 16px 30px; max-width: 420px; margin: 0 auto; }
+        .mobile-login-box { padding: 24px 20px !important; border-radius: 14px !important; }
+        .mobile-login-box h2 { font-size: 1.4rem !important; }
+        .mobile-login-box p { font-size: 0.85rem !important; }
+        .mobile-login-box input { font-size: 0.95rem !important; padding: 12px 14px !important; min-height: 44px !important; border-radius: 8px !important; }
+        .mobile-login-box .btn { font-size: 0.95rem !important; padding: 12px !important; min-height: 48px !important; border-radius: 30px !important; }
+        .mobile-login-box label { font-size: 0.85rem !important; }
+        .mobile-alert { font-size: 0.82rem !important; padding: 10px 14px !important; border-radius: 8px !important; margin-bottom: 12px !important; }
+        .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--text-muted); text-decoration: none; font-size: 0.85rem; padding: 6px 0; }
+        .back-link:hover { color: var(--primary); }
     </style>
 </head>
 <body>
-    <%- include('partials/header-mobile', { showBack: true }) %>
+    <!-- ===== MOBILE HEADER ===== -->
+    <header class="header" style="padding:8px 12px; flex-wrap:nowrap;">
+        <div style="display:flex; align-items:center; gap:8px; flex:1; min-width:0;">
+            <a href="javascript:history.back()" class="back-btn" style="font-size:0.75rem; padding:4px 8px; color:rgba(255,255,255,0.9); text-decoration:none; display:flex; align-items:center; gap:4px;">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <a href="/" class="logo-container" style="gap:8px; text-decoration:none;">
+                <div class="logo" style="width:32px; height:32px; border-radius:50%; background:rgba(255,255,255,0.2); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:10px;">SLC</div>
+                <div style="line-height:1.1;">
+                    <div class="logo-text" style="font-size:13px; color:#fff;">SHINEX<span style="color:#fff;">.</span></div>
+                    <div class="logo-sub" style="font-size:6px; color:rgba(255,255,255,0.7);">LEARNING</div>
+                </div>
+            </a>
+        </div>
+        <div class="header-actions" style="gap:4px; flex-wrap:nowrap;">
+            <button class="dark-toggle" id="darkToggleMobile" onclick="toggleDarkModeMobile()" style="padding:4px 8px; font-size:1rem; background:rgba(255,255,255,0.15); border:none; border-radius:30px; color:#fff; cursor:pointer;">🌙</button>
+        </div>
+    </header>
 
+    <!-- ===== MAIN CONTENT ===== -->
     <main class="main-content">
         <div class="mobile-login-container">
-            <div class="card mobile-login-box" style="box-shadow:var(--shadow);">
-                <h2 style="font-weight:700; margin:0 0 2px; text-align:center;">Welcome Back</h2>
+            <div class="card mobile-login-box" style="box-shadow:var(--shadow); background:var(--bg-light);">
+                <h2 style="font-weight:700; margin:0 0 2px; text-align:center; color:var(--text-dark);">Welcome Back</h2>
                 <p style="text-align:center; color:var(--text-muted); margin-bottom:20px;">Login with your Student ID or Email</p>
 
                 <% if (messages && messages.success) { %>
-                    <div class="alert alert-success" style="font-size:0.82rem; padding:10px 14px; border-radius:8px;"><%= messages.success %></div>
+                    <div class="alert alert-success mobile-alert"><%= messages.success %></div>
                 <% } %>
                 <% if (messages && messages.error) { %>
-                    <div class="alert alert-danger" style="font-size:0.82rem; padding:10px 14px; border-radius:8px;"><%= messages.error %></div>
+                    <div class="alert alert-danger mobile-alert"><%= messages.error %></div>
                 <% } %>
 
                 <form action="/login" method="POST">
                     <div class="settings-group">
-                        <label for="identifier">Student ID or Email</label>
+                        <label for="identifier" style="color:var(--text-dark);">Student ID or Email</label>
                         <input type="text" id="identifier" name="identifier" placeholder="SLC-2026-01-001 or email@example.com" required>
                     </div>
                     <div class="settings-group">
-                        <label for="password">Password</label>
+                        <label for="password" style="color:var(--text-dark);">Password</label>
                         <input type="password" id="password" name="password" placeholder="Enter your password" required>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-block" style="margin-top:4px;">
+                    <button type="submit" class="btn btn-primary btn-block" style="margin-top:4px; background:#8B5CF6; color:#fff; border:none;">
                         <i class="fas fa-sign-in-alt"></i> Login
                     </button>
                 </form>
 
                 <div style="text-align:center; margin-top:16px; font-size:0.85rem;">
-                    <p style="color:var(--text-muted);">Don't have an account? <a href="/register" style="color:var(--primary); font-weight:600;">Register here</a></p>
+                    <p style="color:var(--text-muted);">Don't have an account? <a href="/register" style="color:#8B5CF6; font-weight:600; text-decoration:none;">Register here</a></p>
                 </div>
             </div>
         </div>
     </main>
 
-    <%- include('partials/footer-mobile') %>
-    <script src="/js/main.js"></script>
-</body>
-</html>
+    <!-- ===== MOBILE FOOTER ===== -->
+    <footer class="footer" style="background:linear-gradient(135deg, #6a3dcf, #4a1a8a); padding:24px 0 16px; margin-top:24px;">
+        <div class="container">
+            <div style="text-align:center;">
+                <div style="display:flex; justify-content:center; align-items:center; gap:8px; margin-bottom:6px;">
+                    <div class="logo" style="width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.2); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:11px;">SLC</div>
+                    <div>
+                        <div class="logo-text" style="font-size:14px; color:#fff;">SHINEX<span style="color:#fff;">.</span></div>
+                    </div>
+                </div>
+                <p style="color:rgba(255,255,255,0.7); font-size:0.8rem; margin:4px 0 8px;">Learn. Understand. Protect.</p>
+                <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:8px 16px; margin:12px 0;">
+                    <a href="/" style="color:rgba(255,255,255,0.7); font-size:0.75rem; text-decoration:none;">Home</a>
+                    <a href="/courses" style="color:rgba(255,255,255,0.7); font-size:0.75rem; text-decoration:none;">Courses</a>
+                    <a href="/services" style="color:rgba(255,255,255,0.7); font-size:0.75rem; text-decoration:none;">Services</a>
+                    <a href="/about" style="color:rgba(255,255,255,0.7); font-size:0.75rem; text-decoration:none;">About</a>
+                    <a href="/contact" style="color:rgba(255,255,255,0.7); font-size:0.75rem; text-decoration:none;">Contact</a>
+                    <a href="/faq" style="color:rgba(255,255,255,0.7); font-size:0.75rem; text-decoration:none;">FAQ</a>
+                </div>
+                <div style="display:flex; justify-content:center; gap:12px; margin:8px 0 12px;">
+                    <a href="#" style="color:rgba(255,255,255,0.7); font-size:1.2rem;"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" style="color:rgba(255,255,255,0.7); font-size:1.2rem;"><i class="fab fa-twitter"></i></a>
+                    <a href="#" style="color:rgba(255,255,255,0.7); font-size:1.2rem;"><i class="fab fa-instagram"></i></a>
+                    <a href="#" style="color:rgba(255,255,255,0.7); font-size:1.2rem;"><i class="fab fa-whatsapp"></i></a>
+                </div>
+                <div class="footer-bottom" style="border-top:1px solid rgba(255,255,255,0.1); padding-top:10px; font-size:0.7rem; color:rgba(255,255,255,0.6);">
+                    &copy; <%= new Date().getFullYear() %> SHINEX Learning Circle
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===== AI BOT ===== -->
+    <div class="ai-bot" id="aiBot" style="position:fixed; bottom:30px; right:30px; z-index:999; cursor:pointer;">
+        <button class="ai-bot-btn" id="aiBotBtn" style="width:60px; height:60px; border-radius:50%; background:linear-gradient(135deg, #8B5CF6, #6a3dcf); color:#fff; border:none; font-size:26px; box-shadow:0 8px 30px rgba(139,92,246,0.4); cursor:pointer; position:relative; z-index:2;">🤖<span class="ai-bot-pulse" style="position:absolute; width:60px; height:60px; border-radius:50%; background:rgba(139,92,246,0.3); animation:pulseRing 2s ease-out infinite; z-index:1; top:0; left:0;"></span></button>
+    </div>
+    <div class="ai-chat-modal" id="aiChatModal" style="position:fixed; bottom:100px; right:30px; width:380px; max-width:calc(100vw - 40px); max-height:500px; background:#fff; border-radius:14px; border:1px solid #ede8f5; box-shadow:0 20px 60px rgba(0,0,0,0.15); z-index:1000; display:none; flex-direction:column; overflow:hidden;">
+        <div class="ai-chat-header" style="padding:14px 18px; background:#8B5CF6; color:#fff; display:flex; justify-content:space-between; align-items:center;">
+            <h4 style="font-size:0.95rem; font-weight:700; margin:0;">🤖 AI Tutor</h4>
+            <button class="ai-chat-close" id="aiChatClose" style="background:none; border:none; color:#fff; font-size:1.2rem; cursor:pointer; padding:4px;">&times;</button>
+        </div>
+        <div class="ai-chat-body" id="aiChatBody" style="padding:16px 18px; flex:1; overflow-y:auto; max-height:300px;">
+            <div class="ai-chat-messages" id="aiChatMessages" style="display:flex; flex-direction:column; gap:8px;">
+                <div class="ai-chat-msg bot" style="padding:10px 14px; border-radius:10px; font-size:0.9rem; max-width:85%; line-height:1.5; background:#f0ebfb; color:#1A0A2E; align-self:flex-start; border-bottom-left-radius:4px;">👋 Hi! I'm your SHINEX AI Tutor. Ask me anything!</div>
+            </div>
+        </div>
+        <div class="ai-chat-footer" style="padding:12px 18px; border-top:1px solid #ede8f5; display:flex; gap:8px;">
+            <input type="text" id="aiChatInput" placeholder="Ask a question..." autocomplete="off" style="flex:1; padding:8px 12px; border-radius:8px; border:1px solid #ede8f5; font-size:0.85rem;">
+            <button class="btn btn-primary" id="aiChatSend" style="padding:8px 16px; border:none; border-radius:30px; background:#8B5CF6; color:#fff; font-weight:600; cursor:pointer;">Send</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.

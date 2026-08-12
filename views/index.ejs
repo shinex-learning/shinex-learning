@@ -6,6 +6,57 @@
     <title>SHINEX Learning Circle – Learn. Understand. Protect.</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
+    <style>
+        /* ===== DARK MODE FIXES FOR INDEX ===== */
+        body.dark-mode .hero-section {
+            background: linear-gradient(135deg, #2a1a4a, #1a0a2e) !important;
+        }
+        body.dark-mode .hero-section h1,
+        body.dark-mode .hero-section p {
+            color: #ffffff !important;
+        }
+        body.dark-mode .hero-section .btn-secondary {
+            background: #8B5CF6 !important;
+            color: #ffffff !important;
+        }
+        body.dark-mode .card {
+            background: #1a1a1a !important;
+            border-color: #333 !important;
+        }
+        body.dark-mode .card h4,
+        body.dark-mode .card p,
+        body.dark-mode .card .price {
+            color: #ffffff !important;
+        }
+        body.dark-mode .card .btn-secondary {
+            background: #2a2a2a !important;
+            color: #ffffff !important;
+        }
+        body.dark-mode .course-card {
+            background: #1a1a1a !important;
+            border-color: #333 !important;
+        }
+        body.dark-mode .course-card .course-title,
+        body.dark-mode .course-card .course-desc {
+            color: #ffffff !important;
+        }
+        body.dark-mode .course-card .btn-primary {
+            background: #8B5CF6 !important;
+            color: #ffffff !important;
+        }
+        body.dark-mode .empty-state {
+            background: #1a1a1a !important;
+            border-color: #333 !important;
+        }
+        body.dark-mode .empty-state h3,
+        body.dark-mode .empty-state p {
+            color: #ffffff !important;
+        }
+        body.dark-mode h2,
+        body.dark-mode p {
+            color: #ffffff !important;
+        }
+    </style>
 </head>
 <body>
     <%- include('partials/header') %>

@@ -3,228 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Dashboard – SHINEX Learning Circle</title>
+    <title>Dashboard – SHINEX</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
     <style>
-        .mobile-dash-container {
-            padding: 12px 12px 24px;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-        .mobile-welcome {
-            padding: 18px 16px !important;
-            border-radius: 14px !important;
-            margin-bottom: 16px !important;
-        }
-        .mobile-welcome h1 {
-            font-size: 1.2rem !important;
-            margin: 0 !important;
-        }
-        .mobile-welcome p {
-            font-size: 0.8rem !important;
-            margin: 4px 0 0 !important;
-        }
-        .mobile-welcome .student-id {
-            display: inline-block;
-            background: rgba(255,255,255,0.2);
-            padding: 2px 10px;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 0.75rem;
-        }
-        .mobile-stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr;
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-        .mobile-stats .stat-box {
-            padding: 10px 6px !important;
-            border-radius: 10px !important;
-        }
-        .mobile-stats .stat-box .stat-number {
-            font-size: 1.2rem !important;
-        }
-        .mobile-stats .stat-box .stat-label {
-            font-size: 0.6rem !important;
-        }
-        .mobile-progress {
-            margin-bottom: 16px;
-        }
-        .mobile-progress .progress-label {
-            font-size: 0.8rem !important;
-        }
-        .mobile-course-card {
-            padding: 14px 14px !important;
-            border-radius: 12px !important;
-            margin-bottom: 12px !important;
-        }
-        .mobile-course-card h3 {
-            font-size: 1rem !important;
-            margin: 0 0 4px !important;
-        }
-        .mobile-course-card p {
-            font-size: 0.82rem !important;
-            margin: 0 0 8px !important;
-        }
-        .mobile-course-card .btn {
-            font-size: 0.82rem !important;
-            padding: 8px 16px !important;
-            min-height: 38px !important;
-        }
-        .mobile-section-title {
-            font-size: 1.1rem !important;
-            font-weight: 700 !important;
-            margin: 16px 0 6px !important;
-        }
-        .mobile-grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-        .mobile-grid-2 .course-card {
-            padding: 12px !important;
-            border-radius: 10px !important;
-        }
-        .mobile-grid-2 .course-card h4 {
-            font-size: 0.82rem !important;
-            margin: 0 0 2px !important;
-        }
-        .mobile-grid-2 .course-card .btn {
-            font-size: 0.7rem !important;
-            padding: 6px !important;
-            min-height: 32px !important;
-            width: 100%;
-        }
-        .mobile-quick-links {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px solid #ede8f5;
-        }
-        .mobile-quick-links .btn {
-            font-size: 0.75rem !important;
-            padding: 6px 12px !important;
-            min-height: 32px !important;
-        }
-        body.dark-mode .mobile-quick-links {
-            border-color: var(--dark-border);
-        }
-        .btn-change-course {
-            background: rgba(255,255,255,0.2);
-            color: #fff;
-            border: 1px solid rgba(255,255,255,0.3);
-            font-size: 0.75rem !important;
-            padding: 4px 12px !important;
-            min-height: 30px !important;
-            border-radius: 20px !important;
-        }
-        .btn-change-course:hover {
-            background: rgba(255,255,255,0.3);
-        }
-        @media (max-width: 400px) {
-            .mobile-stats {
-                grid-template-columns: 1fr 1fr;
-            }
-            .mobile-grid-2 {
-                grid-template-columns: 1fr;
-            }
-        }
+        .mobile-dash-container { padding: 12px 12px 24px; max-width: 500px; margin: 0 auto; }
+        .mobile-welcome { padding: 18px 16px !important; border-radius: 14px !important; margin-bottom: 16px !important; background: linear-gradient(135deg, #8B5CF6, #6a3dcf) !important; }
+        .mobile-welcome h1 { font-size: 1.2rem !important; margin: 0 !important; color: #fff !important; }
+        .mobile-welcome p { font-size: 0.8rem !important; margin: 4px 0 0 !important; color: #d4c4f0 !important; }
+        .mobile-welcome .student-id { display: inline-block; background: rgba(255,255,255,0.2); padding: 2px 10px; border-radius: 20px; font-weight: 700; font-size: 0.75rem; color: #fff !important; }
+        .mobile-stats { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+        .mobile-stats .stat-box { padding: 10px 6px !important; border-radius: 10px !important; background: #f0ebfb !important; text-align: center !important; }
+        .mobile-stats .stat-box .stat-number { font-size: 1.2rem !important; font-weight: 800 !important; color: #8B5CF6 !important; }
+        .mobile-stats .stat-box .stat-label { font-size: 0.6rem !important; color: #7a6a8f !important; }
+        .mobile-progress { margin-bottom: 16px; }
+        .mobile-progress .progress-label { font-size: 0.8rem !important; color: var(--text-dark); }
+        .mobile-course-card { padding: 14px 14px !important; border-radius: 12px !important; margin-bottom: 12px !important; background: var(--bg-light) !important; border: 1px solid #ede8f5 !important; }
+        .mobile-course-card h3 { font-size: 1rem !important; margin: 0 0 4px !important; color: var(--text-dark); }
+        .mobile-course-card p { font-size: 0.82rem !important; margin: 0 0 8px !important; color: var(--text-muted); }
+        .mobile-course-card .btn { font-size: 0.82rem !important; padding: 8px 16px !important; min-height: 38px !important; border-radius: 30px !important; width: 100%; text-align: center; text-decoration: none; display: block; }
+        .mobile-section-title { font-size: 1.1rem !important; font-weight: 700 !important; margin: 16px 0 6px !important; color: var(--text-dark); }
+        .mobile-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .mobile-grid-2 .course-card { padding: 12px !important; border-radius: 10px !important; background: var(--bg-light) !important; border: 1px solid #ede8f5 !important; }
+        .mobile-grid-2 .course-card h4 { font-size: 0.82rem !important; margin: 0 0 2px !important; color: var(--text-dark); }
+        .mobile-grid-2 .course-card .btn { font-size: 0.7rem !important; padding: 6px !important; min-height: 32px !important; width: 100%; border-radius: 30px !important; text-align: center; text-decoration: none; display: block; }
+        .mobile-quick-links { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; padding-top: 12px; border-top: 1px solid #ede8f5; }
+        .mobile-quick-links .btn { font-size: 0.75rem !important; padding: 6px 12px !important; min-height: 32px !important; border-radius: 30px !important; text-decoration: none; }
+        .btn-change-course { background: rgba(255,255,255,0.2); color: #fff; border: 1px solid rgba(255,255,255,0.3); font-size: 0.75rem !important; padding: 4px 12px !important; min-height: 30px !important; border-radius: 20px !important; text-decoration: none; display: inline-block; }
+        .mobile-alert { font-size: 0.82rem !important; padding: 10px 14px !important; border-radius: 8px !important; margin-bottom: 12px !important; }
+        .empty-state { padding: 24px !important; border-radius: 12px !important; text-align: center !important; background: #f8f6fc !important; border: 1px solid #ede8f5 !important; }
+        .empty-state .empty-icon { font-size: 2rem; display: block; margin-bottom: 8px; opacity: 0.3; }
+        .empty-state h3 { font-size: 1rem !important; margin: 0 0 4px !important; color: var(--text-dark); }
+        .empty-state p { font-size: 0.85rem !important; margin: 0 !important; color: var(--text-muted); }
+        body.dark-mode .mobile-stats .stat-box { background: #2a1a4a !important; }
+        body.dark-mode .mobile-stats .stat-box .stat-number { color: #a78bfa !important; }
+        body.dark-mode .mobile-stats .stat-box .stat-label { color: #cccccc !important; }
+        body.dark-mode .mobile-course-card { background: var(--dark-card) !important; border-color: var(--dark-border) !important; }
+        body.dark-mode .mobile-grid-2 .course-card { background: var(--dark-card) !important; border-color: var(--dark-border) !important; }
+        body.dark-mode .mobile-quick-links { border-color: var(--dark-border) !important; }
+        body.dark-mode .empty-state { background: #1a1a1a !important; border-color: var(--dark-border) !important; }
+        @media (max-width: 400px) { .mobile-stats { grid-template-columns: 1fr 1fr; } .mobile-grid-2 { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
-    <%- include('partials/header-mobile', { showBack: false }) %>
+    <!-- ===== MOBILE HEADER ===== -->
+    <header class="header" style="padding:8px 12px; flex-wrap:nowrap;">
+        <div style="display:flex; align-items:center; gap:8px; flex:1; min-width:0;">
+            <a href="/" class="logo-container" style="gap:8px; text-decoration:none;">
+                <div class="logo" style="width:32px; height:32px; border-radius:50%; background:rgba(255,255,255,0.2); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:10px;">SLC</div>
+                <div style="line-height:1.1;">
+                    <div class="logo-text" style="font-size:13px; color:#fff;">SHINEX<span style="color:#fff;">.</span></div>
+                    <div class="logo-sub" style="font-size:6px; color:rgba(255,255,255,0.7);">LEARNING</div>
+                </div>
+            </a>
+        </div>
+        <div class="header-actions" style="gap:4px; flex-wrap:nowrap;">
+            <button class="dark-toggle" id="darkToggleMobile" onclick="toggleDarkModeMobile()" style="padding:4px 8px; font-size:1rem; background:rgba(255,255,255,0.15); border:none; border-radius:30px; color:#fff; cursor:pointer;">🌙</button>
+            <a href="/settings" class="btn btn-secondary btn-sm" style="min-height:30px; padding:2px 10px; font-size:0.7rem; background:rgba(255,255,255,0.2); color:#fff; border-radius:30px; text-decoration:none;"><i class="fas fa-cog"></i></a>
+            <a href="/logout" class="btn btn-danger btn-sm" style="min-height:30px; padding:2px 10px; font-size:0.7rem; background:#e74c3c; color:#fff; border-radius:30px; text-decoration:none;"><i class="fas fa-sign-out-alt"></i></a>
+        </div>
+    </header>
 
+    <!-- ===== MAIN CONTENT ===== -->
     <main class="main-content">
         <div class="mobile-dash-container">
             <% if (messages && messages.success) { %>
-                <div class="alert alert-success" style="font-size:0.82rem; padding:10px 14px; border-radius:8px; margin-bottom:12px;"><%= messages.success %></div>
+                <div class="alert alert-success mobile-alert"><%= messages.success %></div>
             <% } %>
             <% if (messages && messages.error) { %>
-                <div class="alert alert-danger" style="font-size:0.82rem; padding:10px 14px; border-radius:8px; margin-bottom:12px;"><%= messages.error %></div>
+                <div class="alert alert-danger mobile-alert"><%= messages.error %></div>
             <% } %>
 
-            <!-- Welcome Card -->
-            <div class="welcome-card card-purple mobile-welcome">
+            <div class="welcome-card mobile-welcome">
                 <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center;">
                     <div>
                         <h1>👋 Hi, <%= user.firstName %>!</h1>
-                        <p>
-                            <span class="student-id"><%= user.studentId %></span>
-                            <span style="margin-left:6px;"><%= user.courseName || 'Not enrolled' %></span>
-                        </p>
+                        <p><span class="student-id"><%= user.studentId %></span> <span style="margin-left:6px; color:#d4c4f0;"><%= user.courseName || 'Not enrolled' %></span></p>
                     </div>
                     <div style="margin-top:6px;">
-                        <a href="/enroll" class="btn-change-course">
-                            <i class="fas fa-exchange-alt"></i> Change
-                        </a>
+                        <a href="/enroll" class="btn-change-course"><i class="fas fa-exchange-alt"></i> Change</a>
                     </div>
                 </div>
             </div>
 
-            <!-- Stats -->
             <div class="mobile-stats">
-                <div class="stat-box">
-                    <div class="stat-number"><%= totalClasses || 0 %></div>
-                    <div class="stat-label">Classes</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-number"><%= completedClasses || 0 %></div>
-                    <div class="stat-label">Done</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-number"><%= progress || 0 %>%</div>
-                    <div class="stat-label">Progress</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-number"><%= score || 0 %></div>
-                    <div class="stat-label">Points</div>
-                </div>
+                <div class="stat-box"><div class="stat-number"><%= totalClasses || 0 %></div><div class="stat-label">Classes</div></div>
+                <div class="stat-box"><div class="stat-number"><%= completedClasses || 0 %></div><div class="stat-label">Done</div></div>
+                <div class="stat-box"><div class="stat-number"><%= progress || 0 %>%</div><div class="stat-label">Progress</div></div>
+                <div class="stat-box"><div class="stat-number"><%= score || 0 %></div><div class="stat-label">Points</div></div>
             </div>
 
-            <!-- Progress -->
             <div class="mobile-progress">
                 <div class="progress-label" style="display:flex; justify-content:space-between; font-weight:600; font-size:0.8rem;">
                     <span>Course Progress</span>
                     <span><%= progress || 0 %>%</span>
                 </div>
-                <div class="progress-wrap" style="height:8px; border-radius:10px;">
-                    <div class="progress-fill" style="width:<%= progress || 0 %>%; border-radius:10px;"></div>
+                <div class="progress-wrap" style="height:8px; border-radius:10px; background:#ede8f5;">
+                    <div class="progress-fill" style="width:<%= progress || 0 %>%; border-radius:10px; background:linear-gradient(90deg, #8B5CF6, #a78bfa);"></div>
                 </div>
             </div>
 
-            <!-- Enrolled Course -->
             <% if (enrolledCourse) { %>
                 <h3 class="mobile-section-title">Your Course</h3>
-                <div class="course-card mobile-course-card" style="border-color:var(--primary);">
+                <div class="course-card mobile-course-card" style="border-color:#8B5CF6;">
                     <div style="display:flex; justify-content:space-between; align-items:start; flex-wrap:wrap;">
                         <h3><%= enrolledCourse.title %></h3>
-                        <span class="badge badge-purple" style="font-size:0.6rem;"><%= enrolledCourse.level || 'Beginner' %></span>
+                        <span class="badge badge-purple" style="font-size:0.6rem; padding:2px 8px; border-radius:20px; background:#f0ebfb; color:#8B5CF6;"><%= enrolledCourse.level || 'Beginner' %></span>
                     </div>
                     <p><%= enrolledCourse.description ? enrolledCourse.description.substring(0,80) : '' %></p>
                     <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px;">
-                        <span class="badge badge-dark" style="font-size:0.6rem;"><i class="far fa-clock"></i> <%= enrolledCourse.duration || 'Self-paced' %></span>
-                        <span class="badge badge-green" style="font-size:0.6rem;"><i class="fas fa-check-circle"></i> <%= progress || 0 %>%</span>
+                        <span class="badge badge-dark" style="font-size:0.6rem; padding:2px 8px; border-radius:20px; background:#ede8f5; color:#1A0A2E;"><i class="far fa-clock"></i> <%= enrolledCourse.duration || 'Self-paced' %></span>
+                        <span class="badge badge-green" style="font-size:0.6rem; padding:2px 8px; border-radius:20px; background:#d5f5e3; color:#27ae60;"><i class="fas fa-check-circle"></i> <%= progress || 0 %>%</span>
                     </div>
-                    <a href="/course/<%= enrolledCourse.id %>" class="btn btn-primary" style="width:100%;">
-                        <i class="fas fa-arrow-right"></i> Continue Learning
-                    </a>
+                    <a href="/course/<%= enrolledCourse.id %>" class="btn btn-primary" style="background:#8B5CF6; color:#fff; border:none;"><i class="fas fa-arrow-right"></i> Continue Learning</a>
                 </div>
             <% } else { %>
-                <div class="empty-state" style="padding:24px; border-radius:12px;">
+                <div class="empty-state">
                     <span class="empty-icon">📖</span>
-                    <h3 style="font-size:1rem;">No course enrolled</h3>
-                    <p style="font-size:0.85rem;">Browse our courses and start learning!</p>
-                    <a href="/courses" class="btn btn-primary" style="margin-top:8px; width:100%;">
-                        <i class="fas fa-search"></i> Explore Courses
-                    </a>
+                    <h3>No course enrolled</h3>
+                    <p>Browse our courses and start learning!</p>
+                    <a href="/courses" class="btn btn-primary" style="margin-top:8px; width:100%; border-radius:30px; background:#8B5CF6; color:#fff; text-align:center; text-decoration:none; display:block; padding:10px;"><i class="fas fa-search"></i> Explore Courses</a>
                 </div>
             <% } %>
 
-            <!-- Other Courses -->
             <% if (enrolledCourse) { %>
                 <h3 class="mobile-section-title">More Courses</h3>
                 <div class="mobile-grid-2">
@@ -233,23 +134,92 @@
                             <div class="course-card" style="padding:12px;">
                                 <h4><%= c.title %></h4>
                                 <p style="font-size:0.7rem; color:var(--text-muted); margin:0 0 6px;"><%= c.description ? c.description.substring(0,40)+'...' : '' %></p>
-                                <a href="/course/<%= c.id %>" class="btn btn-secondary btn-sm">View</a>
+                                <a href="/course/<%= c.id %>" class="btn btn-secondary btn-sm" style="background:#ede8f5; color:#1A0A2E; border:none;">View</a>
                             </div>
                         <% } %>
                     <% }) %>
                 </div>
             <% } %>
 
-            <!-- Quick Links -->
             <div class="mobile-quick-links">
-                <a href="/settings" class="btn btn-secondary btn-sm"><i class="fas fa-cog"></i> Settings</a>
-                <a href="/faq" class="btn btn-secondary btn-sm"><i class="fas fa-question-circle"></i> FAQ</a>
-                <a href="/contact" class="btn btn-secondary btn-sm"><i class="fas fa-headset"></i> Help</a>
+                <a href="/settings" class="btn btn-secondary btn-sm" style="background:#ede8f5; color:#1A0A2E; border:none;"><i class="fas fa-cog"></i> Settings</a>
+                <a href="/faq" class="btn btn-secondary btn-sm" style="background:#ede8f5; color:#1A0A2E; border:none;"><i class="fas fa-question-circle"></i> FAQ</a>
+                <a href="/contact" class="btn btn-secondary btn-sm" style="background:#ede8f5; color:#1A0A2E; border:none;"><i class="fas fa-headset"></i> Help</a>
             </div>
         </div>
     </main>
 
-    <%- include('partials/footer-mobile') %>
+    <!-- ===== MOBILE FOOTER ===== -->
+    <footer class="footer" style="background:linear-gradient(135deg, #6a3dcf, #4a1a8a); padding:24px 0 16px; margin-top:24px;">
+        <div class="container">
+            <div style="text-align:center;">
+                <div style="display:flex; justify-content:center; align-items:center; gap:8px; margin-bottom:6px;">
+                    <div class="logo" style="width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.2); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:11px;">SLC</div>
+                    <div>
+                        <div class="logo-text" style="font-size:14px; color:#fff;">SHINEX<span style="color:#fff;">.</span></div>
+                    </div>
+                </div>
+                <p style="color:rgba(255,255,255,0.7); font-size:0.8rem; margin:4px 0 8px;">Learn. Understand. Protect.</p>
+                <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:8px 16px; margin:12px 0;">
+                    <a href="/" style="color:rgba(255,255,255,0.7); font-size:0.75rem; text-decoration:none;">Home</a>
+                    <a href="/courses" style="color:rgba(255,255,255,0.7); font-size:0.75rem; text-decoration:none;">Courses</a>
+                    <a href="/services" style="color:rgba(255,255,255,0.7); font-size:0.75rem; text-decoration:none;">Services</a>
+                    <a href="/about" style="color:rgba(255,255,255,0.7); font-size:0.75rem; text-decoration:none;">About</a>
+                    <a href="/contact" style="color:rgba(255,255,255,0.7); font-size:0.75rem; text-decoration:none;">Contact</a>
+                    <a href="/faq" style="color:rgba(255,255,255,0.7); font-size:0.75rem; text-decoration:none;">FAQ</a>
+                </div>
+                <div style="display:flex; justify-content:center; gap:12px; margin:8px 0 12px;">
+                    <a href="#" style="color:rgba(255,255,255,0.7); font-size:1.2rem;"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" style="color:rgba(255,255,255,0.7); font-size:1.2rem;"><i class="fab fa-twitter"></i></a>
+                    <a href="#" style="color:rgba(255,255,255,0.7); font-size:1.2rem;"><i class="fab fa-instagram"></i></a>
+                    <a href="#" style="color:rgba(255,255,255,0.7); font-size:1.2rem;"><i class="fab fa-whatsapp"></i></a>
+                </div>
+                <div class="footer-bottom" style="border-top:1px solid rgba(255,255,255,0.1); padding-top:10px; font-size:0.7rem; color:rgba(255,255,255,0.6);">
+                    &copy; <%= new Date().getFullYear() %> SHINEX Learning Circle
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===== AI BOT ===== -->
+    <div class="ai-bot" id="aiBot" style="position:fixed; bottom:30px; right:30px; z-index:999; cursor:pointer;">
+        <button class="ai-bot-btn" id="aiBotBtn" style="width:60px; height:60px; border-radius:50%; background:linear-gradient(135deg, #8B5CF6, #6a3dcf); color:#fff; border:none; font-size:26px; box-shadow:0 8px 30px rgba(139,92,246,0.4); cursor:pointer; position:relative; z-index:2;">🤖<span class="ai-bot-pulse" style="position:absolute; width:60px; height:60px; border-radius:50%; background:rgba(139,92,246,0.3); animation:pulseRing 2s ease-out infinite; z-index:1; top:0; left:0;"></span></button>
+    </div>
+    <div class="ai-chat-modal" id="aiChatModal" style="position:fixed; bottom:100px; right:30px; width:380px; max-width:calc(100vw - 40px); max-height:500px; background:#fff; border-radius:14px; border:1px solid #ede8f5; box-shadow:0 20px 60px rgba(0,0,0,0.15); z-index:1000; display:none; flex-direction:column; overflow:hidden;">
+        <div class="ai-chat-header" style="padding:14px 18px; background:#8B5CF6; color:#fff; display:flex; justify-content:space-between; align-items:center;">
+            <h4 style="font-size:0.95rem; font-weight:700; margin:0;">🤖 AI Tutor</h4>
+            <button class="ai-chat-close" id="aiChatClose" style="background:none; border:none; color:#fff; font-size:1.2rem; cursor:pointer; padding:4px;">&times;</button>
+        </div>
+        <div class="ai-chat-body" id="aiChatBody" style="padding:16px 18px; flex:1; overflow-y:auto; max-height:300px;">
+            <div class="ai-chat-messages" id="aiChatMessages" style="display:flex; flex-direction:column; gap:8px;">
+                <div class="ai-chat-msg bot" style="padding:10px 14px; border-radius:10px; font-size:0.9rem; max-width:85%; line-height:1.5; background:#f0ebfb; color:#1A0A2E; align-self:flex-start; border-bottom-left-radius:4px;">👋 Hi! I'm your SHINEX AI Tutor. Ask me anything!</div>
+            </div>
+        </div>
+        <div class="ai-chat-footer" style="padding:12px 18px; border-top:1px solid #ede8f5; display:flex; gap:8px;">
+            <input type="text" id="aiChatInput" placeholder="Ask a question..." autocomplete="off" style="flex:1; padding:8px 12px; border-radius:8px; border:1px solid #ede8f5; font-size:0.85rem;">
+            <button class="btn btn-primary" id="aiChatSend" style="padding:8px 16px; border:none; border-radius:30px; background:#8B5CF6; color:#fff; font-weight:600; cursor:pointer;">Send</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"></script>
     <script src="/js/main.js"></script>
+    <script>
+        function toggleDarkModeMobile() {
+            const body = document.body;
+            body.classList.toggle('dark-mode');
+            const isDark = body.classList.contains('dark-mode');
+            localStorage.setItem('shinex-dark-mode', isDark);
+            const btn = document.getElementById('darkToggleMobile');
+            if (btn) btn.textContent = isDark ? '☀️' : '🌙';
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedDark = localStorage.getItem('shinex-dark-mode');
+            if (savedDark === 'true') {
+                document.body.classList.add('dark-mode');
+                const btn = document.getElementById('darkToggleMobile');
+                if (btn) btn.textContent = '☀️';
+            }
+        });
+    </script>
 </body>
 </html>

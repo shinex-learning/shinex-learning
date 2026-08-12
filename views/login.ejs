@@ -6,6 +6,41 @@
     <title>Login – SHINEX</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
+    <style>
+        /* ===== DARK MODE FIXES FOR LOGIN ===== */
+        body.dark-mode .card {
+            background: #1a1a1a !important;
+            border-color: #333 !important;
+        }
+        body.dark-mode .card h2,
+        body.dark-mode .card p,
+        body.dark-mode .card label {
+            color: #ffffff !important;
+        }
+        body.dark-mode .card input {
+            background: #2a2a2a !important;
+            border-color: #444 !important;
+            color: #ffffff !important;
+        }
+        body.dark-mode .card input::placeholder {
+            color: #888888 !important;
+        }
+        body.dark-mode .card .btn-primary {
+            background: #8B5CF6 !important;
+            color: #ffffff !important;
+        }
+        body.dark-mode .card .alert-success {
+            background: #1a3a2a !important;
+            color: #7dcea0 !important;
+        }
+        body.dark-mode .card .alert-danger {
+            background: #3a1a1a !important;
+            color: #f1948a !important;
+        }
+        body.dark-mode .card a {
+            color: #a78bfa !important;
+        }
+    </style>
 </head>
 <body>
     <%- include('partials/header', { showBack: true }) %>
