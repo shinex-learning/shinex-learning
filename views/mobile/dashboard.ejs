@@ -3,259 +3,253 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Dashboard – SHINEX</title>
+    <title>Dashboard – SHINEX Learning Circle</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        .mobile-dash-card {
-            background: #fff;
-            border-radius: 12px;
-            padding: 14px 16px;
-            border: 1px solid #ede8f5;
-            margin-bottom: 10px;
+        .mobile-dash-container {
+            padding: 12px 12px 24px;
+            max-width: 500px;
+            margin: 0 auto;
         }
-        body.dark-mode .mobile-dash-card {
-            background: #1a1a1a;
-            border-color: #333;
+        .mobile-welcome {
+            padding: 18px 16px !important;
+            border-radius: 14px !important;
+            margin-bottom: 16px !important;
         }
-        .mobile-dash-card .label {
-            font-size: 0.6rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-weight: 600;
+        .mobile-welcome h1 {
+            font-size: 1.2rem !important;
+            margin: 0 !important;
         }
-        .mobile-dash-card .value {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--text-dark);
+        .mobile-welcome p {
+            font-size: 0.8rem !important;
+            margin: 4px 0 0 !important;
         }
-        body.dark-mode .mobile-dash-card .value {
-            color: var(--text-light);
-        }
-        .mobile-dash-card .value-primary {
-            color: #8B5CF6;
+        .mobile-welcome .student-id {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 2px 10px;
+            border-radius: 20px;
             font-weight: 700;
+            font-size: 0.75rem;
         }
-        .mobile-stats-grid {
+        .mobile-stats {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
             gap: 8px;
-            margin-bottom: 10px;
+            margin-bottom: 16px;
         }
-        .mobile-stat-item {
-            background: var(--primary-bg);
-            border-radius: 8px;
-            padding: 10px;
-            text-align: center;
+        .mobile-stats .stat-box {
+            padding: 10px 6px !important;
+            border-radius: 10px !important;
         }
-        body.dark-mode .mobile-stat-item {
-            background: #2a1a4a;
+        .mobile-stats .stat-box .stat-number {
+            font-size: 1.2rem !important;
         }
-        .mobile-stat-item .stat-number {
-            font-size: 1.2rem;
-            font-weight: 800;
-            color: #8B5CF6;
+        .mobile-stats .stat-box .stat-label {
+            font-size: 0.6rem !important;
         }
-        .mobile-stat-item .stat-label {
-            font-size: 0.6rem;
-            color: var(--text-muted);
+        .mobile-progress {
+            margin-bottom: 16px;
         }
-        body.dark-mode .mobile-stat-item .stat-label {
-            color: var(--text-muted-light);
+        .mobile-progress .progress-label {
+            font-size: 0.8rem !important;
         }
-        .mobile-info-grid {
+        .mobile-course-card {
+            padding: 14px 14px !important;
+            border-radius: 12px !important;
+            margin-bottom: 12px !important;
+        }
+        .mobile-course-card h3 {
+            font-size: 1rem !important;
+            margin: 0 0 4px !important;
+        }
+        .mobile-course-card p {
+            font-size: 0.82rem !important;
+            margin: 0 0 8px !important;
+        }
+        .mobile-course-card .btn {
+            font-size: 0.82rem !important;
+            padding: 8px 16px !important;
+            min-height: 38px !important;
+        }
+        .mobile-section-title {
+            font-size: 1.1rem !important;
+            font-weight: 700 !important;
+            margin: 16px 0 6px !important;
+        }
+        .mobile-grid-2 {
             display: grid;
             grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .mobile-grid-2 .course-card {
+            padding: 12px !important;
+            border-radius: 10px !important;
+        }
+        .mobile-grid-2 .course-card h4 {
+            font-size: 0.82rem !important;
+            margin: 0 0 2px !important;
+        }
+        .mobile-grid-2 .course-card .btn {
+            font-size: 0.7rem !important;
+            padding: 6px !important;
+            min-height: 32px !important;
+            width: 100%;
+        }
+        .mobile-quick-links {
+            display: flex;
             gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #ede8f5;
         }
-        .mobile-info-grid .info-item {
-            padding: 6px 0;
+        .mobile-quick-links .btn {
+            font-size: 0.75rem !important;
+            padding: 6px 12px !important;
+            min-height: 32px !important;
         }
-        .mobile-info-grid .info-item .label {
-            font-size: 0.55rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        body.dark-mode .mobile-quick-links {
+            border-color: var(--dark-border);
         }
-        .mobile-info-grid .info-item .value {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--text-dark);
+        .btn-change-course {
+            background: rgba(255,255,255,0.2);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.3);
+            font-size: 0.75rem !important;
+            padding: 4px 12px !important;
+            min-height: 30px !important;
+            border-radius: 20px !important;
         }
-        body.dark-mode .mobile-info-grid .info-item .value {
-            color: var(--text-light);
+        .btn-change-course:hover {
+            background: rgba(255,255,255,0.3);
         }
-        .mobile-info-grid .info-item .value-primary {
-            color: #8B5CF6;
-        }
-        .badge-mobile {
-            display: inline-block;
-            padding: 2px 10px;
-            border-radius: 12px;
-            font-size: 0.6rem;
-            font-weight: 600;
-        }
-        .badge-mobile-purple {
-            background: var(--primary-bg);
-            color: #8B5CF6;
-        }
-        .badge-mobile-gold {
-            background: #fef9e7;
-            color: #f39c12;
-        }
-        body.dark-mode .badge-mobile-gold {
-            background: #2a1a0a;
-            color: #f39c12;
-        }
-        .badge-mobile-green {
-            background: #d5f5e3;
-            color: #27ae60;
-        }
-        body.dark-mode .badge-mobile-green {
-            background: #1a3a2a;
-            color: #7dcea0;
+        @media (max-width: 400px) {
+            .mobile-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+            .mobile-grid-2 {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <div id="page-loader">
-        <div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div>
-        <div class="loader-text">SHINEX</div>
-        <div class="loader-sub">LEARNING CIRCLE</div>
-    </div>
+    <%- include('partials/header-mobile', { showBack: false }) %>
 
-    <%- include('../partials/header-mobile') %>
-
-    <main class="main-content" style="padding:12px 0 24px;">
-        <div class="container" style="padding:0 12px;">
-            <% if (messages && messages.error) { %>
-                <div class="alert alert-danger flash-message" data-type="error"><%= messages.error %></div>
-            <% } %>
+    <main class="main-content">
+        <div class="mobile-dash-container">
             <% if (messages && messages.success) { %>
-                <div class="alert alert-success flash-message" data-type="success"><%= messages.success %></div>
+                <div class="alert alert-success" style="font-size:0.82rem; padding:10px 14px; border-radius:8px; margin-bottom:12px;"><%= messages.success %></div>
+            <% } %>
+            <% if (messages && messages.error) { %>
+                <div class="alert alert-danger" style="font-size:0.82rem; padding:10px 14px; border-radius:8px; margin-bottom:12px;"><%= messages.error %></div>
             <% } %>
 
-            <!-- ===== WELCOME CARD ===== -->
-            <div style="background:linear-gradient(135deg, #8B5CF6, #6a3dcf); border-radius:12px; padding:16px 18px; color:#fff; margin-bottom:12px;">
-                <div style="font-size:1.1rem; font-weight:700;">👋 Welcome, <%= user ? user.firstName : 'Student' %>!</div>
-                <div style="font-size:0.75rem; color:#d4c4f0; margin-top:2px;">
-                    <i class="fas fa-id-card"></i> <strong><%= user ? user.studentId : '—' %></strong>
-                </div>
-                <div style="font-size:0.7rem; color:#d4c4f0; margin-top:2px;">
-                    <i class="fas fa-book-open"></i> <%= user ? user.courseName || 'Not enrolled' : 'Not enrolled' %>
-                </div>
-                <div style="margin-top:4px;">
-                    <span class="badge-mobile badge-mobile-gold" style="background:rgba(255,255,255,0.2); color:#fff;">
-                        <i class="fas fa-user-graduate"></i> <%= user ? user.learningLevel || 'Beginner' : 'Beginner' %>
-                    </span>
-                </div>
-            </div>
-
-            <!-- ===== STUDENT ID & INFO CARD ===== -->
-            <div class="mobile-dash-card">
-                <div style="margin-bottom:8px;">
-                    <div style="font-size:0.6rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Student ID</div>
-                    <div style="font-size:1.1rem; font-weight:700; color:#8B5CF6;"><%= user ? user.studentId : '—' %></div>
-                </div>
-                <div class="mobile-info-grid">
-                    <div class="info-item">
-                        <div class="label">Full Name</div>
-                        <div class="value"><%= user ? user.firstName + ' ' + user.lastName : '—' %></div>
+            <!-- Welcome Card -->
+            <div class="welcome-card card-purple mobile-welcome">
+                <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center;">
+                    <div>
+                        <h1>👋 Hi, <%= user.firstName %>!</h1>
+                        <p>
+                            <span class="student-id"><%= user.studentId %></span>
+                            <span style="margin-left:6px;"><%= user.courseName || 'Not enrolled' %></span>
+                        </p>
                     </div>
-                    <div class="info-item">
-                        <div class="label">Course</div>
-                        <div class="value"><%= user ? user.courseName || '—' : '—' %></div>
-                    </div>
-                    <div class="info-item">
-                        <div class="label">Level</div>
-                        <div class="value"><%= user ? user.learningLevel || '—' : '—' %></div>
-                    </div>
-                    <div class="info-item">
-                        <div class="label">Email</div>
-                        <div class="value"><%= user ? user.email : '—' %></div>
+                    <div style="margin-top:6px;">
+                        <a href="/enroll" class="btn-change-course">
+                            <i class="fas fa-exchange-alt"></i> Change
+                        </a>
                     </div>
                 </div>
             </div>
 
-            <!-- ===== STATS ===== -->
-            <div class="mobile-stats-grid">
-                <div class="mobile-stat-item">
-                    <div class="stat-number"><%= courses ? courses.length : 0 %></div>
-                    <div class="stat-label">Courses</div>
-                </div>
-                <div class="mobile-stat-item">
-                    <div class="stat-number">
-                        <% let tc = 0; if (courses) { courses.forEach(c => { if (c.levels) { c.levels.forEach(l => { if (l.lessons) { l.lessons.forEach(ls => { if (ls.classes) tc += ls.classes.length; }); } }); } }); } %><%= tc %>
-                    </div>
+            <!-- Stats -->
+            <div class="mobile-stats">
+                <div class="stat-box">
+                    <div class="stat-number"><%= totalClasses || 0 %></div>
                     <div class="stat-label">Classes</div>
                 </div>
-                <div class="mobile-stat-item">
-                    <div class="stat-number"><%= user && user.progress ? Object.keys(user.progress).length : 0 %></div>
-                    <div class="stat-label">Completed</div>
+                <div class="stat-box">
+                    <div class="stat-number"><%= completedClasses || 0 %></div>
+                    <div class="stat-label">Done</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number"><%= progress || 0 %>%</div>
+                    <div class="stat-label">Progress</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number"><%= score || 0 %></div>
+                    <div class="stat-label">Points</div>
                 </div>
             </div>
 
-            <!-- ===== ENROLLED COURSE ===== -->
+            <!-- Progress -->
+            <div class="mobile-progress">
+                <div class="progress-label" style="display:flex; justify-content:space-between; font-weight:600; font-size:0.8rem;">
+                    <span>Course Progress</span>
+                    <span><%= progress || 0 %>%</span>
+                </div>
+                <div class="progress-wrap" style="height:8px; border-radius:10px;">
+                    <div class="progress-fill" style="width:<%= progress || 0 %>%; border-radius:10px;"></div>
+                </div>
+            </div>
+
+            <!-- Enrolled Course -->
             <% if (enrolledCourse) { %>
-                <div class="mobile-dash-card" style="border-left:4px solid #8B5CF6;">
-                    <div style="font-weight:700; font-size:0.95rem; color:var(--text-dark);">
-                        <i class="fas fa-book-open" style="color:#8B5CF6;"></i> <%= enrolledCourse.title %>
+                <h3 class="mobile-section-title">Your Course</h3>
+                <div class="course-card mobile-course-card" style="border-color:var(--primary);">
+                    <div style="display:flex; justify-content:space-between; align-items:start; flex-wrap:wrap;">
+                        <h3><%= enrolledCourse.title %></h3>
+                        <span class="badge badge-purple" style="font-size:0.6rem;"><%= enrolledCourse.level || 'Beginner' %></span>
                     </div>
-                    <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">
-                        <span class="badge-mobile badge-mobile-purple"><%= enrolledCourse.level %></span>
-                        <span style="margin-left:6px;"><i class="far fa-clock"></i> <%= enrolledCourse.duration %></span>
+                    <p><%= enrolledCourse.description ? enrolledCourse.description.substring(0,80) : '' %></p>
+                    <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px;">
+                        <span class="badge badge-dark" style="font-size:0.6rem;"><i class="far fa-clock"></i> <%= enrolledCourse.duration || 'Self-paced' %></span>
+                        <span class="badge badge-green" style="font-size:0.6rem;"><i class="fas fa-check-circle"></i> <%= progress || 0 %>%</span>
                     </div>
-                    <div style="margin-top:8px;">
-                        <div style="display:flex; justify-content:space-between; font-size:0.7rem; font-weight:500; color:var(--text-dark);">
-                            <span>Progress</span>
-                            <span><%= progress %>%</span>
-                        </div>
-                        <div class="progress-wrap" style="height:6px; margin-top:2px;">
-                            <div class="progress-fill" style="width:<%= progress %>%; height:100%;"></div>
-                        </div>
-                        <div style="font-size:0.7rem; color:var(--text-muted); margin-top:3px;">
-                            <i class="fas fa-star" style="color:#f39c12;"></i> Score: <strong><%= score %></strong>
-                            <span style="float:right;"><%= completedClasses %>/<%= totalClasses %> done</span>
-                        </div>
-                    </div>
-                    <a href="/course/<%= enrolledCourse.id %>" class="btn btn-primary btn-sm" style="width:100%; text-align:center; margin-top:8px; font-size:0.8rem; padding:8px;">
+                    <a href="/course/<%= enrolledCourse.id %>" class="btn btn-primary" style="width:100%;">
                         <i class="fas fa-arrow-right"></i> Continue Learning
                     </a>
                 </div>
             <% } else { %>
-                <div class="mobile-dash-card" style="text-align:center; padding:20px 16px;">
-                    <div style="font-size:2rem; color:var(--text-muted);"><i class="fas fa-book-open"></i></div>
-                    <p style="font-weight:600; color:var(--text-dark); margin:4px 0;">No Course Enrolled</p>
-                    <p style="font-size:0.75rem; color:var(--text-muted); margin:0 0 8px;">Browse our courses and start learning.</p>
-                    <a href="/" class="btn btn-primary btn-sm" style="width:100%; text-align:center;">Browse Courses</a>
+                <div class="empty-state" style="padding:24px; border-radius:12px;">
+                    <span class="empty-icon">📖</span>
+                    <h3 style="font-size:1rem;">No course enrolled</h3>
+                    <p style="font-size:0.85rem;">Browse our courses and start learning!</p>
+                    <a href="/courses" class="btn btn-primary" style="margin-top:8px; width:100%;">
+                        <i class="fas fa-search"></i> Explore Courses
+                    </a>
                 </div>
             <% } %>
 
-            <!-- ===== ALL COURSES ===== -->
-            <div style="margin-top:4px;">
-                <div style="font-weight:600; font-size:0.85rem; color:var(--text-dark); margin-bottom:6px;">
-                    <i class="fas fa-list-ul" style="color:#8B5CF6;"></i> All Courses
-                </div>
-                <% if (courses && courses.length > 0) { %>
-                    <% courses.forEach(function(c) { %>
-                        <a href="/course/<%= c.id %>" style="text-decoration:none; color:inherit;">
-                            <div style="background:#f8f6fc; border-radius:8px; padding:10px 14px; margin-bottom:4px; border:1px solid #ede8f5;">
-                                <div style="font-weight:600; font-size:0.85rem; color:var(--text-dark);"><%= c.title %></div>
-                                <div style="font-size:0.7rem; color:var(--text-muted);"><i class="far fa-clock"></i> <%= c.duration %></div>
+            <!-- Other Courses -->
+            <% if (enrolledCourse) { %>
+                <h3 class="mobile-section-title">More Courses</h3>
+                <div class="mobile-grid-2">
+                    <% courses.slice(0,4).forEach(c => { %>
+                        <% if (!enrolledCourse || c.id !== enrolledCourse.id) { %>
+                            <div class="course-card" style="padding:12px;">
+                                <h4><%= c.title %></h4>
+                                <p style="font-size:0.7rem; color:var(--text-muted); margin:0 0 6px;"><%= c.description ? c.description.substring(0,40)+'...' : '' %></p>
+                                <a href="/course/<%= c.id %>" class="btn btn-secondary btn-sm">View</a>
                             </div>
-                        </a>
-                    <% }); %>
-                <% } else { %>
-                    <p style="color:var(--text-muted); font-size:0.8rem;">No courses available.</p>
-                <% } %>
-            </div>
+                        <% } %>
+                    <% }) %>
+                </div>
+            <% } %>
 
+            <!-- Quick Links -->
+            <div class="mobile-quick-links">
+                <a href="/settings" class="btn btn-secondary btn-sm"><i class="fas fa-cog"></i> Settings</a>
+                <a href="/faq" class="btn btn-secondary btn-sm"><i class="fas fa-question-circle"></i> FAQ</a>
+                <a href="/contact" class="btn btn-secondary btn-sm"><i class="fas fa-headset"></i> Help</a>
+            </div>
         </div>
     </main>
 
-    <%- include('../partials/footer-mobile') %>
-
-    <script src="/js/script.js"></script>
+    <%- include('partials/footer-mobile') %>
+    <script src="/js/main.js"></script>
 </body>
 </html>

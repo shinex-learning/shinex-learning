@@ -3,33 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Verification Failed – SHINEX</title>
+    <title>Verification Failed – SHINEX Learning Circle</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .mobile-verify-container {
+            padding: 20px 16px 30px;
+            max-width: 420px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 70vh;
+        }
+        .mobile-verify-card {
+            padding: 32px 20px !important;
+            border-radius: 14px !important;
+            text-align: center !important;
+            box-shadow: var(--shadow);
+            width: 100%;
+        }
+        .mobile-verify-card .error-icon {
+            font-size: 3.5rem;
+            color: #e74c3c;
+            margin-bottom: 8px;
+        }
+        .mobile-verify-card h2 {
+            font-size: 1.4rem !important;
+            font-weight: 700 !important;
+            margin: 0 0 4px !important;
+        }
+        .mobile-verify-card p {
+            font-size: 0.9rem !important;
+            color: var(--text-muted);
+            margin: 0 0 12px !important;
+        }
+        .mobile-verify-card .error-box {
+            background: #fadbd8;
+            padding: 10px 14px;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            border-left: 4px solid #e74c3c;
+            text-align: left;
+        }
+        body.dark-mode .mobile-verify-card .error-box {
+            background: #3a1a1a;
+        }
+        .mobile-verify-card .error-box p {
+            margin: 0 !important;
+            font-size: 0.85rem !important;
+            color: #922b21 !important;
+        }
+        body.dark-mode .mobile-verify-card .error-box p {
+            color: #f1948a !important;
+        }
+        .mobile-verify-card .reasons-list {
+            text-align: left;
+            padding-left: 18px;
+            margin: 8px 0 16px;
+        }
+        .mobile-verify-card .reasons-list li {
+            font-size: 0.82rem !important;
+            color: var(--text-muted);
+            line-height: 1.7;
+            margin-bottom: 2px;
+        }
+        .mobile-verify-card .btn {
+            width: 100%;
+            font-size: 0.9rem !important;
+            padding: 12px !important;
+            min-height: 48px !important;
+            justify-content: center;
+        }
+        .mobile-verify-card .btn-secondary {
+            margin-top: 8px;
+        }
+    </style>
 </head>
 <body>
-    <%- include('../partials/header-mobile') %>
+    <%- include('partials/header-mobile', { showBack: true }) %>
 
-    <main class="main-content" style="padding:12px 0 24px;">
-        <div class="container" style="padding:0 12px;">
-            <div style="background:#fff; border-radius:12px; padding:24px 16px; border:2px solid #e74c3c; text-align:center;">
-                <div style="font-size:3rem; color:#e74c3c; margin-bottom:12px;">
-                    <i class="fas fa-times-circle"></i>
+    <main class="main-content">
+        <div class="mobile-verify-container">
+            <div class="card mobile-verify-card">
+                <div class="error-icon">
+                    <i class="fas fa-exclamation-circle"></i>
                 </div>
-                <h1 style="font-size:1.3rem; font-weight:800; color:#e74c3c; margin:0 0 8px 0;">
-                    Verification Failed ❌
-                </h1>
-                <p style="color:var(--text-muted); font-size:0.9rem; margin:0 0 12px 0;">
-                    Invalid or expired verification link.
+                <h2>❌ Verification Failed</h2>
+                <p>We couldn't verify your email address.</p>
+
+                <div class="error-box">
+                    <p>
+                        <% if (messages && messages.error) { %>
+                            <%= messages.error %>
+                        <% } else { %>
+                            The verification link may be invalid or expired.
+                        <% } %>
+                    </p>
+                </div>
+
+                <p style="font-size:0.85rem !important; font-weight:600; margin-bottom:4px; text-align:left;">
+                    Possible reasons:
                 </p>
-                <a href="/register" class="btn btn-primary" style="width:100%; text-align:center;">
-                    <i class="fas fa-user-plus"></i> Register Again
+                <ul class="reasons-list">
+                    <li>The verification link has expired (links expire after 24 hours)</li>
+                    <li>You may have already verified your email</li>
+                    <li>The link was copied incorrectly</li>
+                </ul>
+
+                <p style="font-size:0.85rem !important; margin-bottom:16px !important;">
+                    If you need help, please contact our support team.
+                </p>
+
+                <a href="/contact" class="btn btn-primary">
+                    <i class="fas fa-headset"></i> Contact Support
+                </a>
+                <a href="/" class="btn btn-secondary" style="margin-top:8px; width:100%; display:flex; align-items:center; justify-content:center; gap:6px; font-size:0.9rem; padding:12px; min-height:48px;">
+                    <i class="fas fa-home"></i> Go to Homepage
                 </a>
             </div>
         </div>
     </main>
 
-    <%- include('../partials/footer-mobile') %>
-    <script src="/js/script.js"></script>
+    <%- include('partials/footer-mobile') %>
+    <script src="/js/main.js"></script>
 </body>
 </html>

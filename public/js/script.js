@@ -1,6 +1,6 @@
 // ============================================================
 // SHINEX LEARNING CIRCLE – COMPLETE JAVASCRIPT
-// Version: 3.0 - FIXED DARK MODE & MOBILE
+// Version: 4.0 – FINAL (with all new features)
 // ============================================================
 
 // ===== PAGE LOADER =====
@@ -263,7 +263,7 @@ function showToast(message, type = 'info') {
 }
 
 // ============================================================
-// SETTINGS: SAVE PROFILE
+// SETTINGS: SAVE PROFILE & ALL TABS
 // ============================================================
 function initSettings() {
     // Profile Save
@@ -340,14 +340,93 @@ function initSettings() {
         });
     }
     
-    // Mobile Dark Mode in Settings
-    const darkModeMobileSetting = document.getElementById('darkModeMobileSetting');
-    if (darkModeMobileSetting) {
-        darkModeMobileSetting.addEventListener('change', function() {
-            const body = document.body;
-            body.classList.toggle('dark-mode', this.checked);
-            localStorage.setItem('shinex-dark-mode', this.checked);
-            updateAllToggles(this.checked);
+    // Security: 2FA Toggle
+    const twoFactorSetting = document.getElementById('twoFactorSetting');
+    if (twoFactorSetting) {
+        twoFactorSetting.addEventListener('change', function() {
+            const formData = new FormData();
+            formData.append('twoFactorEnabled', this.checked ? 'on' : 'off');
+            fetch('/settings/update', {
+                method: 'POST',
+                body: new URLSearchParams(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast(this.checked ? '🔐 Two-factor authentication enabled' : '🔓 Two-factor authentication disabled', 'success');
+                } else {
+                    showToast('❌ ' + data.error, 'error');
+                }
+            })
+            .catch(() => showToast('❌ Something went wrong.', 'error'));
+        });
+    }
+    
+    // Notifications: Email, Browser, Course Updates
+    const notificationCheckboxes = document.querySelectorAll('.notification-checkbox');
+    notificationCheckboxes.forEach(cb => {
+        cb.addEventListener('change', function() {
+            const formData = new FormData();
+            formData.append(this.name, this.checked ? 'on' : 'off');
+            fetch('/settings/update', {
+                method: 'POST',
+                body: new URLSearchParams(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('✅ Notification preference updated', 'success');
+                } else {
+                    showToast('❌ ' + data.error, 'error');
+                }
+            })
+            .catch(() => showToast('❌ Something went wrong.', 'error'));
+        });
+    });
+    
+    // Privacy: Visibility
+    const privacySelect = document.getElementById('profileVisibility');
+    if (privacySelect) {
+        privacySelect.addEventListener('change', function() {
+            const formData = new FormData();
+            formData.append('profileVisibility', this.value);
+            fetch('/settings/update', {
+                method: 'POST',
+                body: new URLSearchParams(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('✅ Privacy setting updated', 'success');
+                } else {
+                    showToast('❌ ' + data.error, 'error');
+                }
+            })
+            .catch(() => showToast('❌ Something went wrong.', 'error'));
+        });
+    }
+    
+    // Learning: Interests
+    const learningInterests = document.getElementById('learningInterests');
+    if (learningInterests) {
+        let timeoutId;
+        learningInterests.addEventListener('input', function() {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
+                const formData = new FormData();
+                formData.append('learningInterests', this.value);
+                fetch('/settings/update', {
+                    method: 'POST',
+                    body: new URLSearchParams(formData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showToast('✅ Learning interests saved', 'success');
+                    }
+                })
+                .catch(() => {});
+            }, 1000);
         });
     }
     
@@ -356,8 +435,21 @@ function initSettings() {
     if (deleteBtn) {
         deleteBtn.addEventListener('click', function() {
             if (confirm('⚠️ Are you sure you want to delete your account? This action cannot be undone!')) {
-                if (confirm('Type "DELETE" to confirm:')) {
-                    showToast('✅ Account deletion request submitted.', 'success');
+                const confirmText = prompt('Type "DELETE" to confirm:');
+                if (confirmText === 'DELETE') {
+                    fetch('/delete-account', { method: 'POST' })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            showToast('✅ Account deleted.', 'success');
+                            setTimeout(() => window.location.href = '/', 2000);
+                        } else {
+                            showToast('❌ ' + data.error, 'error');
+                        }
+                    })
+                    .catch(() => showToast('❌ Something went wrong.', 'error'));
+                } else {
+                    showToast('❌ Deletion cancelled.', 'error');
                 }
             }
         });
@@ -379,7 +471,7 @@ function initSettings() {
 }
 
 // ============================================================
-// CLASS COMPLETE TOAST
+// CLASS COMPLETE - with locking logic
 // ============================================================
 function initClassComplete() {
     const completeBtn = document.getElementById('completeClassBtn');
@@ -387,13 +479,15 @@ function initClassComplete() {
         completeBtn.addEventListener('click', function(e) {
             e.preventDefault();
             const url = this.getAttribute('data-url');
+            const nextUrl = this.getAttribute('data-next') || window.location.href;
             
             fetch(url, { method: 'POST' })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
                     showToast('🎉 Class completed! +10 points!', 'success');
-                    setTimeout(() => window.location.reload(), 1500);
+                    // Reload to update progress and unlock next class
+                    setTimeout(() => window.location.href = nextUrl, 1500);
                 } else {
                     showToast('❌ ' + data.error, 'error');
                 }
@@ -461,6 +555,21 @@ function initAlerts() {
 }
 
 // ============================================================
+// FAQ ACCORDION
+// ============================================================
+function initFaq() {
+    const questions = document.querySelectorAll('.faq-question');
+    questions.forEach(q => {
+        q.addEventListener('click', function() {
+            const answer = this.nextElementSibling;
+            const icon = this.querySelector('.fa-chevron-down');
+            answer.classList.toggle('open');
+            if (icon) icon.classList.toggle('rotated');
+        });
+    });
+}
+
+// ============================================================
 // INITIALIZE ALL
 // ============================================================
 document.addEventListener('DOMContentLoaded', function() {
@@ -472,6 +581,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initSettingsNav();
     initResponsiveSettings();
     initAlerts();
+    initFaq();
     
     // Show flash messages as toasts
     const flashMessages = document.querySelectorAll('.flash-message');

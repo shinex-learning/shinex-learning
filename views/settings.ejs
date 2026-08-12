@@ -3,665 +3,294 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Settings – SHINEX</title>
+    <title>Settings – SHINEX Learning Circle</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        .settings-layout {
-            display: flex;
-            gap: 24px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .settings-sidebar {
-            width: 260px;
-            min-width: 220px;
-            background: #fff;
-            border-radius: 14px;
-            border: 1px solid #ede8f5;
-            padding: 12px 0;
-            height: fit-content;
-            position: sticky;
-            top: 80px;
-            transition: all 0.3s ease;
-        }
-        body.dark-mode .settings-sidebar {
-            background: #1a1a1a;
-            border-color: #333;
-        }
-        .settings-sidebar .sidebar-title {
-            padding: 8px 18px 12px;
-            font-weight: 700;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            border-bottom: 1px solid #ede8f5;
-        }
-        body.dark-mode .settings-sidebar .sidebar-title {
-            border-color: #333;
-        }
-        .settings-nav {
-            list-style: none;
-            padding: 4px 0;
-            margin: 0;
-        }
-        .settings-nav li {
-            margin: 0;
-        }
-        .settings-nav a {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 18px;
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 0.85rem;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            border-left: 3px solid transparent;
-        }
-        .settings-nav a:hover {
-            background: var(--primary-bg);
-            color: var(--primary);
-        }
-        body.dark-mode .settings-nav a:hover {
-            background: #2a1a4a;
-        }
-        .settings-nav a.active {
-            background: var(--primary-bg);
-            color: var(--primary);
-            border-left-color: var(--primary);
-        }
-        body.dark-mode .settings-nav a.active {
-            background: #2a1a4a;
-        }
-        .settings-nav a i {
-            width: 20px;
-            text-align: center;
-        }
-        .settings-content {
-            flex: 1;
-            min-width: 0;
-        }
-        .settings-section {
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-        .settings-section.active {
-            display: block;
-        }
-        @keyframes fadeIn {
-            0% { opacity: 0; transform: translateY(10px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-        .settings-card {
-            background: #fff;
-            border-radius: 14px;
-            border: 1px solid #ede8f5;
-            padding: 24px 28px;
-            margin-bottom: 20px;
-            transition: all 0.3s ease;
-        }
-        body.dark-mode .settings-card {
-            background: #1a1a1a;
-            border-color: #333;
-        }
-        .settings-card h3 {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--text-dark);
-            margin: 0 0 4px 0;
-        }
-        body.dark-mode .settings-card h3 {
-            color: var(--text-light);
-        }
-        .settings-card .subtitle {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin: 0 0 18px 0;
-        }
-        .settings-group {
-            margin-bottom: 16px;
-        }
-        .settings-group label {
-            font-weight: 600;
-            font-size: 0.85rem;
-            color: var(--text-dark);
-            display: block;
-            margin-bottom: 4px;
-        }
-        body.dark-mode .settings-group label {
-            color: var(--text-light);
-        }
-        .settings-group .help-text {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-top: 3px;
-        }
-        .settings-group input[type="file"] {
-            padding: 8px;
-            border: 2px dashed #ede8f5;
-            border-radius: 10px;
-            background: #faf8fc;
-        }
-        body.dark-mode .settings-group input[type="file"] {
-            background: #1a1a1a;
-            border-color: #333;
-        }
-        .settings-group .checkbox-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 6px 0;
-        }
-        .settings-group .checkbox-group input[type="checkbox"] {
-            width: auto;
-            width: 18px;
-            height: 18px;
-            accent-color: var(--primary);
-            cursor: pointer;
-        }
-        .settings-group .checkbox-group label {
-            margin: 0;
-            font-weight: 400;
-            font-size: 0.9rem;
-            cursor: pointer;
-        }
-        .danger-zone {
-            border: 2px solid #e74c3c;
-            border-radius: 14px;
-            padding: 20px 24px;
-            background: #fef9f8;
-        }
-        body.dark-mode .danger-zone {
-            background: #2a1a1a;
-            border-color: #e74c3c;
-        }
-        .danger-zone h4 {
-            color: #e74c3c;
-            font-size: 1rem;
-            font-weight: 700;
-            margin: 0 0 4px 0;
-        }
-        .danger-zone p {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin: 0 0 12px 0;
-        }
-        .btn-danger-zone {
-            background: #e74c3c;
-            color: #fff;
-            padding: 10px 24px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .btn-danger-zone:hover {
-            background: #c0392b;
-            transform: translateY(-2px);
-        }
-        .settings-toggle-btn {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 1.2rem;
-            color: var(--text-dark);
-            padding: 8px;
-            cursor: pointer;
-        }
-        body.dark-mode .settings-toggle-btn {
-            color: var(--text-light);
-        }
-        .settings-badge {
-            font-size: 0.6rem;
-            background: var(--primary);
-            color: #fff;
-            padding: 2px 8px;
-            border-radius: 12px;
-            margin-left: 6px;
-        }
-        @media (max-width: 768px) {
-            .settings-layout {
-                flex-direction: column;
-                gap: 12px;
-            }
-            .settings-sidebar {
-                width: 100%;
-                min-width: unset;
-                position: relative;
-                top: 0;
-                max-height: 0;
-                overflow: hidden;
-                padding: 0;
-                transition: max-height 0.3s ease, padding 0.3s ease;
-            }
-            .settings-sidebar.open {
-                max-height: 500px;
-                padding: 12px 0;
-                overflow-y: auto;
-            }
-            .settings-toggle-btn {
-                display: block;
-            }
-            .settings-card {
-                padding: 16px 18px;
-            }
-            .settings-nav a {
-                padding: 6px 14px;
-                font-size: 0.8rem;
-            }
-        }
-        @media (max-width: 480px) {
-            .settings-card {
-                padding: 12px 14px;
-            }
-            .settings-group input,
-            .settings-group select,
-            .settings-group textarea {
-                font-size: 0.85rem;
-                padding: 8px 12px;
-            }
-        }
-    </style>
 </head>
 <body>
-    <div id="page-loader"><div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div><div class="loader-text">SHINEX</div><div class="loader-sub">LEARNING CIRCLE</div></div>
-    
-    <%- include(getHeader()) %>
+    <%- include('partials/header', { showBack: true }) %>
 
     <main class="main-content">
-        <div class="container">
-            <% if (messages && messages.error) { %>
-                <div class="alert alert-danger flash-message" data-type="error"><%= messages.error %></div>
-            <% } %>
+        <div class="container" style="max-width:1200px;">
+            <h2 style="font-size:1.8rem; font-weight:700; margin:0 0 4px;">⚙️ Settings</h2>
+            <p style="color:var(--text-muted); margin-bottom:20px;">Manage your account, preferences, and learning experience.</p>
+
             <% if (messages && messages.success) { %>
-                <div class="alert alert-success flash-message" data-type="success"><%= messages.success %></div>
+                <div class="alert alert-success"><%= messages.success %></div>
+            <% } %>
+            <% if (messages && messages.error) { %>
+                <div class="alert alert-danger"><%= messages.error %></div>
             <% } %>
 
-            <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:20px;">
-                <div>
-                    <h1 style="font-size:1.6rem; font-weight:800; color:var(--text-dark); margin:0;">
-                        <i class="fas fa-cog" style="color:var(--primary);"></i> Settings
-                    </h1>
-                    <p style="color:var(--text-muted); font-size:0.9rem; margin:0;">Manage your account preferences and settings</p>
-                </div>
-                <button class="settings-toggle-btn" id="settingsToggle" aria-label="Toggle settings menu">
-                    <i class="fas fa-bars"></i> Menu
-                </button>
-            </div>
-
+            <!-- Settings Layout -->
             <div class="settings-layout">
-                <!-- Sidebar -->
-                <aside class="settings-sidebar" id="settingsSidebar">
-                    <div class="sidebar-title"><i class="fas fa-sliders-h"></i> Settings</div>
+                <!-- ===== LEFT SIDEBAR ===== -->
+                <aside class="settings-sidebar">
+                    <div class="settings-toggle-btn" id="settingsToggle" style="display:none;">
+                        <i class="fas fa-bars"></i> Menu
+                    </div>
+                    <div class="sidebar-title">Settings</div>
                     <ul class="settings-nav">
-                        <li><a href="#" data-target="section-profile" class="active"><i class="fas fa-user"></i> Profile</a></li>
-                        <li><a href="#" data-target="section-account"><i class="fas fa-lock"></i> Account</a></li>
-                        <li><a href="#" data-target="section-security"><i class="fas fa-shield-alt"></i> Security</a></li>
-                        <li><a href="#" data-target="section-appearance"><i class="fas fa-palette"></i> Appearance</a></li>
-                        <li><a href="#" data-target="section-notifications"><i class="fas fa-bell"></i> Notifications</a></li>
-                        <li><a href="#" data-target="section-privacy"><i class="fas fa-eye"></i> Privacy</a></li>
-                        <li><a href="#" data-target="section-learning"><i class="fas fa-graduation-cap"></i> Learning</a></li>
-                        <li><a href="#" data-target="section-danger" style="color:#e74c3c;"><i class="fas fa-exclamation-triangle"></i> Danger Zone</a></li>
+                        <li><a href="#" data-target="profile" class="active"><i class="fas fa-user"></i> Profile</a></li>
+                        <li><a href="#" data-target="account"><i class="fas fa-key"></i> Account</a></li>
+                        <li><a href="#" data-target="security"><i class="fas fa-shield-alt"></i> Security</a></li>
+                        <li><a href="#" data-target="appearance"><i class="fas fa-palette"></i> Appearance</a></li>
+                        <li><a href="#" data-target="notifications"><i class="fas fa-bell"></i> Notifications</a></li>
+                        <li><a href="#" data-target="privacy"><i class="fas fa-lock"></i> Privacy</a></li>
+                        <li><a href="#" data-target="learning"><i class="fas fa-graduation-cap"></i> Learning</a></li>
+                        <li><a href="#" data-target="billing"><i class="fas fa-credit-card"></i> Billing</a></li>
+                        <li><a href="#" data-target="support"><i class="fas fa-headset"></i> Support</a></li>
+                        <li><a href="#" data-target="danger"><i class="fas fa-exclamation-triangle" style="color:#e74c3c;"></i> <span style="color:#e74c3c;">Danger Zone</span></a></li>
                     </ul>
                 </aside>
 
-                <!-- Content -->
+                <!-- ===== RIGHT CONTENT ===== -->
                 <div class="settings-content">
 
-                    <!-- ===== PROFILE SECTION ===== -->
-                    <div class="settings-section active" id="section-profile">
+                    <!-- ====== 1. PROFILE ====== -->
+                    <section class="settings-section active" id="profile">
                         <div class="settings-card">
-                            <h3><i class="fas fa-user" style="color:var(--primary);"></i> Profile</h3>
-                            <p class="subtitle">Update your personal information</p>
-                            <form id="profileForm" method="POST" action="/settings/update">
-                                <div class="settings-group">
-                                    <label for="firstName">First Name</label>
-                                    <input type="text" id="firstName" name="firstName" value="<%= user ? user.firstName : '' %>" placeholder="Your first name">
+                            <h3><i class="fas fa-user"></i> Profile</h3>
+                            <p>Update your personal information.</p>
+                            <form id="profileForm">
+                                <div class="grid-2" style="gap:14px;">
+                                    <div class="settings-group">
+                                        <label for="firstName">First Name</label>
+                                        <input type="text" id="firstName" name="firstName" value="<%= user.firstName || '' %>">
+                                    </div>
+                                    <div class="settings-group">
+                                        <label for="lastName">Last Name</label>
+                                        <input type="text" id="lastName" name="lastName" value="<%= user.lastName || '' %>">
+                                    </div>
+                                    <div class="settings-group" style="grid-column:1/-1;">
+                                        <label for="bio">Bio</label>
+                                        <textarea id="bio" name="bio" rows="3" placeholder="Tell us about yourself..."><%= user.bio || '' %></textarea>
+                                    </div>
+                                    <div class="settings-group">
+                                        <label>Student ID</label>
+                                        <input type="text" value="<%= user.studentId || '' %>" disabled style="background:#f0f0f0;">
+                                    </div>
+                                    <div class="settings-group">
+                                        <label>Email</label>
+                                        <input type="email" value="<%= user.email || '' %>" disabled style="background:#f0f0f0;">
+                                    </div>
                                 </div>
-                                <div class="settings-group">
-                                    <label for="lastName">Last Name</label>
-                                    <input type="text" id="lastName" name="lastName" value="<%= user ? user.lastName : '' %>" placeholder="Your last name">
-                                </div>
-                                <div class="settings-group">
-                                    <label for="bio">Bio</label>
-                                    <textarea id="bio" name="bio" rows="3" placeholder="Tell us about yourself"><%= user ? user.bio : '' %></textarea>
-                                    <div class="help-text">Brief description about yourself</div>
-                                </div>
-                                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Profile</button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Save Profile
+                                </button>
                             </form>
                         </div>
-                    </div>
+                    </section>
 
-                    <!-- ===== ACCOUNT SECTION ===== -->
-                    <div class="settings-section" id="section-account">
+                    <!-- ====== 2. ACCOUNT ====== -->
+                    <section class="settings-section" id="account">
                         <div class="settings-card">
-                            <h3><i class="fas fa-lock" style="color:var(--primary);"></i> Account</h3>
-                            <p class="subtitle">Change your password and account settings</p>
-                            <form id="passwordForm" method="POST" action="/settings/update">
+                            <h3><i class="fas fa-key"></i> Account</h3>
+                            <p>Change your password and manage account settings.</p>
+                            <form id="passwordForm">
                                 <div class="settings-group">
                                     <label for="currentPassword">Current Password</label>
                                     <input type="password" id="currentPassword" name="currentPassword" placeholder="Enter current password">
                                 </div>
-                                <div class="settings-group">
-                                    <label for="newPassword">New Password</label>
-                                    <input type="password" id="newPassword" name="newPassword" placeholder="Enter new password (min 6 characters)">
+                                <div class="grid-2" style="gap:14px;">
+                                    <div class="settings-group">
+                                        <label for="newPassword">New Password</label>
+                                        <input type="password" id="newPassword" name="newPassword" placeholder="Min 6 characters">
+                                    </div>
+                                    <div class="settings-group">
+                                        <label for="confirmPassword">Confirm New Password</label>
+                                        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm new password">
+                                    </div>
                                 </div>
-                                <div class="settings-group">
-                                    <label for="confirmPassword">Confirm New Password</label>
-                                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm new password">
-                                </div>
-                                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Change Password</button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Change Password
+                                </button>
                             </form>
                         </div>
-                    </div>
+                    </section>
 
-                    <!-- ===== SECURITY SECTION ===== -->
-                    <div class="settings-section" id="section-security">
+                    <!-- ====== 3. SECURITY ====== -->
+                    <section class="settings-section" id="security">
                         <div class="settings-card">
-                            <h3><i class="fas fa-shield-alt" style="color:var(--primary);"></i> Security</h3>
-                            <p class="subtitle">Protect your account</p>
+                            <h3><i class="fas fa-shield-alt"></i> Security</h3>
+                            <p>Protect your account with additional security measures.</p>
                             <div class="settings-group">
-                                <div class="checkbox-group">
-                                    <input type="checkbox" id="twoFactor">
-                                    <label for="twoFactor">Enable Two-Factor Authentication (2FA)</label>
+                                <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                                    <label style="margin:0; font-weight:600;">Two-Factor Authentication (2FA)</label>
+                                    <div style="display:flex; align-items:center; gap:8px;">
+                                        <input type="checkbox" id="twoFactorSetting" name="twoFactorEnabled" 
+                                               <%= user.twoFactorEnabled ? 'checked' : '' %> style="width:auto;">
+                                        <span style="font-size:0.85rem; color:var(--text-muted);">
+                                            <%= user.twoFactorEnabled ? '✅ Enabled' : '❌ Disabled' %>
+                                        </span>
+                                    </div>
                                 </div>
-                                <div class="help-text">Add an extra layer of security to your account.</div>
+                                <p class="help-text">Add an extra layer of security to your account.</p>
                             </div>
                             <div class="settings-group" style="margin-top:12px;">
-                                <label>Login Activity</label>
-                                <div style="background:var(--primary-bg); border-radius:8px; padding:10px 12px; font-size:0.85rem; color:var(--text-muted);">
-                                    <i class="fas fa-circle" style="color:#27ae60; font-size:8px;"></i> Current session: <strong>Chrome on Windows</strong>
-                                </div>
+                                <button id="logoutAllBtn" class="btn btn-secondary">
+                                    <i class="fas fa-sign-out-alt"></i> Logout from All Sessions
+                                </button>
+                                <p class="help-text">This will log you out from all active devices.</p>
                             </div>
-                            <button class="btn btn-secondary" id="logoutAllBtn"><i class="fas fa-sign-out-alt"></i> Logout from all sessions</button>
                         </div>
-                    </div>
+                    </section>
 
-                    <!-- ===== APPEARANCE SECTION ===== -->
-                    <div class="settings-section" id="section-appearance">
+                    <!-- ====== 4. APPEARANCE ====== -->
+                    <section class="settings-section" id="appearance">
                         <div class="settings-card">
-                            <h3><i class="fas fa-palette" style="color:var(--primary);"></i> Appearance</h3>
-                            <p class="subtitle">Customize your visual experience</p>
+                            <h3><i class="fas fa-palette"></i> Appearance</h3>
+                            <p>Customize how SHINEX looks for you.</p>
                             <div class="settings-group">
-                                <div class="checkbox-group">
-                                    <input type="checkbox" id="darkModeSetting" <%= (user && user.darkMode) ? 'checked' : '' %>>
-                                    <label for="darkModeSetting"><i class="fas fa-moon"></i> Dark Mode</label>
+                                <label for="darkModeSetting">Dark Mode</label>
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <input type="checkbox" id="darkModeSetting" name="darkMode" 
+                                           <%= user.darkMode ? 'checked' : '' %> style="width:auto;">
+                                    <span style="font-size:0.85rem; color:var(--text-muted);">
+                                        <i class="fas <%= user.darkMode ? 'fa-moon' : 'fa-sun' %>"></i>
+                                        <%= user.darkMode ? 'Dark mode enabled' : 'Light mode enabled' %>
+                                    </span>
                                 </div>
-                                <div class="help-text">Switch between light and dark theme.</div>
+                                <p class="help-text">Toggle between light and dark mode.</p>
                             </div>
                             <div class="settings-group" style="margin-top:12px;">
-                                <label for="textSizeSetting">Font Size: <span id="textSizeLabel">16px</span></label>
-                                <input type="range" id="textSizeSetting" min="12" max="24" value="<%= user && user.textSize ? user.textSize : 16 %>" step="1">
-                                <div class="help-text">Adjust the text size for better readability.</div>
+                                <label>Text Size</label>
+                                <div class="text-size-control" style="background:var(--primary-bg); padding:6px 14px; border-radius:30px; display:inline-flex; align-items:center; gap:10px;">
+                                    <i class="fas fa-font" style="color:var(--primary);"></i>
+                                    <input type="range" class="text-size-slider" min="12" max="24" value="<%= user.textSize || 16 %>" step="1" style="width:120px;">
+                                    <span class="text-size-value" style="font-weight:700; color:var(--primary);"><%= user.textSize || 16 %>px</span>
+                                </div>
                             </div>
-                            <button class="btn btn-primary" id="saveAppearance"><i class="fas fa-save"></i> Save Appearance</button>
                         </div>
-                    </div>
+                    </section>
 
-                    <!-- ===== NOTIFICATIONS SECTION ===== -->
-                    <div class="settings-section" id="section-notifications">
+                    <!-- ====== 5. NOTIFICATIONS ====== -->
+                    <section class="settings-section" id="notifications">
                         <div class="settings-card">
-                            <h3><i class="fas fa-bell" style="color:var(--primary);"></i> Notifications</h3>
-                            <p class="subtitle">Manage your notification preferences</p>
+                            <h3><i class="fas fa-bell"></i> Notifications</h3>
+                            <p>Choose how and when you receive updates.</p>
                             <div class="settings-group">
-                                <div class="checkbox-group">
-                                    <input type="checkbox" id="notifEmail" checked>
-                                    <label for="notifEmail">Email Notifications</label>
+                                <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                                    <input type="checkbox" id="emailNotifications" name="emailNotifications" 
+                                           class="notification-checkbox" <%= user.emailNotifications ? 'checked' : '' %> style="width:auto;">
+                                    <label for="emailNotifications" style="margin:0; font-weight:600;">Email Notifications</label>
                                 </div>
-                                <div class="help-text">Receive updates via email.</div>
+                                <p class="help-text">Receive updates about your courses and account via email.</p>
                             </div>
                             <div class="settings-group">
-                                <div class="checkbox-group">
-                                    <input type="checkbox" id="notifBrowser" checked>
-                                    <label for="notifBrowser">Browser Notifications</label>
+                                <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                                    <input type="checkbox" id="browserNotifications" name="browserNotifications" 
+                                           class="notification-checkbox" <%= user.browserNotifications ? 'checked' : '' %> style="width:auto;">
+                                    <label for="browserNotifications" style="margin:0; font-weight:600;">Browser Notifications</label>
                                 </div>
-                                <div class="help-text">Receive notifications in your browser.</div>
+                                <p class="help-text">Show notifications in your browser.</p>
                             </div>
                             <div class="settings-group">
-                                <div class="checkbox-group">
-                                    <input type="checkbox" id="notifCourse" checked>
-                                    <label for="notifCourse">Course Updates & Announcements</label>
+                                <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                                    <input type="checkbox" id="courseUpdates" name="courseUpdates" 
+                                           class="notification-checkbox" <%= user.courseUpdates ? 'checked' : '' %> style="width:auto;">
+                                    <label for="courseUpdates" style="margin:0; font-weight:600;">Course Updates</label>
                                 </div>
-                                <div class="help-text">Get notified about new lessons and course updates.</div>
+                                <p class="help-text">Get notified about new content and course announcements.</p>
                             </div>
-                            <button class="btn btn-primary"><i class="fas fa-save"></i> Save Notifications</button>
                         </div>
-                    </div>
+                    </section>
 
-                    <!-- ===== PRIVACY SECTION ===== -->
-                    <div class="settings-section" id="section-privacy">
+                    <!-- ====== 6. PRIVACY ====== -->
+                    <section class="settings-section" id="privacy">
                         <div class="settings-card">
-                            <h3><i class="fas fa-eye" style="color:var(--primary);"></i> Privacy</h3>
-                            <p class="subtitle">Control your privacy settings</p>
+                            <h3><i class="fas fa-lock"></i> Privacy</h3>
+                            <p>Control who can see your information.</p>
                             <div class="settings-group">
                                 <label for="profileVisibility">Profile Visibility</label>
-                                <select id="profileVisibility">
-                                    <option value="public">Public</option>
-                                    <option value="private" selected>Private</option>
+                                <select id="profileVisibility" name="profileVisibility">
+                                    <option value="public" <%= user.profileVisibility === 'public' ? 'selected' : '' %>>Public – Anyone can see</option>
+                                    <option value="private" <%= user.profileVisibility === 'private' ? 'selected' : '' %>>Private – Only you and admins</option>
                                 </select>
-                                <div class="help-text">Who can view your profile and activity.</div>
+                                <p class="help-text">Choose who can view your profile and activity.</p>
                             </div>
-                            <div class="settings-group">
-                                <div class="checkbox-group">
-                                    <input type="checkbox" id="dataSharing" checked>
-                                    <label for="dataSharing">Allow data sharing for course improvements</label>
-                                </div>
-                                <div class="help-text">Help us improve by sharing anonymous usage data.</div>
-                            </div>
-                            <button class="btn btn-primary"><i class="fas fa-save"></i> Save Privacy</button>
                         </div>
-                    </div>
+                    </section>
 
-                    <!-- ===== LEARNING SECTION ===== -->
-                    <div class="settings-section" id="section-learning">
+                    <!-- ====== 7. LEARNING ====== -->
+                    <section class="settings-section" id="learning">
                         <div class="settings-card">
-                            <h3><i class="fas fa-graduation-cap" style="color:var(--primary);"></i> Learning Settings</h3>
-                            <p class="subtitle">Customize your learning experience</p>
+                            <h3><i class="fas fa-graduation-cap"></i> Learning Settings</h3>
+                            <p>Customize your learning experience.</p>
                             <div class="settings-group">
-                                <label for="prefLevel">Preferred Course Level</label>
-                                <select id="prefLevel" name="experienceLevel">
-                                    <option value="Beginner">Beginner</option>
-                                    <option value="Intermediate">Intermediate</option>
-                                    <option value="Advanced">Advanced</option>
+                                <label for="learningLevel">Preferred Learning Level</label>
+                                <select id="learningLevel" name="learningLevel">
+                                    <option value="Beginner" <%= user.learningLevel === 'Beginner' ? 'selected' : '' %>>🌱 Beginner</option>
+                                    <option value="Intermediate" <%= user.learningLevel === 'Intermediate' ? 'selected' : '' %>>🌿 Intermediate</option>
+                                    <option value="Advanced" <%= user.learningLevel === 'Advanced' ? 'selected' : '' %>>🚀 Advanced</option>
                                 </select>
                             </div>
                             <div class="settings-group">
-                                <label>Areas of Interest</label>
-                                <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:4px;">
-                                    <label style="display:flex; align-items:center; gap:4px; font-weight:400; font-size:0.8rem; padding:4px 10px; background:var(--primary-bg); border-radius:20px; cursor:pointer;">
-                                        <input type="checkbox" value="cybersecurity" style="width:auto; margin:0;"> Cybersecurity
-                                    </label>
-                                    <label style="display:flex; align-items:center; gap:4px; font-weight:400; font-size:0.8rem; padding:4px 10px; background:var(--primary-bg); border-radius:20px; cursor:pointer;">
-                                        <input type="checkbox" value="programming" style="width:auto; margin:0;"> Programming
-                                    </label>
-                                    <label style="display:flex; align-items:center; gap:4px; font-weight:400; font-size:0.8rem; padding:4px 10px; background:var(--primary-bg); border-radius:20px; cursor:pointer;">
-                                        <input type="checkbox" value="design" style="width:auto; margin:0;"> UI/UX Design
-                                    </label>
-                                    <label style="display:flex; align-items:center; gap:4px; font-weight:400; font-size:0.8rem; padding:4px 10px; background:var(--primary-bg); border-radius:20px; cursor:pointer;">
-                                        <input type="checkbox" value="data" style="width:auto; margin:0;"> Data Analytics
-                                    </label>
+                                <label for="learningInterests">Learning Interests</label>
+                                <textarea id="learningInterests" name="learningInterests" rows="3" placeholder="What topics interest you? e.g. Cybersecurity, Web Development, Data Science..."><%= user.learningInterests || '' %></textarea>
+                                <p class="help-text">Tell us what you want to learn so we can recommend relevant courses.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- ====== 8. BILLING ====== -->
+                    <section class="settings-section" id="billing">
+                        <div class="settings-card">
+                            <h3><i class="fas fa-credit-card"></i> Billing</h3>
+                            <p>Manage your subscription and payments.</p>
+                            <div class="settings-group" style="text-align:center; padding:20px 0;">
+                                <i class="fas fa-credit-card" style="font-size:3rem; color:var(--text-muted);"></i>
+                                <h4 style="margin:8px 0 4px;">Free Plan</h4>
+                                <p style="color:var(--text-muted);">You're currently on the free plan.</p>
+                                <p style="font-size:0.85rem; color:var(--text-muted);">All courses are free for a limited time.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- ====== 9. SUPPORT ====== -->
+                    <section class="settings-section" id="support">
+                        <div class="settings-card">
+                            <h3><i class="fas fa-headset"></i> Help & Support</h3>
+                            <p>Need help? We're here for you.</p>
+                            <div class="settings-group" style="display:flex; flex-direction:column; gap:12px;">
+                                <a href="/faq" class="btn btn-secondary btn-block">
+                                    <i class="fas fa-question-circle"></i> View FAQs
+                                </a>
+                                <a href="/contact" class="btn btn-primary btn-block">
+                                    <i class="fas fa-envelope"></i> Contact Support
+                                </a>
+                                <div style="text-align:center; padding:12px; background:var(--primary-bg); border-radius:8px;">
+                                    <p style="margin:0; font-size:0.85rem;">
+                                        <i class="fas fa-phone" style="color:var(--primary);"></i>
+                                        +234 800 SHINEX
+                                    </p>
+                                    <p style="margin:0; font-size:0.8rem; color:var(--text-muted);">
+                                        Mon-Fri, 9AM - 6PM WAT
+                                    </p>
                                 </div>
                             </div>
-                            <button class="btn btn-primary"><i class="fas fa-save"></i> Save Learning Settings</button>
                         </div>
-                    </div>
+                    </section>
 
-                    <!-- ===== DANGER ZONE ===== -->
-                    <div class="settings-section" id="section-danger">
-                        <div class="settings-card danger-zone">
-                            <h4><i class="fas fa-exclamation-triangle"></i> Danger Zone</h4>
-                            <p>These actions are irreversible. Please proceed with caution.</p>
-                            <div style="display:flex; flex-wrap:wrap; gap:12px; margin-top:8px;">
-                                <button class="btn-danger-zone" id="deleteAccountBtn"><i class="fas fa-trash"></i> Delete Account</button>
-                                <button class="btn-danger-zone" style="background:#f39c12;"><i class="fas fa-download"></i> Export Data</button>
+                    <!-- ====== 10. DANGER ZONE ====== -->
+                    <section class="settings-section" id="danger">
+                        <div class="settings-card">
+                            <div class="danger-zone">
+                                <h4><i class="fas fa-exclamation-triangle"></i> Danger Zone</h4>
+                                <p>Once you delete your account, there is no going back. Please be certain.</p>
+                                <button id="deleteAccountBtn" class="btn-danger-zone">
+                                    <i class="fas fa-trash-alt"></i> Delete Account
+                                </button>
                             </div>
-                            <div class="help-text" style="margin-top:8px; color:#e74c3c;">Deleting your account will permanently remove all your data.</div>
                         </div>
-                    </div>
+                    </section>
 
                 </div>
             </div>
-
-            <%- include(getAdBox()) %>
         </div>
     </main>
 
-    <%- include(getFooter()) %>
-
-    <!-- AI Bot -->
-    <div class="ai-bot" id="aiBot">
-        <div class="ai-bot-pulse"></div>
-        <button class="ai-bot-btn" id="aiBotBtn"><i class="fas fa-robot"></i></button>
-    </div>
-
-    <div class="ai-chat-modal" id="aiChatModal">
-        <div class="ai-chat-header"><h4><i class="fas fa-robot"></i> AI Tutor</h4><button class="ai-chat-close" id="aiChatClose">&times;</button></div>
-        <div class="ai-chat-body" id="aiChatBody">
-            <div class="ai-chat-messages" id="aiChatMessages">
-                <div class="ai-chat-msg bot">👋 Hello! I'm your AI tutor. Ask me anything!</div>
-            </div>
-        </div>
-        <div class="ai-chat-footer">
-            <input type="text" id="aiChatInput" placeholder="Ask a question..." maxlength="500">
-            <button class="btn btn-primary" id="aiChatSend"><i class="fas fa-paper-plane"></i></button>
-        </div>
-    </div>
-
-    <script src="/js/script.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Sidebar Navigation
-            const navLinks = document.querySelectorAll('.settings-nav a');
-            const sections = document.querySelectorAll('.settings-section');
-            
-            navLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const target = this.getAttribute('data-target');
-                    navLinks.forEach(l => l.classList.remove('active'));
-                    this.classList.add('active');
-                    sections.forEach(section => {
-                        section.classList.remove('active');
-                        if (section.id === target) {
-                            section.classList.add('active');
-                        }
-                    });
-                    // Close sidebar on mobile
-                    const sidebar = document.getElementById('settingsSidebar');
-                    if (window.innerWidth <= 768 && sidebar) {
-                        sidebar.classList.remove('open');
-                    }
-                });
-            });
-
-            // Toggle Sidebar
-            const toggleBtn = document.getElementById('settingsToggle');
-            const sidebar = document.getElementById('settingsSidebar');
-            if (toggleBtn && sidebar) {
-                toggleBtn.addEventListener('click', function() {
-                    sidebar.classList.toggle('open');
-                });
-            }
-
-            // Dark Mode in Settings
-            const darkModeSetting = document.getElementById('darkModeSetting');
-            const textSizeSetting = document.getElementById('textSizeSetting');
-            const textSizeLabel = document.getElementById('textSizeLabel');
-            
-            const savedDark = localStorage.getItem('shinex-dark-mode');
-            if (savedDark === 'true' && darkModeSetting) {
-                darkModeSetting.checked = true;
-                document.body.classList.add('dark-mode');
-            }
-            
-            if (darkModeSetting) {
-                darkModeSetting.addEventListener('change', function() {
-                    document.body.classList.toggle('dark-mode', this.checked);
-                    localStorage.setItem('shinex-dark-mode', this.checked);
-                    // Sync header toggle
-                    const headerToggle = document.getElementById('darkToggle');
-                    if (headerToggle) {
-                        headerToggle.innerHTML = this.checked ? '☀️ <span class="toggle-label">Light</span>' : '🌙 <span class="toggle-label">Dark</span>';
-                    }
-                    showToast(this.checked ? '🌙 Dark mode enabled' : '☀️ Light mode enabled', 'success');
-                });
-            }
-
-            // Text Size
-            if (textSizeSetting && textSizeLabel) {
-                const savedSize = localStorage.getItem('shinex-text-size') || 16;
-                textSizeSetting.value = savedSize;
-                textSizeLabel.textContent = savedSize + 'px';
-                document.body.style.fontSize = savedSize + 'px';
-                
-                textSizeSetting.addEventListener('input', function() {
-                    const size = this.value;
-                    textSizeLabel.textContent = size + 'px';
-                    document.body.style.fontSize = size + 'px';
-                    localStorage.setItem('shinex-text-size', size);
-                });
-            }
-
-            // Save Appearance
-            const saveAppearance = document.getElementById('saveAppearance');
-            if (saveAppearance) {
-                saveAppearance.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const darkMode = darkModeSetting ? darkModeSetting.checked : false;
-                    const textSize = textSizeSetting ? textSizeSetting.value : 16;
-                    
-                    fetch('/settings/update', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ darkMode: darkMode, textSize: textSize })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            showToast('✅ Appearance settings saved!', 'success');
-                        } else {
-                            showToast('❌ ' + data.error, 'error');
-                        }
-                    })
-                    .catch(() => showToast('❌ Something went wrong.', 'error'));
-                });
-            }
-
-            // Delete Account
-            const deleteBtn = document.getElementById('deleteAccountBtn');
-            if (deleteBtn) {
-                deleteBtn.addEventListener('click', function() {
-                    if (confirm('⚠️ Are you sure you want to delete your account?')) {
-                        if (confirm('Type "DELETE" to confirm:')) {
-                            if (prompt('Please type "DELETE" to confirm:') === 'DELETE') {
-                                showToast('⚠️ Account deletion request submitted.', 'error');
-                            }
-                        }
-                    }
-                });
-            }
-
-            // Logout All
-            const logoutAllBtn = document.getElementById('logoutAllBtn');
-            if (logoutAllBtn) {
-                logoutAllBtn.addEventListener('click', function() {
-                    if (confirm('Are you sure you want to logout from all devices?')) {
-                        fetch('/logout-all', { method: 'POST' })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                showToast('✅ Logged out from all sessions.', 'success');
-                            }
-                        });
-                    }
-                });
-            }
-        });
-    </script>
+    <%- include('partials/footer') %>
+    <script src="/js/main.js"></script>
 </body>
 </html>

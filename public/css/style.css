@@ -1,7 +1,7 @@
 /* ============================================================
    SHINEX LEARNING CIRCLE – COMPLETE STYLESHEET
    Colors: Purple (#8B5CF6) | Dark (#1A0A2E)
-   Version: 3.0 - FIXED DARK MODE
+   Version: 4.0 – FINAL (with all new features)
    ============================================================ */
 
 /* ===== RESET & BASE ===== */
@@ -170,6 +170,16 @@ body.dark-mode .class-item.active .class-link {
     background: #2a1a4a !important;
 }
 
+/* CLASS LOCKED - NEW */
+body.dark-mode .class-link.locked {
+    color: #666 !important;
+    cursor: not-allowed;
+}
+
+body.dark-mode .class-link.locked .lock-icon {
+    color: #888;
+}
+
 /* CONTENT AREA */
 body.dark-mode .content-header {
     background: var(--dark-card) !important;
@@ -232,6 +242,14 @@ body.dark-mode .test-section h4 {
 }
 
 body.dark-mode .test-section p {
+    color: #cccccc !important;
+}
+
+body.dark-mode .test-question .q-text {
+    color: var(--text-light) !important;
+}
+
+body.dark-mode .test-options label {
     color: #cccccc !important;
 }
 
@@ -1283,7 +1301,7 @@ label {
     text-decoration: none;
 }
 
-.class-link:hover:not(.disabled) {
+.class-link:hover:not(.disabled):not(.locked) {
     background: #f0ebfb;
 }
 
@@ -1291,6 +1309,15 @@ label {
     color: #b0a3c4;
     cursor: not-allowed;
     opacity: 0.6;
+}
+
+.class-link.locked {
+    color: #b0a3c4 !important;
+    cursor: not-allowed;
+}
+
+.class-link.locked .lock-icon {
+    color: #999;
 }
 
 .class-link .class-number {
@@ -2130,6 +2157,14 @@ label {
     transform: rotate(180deg);
 }
 
+/* ===== ENROLL PAGE ===== */
+.enroll-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+    margin-top: 12px;
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 1024px) {
     .level-container {
@@ -2283,6 +2318,10 @@ label {
     
     .settings-toggle-btn {
         display: block;
+    }
+    
+    .enroll-grid {
+        grid-template-columns: 1fr;
     }
 }
 

@@ -3,108 +3,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Terms – SHINEX</title>
+    <title>Terms & Conditions – SHINEX</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .mobile-terms-container {
+            padding: 12px 12px 24px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .mobile-terms-card {
+            padding: 16px 14px !important;
+            border-radius: 12px !important;
+            margin-bottom: 10px !important;
+        }
+        .mobile-terms-card h3 {
+            font-size: 0.95rem !important;
+            font-weight: 700 !important;
+            margin: 0 0 4px !important;
+            color: var(--primary);
+        }
+        .mobile-terms-card p {
+            font-size: 0.82rem !important;
+            line-height: 1.7 !important;
+            margin: 0 !important;
+            color: var(--text-muted);
+        }
+        .mobile-terms-card ul {
+            padding-left: 18px;
+            margin: 4px 0 0;
+        }
+        .mobile-terms-card ul li {
+            font-size: 0.82rem !important;
+            line-height: 1.7 !important;
+            color: var(--text-muted);
+            margin-bottom: 2px;
+        }
+        .mobile-terms-card a {
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .mobile-terms-divider {
+            height: 1px;
+            background: #ede8f5;
+            margin: 12px 0;
+        }
+        body.dark-mode .mobile-terms-divider {
+            background: var(--dark-border);
+        }
+        .mobile-back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.82rem;
+            margin-top: 8px;
+            padding: 6px 0;
+        }
+        .mobile-back-link:hover {
+            color: var(--primary);
+        }
+    </style>
 </head>
 <body>
-    <div id="page-loader">
-        <div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div>
-        <div class="loader-text">SHINEX</div>
-        <div class="loader-sub">LEARNING CIRCLE</div>
-    </div>
+    <%- include('partials/header-mobile', { showBack: true }) %>
 
-    <!-- HEADER -->
-    <header class="header" style="padding:10px 12px; flex-wrap:wrap; gap:6px;">
-        <div style="display:flex; align-items:center; gap:8px; flex:1;">
-            <% if (showBack) { %>
-                <a href="javascript:history.back()" class="back-btn" style="font-size:0.75rem; padding:4px 8px; color:rgba(255,255,255,0.9);"><i class="fas fa-arrow-left"></i></a>
-            <% } %>
-            <a href="/" class="logo-container" style="gap:8px;">
-                <div class="logo" style="width:36px; height:36px; font-size:11px; background:rgba(255,255,255,0.2);">SLC</div>
-                <div>
-                    <div class="logo-text" style="font-size:15px; color:#fff;">SHINEX<span>.</span></div>
-                    <div class="logo-sub" style="font-size:7px; color:rgba(255,255,255,0.7);">LEARNING CIRCLE</div>
-                </div>
+    <main class="main-content">
+        <div class="mobile-terms-container">
+            <h2 style="font-size:1.3rem; font-weight:800; margin:0 0 2px;">📜 Terms & Conditions</h2>
+            <p style="color:var(--text-muted); font-size:0.8rem; margin-bottom:10px;">
+                <strong>Last Updated:</strong> August 2026
+            </p>
+
+            <div class="card mobile-terms-card">
+                <h3>1. Acceptance of Terms</h3>
+                <p>By accessing or using SHINEX Learning Circle ("SLC", "we", "our", "us"), you agree to comply with and be bound by these Terms & Conditions. If you do not agree, you must not use our platform.</p>
+
+                <div class="mobile-terms-divider"></div>
+
+                <h3>2. Account Registration</h3>
+                <p>To access certain features, you must create an account. You agree to provide accurate information, maintain password security, and notify us of unauthorized use.</p>
+
+                <div class="mobile-terms-divider"></div>
+
+                <h3>3. Student ID</h3>
+                <p>Upon successful registration, you will be assigned a unique Student ID in the format <strong>SLC-YYYY-XX-XXX</strong>. This ID is your primary identifier on our platform.</p>
+
+                <div class="mobile-terms-divider"></div>
+
+                <h3>4. Courses and Learning</h3>
+                <p>All courses are provided for educational purposes only. We do not guarantee employment or specific outcomes. You are responsible for your own learning.</p>
+
+                <div class="mobile-terms-divider"></div>
+
+                <h3>5. User Conduct</h3>
+                <p>You agree not to:</p>
+                <ul>
+                    <li>Post offensive or inappropriate content</li>
+                    <li>Attempt to cheat on tests or bypass the system</li>
+                    <li>Impersonate other users</li>
+                    <li>Use the platform for illegal purposes</li>
+                    <li>Interfere with platform functionality</li>
+                </ul>
+
+                <div class="mobile-terms-divider"></div>
+
+                <h3>6. Intellectual Property</h3>
+                <p>All content on SHINEX Learning Circle is the property of SLC or its licensors. You may not reproduce, distribute, or create derivative works without permission.</p>
+
+                <div class="mobile-terms-divider"></div>
+
+                <h3>7. Services</h3>
+                <p>Additional services (registration, design, campaigns) are subject to separate pricing and terms. We reserve the right to modify or discontinue any service.</p>
+
+                <div class="mobile-terms-divider"></div>
+
+                <h3>8. Privacy</h3>
+                <p>Please review our <a href="/privacy">Privacy Policy</a> to understand how we collect and protect your personal information.</p>
+
+                <div class="mobile-terms-divider"></div>
+
+                <h3>9. Disclaimer of Warranties</h3>
+                <p>Our platform is provided "as is" and "as available." We do not warrant that the platform will be uninterrupted or error-free.</p>
+
+                <div class="mobile-terms-divider"></div>
+
+                <h3>10. Limitation of Liability</h3>
+                <p>To the fullest extent permitted by law, SLC shall not be liable for any indirect, incidental, or consequential damages arising from your use of the platform.</p>
+
+                <div class="mobile-terms-divider"></div>
+
+                <h3>11. Termination</h3>
+                <p>We reserve the right to suspend or terminate your account at any time for violation of these terms. You may also delete your account via Settings.</p>
+
+                <div class="mobile-terms-divider"></div>
+
+                <h3>12. Changes to Terms</h3>
+                <p>We may update these Terms from time to time. Continued use constitutes acceptance of the updated terms.</p>
+
+                <div class="mobile-terms-divider"></div>
+
+                <h3>13. Contact Information</h3>
+                <p>
+                    <i class="fas fa-envelope" style="color:var(--primary);"></i> support@shinex.ng<br>
+                    <i class="fas fa-phone" style="color:var(--primary);"></i> +234 800 SHINEX<br>
+                    <i class="fas fa-map-marker-alt" style="color:var(--primary);"></i> Lagos, Nigeria
+                </p>
+            </div>
+
+            <a href="/" class="mobile-back-link">
+                <i class="fas fa-arrow-left"></i> Back to Home
             </a>
-        </div>
-        <div class="header-actions" style="gap:4px; flex-wrap:wrap;">
-            <div class="text-size-control" style="padding:2px 8px; background:rgba(255,255,255,0.15);">
-                <label style="font-size:0.6rem; color:rgba(255,255,255,0.8);"><i class="fas fa-font"></i></label>
-                <input type="range" id="textSizeSliderMobile" min="12" max="24" value="16" step="1" style="width:50px;">
-                <span class="text-size-value" id="textSizeValueMobile" style="font-size:0.6rem; min-width:24px; color:#fff;">16px</span>
-            </div>
-            <button class="dark-toggle" id="darkToggleMobile" style="font-size:1rem; padding:4px 6px; color:#fff; background:rgba(255,255,255,0.15); border-radius:30px;">🌙</button>
-            <a href="/settings" class="btn btn-secondary btn-sm" style="min-height:32px; padding:4px 10px; border-radius:30px; font-size:0.75rem; background:rgba(255,255,255,0.2); color:#fff;"><i class="fas fa-cog"></i></a>
-        </div>
-    </header>
-
-    <!-- CONTENT -->
-    <main class="main-content" style="padding:12px 0 24px;">
-        <div class="container" style="padding:0 12px;">
-            <div style="background:#fff; border-radius:12px; padding:16px; border:1px solid #ede8f5;">
-                <h1 style="font-size:1.1rem; font-weight:800; color:var(--text-dark); margin:0 0 4px 0;">
-                    <i class="fas fa-file-contract" style="color:var(--primary);"></i> Terms & Conditions
-                </h1>
-                <p style="color:var(--text-muted); font-size:0.7rem; margin:0 0 12px 0;">Last updated: August 2026</p>
-                <div style="font-size:0.85rem; line-height:1.8; color:var(--text-dark);">
-                    <p style="margin-bottom:12px;">
-                        <strong>1. Acceptance of Terms</strong><br>
-                        By using SHINEX Learning Circle, you agree to these terms.
-                    </p>
-                    <p style="margin-bottom:12px;">
-                        <strong>2. Use of Platform</strong><br>
-                        You agree to use the platform for educational purposes only.
-                    </p>
-                    <p style="margin-bottom:12px;">
-                        <strong>3. Content Ownership</strong><br>
-                        All course content is the property of SHINEX Learning Circle.
-                    </p>
-                    <p style="margin-bottom:12px;">
-                        <strong>4. Privacy</strong><br>
-                        Your data is handled according to our Privacy Policy.
-                    </p>
-                    <p style="margin-bottom:12px;">
-                        <strong>5. Contact</strong><br>
-                        For questions, contact us through our <a href="/contact" style="color:var(--primary);">Contact page</a>.
-                    </p>
-                    <p style="margin-bottom:0;">
-                        <strong>6. Changes to Terms</strong><br>
-                        We may update these terms from time to time.
-                    </p>
-                </div>
-            </div>
         </div>
     </main>
 
-    <!-- FOOTER -->
-    <footer class="footer" style="padding:20px 0 16px; margin-top:20px;">
-        <div class="container">
-            <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:10px 16px; margin-bottom:12px;">
-                <a href="/" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-home"></i> Home</a>
-                <a href="/about" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-info-circle"></i> About</a>
-                <a href="/faq" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-question-circle"></i> FAQ</a>
-                <a href="/services" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-cogs"></i> Services</a>
-                <a href="/contact" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-envelope"></i> Contact</a>
-                <a href="/terms" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-file-contract"></i> Terms</a>
-                <a href="/privacy" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-shield-alt"></i> Privacy</a>
-            </div>
-            <div style="display:flex; justify-content:center; gap:14px; margin-bottom:12px;">
-                <a href="#" style="color:rgba(255,255,255,0.6); font-size:1rem;"><i class="fab fa-facebook"></i></a>
-                <a href="#" style="color:rgba(255,255,255,0.6); font-size:1rem;"><i class="fab fa-twitter"></i></a>
-                <a href="#" style="color:rgba(255,255,255,0.6); font-size:1rem;"><i class="fab fa-linkedin"></i></a>
-                <a href="#" style="color:rgba(255,255,255,0.6); font-size:1rem;"><i class="fab fa-youtube"></i></a>
-            </div>
-            <div style="text-align:center; margin-bottom:8px;">
-                <span style="color:#fff; font-weight:700; font-size:1rem;">SHINEX</span>
-                <span style="color:rgba(255,255,255,0.5); font-size:0.65rem; display:block;">Learning Circle</span>
-            </div>
-            <div style="text-align:center; font-size:0.65rem; color:rgba(255,255,255,0.5); border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
-                <p style="margin:0;">&copy; 2026 SHINEX Learning Circle</p>
-            </div>
-        </div>
-    </footer>
-
-    <script src="/js/script.js"></script>
+    <%- include('partials/footer-mobile') %>
+    <script src="/js/main.js"></script>
 </body>
 </html>

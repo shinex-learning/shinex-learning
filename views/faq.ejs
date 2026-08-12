@@ -4,538 +4,165 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FAQ – SHINEX Learning Circle</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        .faq-item {
-            border-bottom: 1px solid #ede8f5;
-            padding: 18px 0;
-        }
-        .faq-item:last-child {
-            border-bottom: none;
-        }
-        .faq-question {
-            font-weight: 700;
-            font-size: 1.05rem;
-            color: var(--text-dark);
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 12px;
-            transition: color 0.3s ease;
-        }
-        .faq-question:hover {
-            color: var(--primary);
-        }
-        .faq-question .q-number {
-            color: var(--primary);
-            font-weight: 800;
-            min-width: 30px;
-        }
-        .faq-answer {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            line-height: 1.8;
-            margin-top: 8px;
-            padding-left: 40px;
-            display: none;
-        }
-        .faq-answer.open {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-        .faq-question .fa-chevron-down {
-            transition: transform 0.3s ease;
-            color: var(--primary);
-            font-size: 0.9rem;
-            flex-shrink: 0;
-            margin-top: 4px;
-        }
-        .faq-question .fa-chevron-down.rotated {
-            transform: rotate(180deg);
-        }
-        body.dark-mode .faq-item {
-            border-color: var(--dark-border);
-        }
-        body.dark-mode .faq-question {
-            color: var(--text-light);
-        }
-        body.dark-mode .faq-answer {
-            color: var(--text-muted-light);
-        }
-        @keyframes fadeIn {
-            0% { opacity: 0; transform: translateY(-8px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-        .faq-search {
-            margin-bottom: 20px;
-        }
-        .faq-search input {
-            padding: 12px 16px;
-            border-radius: 10px;
-            border: 2px solid #ede8f5;
-            font-size: 0.95rem;
-            width: 100%;
-            transition: all 0.3s ease;
-        }
-        .faq-search input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.12);
-            outline: none;
-        }
-        body.dark-mode .faq-search input {
-            background: #2a2a2a;
-            color: var(--text-light);
-            border-color: var(--dark-border);
-        }
-        .faq-categories {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-        .faq-category {
-            padding: 6px 16px;
-            border-radius: 20px;
-            background: var(--primary-bg);
-            color: var(--text-muted);
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            border: none;
-            transition: all 0.3s ease;
-        }
-        .faq-category:hover,
-        .faq-category.active {
-            background: var(--primary);
-            color: #fff;
-        }
-        body.dark-mode .faq-category {
-            background: #2a1a4a;
-            color: var(--text-muted-light);
-        }
-        body.dark-mode .faq-category:hover,
-        body.dark-mode .faq-category.active {
-            background: var(--primary);
-            color: #fff;
-        }
-        .no-results {
-            text-align: center;
-            padding: 30px 20px;
-            color: var(--text-muted);
-            display: none;
-        }
-        .no-results i {
-            font-size: 2rem;
-            display: block;
-            margin-bottom: 8px;
-            color: var(--primary);
-        }
-    </style>
 </head>
 <body>
-    <div id="page-loader">
-        <div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div>
-        <div class="loader-text">SHINEX</div>
-        <div class="loader-sub">LEARNING CIRCLE</div>
-    </div>
-
-    <%- include(getHeader()) %>
+    <%- include('partials/header', { showBack: true }) %>
 
     <main class="main-content">
-        <div class="container" style="max-width:820px;">
-            <div class="card">
-                <h1 style="font-size:1.6rem; font-weight:800; color:var(--text-dark); margin:0 0 4px 0;">
-                    <i class="fas fa-question-circle" style="color:var(--primary);"></i> Frequently Asked Questions
-                </h1>
-                <p style="color:var(--text-muted); font-size:0.95rem; margin:0 0 20px 0;">
-                    Find answers to common questions about SHINEX Learning Circle.
-                </p>
+        <div class="container" style="max-width:800px;">
+            <h2 style="font-size:2rem; font-weight:800; margin:0 0 4px;">❓ Frequently Asked Questions</h2>
+            <p style="color:var(--text-muted); margin-bottom:24px;">Find quick answers to common questions about SHINEX Learning Circle.</p>
 
-                <!-- Search -->
-                <div class="faq-search">
-                    <input type="text" id="faqSearch" placeholder="Search FAQ... (e.g., account, course, password)" aria-label="Search FAQ">
-                </div>
+            <div class="card" style="padding:20px 24px;">
 
-                <!-- Categories -->
-                <div class="faq-categories">
-                    <button class="faq-category active" data-category="all">All</button>
-                    <button class="faq-category" data-category="account">Account</button>
-                    <button class="faq-category" data-category="learning">Learning</button>
-                    <button class="faq-category" data-category="security">Security</button>
-                    <button class="faq-category" data-category="technical">Technical</button>
-                </div>
-
-                <!-- FAQ Items -->
-                <div id="faqContainer">
-                    <div class="faq-item" data-category="general">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            <span><span class="q-number">1.</span> What is SHINEX Learning Circle?</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            <strong>SHINEX Learning Circle (SLC)</strong> is an online learning platform where students and anyone interested can learn practical skills through structured courses, lessons, quizzes, and learning resources.
-                        </div>
+                <!-- FAQ 1 -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>What is SHINEX Learning Circle?</span>
+                        <i class="fas fa-chevron-down"></i>
                     </div>
-
-                    <div class="faq-item" data-category="account">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            <span><span class="q-number">2.</span> Who can use SHINEX Learning Circle?</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            Anyone who meets the platform's eligibility requirements can create an account and learn on SLC. You do not need to be an expert to get started.
-                        </div>
-                    </div>
-
-                    <div class="faq-item" data-category="account">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            <span><span class="q-number">3.</span> Do I need an account to access the courses?</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            Some learning resources may be available without an account, but an account is required for features such as saving your progress, completing lessons, taking quizzes, and accessing your personal learning dashboard.
-                        </div>
-                    </div>
-
-                    <div class="faq-item" data-category="account">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            <span><span class="q-number">4.</span> How do I create an account?</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            Click <strong>Register</strong> and provide the required information. Follow the registration steps to complete your profile and create your account.
-                        </div>
-                    </div>
-
-                    <div class="faq-item" data-category="account">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            <span><span class="q-number">5.</span> Can I edit my profile after registering?</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            Yes. Go to <strong>Settings → Edit Profile</strong> to update information such as your name, profile picture, bio, interests, and other available profile details.
-                        </div>
-                    </div>
-
-                    <div class="faq-item" data-category="account">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            <span><span class="q-number">6.</span> I forgot my password. What should I do?</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            Click <strong>Forgot Password?</strong> on the login page and follow the instructions to reset your password.
-                        </div>
-                    </div>
-
-                    <div class="faq-item" data-category="security">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            <span><span class="q-number">7.</span> Can I change my password?</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            Yes. Go to <strong>Settings → Security → Change Password</strong> and follow the instructions.
-                        </div>
-                    </div>
-
-                    <div class="faq-item" data-category="technical">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            <span><span class="q-number">8.</span> Can I learn on my phone?</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            Yes. SHINEX Learning Circle is designed to work across <strong>phones, tablets, and computers</strong>.
-                        </div>
-                    </div>
-
-                    <div class="faq-item" data-category="learning">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            <span><span class="q-number">9.</span> Can I continue a course where I stopped?</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            Yes. Your learning progress can be saved to your account, allowing you to return to your course and continue from where you stopped.
-                        </div>
-                    </div>
-
-                    <div class="faq-item" data-category="learning">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            <span><span class="q-number">10.</span> Are the courses free?</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            Course availability and pricing may vary. Some courses or learning materials may be free, while others may require payment.
-                        </div>
-                    </div>
-
-                    <div class="faq-item" data-category="learning">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            <span><span class="q-number">11.</span> Will I receive a certificate?</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            Certificate availability depends on the specific course and the requirements attached to it. Check the course information for details.
-                        </div>
-                    </div>
-
-                    <div class="faq-item" data-category="learning">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            <span><span class="q-number">12.</span> Can I take quizzes or tests?</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            Yes. Courses may contain quizzes, tests, exercises, or assessments to help you measure your understanding.
-                        </div>
-                    </div>
-
-                    <div class="faq-item" data-category="learning">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            <span><span class="q-number">13.</span> What happens if I fail a quiz?</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            Depending on the course, you may be allowed to review the lesson and attempt the quiz again.
-                        </div>
-                    </div>
-
-                    <div class="faq-item" data-category="learning">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            <span><span class="q-number">14.</span> Can I change to another course?</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            If your account and the platform's course system allow it, you can select or enroll in another course. Some courses may have specific enrollment requirements.
-                        </div>
-                    </div>
-
-                    <div class="faq-item" data-category="security">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            <span><span class="q-number">15.</span> Can I use SLC's cybersecurity lessons for real-world hacking?</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            SLC's cybersecurity content is intended for <strong>legal and authorized learning</strong>. Practical security testing should only be performed on systems you own or have explicit permission to test.
-                        </div>
-                    </div>
-
-                    <div class="faq-item" data-category="technical">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            <span><span class="q-number">16.</span> How do I turn on Dark Mode?</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            Go to <strong>Settings → Appearance</strong> and select <strong>Dark Mode</strong>.
-                        </div>
-                    </div>
-
-                    <div class="faq-item" data-category="technical">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            <span><span class="q-number">17.</span> How do I change my notification settings?</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            Go to <strong>Settings → Notifications</strong> and choose which notifications you want to receive.
-                        </div>
-                    </div>
-
-                    <div class="faq-item" data-category="account">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            <span><span class="q-number">18.</span> How do I delete my account?</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            Go to <strong>Settings → Account/Danger Zone → Delete Account</strong>. You may be asked to confirm your identity before the account is permanently deleted.
-                        </div>
-                    </div>
-
-                    <div class="faq-item" data-category="security">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            <span><span class="q-number">19.</span> Is my personal information safe?</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            We take reasonable measures to protect user information. For details about how your information is collected and used, please read our <a href="/privacy" style="color:var(--primary);">Privacy Policy</a>.
-                        </div>
-                    </div>
-
-                    <div class="faq-item" data-category="technical">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            <span><span class="q-number">20.</span> I found a problem on the website. How can I report it?</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            Go to <strong>Help & Support → Report a Problem</strong> or use the official contact information provided by SLC.
-                        </div>
-                    </div>
-
-                    <div class="faq-item" data-category="general">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            <span><span class="q-number">21.</span> Can I contact SHINEX Learning Circle?</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            Yes. Visit the <a href="/contact" style="color:var(--primary);">Contact Us</a> section of the website to reach the SLC team.
-                        </div>
-                    </div>
-
-                    <div class="faq-item" data-category="security">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            <span><span class="q-number">22.</span> How can I report inappropriate content or behavior?</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            Use the <strong>Report</strong> option where available or contact SLC Support with details about the issue.
-                        </div>
-                    </div>
-
-                    <div class="faq-item" data-category="account">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            <span><span class="q-number">23.</span> Can I access my account from another computer?</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            Yes. You can log in to your account from another supported device using your account credentials. For security, avoid signing in on devices you do not trust.
-                        </div>
-                    </div>
-
-                    <div class="faq-item" data-category="account">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            <span><span class="q-number">24.</span> Why am I not receiving my verification email?</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            Check your <strong>Spam/Junk</strong> folder first. Make sure the email address you registered with is correct. If you still cannot find it, request another verification email or contact Support.
-                        </div>
-                    </div>
-
-                    <div class="faq-item" data-category="general">
-                        <div class="faq-question" onclick="toggleFAQ(this)">
-                            <span><span class="q-number">25.</span> Where can I find the latest information about SLC?</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            Check the <strong>Announcements</strong>, <strong>Help Center</strong>, or official SLC communication channels for updates.
-                        </div>
+                    <div class="faq-answer">
+                        SHINEX Learning Circle (SLC) is a Nigerian-based online learning platform offering practical courses in technology, design, and business. We provide hands-on training to help you build real-world skills.
                     </div>
                 </div>
 
-                <!-- No Results -->
-                <div class="no-results" id="noResults">
-                    <i class="fas fa-search"></i>
-                    <p>No questions found. Try a different search term.</p>
+                <!-- FAQ 2 -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How do I register?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Click the <strong>Register</strong> button at the top right of the page, fill in your personal, contact, academic information, choose your course, and set a password. You'll receive a verification email with your unique Student ID.
+                    </div>
                 </div>
 
-                <!-- Need More Help -->
-                <div style="margin-top:30px; padding:20px; background:var(--primary-bg); border-radius:12px; text-align:center;">
-                    <h4 style="font-weight:700; color:var(--text-dark); margin:0 0 4px 0;">Still Need Help?</h4>
-                    <p style="color:var(--text-muted); font-size:0.9rem; margin:0 0 12px 0;">Can't find what you're looking for? Reach out to our support team.</p>
-                    <a href="/contact" class="btn btn-primary"><i class="fas fa-envelope"></i> Contact Us</a>
+                <!-- FAQ 3 -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>What is my Student ID and how do I use it?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Your Student ID is a unique identifier in the format <strong>SLC-2026-XX-XXX</strong>. It is automatically generated during registration. You can use it to log in to your account instead of your email address.
+                    </div>
                 </div>
+
+                <!-- FAQ 4 -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>What courses do you offer?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        We offer 10 courses: Cybersecurity, Data Analysis, Digital Marketing, Graphic Design, Motion Design, Networking, Programming, UI/UX Design, Web Development, and WordPress Development. More courses will be added in the future.
+                    </div>
+                </div>
+
+                <!-- FAQ 5 -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Is it free to learn?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Yes, currently all courses are completely free. We believe in making quality education accessible to everyone. In the future, we may introduce premium features, but core learning will remain free.
+                    </div>
+                </div>
+
+                <!-- FAQ 6 -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How do I track my progress?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Your <strong>Dashboard</strong> shows your overall progress, completed classes, and points earned. Inside each level, you'll see a progress bar and class completion status. Complete a class to earn +10 points.
+                    </div>
+                </div>
+
+                <!-- FAQ 7 -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>What if I forget my Student ID or password?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        You can log in using your <strong>email address</strong> instead. If you've forgotten your password, contact support at <strong>support@shinex.ng</strong> for assistance. We are working on a password reset feature.
+                    </div>
+                </div>
+
+                <!-- FAQ 8 -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Can I change my course after registration?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Yes! Go to your <strong>Dashboard</strong> and click the <strong>Change Course</strong> button. You'll be able to select a new course. Your progress will reset for the new course.
+                    </div>
+                </div>
+
+                <!-- FAQ 9 -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How do I contact support?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Visit the <a href="/contact">Contact page</a> to send us a message. You can also email us at <strong>support@shinex.ng</strong> or call <strong>+234 800 SHINEX</strong> during business hours (Mon-Fri, 9AM-6PM WAT).
+                    </div>
+                </div>
+
+                <!-- FAQ 10 -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Do I get a certificate after completing a course?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Not yet, but we are working on introducing certificates of completion. Stay tuned for updates. In the meantime, focus on building your skills and completing all levels.
+                    </div>
+                </div>
+
+                <!-- FAQ 11 -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How does the AI Tutor work?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        The AI Tutor is a floating chat button on every page. You can ask it questions about your courses, technology, or careers. It uses the Groq AI API to provide educational and helpful responses in real time.
+                    </div>
+                </div>
+
+                <!-- FAQ 12 -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Is my data safe?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Yes. We take data security seriously. All passwords are hashed using bcrypt, and we follow best practices to protect your personal information. Read our <a href="/privacy">Privacy Policy</a> for more details.
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Still have questions? -->
+            <div style="text-align:center; margin-top:24px; padding:20px; background:var(--primary-bg); border-radius:14px;">
+                <h4 style="font-size:1.1rem; font-weight:700; margin:0 0 4px;">📧 Still have questions?</h4>
+                <p style="color:var(--text-muted); margin-bottom:12px;">We're here to help. Reach out to us anytime.</p>
+                <a href="/contact" class="btn btn-primary">
+                    <i class="fas fa-envelope"></i> Contact Support
+                </a>
             </div>
         </div>
     </main>
 
-    <%- include(getFooter()) %>
-
-    <!-- AI Bot -->
-    <div class="ai-bot" id="aiBot">
-        <div class="ai-bot-pulse"></div>
-        <button class="ai-bot-btn" id="aiBotBtn"><i class="fas fa-robot"></i></button>
-    </div>
-
-    <div class="ai-chat-modal" id="aiChatModal">
-        <div class="ai-chat-header"><h4><i class="fas fa-robot"></i> AI Tutor</h4><button class="ai-chat-close" id="aiChatClose">&times;</button></div>
-        <div class="ai-chat-body" id="aiChatBody">
-            <div class="ai-chat-messages" id="aiChatMessages">
-                <div class="ai-chat-msg bot">👋 Hello! I'm your AI tutor. Ask me anything about your courses!</div>
-            </div>
-        </div>
-        <div class="ai-chat-footer">
-            <input type="text" id="aiChatInput" placeholder="Ask a question..." maxlength="500">
-            <button class="btn btn-primary" id="aiChatSend"><i class="fas fa-paper-plane"></i></button>
-        </div>
-    </div>
-
-    <script src="/js/script.js"></script>
-    <script>
-        // ===== TOGGLE FAQ =====
-        function toggleFAQ(element) {
-            const answer = element.nextElementSibling;
-            const icon = element.querySelector('.fa-chevron-down');
-            
-            // Close all other answers
-            document.querySelectorAll('.faq-answer').forEach(function(ans) {
-                if (ans !== answer) {
-                    ans.classList.remove('open');
-                    ans.previousElementSibling.querySelector('.fa-chevron-down').classList.remove('rotated');
-                }
-            });
-            
-            // Toggle current answer
-            answer.classList.toggle('open');
-            icon.classList.toggle('rotated');
-        }
-
-        // ===== SEARCH FAQ =====
-        document.addEventListener('DOMContentLoaded', function() {
-            const searchInput = document.getElementById('faqSearch');
-            const faqItems = document.querySelectorAll('.faq-item');
-            const noResults = document.getElementById('noResults');
-            
-            searchInput.addEventListener('input', function() {
-                const query = this.value.toLowerCase().trim();
-                let visibleCount = 0;
-                
-                faqItems.forEach(function(item) {
-                    const question = item.querySelector('.faq-question').textContent.toLowerCase();
-                    const answer = item.querySelector('.faq-answer').textContent.toLowerCase();
-                    const matches = query === '' || question.includes(query) || answer.includes(query);
-                    
-                    if (matches) {
-                        item.style.display = 'block';
-                        visibleCount++;
-                    } else {
-                        item.style.display = 'none';
-                    }
-                });
-                
-                noResults.style.display = visibleCount === 0 && query !== '' ? 'block' : 'none';
-            });
-        });
-
-        // ===== CATEGORY FILTER =====
-        document.addEventListener('DOMContentLoaded', function() {
-            const categories = document.querySelectorAll('.faq-category');
-            
-            categories.forEach(function(cat) {
-                cat.addEventListener('click', function() {
-                    // Update active state
-                    categories.forEach(function(c) { c.classList.remove('active'); });
-                    this.classList.add('active');
-                    
-                    const category = this.dataset.category;
-                    const faqItems = document.querySelectorAll('.faq-item');
-                    const noResults = document.getElementById('noResults');
-                    let visibleCount = 0;
-                    
-                    faqItems.forEach(function(item) {
-                        if (category === 'all' || item.dataset.category === category) {
-                            item.style.display = 'block';
-                            visibleCount++;
-                        } else {
-                            item.style.display = 'none';
-                        }
-                    });
-                    
-                    noResults.style.display = visibleCount === 0 ? 'block' : 'none';
-                    
-                    // Clear search
-                    document.getElementById('faqSearch').value = '';
-                });
-            });
-        });
-    </script>
+    <%- include('partials/footer') %>
+    <script src="/js/main.js"></script>
 </body>
 </html>

@@ -3,298 +3,210 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>About – SHINEX</title>
+    <title>About Us – SHINEX Learning Circle</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        .about-mission-mobile {
-            background: var(--primary-bg);
-            border-radius: 10px;
-            padding: 14px 16px;
-            margin: 12px 0;
-            border-left: 4px solid var(--primary);
+        .mobile-about-container {
+            padding: 12px 12px 24px;
+            max-width: 500px;
+            margin: 0 auto;
         }
-        body.dark-mode .about-mission-mobile {
-            background: #1a1a1a;
-            border-color: var(--primary);
+        .mobile-about-card {
+            padding: 18px 16px !important;
+            border-radius: 12px !important;
+            margin-bottom: 12px !important;
         }
-        .about-values-mobile {
+        .mobile-about-card h3 {
+            font-size: 1rem !important;
+            font-weight: 700 !important;
+            margin: 0 0 6px !important;
+        }
+        .mobile-about-card p {
+            font-size: 0.85rem !important;
+            line-height: 1.7 !important;
+            margin: 0 !important;
+            color: var(--text-muted);
+        }
+        .mobile-mission {
+            padding: 20px 16px !important;
+            border-radius: 12px !important;
+            text-align: center !important;
+            margin-bottom: 12px !important;
+        }
+        .mobile-mission h3 {
+            font-size: 1.2rem !important;
+            font-weight: 700 !important;
+            color: #fff !important;
+            margin: 0 0 6px !important;
+        }
+        .mobile-mission p {
+            font-size: 0.9rem !important;
+            color: #d4c4f0 !important;
+            margin: 0 !important;
+        }
+        .mobile-features-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
-            margin: 12px 0;
+            margin-top: 4px;
         }
-        .about-value-item-mobile {
-            background: var(--primary-bg);
-            border-radius: 8px;
-            padding: 12px;
+        .mobile-features-grid .feature-item {
             text-align: center;
-            border: 1px solid #ede8f5;
+            padding: 12px 8px;
+            background: var(--primary-bg);
+            border-radius: 10px;
         }
-        body.dark-mode .about-value-item-mobile {
+        body.dark-mode .mobile-features-grid .feature-item {
             background: #1a1a1a;
-            border-color: var(--dark-border);
         }
-        .about-value-item-mobile .icon {
+        .mobile-features-grid .feature-item i {
             font-size: 1.5rem;
             color: var(--primary);
-            display: block;
-            margin-bottom: 4px;
         }
-        .about-value-item-mobile h4 {
-            font-weight: 700;
-            font-size: 0.85rem;
-            color: var(--text-dark);
-            margin: 0 0 2px 0;
+        .mobile-features-grid .feature-item h4 {
+            font-size: 0.82rem !important;
+            margin: 4px 0 2px !important;
         }
-        body.dark-mode .about-value-item-mobile h4 {
-            color: var(--text-light);
-        }
-        .about-value-item-mobile p {
-            font-size: 0.7rem;
+        .mobile-features-grid .feature-item p {
+            font-size: 0.7rem !important;
+            margin: 0 !important;
             color: var(--text-muted);
-            margin: 0;
         }
-        .about-tagline-mobile {
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--primary);
-            text-align: center;
-            padding: 12px 0;
-            border-top: 2px solid #ede8f5;
-            border-bottom: 2px solid #ede8f5;
-            margin: 12px 0;
+        .mobile-about-list {
+            list-style: none;
+            padding: 0;
+            margin: 6px 0 0;
         }
-        body.dark-mode .about-tagline-mobile {
-            border-color: var(--dark-border);
-        }
-        .course-list-grid-mobile {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin: 12px 0;
-        }
-        .course-list-item-mobile {
-            background: var(--primary-bg);
-            border-radius: 6px;
-            padding: 8px 12px;
+        .mobile-about-list li {
+            padding: 6px 0;
             display: flex;
+            gap: 10px;
             align-items: center;
-            gap: 8px;
-            font-size: 0.8rem;
-            color: var(--text-dark);
+            font-size: 0.82rem;
+            color: var(--text-muted);
         }
-        body.dark-mode .course-list-item-mobile {
-            background: #1a1a1a;
-        }
-        .course-list-item-mobile i {
-            color: var(--primary);
+        .mobile-about-list li i {
+            color: #27ae60;
             font-size: 0.9rem;
             width: 18px;
         }
-        .about-ul-mobile {
-            color: var(--text-dark);
-            font-size: 0.85rem;
-            line-height: 1.8;
-            padding-left: 18px;
+        .mobile-cta-box {
+            padding: 16px;
+            background: var(--primary-bg);
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 4px;
         }
-        body.dark-mode .about-ul-mobile {
-            color: var(--text-light);
+        body.dark-mode .mobile-cta-box {
+            background: #1a1a1a;
         }
-        @media (max-width: 400px) {
-            .course-list-grid-mobile {
-                grid-template-columns: 1fr;
-            }
-            .about-values-mobile {
-                grid-template-columns: 1fr;
-            }
+        .mobile-cta-box h4 {
+            font-size: 0.95rem !important;
+            margin: 0 0 4px !important;
+        }
+        .mobile-cta-box p {
+            font-size: 0.82rem !important;
+            color: var(--text-muted);
+            margin: 0 0 10px !important;
+        }
+        .mobile-cta-box .btn {
+            width: 100%;
+            font-size: 0.85rem !important;
+            padding: 10px !important;
+            min-height: 44px !important;
         }
     </style>
 </head>
 <body>
-    <div id="page-loader">
-        <div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div>
-        <div class="loader-text">SHINEX</div>
-        <div class="loader-sub">LEARNING CIRCLE</div>
-    </div>
+    <%- include('partials/header-mobile', { showBack: true }) %>
 
-    <%- include('../partials/header-mobile') %>
+    <main class="main-content">
+        <div class="mobile-about-container">
+            <h2 style="font-size:1.3rem; font-weight:800; margin:0 0 2px;">About SHINEX</h2>
+            <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:12px;">Learn. Understand. Protect.</p>
 
-    <main class="main-content" style="padding:12px 0 24px;">
-        <div class="container" style="padding:0 12px;">
-            <div style="background:#fff; border-radius:12px; padding:16px; border:1px solid #ede8f5;">
-                <h1 style="font-size:1.3rem; font-weight:800; color:var(--text-dark); margin:0 0 4px 0;">
-                    <i class="fas fa-info-circle" style="color:var(--primary);"></i> About SHINEX Learning Circle
-                </h1>
+            <!-- Mission -->
+            <div class="card card-purple mobile-mission">
+                <h3>Our Mission</h3>
+                <p>To empower individuals with practical, industry-relevant skills through accessible, high-quality online education.</p>
+            </div>
 
-                <div class="about-tagline-mobile">
-                    Learn. Understand. Protect.
-                </div>
-
-                <p style="font-size:0.95rem; color:var(--text-dark); margin:12px 0;">
-                    <strong>SHINEX Learning Circle (SLC)</strong> is an online learning platform created to make quality digital education more accessible, practical, and engaging.
+            <!-- Who We Are -->
+            <div class="card mobile-about-card">
+                <h3>Who We Are</h3>
+                <p>
+                    SHINEX Learning Circle (SLC) is a Nigerian-based online learning platform dedicated to 
+                    bridging the skills gap in technology, design, and business. We believe that everyone 
+                    deserves access to quality education, regardless of their background or location.
                 </p>
-
-                <p style="color:var(--text-muted); font-size:0.9rem; margin:0 0 12px 0;">
-                    Our goal is simple: <strong style="color:var(--text-dark);">help people learn useful skills, understand technology, and build the confidence to apply what they learn.</strong>
+                <p style="margin-top:8px !important;">
+                    Founded in 2026, SLC offers 10+ practical courses taught by industry professionals. 
+                    Our curriculum is designed to be hands-on, project-based, and tailored to the needs of 
+                    African learners.
                 </p>
+            </div>
 
-                <!-- Mission -->
-                <div class="about-mission-mobile">
-                    <h4 style="font-weight:700; color:var(--text-dark); margin:0 0 2px 0;">
-                        <i class="fas fa-bullseye" style="color:var(--primary);"></i> Our Mission
-                    </h4>
-                    <p style="color:var(--text-muted); margin:0; font-size:0.9rem;">
-                        To provide accessible, structured, and practical learning experiences that help students and aspiring professionals develop valuable digital and technology skills.
-                    </p>
-                </div>
-
-                <!-- What We Offer -->
-                <h4 style="font-weight:700; color:var(--text-dark); margin:14px 0 4px 0;">
-                    <i class="fas fa-gem" style="color:var(--primary);"></i> What We Offer
-                </h4>
-                <p style="color:var(--text-muted); font-size:0.85rem; margin:0 0 6px 0;">
-                    SLC provides:
-                </p>
-                <ul class="about-ul-mobile">
-                    <li>📚 Structured online courses</li>
-                    <li>🧠 Interactive lessons and learning materials</li>
-                    <li>📝 Quizzes and assessments</li>
-                    <li>📊 Learning progress tracking</li>
-                    <li>🎓 Course completion and certification opportunities</li>
-                    <li>💻 Practical technology education</li>
-                    <li>👥 A learning community for students and technology enthusiasts</li>
-                </ul>
-
-                <!-- Our Courses -->
-                <h4 style="font-weight:700; color:var(--text-dark); margin:14px 0 4px 0;">
-                    <i class="fas fa-book-open" style="color:var(--primary);"></i> Our Courses
-                </h4>
-                <p style="color:var(--text-muted); font-size:0.85rem; margin:0 0 8px 0;">
-                    We offer a wide range of courses across multiple fields to help you build the skills you need:
-                </p>
-
-                <div class="course-list-grid-mobile">
-                    <div class="course-list-item-mobile">
-                        <i class="fas fa-shield-alt"></i> Cybersecurity
+            <!-- What We Offer -->
+            <div class="card mobile-about-card">
+                <h3>What We Offer</h3>
+                <div class="mobile-features-grid">
+                    <div class="feature-item">
+                        <i class="fas fa-graduation-cap"></i>
+                        <h4>10+ Courses</h4>
+                        <p>Cybersecurity to Web Dev</p>
                     </div>
-                    <div class="course-list-item-mobile">
-                        <i class="fas fa-chart-bar"></i> Data Analysis
+                    <div class="feature-item">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                        <h4>Expert Instructors</h4>
+                        <p>Industry professionals</p>
                     </div>
-                    <div class="course-list-item-mobile">
-                        <i class="fas fa-bullhorn"></i> Digital Marketing
+                    <div class="feature-item">
+                        <i class="fas fa-laptop-code"></i>
+                        <h4>Hands-on Learning</h4>
+                        <p>Projects & real-world</p>
                     </div>
-                    <div class="course-list-item-mobile">
-                        <i class="fas fa-paint-brush"></i> Graphic Design
-                    </div>
-                    <div class="course-list-item-mobile">
-                        <i class="fas fa-film"></i> Motion Design
-                    </div>
-                    <div class="course-list-item-mobile">
-                        <i class="fas fa-network-wired"></i> Networking
-                    </div>
-                    <div class="course-list-item-mobile">
-                        <i class="fas fa-code"></i> Programming
-                    </div>
-                    <div class="course-list-item-mobile">
-                        <i class="fas fa-pencil-ruler"></i> UI/UX Design
-                    </div>
-                    <div class="course-list-item-mobile">
-                        <i class="fas fa-laptop-code"></i> Web Development
-                    </div>
-                    <div class="course-list-item-mobile">
-                        <i class="fab fa-wordpress"></i> WordPress Development
-                    </div>
-                </div>
-
-                <!-- Our Focus -->
-                <h4 style="font-weight:700; color:var(--text-dark); margin:14px 0 4px 0;">
-                    <i class="fas fa-lock" style="color:var(--primary);"></i> Our Focus
-                </h4>
-                <p style="color:var(--text-muted); font-size:0.85rem; margin:0 0 6px 0;">
-                    We place strong emphasis on <strong style="color:var(--text-dark);">practical knowledge</strong> rather than simply memorizing information.
-                </p>
-                <p style="color:var(--text-muted); font-size:0.85rem; margin:0 0 6px 0;">
-                    Our learning areas include:
-                </p>
-                <ul class="about-ul-mobile">
-                    <li>🔐 Cybersecurity</li>
-                    <li>💻 Web Development</li>
-                    <li>⚙️ Programming</li>
-                    <li>🎨 UI/UX Design</li>
-                    <li>📊 Data Analysis</li>
-                    <li>📱 Digital Marketing</li>
-                    <li>🎬 Motion Design</li>
-                    <li>🌐 Networking</li>
-                    <li>📝 WordPress Development</li>
-                </ul>
-
-                <!-- Vision -->
-                <h4 style="font-weight:700; color:var(--text-dark); margin:14px 0 4px 0;">
-                    <i class="fas fa-globe" style="color:var(--primary);"></i> Our Vision
-                </h4>
-                <p style="color:var(--text-muted); font-size:0.9rem; margin:0;">
-                    To build a learning community where anyone with the desire to learn can develop relevant skills, grow professionally, and become more confident in the digital world.
-                </p>
-
-                <!-- Community -->
-                <h4 style="font-weight:700; color:var(--text-dark); margin:14px 0 4px 0;">
-                    <i class="fas fa-users" style="color:var(--primary);"></i> Our Community
-                </h4>
-                <p style="color:var(--text-muted); font-size:0.9rem; margin:0;">
-                    SHINEX Learning Circle is more than just a collection of courses. We aim to create a community where learners can <strong style="color:var(--text-dark);">learn together, ask questions, share knowledge, and grow together.</strong>
-                </p>
-
-                <!-- Values -->
-                <div class="about-values-mobile">
-                    <div class="about-value-item-mobile">
-                        <span class="icon"><i class="fas fa-star"></i></span>
-                        <h4>Excellence</h4>
-                        <p>Striving for the highest quality</p>
-                    </div>
-                    <div class="about-value-item-mobile">
-                        <span class="icon"><i class="fas fa-hand-holding-heart"></i></span>
-                        <h4>Accessibility</h4>
-                        <p>Education for everyone</p>
-                    </div>
-                    <div class="about-value-item-mobile">
-                        <span class="icon"><i class="fas fa-lightbulb"></i></span>
-                        <h4>Innovation</h4>
-                        <p>Embracing new technologies</p>
-                    </div>
-                    <div class="about-value-item-mobile">
-                        <span class="icon"><i class="fas fa-handshake"></i></span>
+                    <div class="feature-item">
+                        <i class="fas fa-users"></i>
                         <h4>Community</h4>
-                        <p>Collaborative learning</p>
+                        <p>Connect & grow together</p>
                     </div>
                 </div>
+            </div>
 
-                <!-- Start Learning -->
-                <div style="text-align:center; margin-top:16px; padding:16px; background:var(--primary-bg); border-radius:10px;">
-                    <p style="font-weight:700; color:var(--text-dark); font-size:0.9rem; margin:0 0 4px 0;">
-                        <i class="fas fa-rocket" style="color:var(--primary);"></i> Start Learning
-                    </p>
-                    <p style="color:var(--text-muted); font-size:0.8rem; margin:0 0 8px 0;">
-                        Whether you're completely new to technology or looking to improve your existing skills, <strong style="color:var(--text-dark);">SHINEX Learning Circle is built to help you take the next step.</strong>
-                    </p>
-                    <a href="/" class="btn btn-primary btn-sm" style="width:100%; text-align:center;">Explore Courses</a>
-                </div>
+            <!-- Why SLC -->
+            <div class="card mobile-about-card">
+                <h3>Why SHINEX?</h3>
+                <ul class="mobile-about-list">
+                    <li><i class="fas fa-check-circle"></i> <strong>Affordable</strong> – Quality education at no cost</li>
+                    <li><i class="fas fa-check-circle"></i> <strong>Flexible</strong> – Learn at your own pace</li>
+                    <li><i class="fas fa-check-circle"></i> <strong>Practical</strong> – Skills you can apply immediately</li>
+                    <li><i class="fas fa-check-circle"></i> <strong>Community-driven</strong> – Learn with peers</li>
+                </ul>
+            </div>
 
-                <div style="text-align:center; margin-top:12px; padding-top:12px; border-top:2px solid #ede8f5;">
-                    <p style="font-weight:700; color:var(--text-dark); font-size:1rem; margin:0;">
-                        SHINEX Learning Circle
-                    </p>
-                    <p style="color:var(--primary); font-weight:600; font-size:0.85rem; margin:0;">
-                        Learn. Understand. Protect.
-                    </p>
-                </div>
+            <!-- Team -->
+            <div class="card mobile-about-card">
+                <h3>Our Team</h3>
+                <p>
+                    We are a passionate group of educators, developers, designers, and business professionals 
+                    who believe in the transformative power of education. Our team is dedicated to creating 
+                    the best learning experience for our students.
+                </p>
+            </div>
+
+            <!-- CTA -->
+            <div class="mobile-cta-box">
+                <h4>Have Questions?</h4>
+                <p>We'd love to hear from you.</p>
+                <a href="/contact" class="btn btn-primary">
+                    <i class="fas fa-envelope"></i> Contact Us
+                </a>
             </div>
         </div>
     </main>
 
-    <%- include('../partials/footer-mobile') %>
-
-    <script src="/js/script.js"></script>
+    <%- include('partials/footer-mobile') %>
+    <script src="/js/main.js"></script>
 </body>
 </html>

@@ -3,119 +3,265 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>FAQ – SHINEX</title>
+    <title>FAQ – SHINEX Learning Circle</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .mobile-faq-container {
+            padding: 12px 12px 24px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .mobile-faq-card {
+            padding: 16px 14px !important;
+            border-radius: 12px !important;
+            margin-bottom: 8px !important;
+        }
+        .mobile-faq-item {
+            border-bottom: 1px solid #ede8f5;
+            padding: 12px 0;
+        }
+        body.dark-mode .mobile-faq-item {
+            border-color: var(--dark-border);
+        }
+        .mobile-faq-item:last-child {
+            border-bottom: none;
+        }
+        .mobile-faq-question {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 0;
+            gap: 8px;
+        }
+        body.dark-mode .mobile-faq-question {
+            color: var(--text-light);
+        }
+        .mobile-faq-question:hover {
+            color: var(--primary);
+        }
+        .mobile-faq-question i {
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .mobile-faq-question i.rotated {
+            transform: rotate(180deg);
+        }
+        .mobile-faq-answer {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            line-height: 1.7;
+            margin-top: 6px;
+            display: none;
+            padding-right: 4px;
+        }
+        .mobile-faq-answer.open {
+            display: block;
+        }
+        .mobile-faq-answer a {
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .mobile-faq-cta {
+            text-align: center;
+            padding: 16px;
+            background: var(--primary-bg);
+            border-radius: 12px;
+            margin-top: 8px;
+        }
+        body.dark-mode .mobile-faq-cta {
+            background: #1a1a1a;
+        }
+        .mobile-faq-cta h4 {
+            font-size: 0.95rem !important;
+            margin: 0 0 4px !important;
+        }
+        .mobile-faq-cta p {
+            font-size: 0.82rem !important;
+            color: var(--text-muted);
+            margin: 0 0 10px !important;
+        }
+        .mobile-faq-cta .btn {
+            width: 100%;
+            font-size: 0.85rem !important;
+            padding: 10px !important;
+            min-height: 44px !important;
+        }
+    </style>
 </head>
 <body>
-    <div id="page-loader">
-        <div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div>
-        <div class="loader-text">SHINEX</div>
-        <div class="loader-sub">LEARNING CIRCLE</div>
-    </div>
+    <%- include('partials/header-mobile', { showBack: true }) %>
 
-    <!-- HEADER -->
-    <header class="header" style="padding:10px 12px; flex-wrap:wrap; gap:6px;">
-        <div style="display:flex; align-items:center; gap:8px; flex:1;">
-            <% if (showBack) { %>
-                <a href="javascript:history.back()" class="back-btn" style="font-size:0.75rem; padding:4px 8px; color:rgba(255,255,255,0.9);"><i class="fas fa-arrow-left"></i></a>
-            <% } %>
-            <a href="/" class="logo-container" style="gap:8px;">
-                <div class="logo" style="width:36px; height:36px; font-size:11px; background:rgba(255,255,255,0.2);">SLC</div>
-                <div>
-                    <div class="logo-text" style="font-size:15px; color:#fff;">SHINEX<span>.</span></div>
-                    <div class="logo-sub" style="font-size:7px; color:rgba(255,255,255,0.7);">LEARNING CIRCLE</div>
+    <main class="main-content">
+        <div class="mobile-faq-container">
+            <h2 style="font-size:1.3rem; font-weight:800; margin:0 0 2px;">❓ FAQ</h2>
+            <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:12px;">Find quick answers to common questions.</p>
+
+            <div class="card mobile-faq-card">
+
+                <!-- FAQ 1 -->
+                <div class="mobile-faq-item">
+                    <div class="mobile-faq-question" onclick="toggleFaq(this)">
+                        <span>What is SHINEX Learning Circle?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="mobile-faq-answer">
+                        SHINEX Learning Circle (SLC) is a Nigerian-based online learning platform offering practical courses in technology, design, and business. We provide hands-on training to help you build real-world skills.
+                    </div>
                 </div>
-            </a>
-        </div>
-        <div class="header-actions" style="gap:4px; flex-wrap:wrap;">
-            <div class="text-size-control" style="padding:2px 8px; background:rgba(255,255,255,0.15);">
-                <label style="font-size:0.6rem; color:rgba(255,255,255,0.8);"><i class="fas fa-font"></i></label>
-                <input type="range" id="textSizeSliderMobile" min="12" max="24" value="16" step="1" style="width:50px;">
-                <span class="text-size-value" id="textSizeValueMobile" style="font-size:0.6rem; min-width:24px; color:#fff;">16px</span>
+
+                <!-- FAQ 2 -->
+                <div class="mobile-faq-item">
+                    <div class="mobile-faq-question" onclick="toggleFaq(this)">
+                        <span>How do I register?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="mobile-faq-answer">
+                        Click the <strong>Register</strong> button, fill in your personal, contact, academic information, choose your course, and set a password. You'll receive a verification email with your unique Student ID.
+                    </div>
+                </div>
+
+                <!-- FAQ 3 -->
+                <div class="mobile-faq-item">
+                    <div class="mobile-faq-question" onclick="toggleFaq(this)">
+                        <span>What is my Student ID?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="mobile-faq-answer">
+                        Your Student ID is a unique identifier in the format <strong>SLC-2026-XX-XXX</strong>. It is automatically generated during registration. You can use it to log in instead of your email.
+                    </div>
+                </div>
+
+                <!-- FAQ 4 -->
+                <div class="mobile-faq-item">
+                    <div class="mobile-faq-question" onclick="toggleFaq(this)">
+                        <span>What courses do you offer?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="mobile-faq-answer">
+                        We offer 10 courses: Cybersecurity, Data Analysis, Digital Marketing, Graphic Design, Motion Design, Networking, Programming, UI/UX Design, Web Development, and WordPress Development.
+                    </div>
+                </div>
+
+                <!-- FAQ 5 -->
+                <div class="mobile-faq-item">
+                    <div class="mobile-faq-question" onclick="toggleFaq(this)">
+                        <span>Is it free?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="mobile-faq-answer">
+                        Yes! Currently all courses are completely free. We believe in making quality education accessible to everyone.
+                    </div>
+                </div>
+
+                <!-- FAQ 6 -->
+                <div class="mobile-faq-item">
+                    <div class="mobile-faq-question" onclick="toggleFaq(this)">
+                        <span>How do I track my progress?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="mobile-faq-answer">
+                        Your <strong>Dashboard</strong> shows your overall progress, completed classes, and points earned. Inside each level, you'll see a progress bar and class completion status. Complete a class to earn +10 points.
+                    </div>
+                </div>
+
+                <!-- FAQ 7 -->
+                <div class="mobile-faq-item">
+                    <div class="mobile-faq-question" onclick="toggleFaq(this)">
+                        <span>Forgot my password?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="mobile-faq-answer">
+                        You can log in using your <strong>email address</strong> instead. If you've forgotten your password, contact us at <a href="/contact">support@shinex.ng</a> for assistance.
+                    </div>
+                </div>
+
+                <!-- FAQ 8 -->
+                <div class="mobile-faq-item">
+                    <div class="mobile-faq-question" onclick="toggleFaq(this)">
+                        <span>Can I change my course?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="mobile-faq-answer">
+                        Yes! Go to your <strong>Dashboard</strong> and click the <strong>Change Course</strong> button. Your progress will reset for the new course.
+                    </div>
+                </div>
+
+                <!-- FAQ 9 -->
+                <div class="mobile-faq-item">
+                    <div class="mobile-faq-question" onclick="toggleFaq(this)">
+                        <span>How do I contact support?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="mobile-faq-answer">
+                        Visit the <a href="/contact">Contact page</a> to send us a message. You can also email us at <strong>support@shinex.ng</strong> or call <strong>+234 800 SHINEX</strong>.
+                    </div>
+                </div>
+
+                <!-- FAQ 10 -->
+                <div class="mobile-faq-item">
+                    <div class="mobile-faq-question" onclick="toggleFaq(this)">
+                        <span>Do I get a certificate?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="mobile-faq-answer">
+                        Not yet, but we are working on introducing certificates of completion. Stay tuned for updates!
+                    </div>
+                </div>
+
+                <!-- FAQ 11 -->
+                <div class="mobile-faq-item">
+                    <div class="mobile-faq-question" onclick="toggleFaq(this)">
+                        <span>What is the AI Tutor?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="mobile-faq-answer">
+                        The AI Tutor is a floating chat button on every page. You can ask it questions about your courses, technology, or careers. It provides educational responses in real time.
+                    </div>
+                </div>
+
+                <!-- FAQ 12 -->
+                <div class="mobile-faq-item">
+                    <div class="mobile-faq-question" onclick="toggleFaq(this)">
+                        <span>Is my data safe?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="mobile-faq-answer">
+                        Yes! All passwords are hashed using bcrypt, and we follow best practices to protect your personal information. Read our <a href="/privacy">Privacy Policy</a> for more details.
+                    </div>
+                </div>
+
             </div>
-            <button class="dark-toggle" id="darkToggleMobile" style="font-size:1rem; padding:4px 6px; color:#fff; background:rgba(255,255,255,0.15); border-radius:30px;">🌙</button>
-            <a href="/settings" class="btn btn-secondary btn-sm" style="min-height:32px; padding:4px 10px; border-radius:30px; font-size:0.75rem; background:rgba(255,255,255,0.2); color:#fff;"><i class="fas fa-cog"></i></a>
-        </div>
-    </header>
 
-    <!-- CONTENT -->
-    <main class="main-content" style="padding:12px 0 24px;">
-        <div class="container" style="padding:0 12px;">
-            <div style="background:#fff; border-radius:12px; padding:16px; border:1px solid #ede8f5;">
-                <h1 style="font-size:1.2rem; font-weight:800; color:var(--text-dark); margin:0 0 4px 0;">
-                    <i class="fas fa-question-circle" style="color:var(--primary);"></i> Frequently Asked Questions
-                </h1>
-                <p style="color:var(--text-muted); font-size:0.75rem; margin:0 0 12px 0;">Find answers to common questions</p>
-
-                <div style="border-bottom:1px solid #ede8f5; padding:10px 0;">
-                    <p style="font-weight:700; font-size:0.85rem; color:var(--text-dark); margin:0 0 4px 0;">What is SHINEX?</p>
-                    <p style="font-size:0.8rem; color:var(--text-muted); margin:0;">An online learning platform offering courses in tech, design, cybersecurity, and data analytics.</p>
-                </div>
-
-                <div style="border-bottom:1px solid #ede8f5; padding:10px 0;">
-                    <p style="font-weight:700; font-size:0.85rem; color:var(--text-dark); margin:0 0 4px 0;">Are courses free?</p>
-                    <p style="font-size:0.8rem; color:var(--text-muted); margin:0;">Yes, all courses are currently free.</p>
-                </div>
-
-                <div style="border-bottom:1px solid #ede8f5; padding:10px 0;">
-                    <p style="font-weight:700; font-size:0.85rem; color:var(--text-dark); margin:0 0 4px 0;">What topics do you offer?</p>
-                    <p style="font-size:0.8rem; color:var(--text-muted); margin:0;">Cybersecurity, Web Development, Web Design, UI/UX Design, SQL Database, Data Analytics.</p>
-                </div>
-
-                <div style="border-bottom:1px solid #ede8f5; padding:10px 0;">
-                    <p style="font-weight:700; font-size:0.85rem; color:var(--text-dark); margin:0 0 4px 0;">How do I contact support?</p>
-                    <p style="font-size:0.8rem; color:var(--text-muted); margin:0;">Visit our <a href="/contact" style="color:var(--primary);">Contact page</a>.</p>
-                </div>
-
-                <div style="border-bottom:1px solid #ede8f5; padding:10px 0;">
-                    <p style="font-weight:700; font-size:0.85rem; color:var(--text-dark); margin:0 0 4px 0;">How do I track my progress?</p>
-                    <p style="font-size:0.8rem; color:var(--text-muted); margin:0;">Your progress is automatically tracked as you complete each class.</p>
-                </div>
-
-                <div style="padding:10px 0;">
-                    <p style="font-weight:700; font-size:0.85rem; color:var(--text-dark); margin:0 0 4px 0;">Do you offer certificates?</p>
-                    <p style="font-size:0.8rem; color:var(--text-muted); margin:0;">We are currently working on introducing certificates.</p>
-                </div>
-
-                <div style="margin-top:12px; padding-top:12px; border-top:2px solid #ede8f5; text-align:center;">
-                    <p style="font-size:0.8rem; color:var(--text-muted); margin:0;">
-                        <i class="fas fa-headset" style="color:var(--primary);"></i> 
-                        Still have questions? <a href="/contact" style="color:var(--primary);">Contact us</a>
-                    </p>
-                </div>
+            <!-- CTA -->
+            <div class="mobile-faq-cta">
+                <h4>📧 Still have questions?</h4>
+                <p>We're here to help. Reach out to us anytime.</p>
+                <a href="/contact" class="btn btn-primary">
+                    <i class="fas fa-envelope"></i> Contact Support
+                </a>
             </div>
         </div>
     </main>
 
-    <!-- FOOTER -->
-    <footer class="footer" style="padding:20px 0 16px; margin-top:20px;">
-        <div class="container">
-            <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:10px 16px; margin-bottom:12px;">
-                <a href="/" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-home"></i> Home</a>
-                <a href="/about" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-info-circle"></i> About</a>
-                <a href="/faq" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-question-circle"></i> FAQ</a>
-                <a href="/services" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-cogs"></i> Services</a>
-                <a href="/contact" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-envelope"></i> Contact</a>
-                <a href="/terms" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-file-contract"></i> Terms</a>
-                <a href="/privacy" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-shield-alt"></i> Privacy</a>
-            </div>
-            <div style="display:flex; justify-content:center; gap:14px; margin-bottom:12px;">
-                <a href="#" style="color:rgba(255,255,255,0.6); font-size:1rem;"><i class="fab fa-facebook"></i></a>
-                <a href="#" style="color:rgba(255,255,255,0.6); font-size:1rem;"><i class="fab fa-twitter"></i></a>
-                <a href="#" style="color:rgba(255,255,255,0.6); font-size:1rem;"><i class="fab fa-linkedin"></i></a>
-                <a href="#" style="color:rgba(255,255,255,0.6); font-size:1rem;"><i class="fab fa-youtube"></i></a>
-            </div>
-            <div style="text-align:center; margin-bottom:8px;">
-                <span style="color:#fff; font-weight:700; font-size:1rem;">SHINEX</span>
-                <span style="color:rgba(255,255,255,0.5); font-size:0.65rem; display:block;">Learning Circle</span>
-            </div>
-            <div style="text-align:center; font-size:0.65rem; color:rgba(255,255,255,0.5); border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
-                <p style="margin:0;">&copy; 2026 SHINEX Learning Circle</p>
-            </div>
-        </div>
-    </footer>
+    <%- include('partials/footer-mobile') %>
 
-    <script src="/js/script.js"></script>
+    <script>
+        function toggleFaq(element) {
+            const answer = element.nextElementSibling;
+            const icon = element.querySelector('i');
+            answer.classList.toggle('open');
+            icon.classList.toggle('rotated');
+        }
+    </script>
+
+    <script src="/js/main.js"></script>
 </body>
 </html>

@@ -3,219 +3,563 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Settings – SHINEX</title>
+    <title>Settings – SHINEX Learning Circle</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        .settings-group { margin-bottom: 12px; }
-        .settings-group label { font-weight: 600; font-size: 0.8rem; color: var(--text-dark); display: block; margin-bottom: 4px; }
-        body.dark-mode .settings-group label { color: var(--text-light); }
-        .settings-group input, .settings-group textarea, .settings-group select {
-            width: 100%;
-            padding: 8px 12px;
-            border: 2px solid #ede8f5;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            font-family: inherit;
-            background: #fff;
-            color: var(--text-dark);
+        .mobile-settings-container {
+            padding: 12px 12px 24px;
+            max-width: 500px;
+            margin: 0 auto;
         }
-        body.dark-mode .settings-group input, body.dark-mode .settings-group textarea, body.dark-mode .settings-group select {
-            background: #2a2a2a;
-            color: var(--text-light);
-            border-color: var(--dark-border);
+        .mobile-settings-card {
+            padding: 16px 14px !important;
+            border-radius: 12px !important;
+            margin-bottom: 12px !important;
         }
-        .settings-group input:focus, .settings-group textarea:focus, .settings-group select:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(139,92,246,0.12);
-            outline: none;
+        .mobile-settings-card h3 {
+            font-size: 1rem !important;
+            font-weight: 700 !important;
+            margin: 0 0 4px !important;
         }
-        .settings-card {
-            background: #fff;
-            border-radius: 12px;
-            border: 1px solid #ede8f5;
-            padding: 16px;
-            margin-bottom: 12px;
-        }
-        body.dark-mode .settings-card {
-            background: #1a1a1a;
-            border-color: #333;
-        }
-        .settings-card h3 {
-            font-size: 0.95rem;
-            font-weight: 700;
-            color: var(--text-dark);
-            margin: 0 0 4px 0;
-        }
-        body.dark-mode .settings-card h3 { color: var(--text-light); }
-        .settings-card .subtitle {
-            font-size: 0.75rem;
+        .mobile-settings-card p {
+            font-size: 0.8rem !important;
+            margin: 0 0 12px !important;
             color: var(--text-muted);
-            margin: 0 0 12px 0;
         }
-        .danger-zone {
+        .mobile-settings-card label {
+            font-size: 0.82rem !important;
+        }
+        .mobile-settings-card input,
+        .mobile-settings-card select,
+        .mobile-settings-card textarea {
+            font-size: 0.9rem !important;
+            padding: 10px 12px !important;
+            min-height: 40px !important;
+            border-radius: 8px !important;
+        }
+        .mobile-settings-card .btn {
+            font-size: 0.85rem !important;
+            padding: 10px !important;
+            min-height: 44px !important;
+            width: 100%;
+            justify-content: center;
+        }
+        .mobile-settings-card .help-text {
+            font-size: 0.7rem !important;
+        }
+        .mobile-settings-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+        }
+        .mobile-settings-toggle input[type="checkbox"] {
+            width: 44px !important;
+            height: 24px !important;
+            min-height: unset !important;
+            appearance: none;
+            background: #ccc;
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 0 !important;
+            flex-shrink: 0;
+        }
+        .mobile-settings-toggle input[type="checkbox"]:checked {
+            background: var(--primary);
+        }
+        .mobile-settings-toggle input[type="checkbox"]::before {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background: #fff;
+            border-radius: 50%;
+            top: 3px;
+            left: 3px;
+            transition: all 0.3s ease;
+        }
+        .mobile-settings-toggle input[type="checkbox"]:checked::before {
+            left: 23px;
+        }
+        body.dark-mode .mobile-settings-toggle input[type="checkbox"] {
+            background: #444;
+        }
+        .mobile-text-size {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 0;
+        }
+        .mobile-text-size input[type="range"] {
+            flex: 1;
+            min-height: unset !important;
+            padding: 0 !important;
+            height: 4px !important;
+            background: var(--primary-bg);
+            border-radius: 4px;
+            appearance: none;
+        }
+        .mobile-text-size input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+        }
+        .mobile-text-size input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+        }
+        .mobile-text-size .text-size-value {
+            font-weight: 700;
+            color: var(--primary);
+            min-width: 40px;
+            font-size: 0.85rem;
+        }
+        .mobile-danger-zone {
             border: 2px solid #e74c3c !important;
+            border-radius: 12px !important;
+            padding: 16px !important;
+            margin-top: 4px;
         }
-        .danger-zone h4 {
-            color: #e74c3c !important;
+        .mobile-danger-zone h4 {
+            color: #e74c3c;
+            font-size: 0.95rem !important;
+            margin: 0 0 4px !important;
         }
-        .btn-danger-zone {
+        .mobile-danger-zone p {
+            font-size: 0.8rem !important;
+            margin: 0 0 10px !important;
+        }
+        .btn-danger-zone-mobile {
             background: #e74c3c;
             color: #fff;
             padding: 10px;
             border: none;
             border-radius: 8px;
             font-weight: 600;
-            cursor: pointer;
             width: 100%;
             font-size: 0.85rem;
+            cursor: pointer;
+            min-height: 44px;
         }
-        .btn-danger-zone:hover { background: #c0392b; }
+        .btn-danger-zone-mobile:hover {
+            background: #c0392b;
+        }
+        .mobile-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        @media (max-width: 400px) {
+            .mobile-grid-2 {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+        }
+        .mobile-section-divider {
+            height: 1px;
+            background: #ede8f5;
+            margin: 4px 0 12px;
+        }
+        body.dark-mode .mobile-section-divider {
+            background: var(--dark-border);
+        }
     </style>
 </head>
 <body>
-    <div id="page-loader">
-        <div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div>
-        <div class="loader-text">SHINEX</div>
-        <div class="loader-sub">LEARNING CIRCLE</div>
-    </div>
+    <%- include('partials/header-mobile', { showBack: true }) %>
 
-    <!-- HEADER -->
-    <header class="header" style="padding:10px 12px; flex-wrap:wrap; gap:6px;">
-        <div style="display:flex; align-items:center; gap:8px; flex:1;">
-            <% if (showBack) { %>
-                <a href="javascript:history.back()" class="back-btn" style="font-size:0.75rem; padding:4px 8px; color:rgba(255,255,255,0.9);"><i class="fas fa-arrow-left"></i></a>
+    <main class="main-content">
+        <div class="mobile-settings-container">
+            <h2 style="font-size:1.3rem; font-weight:700; margin:0 0 2px;">⚙️ Settings</h2>
+            <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:12px;">Manage your account and preferences.</p>
+
+            <% if (messages && messages.success) { %>
+                <div class="alert alert-success" style="font-size:0.82rem; padding:10px 14px; border-radius:8px; margin-bottom:10px;"><%= messages.success %></div>
             <% } %>
-            <a href="/" class="logo-container" style="gap:8px;">
-                <div class="logo" style="width:36px; height:36px; font-size:11px; background:rgba(255,255,255,0.2);">SLC</div>
-                <div>
-                    <div class="logo-text" style="font-size:15px; color:#fff;">SHINEX<span>.</span></div>
-                    <div class="logo-sub" style="font-size:7px; color:rgba(255,255,255,0.7);">LEARNING CIRCLE</div>
-                </div>
-            </a>
-        </div>
-        <div class="header-actions" style="gap:4px; flex-wrap:wrap;">
-            <div class="text-size-control" style="padding:2px 8px; background:rgba(255,255,255,0.15);">
-                <label style="font-size:0.6rem; color:rgba(255,255,255,0.8);"><i class="fas fa-font"></i></label>
-                <input type="range" id="textSizeSliderMobile" min="12" max="24" value="16" step="1" style="width:50px;">
-                <span class="text-size-value" id="textSizeValueMobile" style="font-size:0.6rem; min-width:24px; color:#fff;">16px</span>
-            </div>
-            <button class="dark-toggle" id="darkToggleMobile" style="font-size:1rem; padding:4px 6px; color:#fff; background:rgba(255,255,255,0.15); border-radius:30px;">🌙</button>
-            <a href="/settings" class="btn btn-secondary btn-sm" style="min-height:32px; padding:4px 10px; border-radius:30px; font-size:0.75rem; background:rgba(255,255,255,0.2); color:#fff;"><i class="fas fa-cog"></i></a>
-        </div>
-    </header>
+            <% if (messages && messages.error) { %>
+                <div class="alert alert-danger" style="font-size:0.82rem; padding:10px 14px; border-radius:8px; margin-bottom:10px;"><%= messages.error %></div>
+            <% } %>
 
-    <!-- CONTENT -->
-    <main class="main-content" style="padding:12px 0 24px;">
-        <div class="container" style="padding:0 12px;">
-            <h1 style="font-size:1.2rem; font-weight:800; color:var(--text-dark); margin:0 0 4px 0;">
-                <i class="fas fa-cog" style="color:var(--primary);"></i> Settings
-            </h1>
-            <p style="color:var(--text-muted); font-size:0.8rem; margin:0 0 12px 0;">Manage your account preferences</p>
-
-            <!-- Profile -->
-            <div class="settings-card">
+            <!-- ===== 1. PROFILE ===== -->
+            <div class="card mobile-settings-card">
                 <h3><i class="fas fa-user" style="color:var(--primary);"></i> Profile</h3>
-                <p class="subtitle">Update your personal information</p>
-                <form>
-                    <div class="settings-group">
-                        <label>First Name</label>
-                        <input type="text" placeholder="Your first name">
+                <p>Update your personal information.</p>
+                <form id="profileFormMobile">
+                    <div class="mobile-grid-2">
+                        <div class="settings-group">
+                            <label for="firstNameMobile">First Name</label>
+                            <input type="text" id="firstNameMobile" name="firstName" value="<%= user.firstName || '' %>">
+                        </div>
+                        <div class="settings-group">
+                            <label for="lastNameMobile">Last Name</label>
+                            <input type="text" id="lastNameMobile" name="lastName" value="<%= user.lastName || '' %>">
+                        </div>
                     </div>
                     <div class="settings-group">
-                        <label>Last Name</label>
-                        <input type="text" placeholder="Your last name">
+                        <label for="bioMobile">Bio</label>
+                        <textarea id="bioMobile" name="bio" rows="2"><%= user.bio || '' %></textarea>
                     </div>
                     <div class="settings-group">
-                        <label>Bio</label>
-                        <textarea rows="2" placeholder="Tell us about yourself"></textarea>
+                        <label>Student ID</label>
+                        <input type="text" value="<%= user.studentId || '' %>" disabled style="background:#f0f0f0;">
                     </div>
-                    <button type="submit" class="btn btn-primary btn-block" style="width:100%; font-size:0.85rem; padding:10px; border-radius:30px; background:#8B5CF6; color:#fff; border:none; font-weight:600;">
+                    <button type="submit" class="btn btn-primary">
                         <i class="fas fa-save"></i> Save Profile
                     </button>
                 </form>
             </div>
 
-            <!-- Account -->
-            <div class="settings-card">
-                <h3><i class="fas fa-lock" style="color:var(--primary);"></i> Account</h3>
-                <p class="subtitle">Change your password</p>
-                <form>
+            <!-- ===== 2. ACCOUNT ===== -->
+            <div class="card mobile-settings-card">
+                <h3><i class="fas fa-key" style="color:var(--primary);"></i> Account</h3>
+                <p>Change your password.</p>
+                <form id="passwordFormMobile">
                     <div class="settings-group">
-                        <label>Current Password</label>
-                        <input type="password" placeholder="Enter current password">
+                        <label for="currentPasswordMobile">Current Password</label>
+                        <input type="password" id="currentPasswordMobile" name="currentPassword" placeholder="Enter current password">
                     </div>
                     <div class="settings-group">
-                        <label>New Password</label>
-                        <input type="password" placeholder="Enter new password (min 6)">
+                        <label for="newPasswordMobile">New Password</label>
+                        <input type="password" id="newPasswordMobile" name="newPassword" placeholder="Min 6 characters">
                     </div>
                     <div class="settings-group">
-                        <label>Confirm New Password</label>
-                        <input type="password" placeholder="Confirm new password">
+                        <label for="confirmPasswordMobile">Confirm New Password</label>
+                        <input type="password" id="confirmPasswordMobile" name="confirmPassword" placeholder="Confirm new password">
                     </div>
-                    <button type="submit" class="btn btn-primary btn-block" style="width:100%; font-size:0.85rem; padding:10px; border-radius:30px; background:#8B5CF6; color:#fff; border:none; font-weight:600;">
+                    <button type="submit" class="btn btn-primary">
                         <i class="fas fa-save"></i> Change Password
                     </button>
                 </form>
             </div>
 
-            <!-- Appearance -->
-            <div class="settings-card">
-                <h3><i class="fas fa-palette" style="color:var(--primary);"></i> Appearance</h3>
-                <p class="subtitle">Customize your visual experience</p>
-                <div style="display:flex; align-items:center; gap:12px; padding:8px 0;">
-                    <label style="font-size:0.8rem; font-weight:500; margin:0; cursor:pointer;">
-                        <i class="fas fa-moon"></i> Dark Mode
-                    </label>
-                    <input type="checkbox" id="darkModeMobile" style="width:auto; height:18px; width:18px; accent-color:#8B5CF6; cursor:pointer;">
+            <!-- ===== 3. SECURITY ===== -->
+            <div class="card mobile-settings-card">
+                <h3><i class="fas fa-shield-alt" style="color:var(--primary);"></i> Security</h3>
+                <p>Protect your account with additional security.</p>
+                <div class="mobile-settings-toggle">
+                    <input type="checkbox" id="twoFactorMobile" name="twoFactorEnabled" <%= user.twoFactorEnabled ? 'checked' : '' %>>
+                    <label for="twoFactorMobile" style="margin:0; font-weight:600;">Two-Factor Authentication (2FA)</label>
                 </div>
-                <div style="margin-top:8px;">
-                    <label style="font-size:0.8rem; font-weight:600; display:block; margin-bottom:4px;">Font Size</label>
-                    <input type="range" min="12" max="24" value="16" step="1" style="width:100%; accent-color:#8B5CF6;">
-                </div>
-                <button class="btn btn-primary btn-block" style="width:100%; font-size:0.85rem; padding:10px; border-radius:30px; background:#8B5CF6; color:#fff; border:none; font-weight:600; margin-top:8px;">
-                    <i class="fas fa-save"></i> Save Appearance
+                <p class="help-text">Add an extra layer of security to your account.</p>
+                <button id="logoutAllMobile" class="btn btn-secondary" style="margin-top:4px;">
+                    <i class="fas fa-sign-out-alt"></i> Logout from All Sessions
                 </button>
             </div>
 
-            <!-- Danger Zone -->
-            <div class="settings-card danger-zone">
+            <!-- ===== 4. APPEARANCE ===== -->
+            <div class="card mobile-settings-card">
+                <h3><i class="fas fa-palette" style="color:var(--primary);"></i> Appearance</h3>
+                <p>Customize how SHINEX looks.</p>
+                <div class="mobile-settings-toggle">
+                    <input type="checkbox" id="darkModeMobileSetting" name="darkMode" <%= user.darkMode ? 'checked' : '' %>>
+                    <label for="darkModeMobileSetting" style="margin:0; font-weight:600;">Dark Mode</label>
+                </div>
+                <p class="help-text">Toggle between light and dark mode.</p>
+                <div class="mobile-text-size">
+                    <i class="fas fa-font" style="color:var(--primary);"></i>
+                    <input type="range" class="text-size-slider" min="12" max="24" value="<%= user.textSize || 16 %>" step="1">
+                    <span class="text-size-value"><%= user.textSize || 16 %>px</span>
+                </div>
+            </div>
+
+            <!-- ===== 5. NOTIFICATIONS ===== -->
+            <div class="card mobile-settings-card">
+                <h3><i class="fas fa-bell" style="color:var(--primary);"></i> Notifications</h3>
+                <p>Choose how you receive updates.</p>
+                <div class="mobile-settings-toggle">
+                    <input type="checkbox" id="emailNotifMobile" name="emailNotifications" class="notification-checkbox" <%= user.emailNotifications ? 'checked' : '' %>>
+                    <label for="emailNotifMobile" style="margin:0; font-weight:600;">Email Notifications</label>
+                </div>
+                <div class="mobile-settings-toggle">
+                    <input type="checkbox" id="browserNotifMobile" name="browserNotifications" class="notification-checkbox" <%= user.browserNotifications ? 'checked' : '' %>>
+                    <label for="browserNotifMobile" style="margin:0; font-weight:600;">Browser Notifications</label>
+                </div>
+                <div class="mobile-settings-toggle">
+                    <input type="checkbox" id="courseUpdateMobile" name="courseUpdates" class="notification-checkbox" <%= user.courseUpdates ? 'checked' : '' %>>
+                    <label for="courseUpdateMobile" style="margin:0; font-weight:600;">Course Updates</label>
+                </div>
+            </div>
+
+            <!-- ===== 6. PRIVACY ===== -->
+            <div class="card mobile-settings-card">
+                <h3><i class="fas fa-lock" style="color:var(--primary);"></i> Privacy</h3>
+                <p>Control who can see your information.</p>
+                <div class="settings-group">
+                    <label for="profileVisibilityMobile">Profile Visibility</label>
+                    <select id="profileVisibilityMobile" name="profileVisibility">
+                        <option value="public" <%= user.profileVisibility === 'public' ? 'selected' : '' %>>Public – Anyone can see</option>
+                        <option value="private" <%= user.profileVisibility === 'private' ? 'selected' : '' %>>Private – Only you and admins</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- ===== 7. LEARNING ===== -->
+            <div class="card mobile-settings-card">
+                <h3><i class="fas fa-graduation-cap" style="color:var(--primary);"></i> Learning</h3>
+                <p>Customize your learning experience.</p>
+                <div class="settings-group">
+                    <label for="learningLevelMobile">Learning Level</label>
+                    <select id="learningLevelMobile" name="learningLevel">
+                        <option value="Beginner" <%= user.learningLevel === 'Beginner' ? 'selected' : '' %>>🌱 Beginner</option>
+                        <option value="Intermediate" <%= user.learningLevel === 'Intermediate' ? 'selected' : '' %>>🌿 Intermediate</option>
+                        <option value="Advanced" <%= user.learningLevel === 'Advanced' ? 'selected' : '' %>>🚀 Advanced</option>
+                    </select>
+                </div>
+                <div class="settings-group">
+                    <label for="learningInterestsMobile">Learning Interests</label>
+                    <textarea id="learningInterestsMobile" name="learningInterests" rows="2"><%= user.learningInterests || '' %></textarea>
+                    <p class="help-text">What topics interest you?</p>
+                </div>
+            </div>
+
+            <!-- ===== 8. HELP & SUPPORT ===== -->
+            <div class="card mobile-settings-card">
+                <h3><i class="fas fa-headset" style="color:var(--primary);"></i> Help & Support</h3>
+                <p>Need help? We're here for you.</p>
+                <a href="/faq" class="btn btn-secondary" style="margin-bottom:6px;">
+                    <i class="fas fa-question-circle"></i> View FAQs
+                </a>
+                <a href="/contact" class="btn btn-primary">
+                    <i class="fas fa-envelope"></i> Contact Support
+                </a>
+            </div>
+
+            <!-- ===== 9. DANGER ZONE ===== -->
+            <div class="mobile-danger-zone">
                 <h4><i class="fas fa-exclamation-triangle"></i> Danger Zone</h4>
-                <p style="font-size:0.75rem; color:var(--text-muted); margin:0 0 12px 0;">These actions are irreversible.</p>
-                <button class="btn-danger-zone"><i class="fas fa-trash"></i> Delete Account</button>
-                <p style="font-size:0.65rem; color:#e74c3c; margin-top:6px; text-align:center;">Deleting your account will permanently remove all your data.</p>
+                <p>Once you delete your account, there is no going back.</p>
+                <button id="deleteAccountMobile" class="btn-danger-zone-mobile">
+                    <i class="fas fa-trash-alt"></i> Delete Account
+                </button>
             </div>
         </div>
     </main>
 
-    <!-- FOOTER -->
-    <footer class="footer" style="padding:20px 0 16px; margin-top:20px;">
-        <div class="container">
-            <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:10px 16px; margin-bottom:12px;">
-                <a href="/" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-home"></i> Home</a>
-                <a href="/about" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-info-circle"></i> About</a>
-                <a href="/faq" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-question-circle"></i> FAQ</a>
-                <a href="/services" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-cogs"></i> Services</a>
-                <a href="/contact" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-envelope"></i> Contact</a>
-                <a href="/terms" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-file-contract"></i> Terms</a>
-                <a href="/privacy" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-shield-alt"></i> Privacy</a>
-            </div>
-            <div style="display:flex; justify-content:center; gap:14px; margin-bottom:12px;">
-                <a href="#" style="color:rgba(255,255,255,0.6); font-size:1rem;"><i class="fab fa-facebook"></i></a>
-                <a href="#" style="color:rgba(255,255,255,0.6); font-size:1rem;"><i class="fab fa-twitter"></i></a>
-                <a href="#" style="color:rgba(255,255,255,0.6); font-size:1rem;"><i class="fab fa-linkedin"></i></a>
-                <a href="#" style="color:rgba(255,255,255,0.6); font-size:1rem;"><i class="fab fa-youtube"></i></a>
-            </div>
-            <div style="text-align:center; margin-bottom:8px;">
-                <span style="color:#fff; font-weight:700; font-size:1rem;">SHINEX</span>
-                <span style="color:rgba(255,255,255,0.5); font-size:0.65rem; display:block;">Learning Circle</span>
-            </div>
-            <div style="text-align:center; font-size:0.65rem; color:rgba(255,255,255,0.5); border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
-                <p style="margin:0;">&copy; 2026 SHINEX Learning Circle</p>
-            </div>
-        </div>
-    </footer>
+    <%- include('partials/footer-mobile') %>
 
-    <script src="/js/script.js"></script>
+    <script>
+        // Re-initialize settings for mobile
+        document.addEventListener('DOMContentLoaded', function() {
+            // Profile form
+            const profileForm = document.getElementById('profileFormMobile');
+            if (profileForm) {
+                profileForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const formData = new FormData(this);
+                    fetch('/settings/update', {
+                        method: 'POST',
+                        body: new URLSearchParams(formData)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            showToast('✅ Profile updated successfully!', 'success');
+                        } else {
+                            showToast('❌ ' + data.error, 'error');
+                        }
+                    })
+                    .catch(() => showToast('❌ Something went wrong.', 'error'));
+                });
+            }
+
+            // Password form
+            const passwordForm = document.getElementById('passwordFormMobile');
+            if (passwordForm) {
+                passwordForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const formData = new FormData(this);
+                    const newPass = formData.get('newPassword');
+                    const confirmPass = formData.get('confirmPassword');
+                    
+                    if (newPass !== confirmPass) {
+                        showToast('❌ Passwords do not match!', 'error');
+                        return;
+                    }
+                    if (newPass.length < 6) {
+                        showToast('❌ Password must be at least 6 characters.', 'error');
+                        return;
+                    }
+                    
+                    fetch('/settings/update', {
+                        method: 'POST',
+                        body: new URLSearchParams(formData)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            showToast('✅ Password changed successfully!', 'success');
+                            this.reset();
+                        } else {
+                            showToast('❌ ' + data.error, 'error');
+                        }
+                    })
+                    .catch(() => showToast('❌ Something went wrong.', 'error'));
+                });
+            }
+
+            // Dark mode toggle
+            const darkModeSetting = document.getElementById('darkModeMobileSetting');
+            if (darkModeSetting) {
+                darkModeSetting.addEventListener('change', function() {
+                    const body = document.body;
+                    body.classList.toggle('dark-mode', this.checked);
+                    localStorage.setItem('shinex-dark-mode', this.checked);
+                    updateAllToggles(this.checked);
+                    showToast(this.checked ? '🌙 Dark mode enabled' : '☀️ Light mode enabled', 'success');
+                });
+            }
+
+            // 2FA toggle
+            const twoFactor = document.getElementById('twoFactorMobile');
+            if (twoFactor) {
+                twoFactor.addEventListener('change', function() {
+                    const formData = new FormData();
+                    formData.append('twoFactorEnabled', this.checked ? 'on' : 'off');
+                    fetch('/settings/update', {
+                        method: 'POST',
+                        body: new URLSearchParams(formData)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            showToast(this.checked ? '🔐 2FA enabled' : '🔓 2FA disabled', 'success');
+                        }
+                    })
+                    .catch(() => {});
+                });
+            }
+
+            // Notification checkboxes
+            document.querySelectorAll('.notification-checkbox').forEach(cb => {
+                cb.addEventListener('change', function() {
+                    const formData = new FormData();
+                    formData.append(this.name, this.checked ? 'on' : 'off');
+                    fetch('/settings/update', {
+                        method: 'POST',
+                        body: new URLSearchParams(formData)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            showToast('✅ Preference updated', 'success');
+                        }
+                    })
+                    .catch(() => {});
+                });
+            });
+
+            // Privacy
+            const privacySelect = document.getElementById('profileVisibilityMobile');
+            if (privacySelect) {
+                privacySelect.addEventListener('change', function() {
+                    const formData = new FormData();
+                    formData.append('profileVisibility', this.value);
+                    fetch('/settings/update', {
+                        method: 'POST',
+                        body: new URLSearchParams(formData)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            showToast('✅ Privacy updated', 'success');
+                        }
+                    })
+                    .catch(() => {});
+                });
+            }
+
+            // Learning level
+            const levelSelect = document.getElementById('learningLevelMobile');
+            if (levelSelect) {
+                levelSelect.addEventListener('change', function() {
+                    const formData = new FormData();
+                    formData.append('learningLevel', this.value);
+                    fetch('/settings/update', {
+                        method: 'POST',
+                        body: new URLSearchParams(formData)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            showToast('✅ Learning level updated', 'success');
+                        }
+                    })
+                    .catch(() => {});
+                });
+            }
+
+            // Learning interests
+            const interests = document.getElementById('learningInterestsMobile');
+            if (interests) {
+                let timeoutId;
+                interests.addEventListener('input', function() {
+                    clearTimeout(timeoutId);
+                    timeoutId = setTimeout(() => {
+                        const formData = new FormData();
+                        formData.append('learningInterests', this.value);
+                        fetch('/settings/update', {
+                            method: 'POST',
+                            body: new URLSearchParams(formData)
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                showToast('✅ Interests saved', 'success');
+                            }
+                        })
+                        .catch(() => {});
+                    }, 1000);
+                });
+            }
+
+            // Logout all
+            const logoutAll = document.getElementById('logoutAllMobile');
+            if (logoutAll) {
+                logoutAll.addEventListener('click', function() {
+                    if (confirm('Logout from all devices?')) {
+                        fetch('/logout-all', { method: 'POST' })
+                        .then(() => {
+                            showToast('✅ Logged out from all sessions.', 'success');
+                            setTimeout(() => window.location.reload(), 1000);
+                        });
+                    }
+                });
+            }
+
+            // Delete account
+            const deleteBtn = document.getElementById('deleteAccountMobile');
+            if (deleteBtn) {
+                deleteBtn.addEventListener('click', function() {
+                    if (confirm('⚠️ Delete your account? This cannot be undone!')) {
+                        const confirmText = prompt('Type "DELETE" to confirm:');
+                        if (confirmText === 'DELETE') {
+                            fetch('/delete-account', { method: 'POST' })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    showToast('✅ Account deleted.', 'success');
+                                    setTimeout(() => window.location.href = '/', 2000);
+                                } else {
+                                    showToast('❌ ' + data.error, 'error');
+                                }
+                            })
+                            .catch(() => showToast('❌ Something went wrong.', 'error'));
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+
+    <script src="/js/main.js"></script>
 </body>
 </html>

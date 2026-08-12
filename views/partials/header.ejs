@@ -1,6 +1,8 @@
+<!-- ============================================================
+     HEADER – DESKTOP VERSION
+     ============================================================ -->
 <header class="header">
     <div style="display:flex; align-items:center; gap:12px;">
-        <!-- BACK BUTTON -->
         <% if (showBack) { %>
             <a href="javascript:history.back()" class="back-btn" title="Go Back">
                 <i class="fas fa-arrow-left"></i> Back
@@ -20,8 +22,8 @@
         <!-- Text Size Slider -->
         <div class="text-size-control">
             <label><i class="fas fa-font"></i></label>
-            <input type="range" id="textSizeSlider" min="12" max="24" value="16" step="1">
-            <span class="text-size-value" id="textSizeValue">16px</span>
+            <input type="range" class="text-size-slider" min="12" max="24" value="16" step="1">
+            <span class="text-size-value">16px</span>
         </div>
 
         <!-- Dark Mode Toggle -->
@@ -29,14 +31,24 @@
             🌙 <span class="toggle-label">Dark</span>
         </button>
 
-        <!-- Services Link -->
-        <a href="/services" class="btn btn-secondary btn-sm" style="min-height:36px; padding:6px 16px; border-radius:30px;">
-            <i class="fas fa-cogs"></i> Services
-        </a>
-
-        <!-- Settings Link -->
-        <a href="/settings" class="btn btn-secondary btn-sm" style="min-height:36px; padding:6px 16px; border-radius:30px;">
-            <i class="fas fa-cog"></i> Settings
-        </a>
+        <!-- Login/Register OR User -->
+        <% if (user) { %>
+            <a href="/dashboard" class="btn btn-secondary btn-sm">
+                <i class="fas fa-user"></i> <%= user.firstName %>
+            </a>
+            <a href="/logout" class="btn btn-danger btn-sm">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+            <a href="/settings" class="btn btn-secondary btn-sm" style="min-height:36px; padding:6px 16px; border-radius:30px;">
+                <i class="fas fa-cog"></i>
+            </a>
+        <% } else { %>
+            <a href="/login" class="btn btn-secondary btn-sm">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </a>
+            <a href="/register" class="btn btn-primary btn-sm">
+                <i class="fas fa-user-plus"></i> Register
+            </a>
+        <% } %>
     </div>
 </header>

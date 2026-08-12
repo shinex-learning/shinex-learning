@@ -3,37 +3,162 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terms – SHINEX</title>
+    <title>Terms & Conditions – SHINEX Learning Circle</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div id="page-loader"><div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div><div class="loader-text">SHINEX</div><div class="loader-sub">LEARNING CIRCLE</div></div>
-    <%- include(getHeader()) %>
+    <%- include('partials/header', { showBack: true }) %>
+
     <main class="main-content">
-        <div class="container" style="max-width:800px;">
-            <div class="card">
-                <h1 style="font-size:1.4rem; font-weight:800; color:var(--text-dark); margin:0 0 4px 0;">
-                    <i class="fas fa-file-contract" style="color:var(--primary);"></i> Terms & Conditions
-                </h1>
-                <p style="color:var(--text-muted); font-size:0.85rem; margin:0 0 16px 0;">Last updated: January 2026</p>
-                <div style="line-height:1.8; color:var(--text-dark);">
-                    <h3>1. Acceptance of Terms</h3>
-                    <p>By using SHINEX Learning Circle, you agree to these terms.</p>
-                    <h3>2. Use of Platform</h3>
-                    <p>You agree to use the platform for educational purposes only.</p>
-                    <h3>3. Content Ownership</h3>
-                    <p>All course content is the property of SHINEX Learning Circle.</p>
-                    <h3>4. Privacy</h3>
-                    <p>Your data is handled according to our Privacy Policy.</p>
-                    <h3>5. Contact</h3>
-                    <p>For questions, contact us through our contact page.</p>
+        <div class="container" style="max-width:900px;">
+            <h2 style="font-size:2rem; font-weight:800; margin:0 0 4px;">📜 Terms & Conditions</h2>
+            <p style="color:var(--text-muted); margin-bottom:24px;">
+                <strong>Last Updated:</strong> August 2026
+            </p>
+
+            <div class="card" style="padding:28px 32px;">
+
+                <div style="margin-bottom:20px;">
+                    <h3 style="font-size:1.2rem; font-weight:700; margin:0 0 6px;">1. Acceptance of Terms</h3>
+                    <p style="color:var(--text-muted); line-height:1.8;">
+                        By accessing or using SHINEX Learning Circle ("SLC", "we", "our", "us"), you agree to comply 
+                        with and be bound by these Terms & Conditions. If you do not agree with any part of these terms, 
+                        you must not use our platform.
+                    </p>
                 </div>
+
+                <div style="margin-bottom:20px;">
+                    <h3 style="font-size:1.2rem; font-weight:700; margin:0 0 6px;">2. Account Registration</h3>
+                    <p style="color:var(--text-muted); line-height:1.8;">
+                        To access certain features, you must create an account. You agree to:
+                    </p>
+                    <ul style="color:var(--text-muted); line-height:1.8; padding-left:20px;">
+                        <li>Provide accurate, current, and complete information during registration</li>
+                        <li>Maintain the security of your password and account</li>
+                        <li>Notify us immediately of any unauthorized use of your account</li>
+                        <li>Be responsible for all activities that occur under your account</li>
+                    </ul>
+                </div>
+
+                <div style="margin-bottom:20px;">
+                    <h3 style="font-size:1.2rem; font-weight:700; margin:0 0 6px;">3. Student ID</h3>
+                    <p style="color:var(--text-muted); line-height:1.8;">
+                        Upon successful registration, you will be assigned a unique Student ID in the format 
+                        <strong>SLC-YYYY-XX-XXX</strong>. This ID is your primary identifier on our platform. 
+                        You are responsible for keeping your Student ID confidential.
+                    </p>
+                </div>
+
+                <div style="margin-bottom:20px;">
+                    <h3 style="font-size:1.2rem; font-weight:700; margin:0 0 6px;">4. Courses and Learning</h3>
+                    <p style="color:var(--text-muted); line-height:1.8;">
+                        All courses are provided for educational purposes only. We do not guarantee that completion 
+                        of any course will result in employment or specific outcomes. You are responsible for your 
+                        own learning and application of knowledge.
+                    </p>
+                </div>
+
+                <div style="margin-bottom:20px;">
+                    <h3 style="font-size:1.2rem; font-weight:700; margin:0 0 6px;">5. User Conduct</h3>
+                    <p style="color:var(--text-muted); line-height:1.8;">You agree to use our platform responsibly and not to:</p>
+                    <ul style="color:var(--text-muted); line-height:1.8; padding-left:20px;">
+                        <li>Post or share offensive, abusive, or inappropriate content</li>
+                        <li>Attempt to bypass or exploit the learning system (e.g., cheating on tests)</li>
+                        <li>Impersonate another user or access accounts without permission</li>
+                        <li>Use the platform for any illegal or unauthorized purpose</li>
+                        <li>Interfere with or disrupt the platform's functionality</li>
+                    </ul>
+                </div>
+
+                <div style="margin-bottom:20px;">
+                    <h3 style="font-size:1.2rem; font-weight:700; margin:0 0 6px;">6. Intellectual Property</h3>
+                    <p style="color:var(--text-muted); line-height:1.8;">
+                        All content on SHINEX Learning Circle, including course materials, text, graphics, logos, 
+                        and software, is the property of SHINEX Learning Circle or its licensors and is protected 
+                        by copyright laws. You may not reproduce, distribute, or create derivative works without 
+                        our explicit permission.
+                    </p>
+                </div>
+
+                <div style="margin-bottom:20px;">
+                    <h3 style="font-size:1.2rem; font-weight:700; margin:0 0 6px;">7. Services</h3>
+                    <p style="color:var(--text-muted); line-height:1.8;">
+                        Additional services (e.g., registration assistance, design, campaigns) are provided as 
+                        standalone offerings. These services are subject to separate pricing and terms. We reserve 
+                        the right to modify or discontinue any service at any time.
+                    </p>
+                </div>
+
+                <div style="margin-bottom:20px;">
+                    <h3 style="font-size:1.2rem; font-weight:700; margin:0 0 6px;">8. Privacy</h3>
+                    <p style="color:var(--text-muted); line-height:1.8;">
+                        Your privacy is important to us. Please review our 
+                        <a href="/privacy" style="color:var(--primary); font-weight:600;">Privacy Policy</a> to understand 
+                        how we collect, use, and protect your personal information.
+                    </p>
+                </div>
+
+                <div style="margin-bottom:20px;">
+                    <h3 style="font-size:1.2rem; font-weight:700; margin:0 0 6px;">9. Disclaimer of Warranties</h3>
+                    <p style="color:var(--text-muted); line-height:1.8;">
+                        Our platform and services are provided "as is" and "as available." We do not warrant that 
+                        the platform will be uninterrupted, error-free, or completely secure. We disclaim all 
+                        warranties, express or implied, to the fullest extent permitted by law.
+                    </p>
+                </div>
+
+                <div style="margin-bottom:20px;">
+                    <h3 style="font-size:1.2rem; font-weight:700; margin:0 0 6px;">10. Limitation of Liability</h3>
+                    <p style="color:var(--text-muted); line-height:1.8;">
+                        To the fullest extent permitted by law, SHINEX Learning Circle shall not be liable for any 
+                        indirect, incidental, special, consequential, or punitive damages arising from your use of 
+                        the platform or services. Our total liability shall not exceed the amount you paid to us 
+                        (if any) during the 12 months prior to the claim.
+                    </p>
+                </div>
+
+                <div style="margin-bottom:20px;">
+                    <h3 style="font-size:1.2rem; font-weight:700; margin:0 0 6px;">11. Termination</h3>
+                    <p style="color:var(--text-muted); line-height:1.8;">
+                        We reserve the right to suspend or terminate your account at any time, without notice, if 
+                        we believe you have violated these Terms & Conditions or engaged in any misconduct. You may 
+                        also delete your account at any time through the Settings page.
+                    </p>
+                </div>
+
+                <div style="margin-bottom:20px;">
+                    <h3 style="font-size:1.2rem; font-weight:700; margin:0 0 6px;">12. Changes to Terms</h3>
+                    <p style="color:var(--text-muted); line-height:1.8;">
+                        We may update these Terms & Conditions from time to time. We will notify you of any changes 
+                        by posting the new terms on this page and updating the "Last Updated" date. Continued use of 
+                        the platform constitutes acceptance of the updated terms.
+                    </p>
+                </div>
+
+                <div>
+                    <h3 style="font-size:1.2rem; font-weight:700; margin:0 0 6px;">13. Contact Information</h3>
+                    <p style="color:var(--text-muted); line-height:1.8;">
+                        If you have any questions about these Terms & Conditions, please contact us:
+                    </p>
+                    <ul style="color:var(--text-muted); line-height:1.8; padding-left:20px; list-style:none;">
+                        <li><i class="fas fa-envelope" style="color:var(--primary);"></i> support@shinex.ng</li>
+                        <li><i class="fas fa-phone" style="color:var(--primary);"></i> +234 800 SHINEX</li>
+                        <li><i class="fas fa-map-marker-alt" style="color:var(--primary);"></i> Lagos, Nigeria</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Back to Home -->
+            <div style="margin-top:24px; text-align:center;">
+                <a href="/" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Home
+                </a>
             </div>
         </div>
     </main>
-    <%- include(getFooter()) %>
-    <script src="/js/script.js"></script>
+
+    <%- include('partials/footer') %>
+    <script src="/js/main.js"></script>
 </body>
 </html>

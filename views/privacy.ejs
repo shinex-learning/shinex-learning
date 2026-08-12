@@ -3,35 +3,166 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Privacy – SHINEX</title>
+    <title>Privacy Policy – SHINEX Learning Circle</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div id="page-loader"><div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div><div class="loader-text">SHINEX</div><div class="loader-sub">LEARNING CIRCLE</div></div>
-    <%- include(getHeader()) %>
+    <%- include('partials/header', { showBack: true }) %>
+
     <main class="main-content">
-        <div class="container" style="max-width:800px;">
-            <div class="card">
-                <h1 style="font-size:1.4rem; font-weight:800; color:var(--text-dark); margin:0 0 4px 0;">
-                    <i class="fas fa-shield-alt" style="color:var(--primary);"></i> Privacy Policy
-                </h1>
-                <p style="color:var(--text-muted); font-size:0.85rem; margin:0 0 16px 0;">Last updated: January 2026</p>
-                <div style="line-height:1.8; color:var(--text-dark);">
-                    <h3>Information We Collect</h3>
-                    <p>We collect minimal data to improve your learning experience.</p>
-                    <h3>How We Use Your Data</h3>
-                    <p>Data is used to personalize your learning journey.</p>
-                    <h3>Data Security</h3>
-                    <p>We implement industry-standard security measures.</p>
-                    <h3>Your Rights</h3>
-                    <p>You can request data deletion at any time.</p>
+        <div class="container" style="max-width:900px;">
+            <h2 style="font-size:2rem; font-weight:800; margin:0 0 4px;">🔒 Privacy Policy</h2>
+            <p style="color:var(--text-muted); margin-bottom:24px;">
+                <strong>Last Updated:</strong> August 2026
+            </p>
+
+            <div class="card" style="padding:28px 32px;">
+                <div style="margin-bottom:20px;">
+                    <h3 style="font-size:1.2rem; font-weight:700; margin:0 0 6px;">1. Introduction</h3>
+                    <p style="color:var(--text-muted); line-height:1.8;">
+                        SHINEX Learning Circle ("SLC", "we", "our", "us") is committed to protecting your privacy. 
+                        This Privacy Policy explains how we collect, use, disclose, and safeguard your information 
+                        when you visit our website and use our services.
+                    </p>
+                    <p style="color:var(--text-muted); line-height:1.8; margin-top:8px;">
+                        By using SHINEX Learning Circle, you agree to the collection and use of information in 
+                        accordance with this policy.
+                    </p>
                 </div>
+
+                <div style="margin-bottom:20px;">
+                    <h3 style="font-size:1.2rem; font-weight:700; margin:0 0 6px;">2. Information We Collect</h3>
+                    <p style="color:var(--text-muted); line-height:1.8;">We collect the following types of information:</p>
+                    <ul style="color:var(--text-muted); line-height:1.8; padding-left:20px;">
+                        <li><strong>Personal Information:</strong> Name, email address, phone number, date of birth, gender, address, and Student ID.</li>
+                        <li><strong>Academic Information:</strong> School, department, current level, and student status.</li>
+                        <li><strong>Learning Data:</strong> Course enrollment, progress, completed classes, test scores, and points.</li>
+                        <li><strong>Usage Data:</strong> Pages visited, time spent, interactions with content, and AI chat messages.</li>
+                        <li><strong>Device Information:</strong> IP address, browser type, device type, and operating system.</li>
+                    </ul>
+                </div>
+
+                <div style="margin-bottom:20px;">
+                    <h3 style="font-size:1.2rem; font-weight:700; margin:0 0 6px;">3. How We Use Your Information</h3>
+                    <p style="color:var(--text-muted); line-height:1.8;">We use your information to:</p>
+                    <ul style="color:var(--text-muted); line-height:1.8; padding-left:20px;">
+                        <li>Create and manage your account</li>
+                        <li>Provide, maintain, and improve our services</li>
+                        <li>Track your learning progress and achievements</li>
+                        <li>Send you email notifications about your account and courses</li>
+                        <li>Respond to your inquiries and support requests</li>
+                        <li>Personalize your learning experience</li>
+                        <li>Analyze usage patterns to improve our platform</li>
+                    </ul>
+                </div>
+
+                <div style="margin-bottom:20px;">
+                    <h3 style="font-size:1.2rem; font-weight:700; margin:0 0 6px;">4. Information Sharing</h3>
+                    <p style="color:var(--text-muted); line-height:1.8;">
+                        We do not sell, trade, or rent your personal information to third parties. We may share your 
+                        information in the following cases:
+                    </p>
+                    <ul style="color:var(--text-muted); line-height:1.8; padding-left:20px;">
+                        <li><strong>With your consent:</strong> We may share information with your explicit permission.</li>
+                        <li><strong>Service Providers:</strong> We use third-party services (e.g., email, hosting, AI) that process data on our behalf.</li>
+                        <li><strong>Legal Requirements:</strong> We may disclose information if required by law or to protect our rights.</li>
+                    </ul>
+                </div>
+
+                <div style="margin-bottom:20px;">
+                    <h3 style="font-size:1.2rem; font-weight:700; margin:0 0 6px;">5. Data Security</h3>
+                    <p style="color:var(--text-muted); line-height:1.8;">
+                        We take data security seriously. We implement industry-standard security measures including:
+                    </p>
+                    <ul style="color:var(--text-muted); line-height:1.8; padding-left:20px;">
+                        <li>Password hashing using bcrypt</li>
+                        <li>HTTPS encryption for all data transmission</li>
+                        <li>Session management and authentication controls</li>
+                        <li>Regular security updates and monitoring</li>
+                    </ul>
+                </div>
+
+                <div style="margin-bottom:20px;">
+                    <h3 style="font-size:1.2rem; font-weight:700; margin:0 0 6px;">6. Your Rights</h3>
+                    <p style="color:var(--text-muted); line-height:1.8;">You have the right to:</p>
+                    <ul style="color:var(--text-muted); line-height:1.8; padding-left:20px;">
+                        <li>Access your personal information</li>
+                        <li>Correct inaccurate information</li>
+                        <li>Delete your account and associated data</li>
+                        <li>Opt out of marketing communications</li>
+                        <li>Request a copy of your data</li>
+                    </ul>
+                    <p style="color:var(--text-muted); line-height:1.8; margin-top:8px;">
+                        To exercise these rights, contact us at <strong>support@shinex.ng</strong>.
+                    </p>
+                </div>
+
+                <div style="margin-bottom:20px;">
+                    <h3 style="font-size:1.2rem; font-weight:700; margin:0 0 6px;">7. Cookies and Tracking</h3>
+                    <p style="color:var(--text-muted); line-height:1.8;">
+                        We use cookies to enhance your experience on our platform. Cookies help us:
+                    </p>
+                    <ul style="color:var(--text-muted); line-height:1.8; padding-left:20px;">
+                        <li>Remember your login session and preferences</li>
+                        <li>Track your learning progress</li>
+                        <li>Analyze site traffic and usage patterns</li>
+                    </ul>
+                    <p style="color:var(--text-muted); line-height:1.8; margin-top:8px;">
+                        You can manage cookie preferences in your browser settings.
+                    </p>
+                </div>
+
+                <div style="margin-bottom:20px;">
+                    <h3 style="font-size:1.2rem; font-weight:700; margin:0 0 6px;">8. Data Retention</h3>
+                    <p style="color:var(--text-muted); line-height:1.8;">
+                        We retain your personal information for as long as your account is active. If you delete your 
+                        account, we will delete or anonymize your data within 30 days, except where we are required 
+                        to retain it for legal or regulatory purposes.
+                    </p>
+                </div>
+
+                <div style="margin-bottom:20px;">
+                    <h3 style="font-size:1.2rem; font-weight:700; margin:0 0 6px;">9. Children's Privacy</h3>
+                    <p style="color:var(--text-muted); line-height:1.8;">
+                        Our services are not directed at individuals under the age of 13. We do not knowingly collect 
+                        personal information from children. If you are a parent or guardian and believe your child 
+                        has provided us with information, please contact us.
+                    </p>
+                </div>
+
+                <div style="margin-bottom:20px;">
+                    <h3 style="font-size:1.2rem; font-weight:700; margin:0 0 6px;">10. Changes to This Policy</h3>
+                    <p style="color:var(--text-muted); line-height:1.8;">
+                        We may update this Privacy Policy from time to time. We will notify you of any changes by 
+                        posting the new policy on this page and updating the "Last Updated" date. We encourage you 
+                        to review this policy periodically.
+                    </p>
+                </div>
+
+                <div>
+                    <h3 style="font-size:1.2rem; font-weight:700; margin:0 0 6px;">11. Contact Us</h3>
+                    <p style="color:var(--text-muted); line-height:1.8;">
+                        If you have any questions about this Privacy Policy, please contact us:
+                    </p>
+                    <ul style="color:var(--text-muted); line-height:1.8; padding-left:20px; list-style:none;">
+                        <li><i class="fas fa-envelope" style="color:var(--primary);"></i> support@shinex.ng</li>
+                        <li><i class="fas fa-phone" style="color:var(--primary);"></i> +234 800 SHINEX</li>
+                        <li><i class="fas fa-map-marker-alt" style="color:var(--primary);"></i> Lagos, Nigeria</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Back to Home -->
+            <div style="margin-top:24px; text-align:center;">
+                <a href="/" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Home
+                </a>
             </div>
         </div>
     </main>
-    <%- include(getFooter()) %>
-    <script src="/js/script.js"></script>
+
+    <%- include('partials/footer') %>
+    <script src="/js/main.js"></script>
 </body>
 </html>

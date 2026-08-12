@@ -3,232 +3,275 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Contact – SHINEX</title>
+    <title>Contact Us – SHINEX Learning Circle</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        .contact-info-item-mobile {
+        .mobile-contact-container {
+            padding: 12px 12px 24px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .mobile-contact-card {
+            padding: 18px 16px !important;
+            border-radius: 12px !important;
+            margin-bottom: 12px !important;
+        }
+        .mobile-contact-card h3 {
+            font-size: 1rem !important;
+            font-weight: 700 !important;
+            margin: 0 0 4px !important;
+        }
+        .mobile-contact-card p {
+            font-size: 0.82rem !important;
+            margin: 0 0 12px !important;
+            color: var(--text-muted);
+        }
+        .mobile-contact-card label {
+            font-size: 0.82rem !important;
+        }
+        .mobile-contact-card input,
+        .mobile-contact-card select,
+        .mobile-contact-card textarea {
+            font-size: 0.9rem !important;
+            padding: 10px 12px !important;
+            min-height: 40px !important;
+            border-radius: 8px !important;
+        }
+        .mobile-contact-card .btn {
+            font-size: 0.85rem !important;
+            padding: 12px !important;
+            min-height: 48px !important;
+            width: 100%;
+            justify-content: center;
+        }
+        .mobile-contact-card .help-text {
+            font-size: 0.7rem !important;
+        }
+        .mobile-contact-info {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 10px 0;
+            padding: 8px 0;
             border-bottom: 1px solid #ede8f5;
         }
-        .contact-info-item-mobile:last-child { border-bottom: none; }
-        .contact-info-item-mobile .icon-box {
-            width: 36px;
-            height: 36px;
+        body.dark-mode .mobile-contact-info {
+            border-color: var(--dark-border);
+        }
+        .mobile-contact-info:last-child {
+            border-bottom: none;
+        }
+        .mobile-contact-info .icon-box {
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            background: var(--primary);
-            color: #fff;
+            background: var(--primary-bg);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.9rem;
             flex-shrink: 0;
         }
-        .contact-info-item-mobile .info-text .label {
-            font-size: 0.6rem;
+        body.dark-mode .mobile-contact-info .icon-box {
+            background: #1a1a1a;
+        }
+        .mobile-contact-info .icon-box i {
+            color: var(--primary);
+            font-size: 1rem;
+        }
+        .mobile-contact-info .info-text {
+            flex: 1;
+        }
+        .mobile-contact-info .info-text .label {
+            font-weight: 600;
+            font-size: 0.78rem;
             color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 600;
         }
-        .contact-info-item-mobile .info-text .value {
+        .mobile-contact-info .info-text .value {
             font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--text-dark);
         }
-        .contact-info-item-mobile .info-text .value a { color: var(--primary); text-decoration: none; }
-        body.dark-mode .contact-info-item-mobile { border-color: var(--dark-border); }
-        body.dark-mode .contact-info-item-mobile .info-text .value { color: var(--text-light); }
-        .whatsapp-link-mobile {
-            display: inline-flex;
+        .mobile-response-time {
+            background: var(--primary-bg);
+            border-radius: 10px;
+            padding: 12px 16px;
+            display: flex;
             align-items: center;
-            gap: 8px;
-            background: #25D366;
-            color: #fff;
-            padding: 6px 14px;
-            border-radius: 30px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.8rem;
+            gap: 12px;
+            margin-top: 8px;
         }
-        .whatsapp-link-mobile:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(37,211,102,0.3); color: #fff; }
-        .settings-group { margin-bottom: 12px; }
-        .settings-group label { font-weight: 600; font-size: 0.8rem; color: var(--text-dark); display: block; margin-bottom: 4px; }
-        body.dark-mode .settings-group label { color: var(--text-light); }
-        .settings-group input, .settings-group textarea, .settings-group select {
-            width: 100%;
-            padding: 8px 12px;
-            border: 2px solid #ede8f5;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            font-family: inherit;
-            background: #fff;
-            color: var(--text-dark);
+        body.dark-mode .mobile-response-time {
+            background: #1a1a1a;
         }
-        body.dark-mode .settings-group input, body.dark-mode .settings-group textarea, body.dark-mode .settings-group select {
-            background: #2a2a2a;
-            color: var(--text-light);
+        .mobile-response-time i {
+            color: var(--primary);
+            font-size: 1.3rem;
+        }
+        .mobile-response-time .response-text {
+            font-size: 0.82rem;
+        }
+        .mobile-response-time .response-text strong {
+            color: var(--primary);
+        }
+        .mobile-social-links {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            padding: 8px 0;
+            font-size: 1.3rem;
+        }
+        .mobile-social-links a {
+            color: var(--text-muted);
+            transition: color 0.3s;
+        }
+        .mobile-social-links a:hover {
+            color: var(--primary);
+        }
+        .mobile-faq-link {
+            text-align: center;
+            padding: 12px;
+            border-top: 1px solid #ede8f5;
+            margin-top: 4px;
+        }
+        body.dark-mode .mobile-faq-link {
             border-color: var(--dark-border);
         }
-        .settings-group input:focus, .settings-group textarea:focus, .settings-group select:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(139,92,246,0.12);
-            outline: none;
+        .mobile-faq-link a {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-decoration: none;
+        }
+        .mobile-alert {
+            font-size: 0.82rem !important;
+            padding: 10px 14px !important;
+            border-radius: 8px !important;
+            margin-bottom: 10px !important;
         }
     </style>
 </head>
 <body>
-    <div id="page-loader">
-        <div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div>
-        <div class="loader-text">SHINEX</div>
-        <div class="loader-sub">LEARNING CIRCLE</div>
-    </div>
+    <%- include('partials/header-mobile', { showBack: true }) %>
 
-    <!-- HEADER -->
-    <header class="header" style="padding:10px 12px; flex-wrap:wrap; gap:6px;">
-        <div style="display:flex; align-items:center; gap:8px; flex:1;">
-            <% if (showBack) { %>
-                <a href="javascript:history.back()" class="back-btn" style="font-size:0.75rem; padding:4px 8px; color:rgba(255,255,255,0.9);"><i class="fas fa-arrow-left"></i></a>
+    <main class="main-content">
+        <div class="mobile-contact-container">
+            <h2 style="font-size:1.3rem; font-weight:800; margin:0 0 2px;">📬 Contact Us</h2>
+            <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:12px;">
+                Send us a message and we'll respond within <strong>24-48 hours</strong>.
+            </p>
+
+            <% if (messages && messages.success) { %>
+                <div class="alert alert-success mobile-alert"><%= messages.success %></div>
             <% } %>
-            <a href="/" class="logo-container" style="gap:8px;">
-                <div class="logo" style="width:36px; height:36px; font-size:11px; background:rgba(255,255,255,0.2);">SLC</div>
-                <div>
-                    <div class="logo-text" style="font-size:15px; color:#fff;">SHINEX<span>.</span></div>
-                    <div class="logo-sub" style="font-size:7px; color:rgba(255,255,255,0.7);">LEARNING CIRCLE</div>
-                </div>
-            </a>
-        </div>
-        <div class="header-actions" style="gap:4px; flex-wrap:wrap;">
-            <div class="text-size-control" style="padding:2px 8px; background:rgba(255,255,255,0.15);">
-                <label style="font-size:0.6rem; color:rgba(255,255,255,0.8);"><i class="fas fa-font"></i></label>
-                <input type="range" id="textSizeSliderMobile" min="12" max="24" value="16" step="1" style="width:50px;">
-                <span class="text-size-value" id="textSizeValueMobile" style="font-size:0.6rem; min-width:24px; color:#fff;">16px</span>
-            </div>
-            <button class="dark-toggle" id="darkToggleMobile" style="font-size:1rem; padding:4px 6px; color:#fff; background:rgba(255,255,255,0.15); border-radius:30px;">🌙</button>
-            <a href="/settings" class="btn btn-secondary btn-sm" style="min-height:32px; padding:4px 10px; border-radius:30px; font-size:0.75rem; background:rgba(255,255,255,0.2); color:#fff;"><i class="fas fa-cog"></i></a>
-        </div>
-    </header>
+            <% if (messages && messages.error) { %>
+                <div class="alert alert-danger mobile-alert"><%= messages.error %></div>
+            <% } %>
 
-    <!-- CONTENT -->
-    <main class="main-content" style="padding:12px 0 24px;">
-        <div class="container" style="padding:0 12px;">
-            <div style="text-align:center; margin-bottom:12px;">
-                <h1 style="font-size:1.3rem; font-weight:800; color:var(--text-dark); margin:0;">
-                    <i class="fas fa-envelope" style="color:var(--primary);"></i> Contact
-                </h1>
-                <p style="color:var(--text-muted); font-size:0.8rem; margin:4px 0 0;">We'd love to hear from you</p>
-            </div>
+            <!-- ===== CONTACT FORM ===== -->
+            <div class="card mobile-contact-card">
+                <h3>Send a Message</h3>
+                <p>Fill in the form below and our team will respond.</p>
 
-            <div style="background:#fff; border-radius:12px; padding:16px; border:1px solid #ede8f5; margin-bottom:12px;">
-                <h3 style="font-size:0.95rem; font-weight:700; color:var(--text-dark); margin:0 0 8px 0;">
-                    <i class="fas fa-phone" style="color:var(--primary);"></i> Get in Touch
-                </h3>
-
-                <div class="contact-info-item-mobile">
-                    <div class="icon-box"><i class="fas fa-envelope"></i></div>
-                    <div class="info-text">
-                        <div class="label">Email</div>
-                        <div class="value"><a href="mailto:shinexlearning@gmail.com">shinexlearning@gmail.com</a></div>
-                    </div>
-                </div>
-
-                <div class="contact-info-item-mobile">
-                    <div class="icon-box"><i class="fas fa-phone"></i></div>
-                    <div class="info-text">
-                        <div class="label">Phone</div>
-                        <div class="value"><a href="tel:+2347067574479">+234 706 757 4479</a></div>
-                    </div>
-                </div>
-
-                <div class="contact-info-item-mobile">
-                    <div class="icon-box"><i class="fab fa-whatsapp"></i></div>
-                    <div class="info-text">
-                        <div class="label">WhatsApp</div>
-                        <div class="value">
-                            <a href="https://wa.me/2348025052852" target="_blank" class="whatsapp-link-mobile">
-                                <i class="fab fa-whatsapp"></i> +234 802 505 2852
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="contact-info-item-mobile">
-                    <div class="icon-box"><i class="fas fa-globe"></i></div>
-                    <div class="info-text">
-                        <div class="label">Website</div>
-                        <div class="value"><a href="https://shinex-learning.onrender.com" target="_blank">shinex-learning.onrender.com</a></div>
-                    </div>
-                </div>
-            </div>
-
-            <div style="background:#fff; border-radius:12px; padding:16px; border:1px solid #ede8f5;">
-                <h3 style="font-size:0.95rem; font-weight:700; color:var(--text-dark); margin:0 0 4px 0;">
-                    <i class="fas fa-paper-plane" style="color:var(--primary);"></i> Send Message
-                </h3>
-                <p style="font-size:0.75rem; color:var(--text-muted); margin:0 0 12px 0;">We'll get back to you within 24 hours</p>
-                <form>
+                <form action="/contact/send" method="POST">
                     <div class="settings-group">
-                        <label>Full Name <span style="color:#e74c3c;">*</span></label>
-                        <input type="text" placeholder="Your full name">
+                        <label for="name">Your Full Name <span style="color:red;">*</span></label>
+                        <input type="text" id="name" name="name" placeholder="e.g. John Doe" required>
                     </div>
                     <div class="settings-group">
-                        <label>Email Address <span style="color:#e74c3c;">*</span></label>
-                        <input type="email" placeholder="your@email.com">
+                        <label for="email">Email Address <span style="color:red;">*</span></label>
+                        <input type="email" id="email" name="email" placeholder="you@example.com" required>
+                        <p class="help-text">We'll send our reply to this email.</p>
                     </div>
                     <div class="settings-group">
-                        <label>Subject <span style="color:#e74c3c;">*</span></label>
-                        <select>
+                        <label for="subject">Subject <span style="color:red;">*</span></label>
+                        <select id="subject" name="subject" required>
                             <option value="">Select a subject...</option>
-                            <option value="General Inquiry">General Inquiry</option>
-                            <option value="Course Question">Course Question</option>
-                            <option value="Technical Issue">Technical Issue</option>
-                            <option value="Service Request">Service Request</option>
-                            <option value="Other">Other</option>
+                            <option value="Course Inquiry">📚 Course Inquiry</option>
+                            <option value="Technical Support">🛠️ Technical Support</option>
+                            <option value="Account Issue">👤 Account Issue</option>
+                            <option value="Service Request">🛒 Service Request</option>
+                            <option value="Feedback/Suggestion">💡 Feedback / Suggestion</option>
+                            <option value="Partnership">🤝 Partnership</option>
+                            <option value="Other">📌 Other</option>
                         </select>
                     </div>
                     <div class="settings-group">
-                        <label>Message <span style="color:#e74c3c;">*</span></label>
-                        <textarea rows="4" placeholder="Your message..."></textarea>
+                        <label for="message">Message <span style="color:red;">*</span></label>
+                        <textarea id="message" name="message" rows="4" placeholder="Describe your issue or question in detail..." required></textarea>
+                        <p class="help-text">Be as detailed as possible so we can assist you better.</p>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-block" style="width:100%; font-size:0.9rem; padding:10px; border-radius:30px; background:#8B5CF6; color:#fff; border:none; font-weight:600;">
+                    <button type="submit" class="btn btn-primary">
                         <i class="fas fa-paper-plane"></i> Send Message
                     </button>
                 </form>
             </div>
+
+            <!-- ===== CONTACT INFORMATION ===== -->
+            <div class="card mobile-contact-card">
+                <h3>Contact Information</h3>
+                <p>Reach us through any of these channels.</p>
+
+                <div class="mobile-contact-info">
+                    <div class="icon-box"><i class="fas fa-envelope"></i></div>
+                    <div class="info-text">
+                        <div class="label">Email</div>
+                        <div class="value">support@shinex.ng</div>
+                    </div>
+                </div>
+
+                <div class="mobile-contact-info">
+                    <div class="icon-box"><i class="fas fa-phone"></i></div>
+                    <div class="info-text">
+                        <div class="label">Phone</div>
+                        <div class="value">+234 800 SHINEX</div>
+                    </div>
+                </div>
+
+                <div class="mobile-contact-info">
+                    <div class="icon-box"><i class="fab fa-whatsapp" style="color:#25D366;"></i></div>
+                    <div class="info-text">
+                        <div class="label">WhatsApp</div>
+                        <div class="value">+234 812 345 6789</div>
+                    </div>
+                </div>
+
+                <div class="mobile-contact-info">
+                    <div class="icon-box"><i class="fas fa-map-marker-alt"></i></div>
+                    <div class="info-text">
+                        <div class="label">Address</div>
+                        <div class="value">Lagos, Nigeria</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== RESPONSE TIME ===== -->
+            <div class="mobile-response-time">
+                <i class="fas fa-clock"></i>
+                <div class="response-text">
+                    <strong>Response Time:</strong> We respond within <strong>24-48 hours</strong>
+                </div>
+            </div>
+
+            <!-- ===== SOCIAL MEDIA ===== -->
+            <div class="card mobile-contact-card" style="text-align:center;">
+                <h3>Connect With Us</h3>
+                <p>Follow us on social media</p>
+                <div class="mobile-social-links">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                    <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+
+            <!-- ===== FAQ LINK ===== -->
+            <div class="mobile-faq-link">
+                <i class="fas fa-question-circle" style="color:var(--primary);"></i>
+                Check our <a href="/faq">FAQ</a> for quick answers to common questions.
+            </div>
         </div>
     </main>
 
-    <!-- FOOTER -->
-    <footer class="footer" style="padding:20px 0 16px; margin-top:20px;">
-        <div class="container">
-            <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:10px 16px; margin-bottom:12px;">
-                <a href="/" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-home"></i> Home</a>
-                <a href="/about" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-info-circle"></i> About</a>
-                <a href="/faq" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-question-circle"></i> FAQ</a>
-                <a href="/services" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-cogs"></i> Services</a>
-                <a href="/contact" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-envelope"></i> Contact</a>
-                <a href="/terms" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-file-contract"></i> Terms</a>
-                <a href="/privacy" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-shield-alt"></i> Privacy</a>
-            </div>
-            <div style="display:flex; justify-content:center; gap:14px; margin-bottom:12px;">
-                <a href="#" style="color:rgba(255,255,255,0.6); font-size:1rem;"><i class="fab fa-facebook"></i></a>
-                <a href="#" style="color:rgba(255,255,255,0.6); font-size:1rem;"><i class="fab fa-twitter"></i></a>
-                <a href="#" style="color:rgba(255,255,255,0.6); font-size:1rem;"><i class="fab fa-linkedin"></i></a>
-                <a href="#" style="color:rgba(255,255,255,0.6); font-size:1rem;"><i class="fab fa-youtube"></i></a>
-            </div>
-            <div style="text-align:center; margin-bottom:8px;">
-                <span style="color:#fff; font-weight:700; font-size:1rem;">SHINEX</span>
-                <span style="color:rgba(255,255,255,0.5); font-size:0.65rem; display:block;">Learning Circle</span>
-            </div>
-            <div style="text-align:center; font-size:0.65rem; color:rgba(255,255,255,0.5); border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
-                <p style="margin:0;">&copy; 2026 SHINEX Learning Circle</p>
-            </div>
-        </div>
-    </footer>
-
-    <script src="/js/script.js"></script>
+    <%- include('partials/footer-mobile') %>
+    <script src="/js/main.js"></script>
 </body>
 </html>

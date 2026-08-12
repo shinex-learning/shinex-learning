@@ -3,321 +3,234 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Register – SHINEX</title>
+    <title>Register – SHINEX Learning Circle</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        .mobile-form-group {
-            margin-bottom: 12px;
+        .mobile-register-container {
+            padding: 12px 12px 30px;
+            max-width: 500px;
+            margin: 0 auto;
         }
-        .mobile-form-group label {
-            font-weight: 600;
-            font-size: 0.8rem;
-            color: var(--text-dark);
-            display: block;
-            margin-bottom: 3px;
+        .mobile-register-box {
+            padding: 20px 16px !important;
+            border-radius: 14px !important;
         }
-        body.dark-mode .mobile-form-group label {
-            color: var(--text-light);
+        .mobile-register-box h2 {
+            font-size: 1.3rem !important;
         }
-        .mobile-form-group input,
-        .mobile-form-group select {
-            width: 100%;
-            padding: 10px 12px;
-            border: 2px solid #ede8f5;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-family: inherit;
-            background: #fff;
-            color: var(--text-dark);
+        .mobile-register-box p {
+            font-size: 0.82rem !important;
         }
-        body.dark-mode .mobile-form-group input,
-        body.dark-mode .mobile-form-group select {
-            background: #2a2a2a;
-            color: var(--text-light);
-            border-color: #333;
+        .mobile-register-box input,
+        .mobile-register-box select,
+        .mobile-register-box textarea {
+            font-size: 0.9rem !important;
+            padding: 10px 12px !important;
+            min-height: 40px !important;
         }
-        .mobile-form-section {
-            background: var(--primary-bg);
-            border-radius: 10px;
-            padding: 14px;
-            margin-bottom: 12px;
+        .mobile-register-box .btn {
+            font-size: 0.9rem !important;
+            padding: 12px !important;
+            min-height: 48px !important;
         }
-        body.dark-mode .mobile-form-section {
-            background: #1a1a1a;
+        .mobile-register-box label {
+            font-size: 0.8rem !important;
         }
-        .mobile-form-section h4 {
-            font-weight: 700;
-            color: var(--text-dark);
-            margin: 0 0 2px 0;
-            font-size: 0.9rem;
+        .mobile-register-box .help-text {
+            font-size: 0.7rem !important;
         }
-        body.dark-mode .mobile-form-section h4 {
-            color: var(--text-light);
+        .mobile-section-title {
+            font-size: 0.8rem !important;
+            padding: 8px 12px !important;
+            margin: 12px 0 10px !important;
         }
-        .mobile-form-section .sub {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            margin: 0 0 10px 0;
-        }
-        .mobile-form-row {
+        .mobile-grid-2 {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
         }
-        .mobile-required {
-            color: #e74c3c;
-        }
-        .mobile-help-text {
-            font-size: 0.65rem;
-            color: var(--text-muted);
-            margin-top: 2px;
-        }
-        .btn-mobile-auth {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 30px;
-            font-weight: 600;
-            font-size: 1rem;
-            background: #8B5CF6;
-            color: #fff;
-            cursor: pointer;
-        }
-        .btn-mobile-auth:hover {
-            background: #6a3dcf;
-        }
         @media (max-width: 400px) {
-            .mobile-form-row {
+            .mobile-grid-2 {
                 grid-template-columns: 1fr;
+                gap: 0;
             }
         }
     </style>
 </head>
 <body>
-    <div id="page-loader">
-        <div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div>
-        <div class="loader-text">SHINEX</div>
-        <div class="loader-sub">LEARNING CIRCLE</div>
-    </div>
+    <%- include('partials/header-mobile', { showBack: true }) %>
 
-    <%- include('../partials/header-mobile') %>
-
-    <main class="main-content" style="padding:12px 0 24px;">
-        <div class="container" style="padding:0 12px;">
-            <div style="background:#fff; border-radius:12px; padding:16px; border:1px solid #ede8f5;">
-                <div style="text-align:center; margin-bottom:12px;">
-                    <h1 style="font-size:1.3rem; font-weight:800; color:#8B5CF6; margin:0;">SHINEX</h1>
-                    <p style="color:var(--text-muted); font-size:0.65rem; letter-spacing:2px; margin:0;">LEARNING CIRCLE</p>
+    <main class="main-content">
+        <div class="mobile-register-container">
+            <div class="card mobile-register-box" style="box-shadow:var(--shadow);">
+                <div style="text-align:center; margin-bottom:16px;">
+                    <h2 style="font-weight:700; margin:0 0 2px;">Create Account</h2>
+                    <p style="color:var(--text-muted);">Join SHINEX Learning Circle</p>
                 </div>
 
-                <div style="font-size:1.1rem; font-weight:700; color:var(--text-dark); text-align:center; margin-bottom:2px;">Student Registration</div>
-                <div style="font-size:0.75rem; color:var(--text-muted); text-align:center; margin-bottom:12px;">Join SHINEX Learning Circle (SLC)</div>
-
+                <% if (messages && messages.success) { %>
+                    <div class="alert alert-success" style="font-size:0.8rem; padding:10px 14px; border-radius:8px;"><%= messages.success %></div>
+                <% } %>
                 <% if (messages && messages.error) { %>
-                    <div class="alert alert-danger"><%= messages.error %></div>
+                    <div class="alert alert-danger" style="font-size:0.8rem; padding:10px 14px; border-radius:8px;"><%= messages.error %></div>
                 <% } %>
 
                 <form action="/register" method="POST">
-
-                    <!-- Personal Information -->
-                    <div class="mobile-form-section">
-                        <h4><i class="fas fa-user" style="color:#8B5CF6;"></i> Personal Information</h4>
-                        <p class="sub">Tell us about yourself</p>
-
-                        <div class="mobile-form-row">
-                            <div class="mobile-form-group">
-                                <label>First Name <span class="mobile-required">*</span></label>
-                                <input type="text" name="firstName" placeholder="John" required>
-                            </div>
-                            <div class="mobile-form-group">
-                                <label>Middle Name</label>
-                                <input type="text" name="middleName" placeholder="(Optional)">
-                            </div>
+                    <!-- 1. Personal Information -->
+                    <div class="mobile-section-title" style="background:var(--primary-bg); border-radius:8px; font-weight:700; color:var(--primary);">
+                        <i class="fas fa-user"></i> Personal Information
+                    </div>
+                    <div class="mobile-grid-2">
+                        <div class="settings-group">
+                            <label for="firstName">First Name *</label>
+                            <input type="text" id="firstName" name="firstName" placeholder="John" required>
                         </div>
-
-                        <div class="mobile-form-group">
-                            <label>Last Name <span class="mobile-required">*</span></label>
-                            <input type="text" name="lastName" placeholder="Doe" required>
-                        </div>
-
-                        <div class="mobile-form-row">
-                            <div class="mobile-form-group">
-                                <label>Date of Birth</label>
-                                <input type="date" name="dateOfBirth">
-                            </div>
-                            <div class="mobile-form-group">
-                                <label>Gender <span class="mobile-required">*</span></label>
-                                <select name="gender" required>
-                                    <option value="">Select...</option>
-                                    <option value="Male">Male</option>
-                                    <option value="Female">Female</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="mobile-form-group">
-                            <label>Country <span class="mobile-required">*</span></label>
-                            <select name="country" required>
-                                <option value="">Select...</option>
-                                <option value="Nigeria">Nigeria</option>
-                                <option value="USA">USA</option>
-                                <option value="UK">UK</option>
-                                <option value="Canada">Canada</option>
-                                <option value="Australia">Australia</option>
-                                <option value="Ghana">Ghana</option>
-                                <option value="Kenya">Kenya</option>
-                                <option value="South Africa">South Africa</option>
-                                <option value="Other">Other</option>
-                            </select>
-                        </div>
-
-                        <div class="mobile-form-row">
-                            <div class="mobile-form-group">
-                                <label>State <span class="mobile-required">*</span></label>
-                                <input type="text" name="state" placeholder="e.g., Ogun State" required>
-                            </div>
-                            <div class="mobile-form-group">
-                                <label>City/Town <span class="mobile-required">*</span></label>
-                                <input type="text" name="city" placeholder="e.g., Abeokuta" required>
-                            </div>
+                        <div class="settings-group">
+                            <label for="lastName">Last Name *</label>
+                            <input type="text" id="lastName" name="lastName" placeholder="Doe" required>
                         </div>
                     </div>
-
-                    <!-- Contact Information -->
-                    <div class="mobile-form-section">
-                        <h4><i class="fas fa-phone" style="color:#8B5CF6;"></i> Contact Information</h4>
-                        <p class="sub">How can we reach you?</p>
-
-                        <div class="mobile-form-group">
-                            <label>Email Address <span class="mobile-required">*</span></label>
-                            <input type="email" name="email" placeholder="you@email.com" required>
-                        </div>
-
-                        <div class="mobile-form-row">
-                            <div class="mobile-form-group">
-                                <label>Phone Number <span class="mobile-required">*</span></label>
-                                <input type="tel" name="phone" placeholder="080 1234 5678" required>
-                            </div>
-                            <div class="mobile-form-group">
-                                <label>WhatsApp Number</label>
-                                <input type="tel" name="whatsapp" placeholder="080 1234 5678">
-                            </div>
-                        </div>
-
-                        <div class="mobile-form-group">
-                            <label>Home Address</label>
-                            <input type="text" name="homeAddress" placeholder="Your home address">
-                        </div>
+                    <div class="settings-group">
+                        <label for="middleName">Middle Name</label>
+                        <input type="text" id="middleName" name="middleName" placeholder="Michael">
                     </div>
-
-                    <!-- Academic Information -->
-                    <div class="mobile-form-section">
-                        <h4><i class="fas fa-graduation-cap" style="color:#8B5CF6;"></i> Academic Information</h4>
-                        <p class="sub">Tell us about your education</p>
-
-                        <div class="mobile-form-group">
-                            <label>School/Institution <span class="mobile-required">*</span></label>
-                            <input type="text" name="school" placeholder="e.g., TASUED" required>
+                    <div class="mobile-grid-2">
+                        <div class="settings-group">
+                            <label for="dateOfBirth">Date of Birth</label>
+                            <input type="date" id="dateOfBirth" name="dateOfBirth">
                         </div>
-
-                        <div class="mobile-form-group">
-                            <label>Department <span class="mobile-required">*</span></label>
-                            <input type="text" name="department" placeholder="e.g., Computer Science" required>
-                        </div>
-
-                        <div class="mobile-form-row">
-                            <div class="mobile-form-group">
-                                <label>Current Level <span class="mobile-required">*</span></label>
-                                <input type="text" name="currentLevel" placeholder="e.g., Year 1" required>
-                            </div>
-                            <div class="mobile-form-group">
-                                <label>Student Status</label>
-                                <select name="studentStatus">
-                                    <option value="">Select...</option>
-                                    <option value="Full-time">Full-time</option>
-                                    <option value="Part-time">Part-time</option>
-                                    <option value="Graduate">Graduate</option>
-                                    <option value="Working Professional">Working Professional</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Choose Course -->
-                    <div class="mobile-form-section">
-                        <h4><i class="fas fa-book-open" style="color:#8B5CF6;"></i> Choose Your Course</h4>
-                        <p class="sub">Select the course you want to study</p>
-
-                        <div class="mobile-form-group">
-                            <label>Course <span class="mobile-required">*</span></label>
-                            <select name="courseName" required>
-                                <option value="">Select a course...</option>
-                                <% if (courses && courses.length > 0) { %>
-                                    <% courses.forEach(function(c) { %>
-                                        <option value="<%= c %>"><%= c %></option>
-                                    <% }); %>
-                                <% } %>
+                        <div class="settings-group">
+                            <label for="gender">Gender</label>
+                            <select id="gender" name="gender">
+                                <option value="">Select</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
                             </select>
                         </div>
                     </div>
+                    <div class="mobile-grid-2">
+                        <div class="settings-group">
+                            <label for="country">Country</label>
+                            <input type="text" id="country" name="country" placeholder="Nigeria">
+                        </div>
+                        <div class="settings-group">
+                            <label for="state">State</label>
+                            <input type="text" id="state" name="state" placeholder="Lagos">
+                        </div>
+                    </div>
+                    <div class="settings-group">
+                        <label for="city">City/Town</label>
+                        <input type="text" id="city" name="city" placeholder="Ikeja">
+                    </div>
 
-                    <!-- Learning Level -->
-                    <div class="mobile-form-section">
-                        <h4><i class="fas fa-chart-line" style="color:#8B5CF6;"></i> Learning Level</h4>
-                        <p class="sub">Choose your experience level</p>
+                    <!-- 2. Contact Information -->
+                    <div class="mobile-section-title" style="background:var(--primary-bg); border-radius:8px; font-weight:700; color:var(--primary); margin-top:16px;">
+                        <i class="fas fa-address-card"></i> Contact Information
+                    </div>
+                    <div class="settings-group">
+                        <label for="email">Email Address *</label>
+                        <input type="email" id="email" name="email" placeholder="you@example.com" required>
+                    </div>
+                    <div class="mobile-grid-2">
+                        <div class="settings-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" name="phone" placeholder="+234 800 000 0000">
+                        </div>
+                        <div class="settings-group">
+                            <label for="whatsapp">WhatsApp</label>
+                            <input type="tel" id="whatsapp" name="whatsapp" placeholder="+234 800 000 0000">
+                        </div>
+                    </div>
+                    <div class="settings-group">
+                        <label for="homeAddress">Home Address</label>
+                        <input type="text" id="homeAddress" name="homeAddress" placeholder="Enter your address">
+                    </div>
 
-                        <div class="mobile-form-group">
-                            <label>Learning Level <span class="mobile-required">*</span></label>
-                            <select name="learningLevel" required>
-                                <option value="Beginner">Beginner</option>
-                                <option value="Intermediate">Intermediate</option>
-                                <option value="Advanced">Advanced</option>
-                            </select>
+                    <!-- 3. Academic Information -->
+                    <div class="mobile-section-title" style="background:var(--primary-bg); border-radius:8px; font-weight:700; color:var(--primary); margin-top:16px;">
+                        <i class="fas fa-graduation-cap"></i> Academic Information
+                    </div>
+                    <div class="settings-group">
+                        <label for="school">School/Institution</label>
+                        <input type="text" id="school" name="school" placeholder="University of Lagos">
+                    </div>
+                    <div class="settings-group">
+                        <label for="department">Department / Field of Study</label>
+                        <input type="text" id="department" name="department" placeholder="Computer Science">
+                    </div>
+                    <div class="mobile-grid-2">
+                        <div class="settings-group">
+                            <label for="currentLevel">Current Level</label>
+                            <input type="text" id="currentLevel" name="currentLevel" placeholder="100, 200, Final Year">
+                        </div>
+                        <div class="settings-group">
+                            <label for="studentStatus">Student Status</label>
+                            <input type="text" id="studentStatus" name="studentStatus" placeholder="Full-time">
                         </div>
                     </div>
 
-                    <!-- Account Details -->
-                    <div class="mobile-form-section" style="border:2px solid #8B5CF6;">
-                        <h4><i class="fas fa-lock" style="color:#8B5CF6;"></i> Account Details</h4>
-                        <p class="sub">Create your login credentials</p>
-
-                        <div class="mobile-form-group">
-                            <label>Email Address <span class="mobile-required">*</span></label>
-                            <input type="email" name="email" placeholder="you@email.com" required>
-                        </div>
-
-                        <div class="mobile-form-row">
-                            <div class="mobile-form-group">
-                                <label>Password <span class="mobile-required">*</span></label>
-                                <input type="password" name="password" placeholder="Min 6 chars" required>
-                            </div>
-                            <div class="mobile-form-group">
-                                <label>Confirm <span class="mobile-required">*</span></label>
-                                <input type="password" name="confirmPassword" placeholder="Confirm" required>
-                            </div>
-                        </div>
-
-                        <div class="mobile-help-text">
-                            <i class="fas fa-info-circle"></i> Student ID will be generated: <strong>SLC-2026-XX-XXX</strong>
-                        </div>
+                    <!-- 4. Choose Course -->
+                    <div class="mobile-section-title" style="background:var(--primary-bg); border-radius:8px; font-weight:700; color:var(--primary); margin-top:16px;">
+                        <i class="fas fa-book-open"></i> Choose Your Course *
+                    </div>
+                    <div class="settings-group">
+                        <select id="courseName" name="courseName" required style="font-size:0.9rem;">
+                            <option value="">— Select a course —</option>
+                            <option value="Cybersecurity">🔐 Cybersecurity</option>
+                            <option value="Data Analysis">📊 Data Analysis</option>
+                            <option value="Digital Marketing">📱 Digital Marketing</option>
+                            <option value="Graphic Design">🎨 Graphic Design</option>
+                            <option value="Motion Design">🎬 Motion Design</option>
+                            <option value="Networking">🌐 Networking</option>
+                            <option value="Programming">💻 Programming</option>
+                            <option value="UI/UX Design">📐 UI/UX Design</option>
+                            <option value="Web Development">🖥️ Web Development</option>
+                            <option value="WordPress Development">📝 WordPress Development</option>
+                        </select>
+                        <p class="help-text" style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">
+                            <i class="fas fa-info-circle"></i> Your Student ID will include the course code.
+                        </p>
                     </div>
 
-                    <button type="submit" class="btn-mobile-auth">
-                        <i class="fas fa-user-plus"></i> Register
+                    <!-- 5. Learning Level -->
+                    <div class="mobile-section-title" style="background:var(--primary-bg); border-radius:8px; font-weight:700; color:var(--primary); margin-top:16px;">
+                        <i class="fas fa-chart-line"></i> Learning Level
+                    </div>
+                    <div class="settings-group">
+                        <select id="learningLevel" name="learningLevel">
+                            <option value="Beginner">🌱 Beginner</option>
+                            <option value="Intermediate">🌿 Intermediate</option>
+                            <option value="Advanced">🚀 Advanced</option>
+                        </select>
+                    </div>
+
+                    <!-- 6. Account Details -->
+                    <div class="mobile-section-title" style="background:var(--primary-bg); border-radius:8px; font-weight:700; color:var(--primary); margin-top:16px;">
+                        <i class="fas fa-lock"></i> Account Details
+                    </div>
+                    <div class="settings-group">
+                        <label for="password">Password (min 6 chars) *</label>
+                        <input type="password" id="password" name="password" minlength="6" placeholder="Create a strong password" required>
+                    </div>
+                    <div class="settings-group">
+                        <label for="confirmPassword">Confirm Password *</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block" style="margin-top:12px;">
+                        <i class="fas fa-user-plus"></i> Create Account
                     </button>
                 </form>
 
-                <div style="text-align:center; margin-top:12px; padding-top:12px; border-top:1px solid #ede8f5;">
-                    <p style="font-size:0.8rem; color:var(--text-muted); margin:0;">
-                        Already have an account? <a href="/login" style="color:#8B5CF6; font-weight:600; text-decoration:none;">Login</a>
-                    </p>
+                <div style="text-align:center; margin-top:12px; font-size:0.82rem;">
+                    <p style="color:var(--text-muted);">Already have an account? <a href="/login" style="color:var(--primary); font-weight:600;">Login here</a></p>
                 </div>
             </div>
         </div>
     </main>
 
-    <%- include('../partials/footer-mobile') %>
-    <script src="/js/script.js"></script>
+    <%- include('partials/footer-mobile') %>
+    <script src="/js/main.js"></script>
 </body>
 </html>

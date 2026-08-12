@@ -1,0 +1,49 @@
+<!-- ============================================================
+     ADMIN FOOTER – Desktop Only
+     ============================================================ -->
+<footer style="background: #1A0A2E; padding:16px 0; margin-top:40px; border-top:1px solid rgba(139,92,246,0.2);">
+    <div class="container">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+            <div style="color:rgba(255,255,255,0.5); font-size:0.8rem;">
+                &copy; <%= new Date().getFullYear() %> SHINEX Learning Circle – Admin Panel
+            </div>
+            <div style="display:flex; gap:16px; font-size:0.8rem;">
+                <a href="/" style="color:rgba(255,255,255,0.5); text-decoration:none; transition:color 0.3s;">
+                    <i class="fas fa-globe"></i> Website
+                </a>
+                <a href="/admin/dashboard" style="color:rgba(255,255,255,0.5); text-decoration:none; transition:color 0.3s;">
+                    <i class="fas fa-chart-pie"></i> Dashboard
+                </a>
+                <a href="/admin/logout" style="color:rgba(255,255,255,0.5); text-decoration:none; transition:color 0.3s;">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- ============================================================
+     ADMIN AI BOT (Optional – can be removed if not needed)
+     ============================================================ -->
+<div class="ai-bot" id="aiBot" style="bottom:30px; right:30px;">
+    <button class="ai-bot-btn" id="aiBotBtn" aria-label="Ask AI Tutor" style="width:50px; height:50px; font-size:22px;">
+        🤖
+        <span class="ai-bot-pulse" style="width:50px; height:50px;"></span>
+    </button>
+</div>
+
+<div class="ai-chat-modal" id="aiChatModal">
+    <div class="ai-chat-header">
+        <h4>🤖 AI Tutor</h4>
+        <button class="ai-chat-close" id="aiChatClose">&times;</button>
+    </div>
+    <div class="ai-chat-body" id="aiChatBody">
+        <div class="ai-chat-messages" id="aiChatMessages">
+            <div class="ai-chat-msg bot">👋 Hi Admin! I'm your SHINEX AI Tutor. Ask me anything.</div>
+        </div>
+    </div>
+    <div class="ai-chat-footer">
+        <input type="text" id="aiChatInput" placeholder="Type your question..." autocomplete="off">
+        <button class="btn btn-primary" id="aiChatSend">Send</button>
+    </div>
+</div>

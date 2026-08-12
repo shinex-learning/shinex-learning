@@ -3,233 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login – SHINEX</title>
+    <title>Admin Login – SHINEX Learning Circle</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        .admin-login-wrapper {
-            min-height: 100vh;
+        body {
+            background: var(--bg-dark);
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #f0ebfb, #8B5CF6);
-            padding: 20px;
+            min-height: 100vh;
         }
-        body.dark-mode .admin-login-wrapper {
-            background: linear-gradient(135deg, #1a0a2e, #0d0d0d);
-        }
-        .admin-login-box {
-            background: #fff;
-            border-radius: 20px;
-            padding: 40px 36px;
+        .admin-login-container {
             max-width: 420px;
             width: 100%;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
+        }
+        .admin-login-box {
+            background: var(--bg-light);
+            border-radius: 16px;
+            padding: 40px 32px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
         body.dark-mode .admin-login-box {
-            background: #1a1a1a;
-            border-color: #333;
+            background: var(--dark-card);
         }
-        .admin-login-box .logo {
+        .admin-logo {
             text-align: center;
             margin-bottom: 24px;
         }
-        .admin-login-box .logo h1 {
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: #8B5CF6;
-            margin: 0;
-        }
-        .admin-login-box .logo p {
-            color: var(--text-muted);
-            font-size: 0.8rem;
-            margin: 0;
-            letter-spacing: 4px;
-        }
-        .admin-login-box .lock-icon {
-            width: 70px;
-            height: 70px;
+        .admin-logo .logo {
+            width: 64px;
+            height: 64px;
             border-radius: 50%;
-            background: var(--primary-bg);
-            display: flex;
+            background: var(--primary);
+            color: #fff;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 16px auto;
-            font-size: 2rem;
-            color: #8B5CF6;
+            font-weight: 800;
+            font-size: 20px;
+            letter-spacing: 1px;
         }
-        body.dark-mode .admin-login-box .lock-icon {
-            background: #2a1a4a;
-        }
-        .admin-login-box .title {
-            font-size: 1.2rem;
+        .admin-logo h2 {
+            margin: 8px 0 0;
             font-weight: 700;
-            color: var(--text-dark);
-            text-align: center;
-            margin: 0 0 4px 0;
+            font-size: 1.4rem;
         }
-        body.dark-mode .admin-login-box .title {
-            color: var(--text-light);
-        }
-        .admin-login-box .subtitle {
-            font-size: 0.85rem;
+        .admin-logo p {
             color: var(--text-muted);
-            text-align: center;
-            margin: 0 0 20px 0;
-        }
-        .admin-login-box .form-group {
-            margin-bottom: 16px;
-        }
-        .admin-login-box .form-group label {
-            font-weight: 600;
-            font-size: 0.8rem;
-            color: var(--text-dark);
-            display: block;
-            margin-bottom: 4px;
-        }
-        body.dark-mode .admin-login-box .form-group label {
-            color: var(--text-light);
-        }
-        .admin-login-box .form-group input {
-            width: 100%;
-            padding: 10px 14px;
-            border: 2px solid #ede8f5;
-            border-radius: 10px;
-            font-size: 0.95rem;
-            font-family: inherit;
-            transition: all 0.3s ease;
-            background: #fff;
-            color: var(--text-dark);
-        }
-        body.dark-mode .admin-login-box .form-group input {
-            background: #2a2a2a;
-            color: var(--text-light);
-            border-color: #333;
-        }
-        .admin-login-box .form-group input:focus {
-            border-color: #8B5CF6;
-            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.12);
-            outline: none;
-        }
-        .admin-login-box .btn-login {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 30px;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: #8B5CF6;
-            color: #fff;
-            margin-top: 8px;
-        }
-        .admin-login-box .btn-login:hover {
-            background: #6a3dcf;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.3);
-        }
-        .admin-login-box .alert {
-            padding: 10px 14px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            margin-bottom: 12px;
-            text-align: center;
-        }
-        .admin-login-box .alert-danger {
-            background: #fadbd8;
-            color: #922b21;
-            border-left: 4px solid #e74c3c;
-        }
-        .admin-login-box .alert-success {
-            background: #d5f5e3;
-            color: #1a7a4a;
-            border-left: 4px solid #27ae60;
-        }
-        body.dark-mode .admin-login-box .alert-danger {
-            background: #3a1a1a;
-            color: #f1948a;
-        }
-        body.dark-mode .admin-login-box .alert-success {
-            background: #1a3a2a;
-            color: #7dcea0;
-        }
-        .admin-login-box .footer-links {
-            text-align: center;
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 1px solid #ede8f5;
-        }
-        body.dark-mode .admin-login-box .footer-links {
-            border-color: #333;
-        }
-        .admin-login-box .footer-links a {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 0.8rem;
-            transition: color 0.3s ease;
-        }
-        .admin-login-box .footer-links a:hover {
-            color: #8B5CF6;
-        }
-        @media (max-width: 480px) {
-            .admin-login-box {
-                padding: 28px 20px;
-            }
-            .admin-login-box .logo h1 {
-                font-size: 1.4rem;
-            }
+            font-size: 0.9rem;
+            margin: 2px 0 0;
         }
     </style>
 </head>
 <body>
-    <div class="admin-login-wrapper">
+    <div class="admin-login-container">
         <div class="admin-login-box">
-            <!-- Logo -->
-            <div class="logo">
-                <h1>SHINEX</h1>
-                <p>ADMIN PANEL</p>
+            <div class="admin-logo">
+                <div class="logo">SLC</div>
+                <h2>Admin Panel</h2>
+                <p>SHINEX Learning Circle</p>
             </div>
 
-            <!-- Lock Icon -->
-            <div class="lock-icon">
-                <i class="fas fa-lock"></i>
-            </div>
-
-            <!-- Title -->
-            <div class="title">Admin Login</div>
-            <div class="subtitle">Enter your credentials to access the admin panel</div>
-
-            <!-- Messages -->
-            <% if (messages && messages.error) { %>
-                <div class="alert alert-danger"><%= messages.error %></div>
-            <% } %>
             <% if (messages && messages.success) { %>
                 <div class="alert alert-success"><%= messages.success %></div>
             <% } %>
+            <% if (messages && messages.error) { %>
+                <div class="alert alert-danger"><%= messages.error %></div>
+            <% } %>
 
-            <!-- Login Form -->
             <form action="/shinex-admin" method="POST">
-                <div class="form-group">
+                <div class="settings-group">
                     <label for="email">Email Address</label>
-                    <input type="email" id="email" name="email" placeholder="admin@shinex.com" required>
+                    <input type="email" id="email" name="email" placeholder="admin@shinex.ng" required>
                 </div>
-                <div class="form-group">
+                <div class="settings-group">
                     <label for="password">Password</label>
                     <input type="password" id="password" name="password" placeholder="Enter your password" required>
                 </div>
-                <button type="submit" class="btn-login">
-                    <i class="fas fa-sign-in-alt"></i> Login
+                <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-top:8px;">
+                    <i class="fas fa-shield-alt"></i> Login as Admin
                 </button>
             </form>
 
-            <!-- Footer Links -->
-            <div class="footer-links">
-                <a href="/">← Back to Website</a>
+            <div style="text-align:center; margin-top:16px; font-size:0.85rem; color:var(--text-muted);">
+                <a href="/" style="color:var(--primary); font-weight:600;">
+                    <i class="fas fa-arrow-left"></i> Back to Website
+                </a>
             </div>
         </div>
     </div>
+
+    <script src="/js/main.js"></script>
 </body>
 </html>

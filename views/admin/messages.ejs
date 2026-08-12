@@ -3,86 +3,350 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Messages – Admin</title>
+    <title>Manage Messages – SHINEX Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .admin-layout {
+            display: flex;
+            gap: 24px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .admin-sidebar {
+            width: 240px;
+            min-width: 200px;
+            background: var(--bg-light);
+            border-radius: var(--radius);
+            border: 1px solid #ede8f5;
+            padding: 12px 0;
+            height: fit-content;
+            position: sticky;
+            top: 80px;
+            transition: all 0.3s ease;
+        }
+        body.dark-mode .admin-sidebar {
+            background: var(--dark-card);
+            border-color: var(--dark-border);
+        }
+        .admin-sidebar .sidebar-title {
+            padding: 8px 18px 12px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid #ede8f5;
+        }
+        body.dark-mode .admin-sidebar .sidebar-title {
+            border-color: var(--dark-border);
+        }
+        .admin-nav {
+            list-style: none;
+            padding: 4px 0;
+            margin: 0;
+        }
+        .admin-nav li {
+            margin: 0;
+        }
+        .admin-nav a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 18px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+        .admin-nav a:hover {
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+        .admin-nav a.active {
+            background: var(--primary-bg);
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+        body.dark-mode .admin-nav a:hover {
+            background: #2a1a4a;
+        }
+        body.dark-mode .admin-nav a.active {
+            background: #2a1a4a;
+        }
+        .admin-content {
+            flex: 1;
+            min-width: 0;
+        }
+        .admin-card {
+            background: var(--bg-light);
+            border-radius: var(--radius);
+            border: 1px solid #ede8f5;
+            padding: 20px 24px;
+            margin-bottom: 16px;
+        }
+        body.dark-mode .admin-card {
+            background: var(--dark-card);
+            border-color: var(--dark-border);
+        }
+        .admin-card h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin: 0 0 8px;
+        }
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+        .admin-table th {
+            text-align: left;
+            padding: 8px 12px;
+            border-bottom: 2px solid #ede8f5;
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        body.dark-mode .admin-table th {
+            border-color: var(--dark-border);
+        }
+        .admin-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #ede8f5;
+            vertical-align: middle;
+        }
+        body.dark-mode .admin-table td {
+            border-color: var(--dark-border);
+        }
+        .admin-table tr:hover {
+            background: var(--primary-bg);
+        }
+        body.dark-mode .admin-table tr:hover {
+            background: #1a1a1a;
+        }
+        .admin-table .badge {
+            font-size: 0.65rem;
+            padding: 2px 10px;
+        }
+        .message-preview {
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: inline-block;
+        }
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .status-badge.unread {
+            background: #fadbd8;
+            color: #922b21;
+        }
+        .status-badge.read {
+            background: #d6eaf8;
+            color: #1a5276;
+        }
+        .status-badge.replied {
+            background: #d5f5e3;
+            color: #1a7a4a;
+        }
+        body.dark-mode .status-badge.unread {
+            background: #3a1a1a;
+            color: #f1948a;
+        }
+        body.dark-mode .status-badge.read {
+            background: #1a2a3a;
+            color: #85c1e9;
+        }
+        body.dark-mode .status-badge.replied {
+            background: #1a3a2a;
+            color: #7dcea0;
+        }
+        .filter-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+        .filter-buttons .btn-sm {
+            padding: 4px 16px;
+            font-size: 0.8rem;
+        }
+        .filter-buttons .btn-sm.active {
+            background: var(--primary);
+            color: #fff;
+        }
+        @media (max-width: 768px) {
+            .admin-layout {
+                flex-direction: column;
+            }
+            .admin-sidebar {
+                width: 100%;
+                min-width: unset;
+                position: relative;
+                top: 0;
+            }
+            .admin-table {
+                font-size: 0.75rem;
+            }
+            .admin-table th,
+            .admin-table td {
+                padding: 6px 8px;
+            }
+            .message-preview {
+                max-width: 100px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <%- include('../partials/admin-header') %>
+    <%- include('partials/header', { showBack: true }) %>
 
-    <main class="admin-main">
+    <main class="main-content">
         <div class="container">
-            <h1 style="display:flex; align-items:center; gap:12px;">
-                <i class="fas fa-envelope" style="color:var(--primary);"></i> Contact Messages
-                <span style="background:#e74c3c; color:#fff; padding:2px 12px; border-radius:20px; font-size:0.8rem;">
-                    <%= unreadCount || 0 %> Unread
-                </span>
-            </h1>
-
-            <% if (messages && messages.error) { %>
-                <div class="alert alert-danger"><%= messages.error %></div>
-            <% } %>
             <% if (messages && messages.success) { %>
                 <div class="alert alert-success"><%= messages.success %></div>
             <% } %>
+            <% if (messages && messages.error) { %>
+                <div class="alert alert-danger"><%= messages.error %></div>
+            <% } %>
 
-            <div class="card">
-                <table style="width:100%; border-collapse:collapse;">
-                    <thead>
-                        <tr style="border-bottom:2px solid #ede8f5;">
-                            <th style="padding:10px; text-align:left;">Status</th>
-                            <th style="padding:10px; text-align:left;">Name</th>
-                            <th style="padding:10px; text-align:left;">Email</th>
-                            <th style="padding:10px; text-align:left;">Subject</th>
-                            <th style="padding:10px; text-align:left;">Date</th>
-                            <th style="padding:10px; text-align:center;">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% if (messagesList && messagesList.length > 0) { %>
-                            <% messagesList.forEach(function(msg) { %>
-                                <tr style="border-bottom:1px solid #ede8f5;">
-                                    <td style="padding:10px;">
-                                        <% if (msg.status === 'unread') { %>
-                                            <span style="background:#e74c3c; color:#fff; padding:2px 10px; border-radius:12px; font-size:0.7rem;">🔴 Unread</span>
-                                        <% } else if (msg.status === 'read') { %>
-                                            <span style="background:#3498db; color:#fff; padding:2px 10px; border-radius:12px; font-size:0.7rem;">📖 Read</span>
-                                        <% } else if (msg.status === 'replied') { %>
-                                            <span style="background:#27ae60; color:#fff; padding:2px 10px; border-radius:12px; font-size:0.7rem;">✅ Replied</span>
-                                        <% } %>
-                                    </td>
-                                    <td style="padding:10px;"><strong><%= msg.name %></strong></td>
-                                    <td style="padding:10px; color:var(--text-muted);"><%= msg.email %></td>
-                                    <td style="padding:10px;"><%= msg.subject %></td>
-                                    <td style="padding:10px; color:var(--text-muted); font-size:0.85rem;">
-                                        <%= new Date(msg.createdAt).toLocaleDateString() %>
-                                    </td>
-                                    <td style="padding:10px; text-align:center;">
-                                        <a href="/admin/messages/<%= msg.id %>" class="btn btn-sm btn-primary" style="padding:4px 12px;">
-                                            <i class="fas fa-eye"></i> View
-                                        </a>
-                                    </td>
+            <div class="admin-layout">
+                <!-- ===== Admin Sidebar ===== -->
+                <aside class="admin-sidebar">
+                    <div class="sidebar-title"><i class="fas fa-crown"></i> Admin Panel</div>
+                    <ul class="admin-nav">
+                        <li><a href="/admin/dashboard"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
+                        <li><a href="/admin/students"><i class="fas fa-users"></i> Students</a></li>
+                        <li><a href="/admin/courses"><i class="fas fa-book"></i> Courses</a></li>
+                        <li><a href="/admin/services"><i class="fas fa-concierge-bell"></i> Services</a></li>
+                        <li><a href="/admin/messages" class="active"><i class="fas fa-envelope"></i> Messages <span class="badge badge-red" style="font-size:0.6rem; padding:1px 8px;"><%= unreadCount || 0 %></span></a></li>
+                        <li><a href="/admin/manage-admins"><i class="fas fa-user-shield"></i> Admins</a></li>
+                        <li><a href="/admin/logout" style="color:#e74c3c;"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                    </ul>
+                </aside>
+
+                <!-- ===== Admin Content ===== -->
+                <div class="admin-content">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:16px;">
+                        <div>
+                            <h2 style="font-size:1.5rem; font-weight:700; margin:0 0 2px;">📬 Contact Messages</h2>
+                            <p style="color:var(--text-muted); margin:0;">View and reply to messages from users.</p>
+                        </div>
+                        <div style="font-size:0.9rem; color:var(--text-muted);">
+                            <i class="fas fa-envelope"></i> Total: <strong><%= messages ? messages.length : 0 %></strong>
+                            <span class="badge badge-red" style="margin-left:8px;"><%= unreadCount || 0 %> unread</span>
+                        </div>
+                    </div>
+
+                    <!-- Filter Buttons -->
+                    <div class="filter-buttons">
+                        <button class="btn btn-sm btn-secondary active" data-filter="all" onclick="filterMessages('all')">All</button>
+                        <button class="btn btn-sm btn-secondary" data-filter="unread" onclick="filterMessages('unread')">Unread</button>
+                        <button class="btn btn-sm btn-secondary" data-filter="read" onclick="filterMessages('read')">Read</button>
+                        <button class="btn btn-sm btn-secondary" data-filter="replied" onclick="filterMessages('replied')">Replied</button>
+                    </div>
+
+                    <!-- Messages Table -->
+                    <div class="admin-card" style="overflow-x:auto;">
+                        <table class="admin-table" id="messageTable">
+                            <thead>
+                                <tr>
+                                    <th>Status</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Subject</th>
+                                    <th>Message</th>
+                                    <th>Received</th>
+                                    <th>Action</th>
                                 </tr>
-                            <% }); %>
-                        <% } else { %>
-                            <tr>
-                                <td colspan="6" style="padding:30px; text-align:center; color:var(--text-muted);">
-                                    <i class="fas fa-inbox" style="font-size:2rem; display:block; margin-bottom:8px;"></i>
-                                    No messages yet.
-                                </td>
-                            </tr>
-                        <% } %>
-                    </tbody>
-                </table>
+                            </thead>
+                            <tbody>
+                                <% if (messages && messages.length > 0) { %>
+                                    <% messages.forEach(m => { %>
+                                        <tr class="message-row" data-status="<%= m.status %>">
+                                            <td>
+                                                <span class="status-badge <%= m.status %>">
+                                                    <% if (m.status === 'unread') { %>
+                                                        <i class="fas fa-circle" style="color:#e74c3c; font-size:0.5rem;"></i> Unread
+                                                    <% } else if (m.status === 'read') { %>
+                                                        <i class="fas fa-check-circle" style="color:#3498db; font-size:0.5rem;"></i> Read
+                                                    <% } else { %>
+                                                        <i class="fas fa-check-double" style="color:#27ae60; font-size:0.5rem;"></i> Replied
+                                                    <% } %>
+                                                </span>
+                                            </td>
+                                            <td><strong><%= m.name || 'Anonymous' %></strong></td>
+                                            <td style="font-size:0.8rem;"><%= m.email || '' %></td>
+                                            <td style="font-weight:500;"><%= m.subject || 'No subject' %></td>
+                                            <td>
+                                                <span class="message-preview" title="<%= m.message || '' %>">
+                                                    <%= m.message ? m.message.substring(0, 60) + (m.message.length > 60 ? '...' : '') : '' %>
+                                                </span>
+                                            </td>
+                                            <td style="font-size:0.8rem;"><%= new Date(m.createdAt).toLocaleString() %></td>
+                                            <td>
+                                                <a href="/admin/messages/<%= m.id %>" class="btn btn-primary btn-sm" style="padding:4px 12px; font-size:0.75rem;">
+                                                    <i class="fas fa-eye"></i> View
+                                                </a>
+                                                <% if (m.status !== 'replied') { %>
+                                                    <a href="/admin/messages/<%= m.id %>#reply" class="btn btn-success btn-sm" style="padding:4px 12px; font-size:0.75rem;">
+                                                        <i class="fas fa-reply"></i> Reply
+                                                    </a>
+                                                <% } %>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="7" style="text-align:center; padding:40px; color:var(--text-muted);">
+                                            <i class="fas fa-inbox" style="font-size:2.5rem; display:block; margin-bottom:8px; opacity:0.3;"></i>
+                                            No messages yet.
+                                        </td>
+                                    </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-
-            <a href="/admin/dashboard" class="btn btn-secondary">
-                <i class="fas fa-arrow-left"></i> Back to Dashboard
-            </a>
         </div>
     </main>
 
-    <%- include('../partials/admin-footer') %>
-    <script src="/js/script.js"></script>
+    <%- include('partials/footer') %>
+
+    <script>
+        function filterMessages(status) {
+            const rows = document.querySelectorAll('.message-row');
+            const buttons = document.querySelectorAll('.filter-buttons .btn');
+            
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.filter === status) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            rows.forEach(row => {
+                if (status === 'all') {
+                    row.style.display = '';
+                } else {
+                    row.style.display = row.dataset.status === status ? '' : 'none';
+                }
+            });
+        }
+    </script>
+
+    <script src="/js/main.js"></script>
 </body>
 </html>

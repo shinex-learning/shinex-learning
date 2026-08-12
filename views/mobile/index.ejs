@@ -3,144 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>SHINEX – Learn Anywhere</title>
+    <title>SHINEX Learning Circle – Learn. Understand. Protect.</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Mobile specific overrides */
+        .mobile-hero {
+            padding: 28px 16px !important;
+            margin-bottom: 20px !important;
+            border-radius: 16px !important;
+        }
+        .mobile-hero h1 {
+            font-size: 1.6rem !important;
+            margin-bottom: 4px !important;
+        }
+        .mobile-hero p {
+            font-size: 0.9rem !important;
+        }
+        .mobile-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .mobile-grid .card {
+            padding: 12px 10px !important;
+            text-align: center;
+            margin-bottom: 0 !important;
+        }
+        .mobile-grid .card h4 {
+            font-size: 0.8rem !important;
+            margin: 4px 0 2px !important;
+        }
+        .mobile-grid .card p {
+            font-size: 0.7rem !important;
+        }
+        .mobile-grid .card .price {
+            font-size: 0.85rem !important;
+        }
+        .mobile-section-title {
+            font-size: 1.2rem !important;
+            margin-top: 20px !important;
+        }
+        .mobile-course-card {
+            padding: 14px 12px !important;
+        }
+        .mobile-course-card .course-title {
+            font-size: 0.9rem !important;
+        }
+        .mobile-course-card .course-desc {
+            font-size: 0.78rem !important;
+        }
+        .mobile-btn-block {
+            width: 100%;
+        }
+        .mobile-btn-block .btn {
+            width: 100%;
+            text-align: center;
+            justify-content: center;
+            font-size: 0.85rem !important;
+            padding: 10px !important;
+            min-height: 44px !important;
+        }
+        .hero-buttons {
+            flex-direction: column !important;
+            gap: 8px !important;
+        }
+        .hero-buttons .btn {
+            min-height: 44px !important;
+            font-size: 0.9rem !important;
+        }
+        /* Better touch targets */
+        .btn-sm {
+            min-height: 36px !important;
+            padding: 6px 14px !important;
+        }
+        .badge {
+            font-size: 0.6rem !important;
+            padding: 2px 8px !important;
+        }
+        /* Mobile container padding */
+        .container {
+            padding: 0 12px !important;
+        }
+        .main-content {
+            padding: 12px 0 20px !important;
+        }
+    </style>
 </head>
 <body>
-    <!-- LOADER -->
-    <div id="page-loader">
-        <div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div>
-        <div class="loader-text">SHINEX</div>
-        <div class="loader-sub">LEARNING CIRCLE</div>
-    </div>
+    <%- include('partials/header-mobile', { showBack: false }) %>
 
-    <!-- ===== MOBILE HEADER ===== -->
-    <header class="header" style="padding:10px 12px; flex-wrap:wrap; gap:6px;">
-        <div style="display:flex; align-items:center; gap:8px; flex:1;">
-            <% if (showBack) { %>
-                <a href="javascript:history.back()" class="back-btn" style="font-size:0.75rem; padding:4px 8px; color:rgba(255,255,255,0.9);">
-                    <i class="fas fa-arrow-left"></i>
-                </a>
+    <main class="main-content">
+        <div class="container">
+            <!-- Flash Messages -->
+            <% if (messages && messages.success) { %>
+                <div class="alert alert-success" style="font-size:0.82rem; padding:10px 14px; border-radius:8px; margin-bottom:12px;"><%= messages.success %></div>
             <% } %>
-            <a href="/" class="logo-container" style="gap:8px;">
-                <div class="logo" style="width:36px; height:36px; font-size:11px; background:rgba(255,255,255,0.2);">SLC</div>
-                <div>
-                    <div class="logo-text" style="font-size:15px; color:#fff;">SHINEX<span>.</span></div>
-                    <div class="logo-sub" style="font-size:7px; color:rgba(255,255,255,0.7);">LEARNING CIRCLE</div>
+            <% if (messages && messages.error) { %>
+                <div class="alert alert-danger" style="font-size:0.82rem; padding:10px 14px; border-radius:8px; margin-bottom:12px;"><%= messages.error %></div>
+            <% } %>
+
+            <!-- Mobile Hero -->
+            <div class="hero-section card-purple mobile-hero">
+                <h1>Welcome to SHINEX</h1>
+                <p>Learn. Understand. Protect.<br>Explore 10+ cutting‑edge courses.</p>
+                <div class="hero-buttons">
+                    <a href="/courses" class="btn btn-secondary" style="background:#fff; color:#6a3dcf; font-weight:700;">Explore Courses</a>
+                    <% if (!user) { %>
+                        <a href="/register" class="btn btn-primary" style="background:rgba(255,255,255,0.2); color:#fff; border:2px solid #fff;">Get Started Free</a>
+                    <% } else { %>
+                        <a href="/dashboard" class="btn btn-primary" style="background:rgba(255,255,255,0.2); color:#fff; border:2px solid #fff;">Go to Dashboard</a>
+                    <% } %>
                 </div>
-            </a>
-        </div>
-
-        <div class="header-actions" style="gap:4px; flex-wrap:wrap;">
-            <div class="text-size-control" style="padding:2px 8px; background:rgba(255,255,255,0.15);">
-                <label style="font-size:0.6rem; color:rgba(255,255,255,0.8);"><i class="fas fa-font"></i></label>
-                <input type="range" id="textSizeSliderMobile" min="12" max="24" value="16" step="1" style="width:50px;">
-                <span class="text-size-value" id="textSizeValueMobile" style="font-size:0.6rem; min-width:24px; color:#fff;">16px</span>
             </div>
-            <button class="dark-toggle" id="darkToggleMobile" aria-label="Toggle dark mode" style="font-size:1rem; padding:4px 6px; color:#fff; background:rgba(255,255,255,0.15); border-radius:30px;">
-                🌙
-            </button>
-            <a href="/settings" class="btn btn-secondary btn-sm" style="min-height:32px; padding:4px 10px; border-radius:30px; font-size:0.75rem; background:rgba(255,255,255,0.2); color:#fff;">
-                <i class="fas fa-cog"></i>
-            </a>
-        </div>
-    </header>
 
-    <!-- ===== MAIN CONTENT ===== -->
-    <main class="main-content" style="padding:12px 0 24px;">
-        <div class="container" style="padding:0 12px;">
+            <!-- Courses Preview -->
+            <h2 class="mobile-section-title" style="font-weight:700; margin-bottom:2px;">Our Courses</h2>
+            <p style="color:var(--text-muted); font-size:0.82rem; margin-bottom:12px;">Choose your path and start learning.</p>
             
-            <div style="background:linear-gradient(135deg, #8B5CF6, #6a3dcf); border-radius:12px; padding:20px 16px; text-align:center; color:#fff; margin-bottom:16px;">
-                <h1 style="font-size:1.3rem; font-weight:800; margin:0;">SHINEX Learning</h1>
-                <p style="font-size:0.9rem; opacity:0.8; margin:4px 0 0;">Learn. Grow. Succeed.</p>
-            </div>
-
-            <h3 style="font-size:1rem; font-weight:700; color:var(--text-dark); margin:0 0 8px 0;">
-                <i class="fas fa-graduation-cap" style="color:var(--primary);"></i> Courses
-            </h3>
-
-            <% if (courses && courses.length > 0) { %>
-                <% courses.forEach(function(c) { %>
-                    <div style="background:#fff; border-radius:10px; padding:14px 16px; border:1px solid #ede8f5; margin-bottom:10px;">
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <span class="badge badge-purple" style="font-size:0.6rem;"><%= c.level || 'Beginner' %></span>
-                            <span style="font-size:0.65rem; color:var(--text-muted);"><i class="far fa-clock"></i> <%= c.duration || 'N/A' %></span>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+                <% if (courses && courses.length) { %>
+                    <% courses.slice(0,4).forEach(course => { %>
+                        <div class="course-card mobile-course-card" style="padding:14px 12px; border-radius:12px;">
+                            <div style="display:flex; justify-content:space-between; align-items:start; flex-wrap:wrap; gap:4px;">
+                                <span class="badge badge-purple"><%= course.level || 'Beginner' %></span>
+                                <span class="badge badge-dark"><%= course.duration || 'Self‑paced' %></span>
+                            </div>
+                            <h3 class="course-title" style="margin:4px 0 2px;"><%= course.title %></h3>
+                            <p class="course-desc" style="margin:2px 0 8px;"><%= course.description ? course.description.substring(0,80)+'...' : 'Learn the fundamentals and advance your skills.' %></p>
+                            <a href="/course/<%= course.id %>" class="btn btn-primary btn-sm mobile-btn-block" style="font-size:0.8rem; padding:8px; min-height:38px;">View Course</a>
                         </div>
-                        <div style="font-weight:700; font-size:1rem; color:var(--text-dark); margin:4px 0 2px;"><%= c.title %></div>
-                        <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:8px;"><%= c.description ? c.description.substring(0,50) + '...' : '' %></div>
-                        <a href="/course/<%= c.id %>" class="btn btn-primary btn-sm" style="width:100%; text-align:center; font-size:0.8rem; padding:8px;">
-                            <i class="fas fa-eye"></i> View Course
-                        </a>
+                    <% }) %>
+                <% } else { %>
+                    <div class="empty-state" style="padding:24px; border-radius:12px;">
+                        <span class="empty-icon">📚</span>
+                        <h3 style="font-size:1rem;">No Courses Available</h3>
+                        <p style="font-size:0.85rem;">Check back soon.</p>
                     </div>
-                <% }); %>
-            <% } else { %>
-                <div style="text-align:center; padding:30px 16px; color:var(--text-muted);">
-                    <p>No courses available yet.</p>
-                </div>
-            <% } %>
-
-            <h3 style="font-size:1rem; font-weight:700; color:var(--text-dark); margin:16px 0 8px 0;">
-                <i class="fas fa-cogs" style="color:var(--primary);"></i> Services
-            </h3>
-
-            <div style="background:#fff; border-radius:10px; padding:14px 16px; border:1px solid #ede8f5; margin-bottom:10px; border-left:4px solid var(--primary);">
-                <div style="font-weight:700; font-size:0.9rem; color:var(--text-dark);">
-                    <i class="fas fa-university" style="color:var(--primary);"></i> TASUED Registration
-                </div>
-                <div style="font-size:0.75rem; color:var(--text-muted);">Full registration + O'Level verification</div>
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
-                    <span style="font-weight:700; color:var(--primary); font-size:0.9rem;">₦20,000</span>
-                    <a href="/services" class="btn btn-primary btn-sm" style="font-size:0.7rem; padding:4px 12px;">Order</a>
-                </div>
+                <% } %>
             </div>
 
-            <div style="background:#fff; border-radius:10px; padding:14px 16px; border:1px solid #ede8f5; margin-bottom:10px; border-left:4px solid #f39c12;">
-                <div style="font-weight:700; font-size:0.9rem; color:var(--text-dark);">
-                    <i class="fas fa-flag" style="color:#f39c12;"></i> SUG Campaign
-                </div>
-                <div style="font-size:0.75rem; color:var(--text-muted);">Flyers, posters, social media</div>
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
-                    <span style="font-weight:700; color:#f39c12; font-size:0.9rem;">From ₦5,000</span>
-                    <a href="/services" class="btn btn-primary btn-sm" style="font-size:0.7rem; padding:4px 12px; background:#f39c12;">Order</a>
-                </div>
+            <!-- View All Courses -->
+            <div style="text-align:center; margin:12px 0 16px;">
+                <a href="/courses" class="btn btn-outline btn-sm" style="font-size:0.82rem; padding:8px 20px; min-height:38px;">View All Courses</a>
             </div>
 
+            <!-- Services Preview -->
+            <h2 class="mobile-section-title" style="font-weight:700; margin-top:16px; margin-bottom:2px;">Our Services</h2>
+            <p style="color:var(--text-muted); font-size:0.82rem; margin-bottom:12px;">Professional services to support you.</p>
+
+            <div class="mobile-grid">
+                <% if (services && services.length) { %>
+                    <% services.slice(0,4).forEach(service => { %>
+                        <div class="card" style="padding:12px 10px; border-radius:10px; margin-bottom:0;">
+                            <h4 style="font-size:0.8rem; font-weight:700; margin:0 0 2px;"><%= service.name %></h4>
+                            <p style="font-size:0.68rem; color:var(--text-muted); margin:0 0 4px;"><%= service.description ? service.description.substring(0,30) : '' %></p>
+                            <p class="price" style="font-weight:700; color:var(--primary); font-size:0.85rem; margin:0;">₦<%= service.price.toLocaleString() %></p>
+                            <a href="/services" class="btn btn-secondary btn-sm" style="font-size:0.7rem; padding:4px 12px; min-height:30px; margin-top:4px; width:100%;">Learn More</a>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <div class="empty-state" style="grid-column:1/-1; padding:16px; border-radius:10px;">
+                        <p style="font-size:0.85rem;">Services coming soon.</p>
+                    </div>
+                <% } %>
+            </div>
+
+            <div style="text-align:center; margin:12px 0 8px;">
+                <a href="/services" class="btn btn-outline btn-sm" style="font-size:0.82rem; padding:8px 20px; min-height:38px;">View All Services</a>
+            </div>
         </div>
     </main>
 
-    <!-- ===== MOBILE FOOTER ===== -->
-    <footer class="footer" style="padding:20px 0 16px; margin-top:20px;">
-        <div class="container">
-            <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:10px 16px; margin-bottom:12px;">
-                <a href="/" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-home"></i> Home</a>
-                <a href="/about" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-info-circle"></i> About</a>
-                <a href="/faq" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-question-circle"></i> FAQ</a>
-                <a href="/services" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-cogs"></i> Services</a>
-                <a href="/contact" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-envelope"></i> Contact</a>
-                <a href="/terms" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-file-contract"></i> Terms</a>
-                <a href="/privacy" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-shield-alt"></i> Privacy</a>
-            </div>
+    <%- include('partials/footer-mobile') %>
 
-            <div style="display:flex; justify-content:center; gap:14px; margin-bottom:12px;">
-                <a href="#" style="color:rgba(255,255,255,0.6); font-size:1rem;"><i class="fab fa-facebook"></i></a>
-                <a href="#" style="color:rgba(255,255,255,0.6); font-size:1rem;"><i class="fab fa-twitter"></i></a>
-                <a href="#" style="color:rgba(255,255,255,0.6); font-size:1rem;"><i class="fab fa-linkedin"></i></a>
-                <a href="#" style="color:rgba(255,255,255,0.6); font-size:1rem;"><i class="fab fa-youtube"></i></a>
-            </div>
-
-            <div style="text-align:center; margin-bottom:8px;">
-                <span style="color:#fff; font-weight:700; font-size:1rem;">SHINEX</span>
-                <span style="color:rgba(255,255,255,0.5); font-size:0.65rem; display:block;">Learning Circle</span>
-            </div>
-
-            <div style="text-align:center; font-size:0.65rem; color:rgba(255,255,255,0.5); border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
-                <p style="margin:0;">&copy; 2026 SHINEX Learning Circle</p>
-            </div>
-        </div>
-    </footer>
-
-    <script src="/js/script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"></script>
+    <script src="/js/main.js"></script>
 </body>
 </html>

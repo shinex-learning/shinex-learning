@@ -1,0 +1,61 @@
+<!-- ============================================================
+     FOOTER – MOBILE (includes AI Bot)
+     ============================================================ -->
+<footer class="footer" style="padding:24px 0 16px; margin-top:24px;">
+    <div class="container">
+        <div style="text-align:center;">
+            <div class="logo-container" style="justify-content:center; margin-bottom:6px;">
+                <div class="logo" style="width:36px; height:36px; font-size:11px;">SLC</div>
+                <div>
+                    <div class="logo-text" style="font-size:14px; color:#fff;">SHINEX<span>.</span></div>
+                </div>
+            </div>
+            <p style="color:rgba(255,255,255,0.7); font-size:0.8rem; margin:4px 0 8px;">
+                Learn. Understand. Protect.
+            </p>
+            <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:8px 16px; margin:12px 0;">
+                <a href="/" style="color:rgba(255,255,255,0.7); font-size:0.75rem;">Home</a>
+                <a href="/courses" style="color:rgba(255,255,255,0.7); font-size:0.75rem;">Courses</a>
+                <a href="/services" style="color:rgba(255,255,255,0.7); font-size:0.75rem;">Services</a>
+                <a href="/about" style="color:rgba(255,255,255,0.7); font-size:0.75rem;">About</a>
+                <a href="/contact" style="color:rgba(255,255,255,0.7); font-size:0.75rem;">Contact</a>
+                <a href="/faq" style="color:rgba(255,255,255,0.7); font-size:0.75rem;">FAQ</a>
+            </div>
+            <div style="display:flex; justify-content:center; gap:12px; margin:8px 0 12px;">
+                <a href="#" style="color:rgba(255,255,255,0.7);"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" style="color:rgba(255,255,255,0.7);"><i class="fab fa-twitter"></i></a>
+                <a href="#" style="color:rgba(255,255,255,0.7);"><i class="fab fa-instagram"></i></a>
+                <a href="#" style="color:rgba(255,255,255,0.7);"><i class="fab fa-whatsapp"></i></a>
+            </div>
+            <div class="footer-bottom" style="border-top:1px solid rgba(255,255,255,0.1); padding-top:10px; font-size:0.7rem;">
+                &copy; <%= new Date().getFullYear() %> SHINEX Learning Circle
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- ============================================================
+     AI BOT – FLOATING WIDGET (Same as desktop, placed here)
+     ============================================================ -->
+<div class="ai-bot" id="aiBot">
+    <button class="ai-bot-btn" id="aiBotBtn" aria-label="Ask AI Tutor">
+        🤖
+        <span class="ai-bot-pulse"></span>
+    </button>
+</div>
+
+<div class="ai-chat-modal" id="aiChatModal">
+    <div class="ai-chat-header">
+        <h4>🤖 AI Tutor</h4>
+        <button class="ai-chat-close" id="aiChatClose">&times;</button>
+    </div>
+    <div class="ai-chat-body" id="aiChatBody">
+        <div class="ai-chat-messages" id="aiChatMessages">
+            <div class="ai-chat-msg bot">👋 Hi! I'm your SHINEX AI Tutor. Ask me anything!</div>
+        </div>
+    </div>
+    <div class="ai-chat-footer">
+        <input type="text" id="aiChatInput" placeholder="Ask a question..." autocomplete="off">
+        <button class="btn btn-primary" id="aiChatSend">Send</button>
+    </div>
+</div>

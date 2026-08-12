@@ -95,10 +95,10 @@ const COURSE_CODES = {
 };
 
 // ============================================================
-// MONGODB SCHEMAS
+// MONGODB SCHEMAS – UPDATED WITH NEW FIELDS
 // ============================================================
 
-// User Schema - with Student ID
+// User Schema – with new settings fields + testResults
 const UserSchema = new mongoose.Schema({
     id: { type: String, unique: true },
     studentId: { type: String, unique: true },
@@ -136,17 +136,34 @@ const UserSchema = new mongoose.Schema({
     verificationToken: String,
     tokenExpires: Date,
     
-    // Progress
+    // Progress & Test Results
     progress: { type: Object, default: {} },
+    testResults: { type: Object, default: {} }, // key: levelId, value: { score, total, passed }
     
     // Admin
     isAdmin: { type: Boolean, default: false },
     
-    // Preferences
+    // ===== NEW SETTINGS FIELDS =====
+    // Appearance
     textSize: { type: Number, default: 16 },
     darkMode: { type: Boolean, default: false },
     
-    // Notifications (for future use)
+    // Security
+    twoFactorEnabled: { type: Boolean, default: false },
+    
+    // Notifications
+    emailNotifications: { type: Boolean, default: true },
+    browserNotifications: { type: Boolean, default: false },
+    courseUpdates: { type: Boolean, default: true },
+    
+    // Privacy
+    profileVisibility: { type: String, enum: ['public', 'private'], default: 'public' },
+    
+    // Learning interests (free text or array)
+    learningInterests: { type: String, default: '' },
+    
+    // Legacy / Misc
+    bio: { type: String, default: '' },
     notifications: { type: Array, default: [] },
     
     createdAt: { type: Date, default: Date.now }
@@ -311,7 +328,6 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-// ===== SEND EMAIL FUNCTION =====
 async function sendEmail(to, subject, html, from = process.env.EMAIL_USER) {
     try {
         const mailOptions = {
@@ -409,10 +425,9 @@ app.post('/api/ai-tutor', async (req, res) => {
 });
 
 // ============================================================
-// AUTH ROUTES - WORKING LOGIN/REGISTER
+// AUTH ROUTES
 // ============================================================
 
-// Show login page
 app.get('/login', (req, res) => {
     const view = isMobile(req) ? 'mobile/login' : 'login';
     res.render(view, {
@@ -424,7 +439,6 @@ app.get('/login', (req, res) => {
     req.session.messages = {};
 });
 
-// Process login - Student ID OR Email
 app.post('/login', async (req, res) => {
     const { identifier, password } = req.body;
     
@@ -463,7 +477,6 @@ app.post('/login', async (req, res) => {
     }
 });
 
-// Show register page
 app.get('/register', (req, res) => {
     const courses = Object.keys(COURSE_CODES);
     const view = isMobile(req) ? 'mobile/register' : 'register';
@@ -477,7 +490,6 @@ app.get('/register', (req, res) => {
     req.session.messages = {};
 });
 
-// Process registration
 app.post('/register', async (req, res) => {
     const { 
         firstName, middleName, lastName, dateOfBirth, gender,
@@ -488,7 +500,6 @@ app.post('/register', async (req, res) => {
         password, confirmPassword
     } = req.body;
     
-    // Validation
     if (!firstName || !lastName || !email || !password || !courseName) {
         req.session.messages = { error: 'All required fields must be filled.' };
         return res.redirect('/register');
@@ -511,7 +522,6 @@ app.post('/register', async (req, res) => {
             return res.redirect('/register');
         }
         
-        // Generate Student ID
         const courseCode = COURSE_CODES[courseName];
         if (!courseCode) {
             req.session.messages = { error: 'Invalid course selected.' };
@@ -547,12 +557,21 @@ app.post('/register', async (req, res) => {
             password: hashedPassword,
             isVerified: false,
             verificationToken: verificationToken,
+            // Default settings
+            darkMode: false,
+            textSize: 16,
+            twoFactorEnabled: false,
+            emailNotifications: true,
+            browserNotifications: false,
+            courseUpdates: true,
+            profileVisibility: 'public',
+            learningInterests: '',
+            bio: '',
             createdAt: new Date()
         });
         
         await newUser.save();
         
-        // ===== SEND WELCOME EMAIL =====
         const verificationLink = `https://shinex-learning.onrender.com/verify-email/${verificationToken}`;
         
         const emailHtml = `
@@ -597,14 +616,10 @@ app.post('/register', async (req, res) => {
                             <strong style="color: #8B5CF6;">Learn. Understand. Protect.</strong><br>
                             We are glad to have you as part of the SHINEX Learning Circle community.
                         </p>
-                        <p style="color: #7a6a8f; font-size: 12px;">
-                            Kindly share SHINEX Learning Circle with your friends, classmates, and colleagues so they can also benefit from our learning opportunities.
-                        </p>
                     </div>
                 </div>
                 <div style="text-align: center; padding: 20px 0; color: #7a6a8f; font-size: 12px;">
                     <p>&copy; ${new Date().getFullYear()} SHINEX Learning Circle. All rights reserved.</p>
-                    <p style="font-style: italic;">Learn. Understand. Protect.</p>
                 </div>
             </div>
         `;
@@ -623,7 +638,6 @@ app.post('/register', async (req, res) => {
     }
 });
 
-// ===== VERIFY EMAIL - WITH SUCCESS/ERROR PAGES =====
 app.get('/verify-email/:token', async (req, res) => {
     const { token } = req.params;
     
@@ -663,7 +677,6 @@ app.get('/verify-email/:token', async (req, res) => {
     }
 });
 
-// Logout
 app.get('/logout', (req, res) => {
     req.session.destroy(() => {
         res.redirect('/');
@@ -703,10 +716,8 @@ app.get('/admin/logout', (req, res) => {
 });
 
 // ============================================================
-// CONTACT ROUTES - WITH ADMIN NOTIFICATION
+// CONTACT ROUTES
 // ============================================================
-
-// Show contact page
 app.get('/contact', (req, res) => {
     const view = isMobile(req) ? 'mobile/contact' : 'contact';
     res.render(view, { 
@@ -718,7 +729,6 @@ app.get('/contact', (req, res) => {
     req.session.messages = {};
 });
 
-// Submit contact form - Sends email to admin
 app.post('/contact/send', async (req, res) => {
     const { name, email, subject, message } = req.body;
     
@@ -728,7 +738,6 @@ app.post('/contact/send', async (req, res) => {
     }
     
     try {
-        // Save to database
         const newMessage = new ContactMessage({
             id: generateId(),
             name,
@@ -740,13 +749,11 @@ app.post('/contact/send', async (req, res) => {
         });
         await newMessage.save();
         
-        // Send notification to admin
         const adminEmail = process.env.ADMIN_EMAIL || 'balogunmustaphaaddeji@gmail.com';
         const adminHtml = `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #f8f6fc; border-radius: 12px;">
                 <div style="text-align: center; padding: 20px 0;">
                     <h1 style="color: #8B5CF6; font-size: 24px;">📬 New Contact Message</h1>
-                    <p style="color: #7a6a8f; font-size: 14px;">SHINEX Learning Circle</p>
                 </div>
                 <div style="background: #fff; padding: 24px; border-radius: 12px;">
                     <p><strong>From:</strong> ${name}</p>
@@ -763,20 +770,15 @@ app.post('/contact/send', async (req, res) => {
                         </a>
                     </div>
                 </div>
-                <div style="text-align: center; padding: 16px 0; color: #7a6a8f; font-size: 12px;">
-                    <p>&copy; ${new Date().getFullYear()} SHINEX Learning Circle</p>
-                </div>
             </div>
         `;
         
         await sendEmail(adminEmail, `📬 New Contact Message from ${name}`, adminHtml);
         
-        // Send confirmation to user
         const userHtml = `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #f8f6fc; border-radius: 12px;">
                 <div style="text-align: center; padding: 20px 0;">
                     <h1 style="color: #8B5CF6; font-size: 24px;">✅ Message Received</h1>
-                    <p style="color: #7a6a8f; font-size: 14px;">SHINEX Learning Circle</p>
                 </div>
                 <div style="background: #fff; padding: 24px; border-radius: 12px;">
                     <p style="color: #5a4a70; font-size: 16px; line-height: 1.6;">
@@ -789,9 +791,6 @@ app.post('/contact/send', async (req, res) => {
                         <p><strong>Your Message:</strong></p>
                         <p style="color: #5a4a70;">${message}</p>
                     </div>
-                    <p style="color: #7a6a8f; font-size: 14px; line-height: 1.6;">
-                        In the meantime, feel free to explore our courses and learning resources.
-                    </p>
                     <div style="text-align: center; margin-top: 16px;">
                         <a href="https://shinex-learning.onrender.com" 
                            style="background: #8B5CF6; color: #fff; padding: 10px 24px; border-radius: 30px; text-decoration: none; font-weight: 600;">
@@ -801,7 +800,6 @@ app.post('/contact/send', async (req, res) => {
                 </div>
                 <div style="text-align: center; padding: 16px 0; color: #7a6a8f; font-size: 12px;">
                     <p style="font-style: italic;">Learn. Understand. Protect.</p>
-                    <p>&copy; ${new Date().getFullYear()} SHINEX Learning Circle</p>
                 </div>
             </div>
         `;
@@ -819,10 +817,8 @@ app.post('/contact/send', async (req, res) => {
 });
 
 // ============================================================
-// ADMIN MESSAGE ROUTES - View and Reply
+// ADMIN MESSAGE ROUTES
 // ============================================================
-
-// View all messages
 app.get('/admin/messages', blockMobileAdmin, requireAdmin, async (req, res) => {
     const messages = await ContactMessage.find().sort({ createdAt: -1 });
     const unreadCount = messages.filter(m => m.status === 'unread').length;
@@ -838,7 +834,6 @@ app.get('/admin/messages', blockMobileAdmin, requireAdmin, async (req, res) => {
     req.session.messages = {};
 });
 
-// View single message
 app.get('/admin/messages/:id', blockMobileAdmin, requireAdmin, async (req, res) => {
     const message = await ContactMessage.findOne({ id: req.params.id });
     if (!message) {
@@ -846,7 +841,6 @@ app.get('/admin/messages/:id', blockMobileAdmin, requireAdmin, async (req, res) 
         return res.redirect('/admin/messages');
     }
     
-    // Mark as read
     if (message.status === 'unread') {
         message.status = 'read';
         await message.save();
@@ -862,7 +856,6 @@ app.get('/admin/messages/:id', blockMobileAdmin, requireAdmin, async (req, res) 
     req.session.messages = {};
 });
 
-// Reply to message
 app.post('/admin/messages/reply/:id', blockMobileAdmin, requireAdmin, async (req, res) => {
     const { reply } = req.body;
     const message = await ContactMessage.findOne({ id: req.params.id });
@@ -883,19 +876,17 @@ app.post('/admin/messages/reply/:id', blockMobileAdmin, requireAdmin, async (req
         message.repliedAt = new Date();
         await message.save();
         
-        // Send reply email to user
         const emailHtml = `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #f8f6fc; border-radius: 12px;">
                 <div style="text-align: center; padding: 20px 0;">
                     <h1 style="color: #8B5CF6; font-size: 24px;">📩 Reply from SHINEX</h1>
-                    <p style="color: #7a6a8f; font-size: 14px;">SHINEX Learning Circle</p>
                 </div>
                 <div style="background: #fff; padding: 24px; border-radius: 12px;">
                     <p style="color: #5a4a70; font-size: 16px; line-height: 1.6;">
                         Dear <strong>${message.name}</strong>,
                     </p>
                     <p style="color: #5a4a70; font-size: 16px; line-height: 1.6;">
-                        Thank you for contacting SHINEX Learning Circle. Here is our response to your inquiry:
+                        Thank you for contacting SHINEX Learning Circle. Here is our response:
                     </p>
                     <div style="background: #f8f6fc; padding: 12px; border-radius: 8px; margin: 12px 0;">
                         <p><strong>Your Original Message:</strong></p>
@@ -905,19 +896,12 @@ app.post('/admin/messages/reply/:id', blockMobileAdmin, requireAdmin, async (req
                         <p><strong style="color: #2E7D32;">Our Reply:</strong></p>
                         <p style="color: #1B5E20;">${reply}</p>
                     </div>
-                    <p style="color: #7a6a8f; font-size: 14px; line-height: 1.6;">
-                        If you have any further questions, feel free to reply to this email or contact us again through our website.
-                    </p>
                     <div style="text-align: center; margin-top: 16px;">
                         <a href="https://shinex-learning.onrender.com" 
                            style="background: #8B5CF6; color: #fff; padding: 10px 24px; border-radius: 30px; text-decoration: none; font-weight: 600;">
                             Visit SHINEX
                         </a>
                     </div>
-                </div>
-                <div style="text-align: center; padding: 16px 0; color: #7a6a8f; font-size: 12px;">
-                    <p style="font-style: italic;">Learn. Understand. Protect.</p>
-                    <p>&copy; ${new Date().getFullYear()} SHINEX Learning Circle</p>
                 </div>
             </div>
         `;
@@ -934,7 +918,6 @@ app.post('/admin/messages/reply/:id', blockMobileAdmin, requireAdmin, async (req
     }
 });
 
-// Delete message
 app.post('/admin/messages/delete/:id', blockMobileAdmin, requireAdmin, async (req, res) => {
     await ContactMessage.findOneAndDelete({ id: req.params.id });
     req.session.messages = { success: '🗑️ Message deleted.' };
@@ -942,10 +925,45 @@ app.post('/admin/messages/delete/:id', blockMobileAdmin, requireAdmin, async (re
 });
 
 // ============================================================
+// ENROLLMENT ROUTE – Change Course
+// ============================================================
+app.get('/enroll', requireAuth, async (req, res) => {
+    const courses = await Course.find();
+    const view = isMobile(req) ? 'mobile/enroll' : 'enroll';
+    res.render(view, {
+        user: req.user,
+        courses: courses,
+        messages: req.session.messages || {},
+        showBack: true,
+        title: 'Enroll in a Course'
+    });
+    req.session.messages = {};
+});
+
+app.post('/enroll', requireAuth, async (req, res) => {
+    const { courseId } = req.body;
+    const user = req.user;
+    
+    const course = await Course.findOne({ id: courseId });
+    if (!course) {
+        req.session.messages = { error: 'Course not found.' };
+        return res.redirect('/enroll');
+    }
+    
+    // Reset progress if switching courses
+    user.courseId = course.id;
+    user.courseName = course.title;
+    user.progress = {};
+    user.testResults = {};
+    await user.save();
+    
+    req.session.messages = { success: `✅ You are now enrolled in ${course.title}!` };
+    res.redirect('/dashboard');
+});
+
+// ============================================================
 // PUBLIC ROUTES
 // ============================================================
-
-// HOME
 app.get('/', async (req, res) => {
     const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
     const courses = await Course.find();
@@ -962,14 +980,13 @@ app.get('/', async (req, res) => {
     req.session.messages = {};
 });
 
-// DASHBOARD
-app.get('/dashboard', async (req, res) => {
-    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
+app.get('/dashboard', requireAuth, async (req, res) => {
+    const user = req.user;
     const courses = await Course.find();
-    const enrolledCourse = user && user.courseId ? await Course.findOne({ id: user.courseId }) : null;
+    const enrolledCourse = user.courseId ? await Course.findOne({ id: user.courseId }) : null;
     
     let totalClasses = 0, completedClasses = 0, score = 0;
-    if (enrolledCourse && enrolledCourse.levels && user && user.progress) {
+    if (enrolledCourse && enrolledCourse.levels && user.progress) {
         enrolledCourse.levels.forEach(level => {
             if (level.lessons) {
                 level.lessons.forEach(lesson => {
@@ -1002,7 +1019,6 @@ app.get('/dashboard', async (req, res) => {
     req.session.messages = {};
 });
 
-// COURSE PAGE
 app.get('/course/:courseId', async (req, res) => {
     const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
     const course = await Course.findOne({ id: req.params.courseId });
@@ -1021,7 +1037,9 @@ app.get('/course/:courseId', async (req, res) => {
     req.session.messages = {};
 });
 
-// LEVEL PAGE
+// ============================================================
+// LEVEL ROUTE – WITH LOCK/UNLOCK LOGIC
+// ============================================================
 app.get('/level/:courseId/:levelId', async (req, res) => {
     const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
     const course = await Course.findOne({ id: req.params.courseId });
@@ -1036,11 +1054,22 @@ app.get('/level/:courseId/:levelId', async (req, res) => {
         return res.redirect('/course/' + req.params.courseId);
     }
 
+    // Build allClasses with locked flag
     let allClasses = [];
+    let classIndex = 0;
     if (level.lessons) {
         level.lessons.forEach(lesson => {
             if (lesson.classes) {
                 lesson.classes.forEach(cls => {
+                    const isCompleted = user && user.progress && user.progress[cls.id] || false;
+                    // Lock if previous class exists and is NOT completed
+                    let isLocked = false;
+                    if (classIndex > 0) {
+                        const prevClass = allClasses[classIndex - 1];
+                        if (prevClass && !prevClass.completed) {
+                            isLocked = true;
+                        }
+                    }
                     allClasses.push({
                         id: cls.id,
                         lessonId: lesson.id,
@@ -1050,8 +1079,11 @@ app.get('/level/:courseId/:levelId', async (req, res) => {
                         imageUrl: cls.imageUrl,
                         videoUrl: cls.videoUrl,
                         externalLink: cls.externalLink,
-                        completed: user && user.progress && user.progress[cls.id] || false
+                        completed: isCompleted,
+                        locked: isLocked,
+                        index: classIndex
                     });
+                    classIndex++;
                 });
             }
         });
@@ -1062,6 +1094,17 @@ app.get('/level/:courseId/:levelId', async (req, res) => {
     if (!currentClass && allClasses.length > 0) {
         currentClass = allClasses[0];
         currentClassId = currentClass.id;
+    }
+
+    // If the current class is locked, redirect to the first unlocked one (or the first class)
+    if (currentClass && currentClass.locked) {
+        const firstUnlocked = allClasses.find(c => !c.locked);
+        if (firstUnlocked) {
+            return res.redirect(`/level/${course.id}/${level.id}?classId=${firstUnlocked.id}`);
+        } else {
+            // All locked? Just go to first class (should not happen normally)
+            return res.redirect(`/level/${course.id}/${level.id}?classId=${allClasses[0].id}`);
+        }
     }
 
     let totalClasses = allClasses.length;
@@ -1082,6 +1125,13 @@ app.get('/level/:courseId/:levelId', async (req, res) => {
     let prevClassId = currentIndex > 0 ? allClasses[currentIndex - 1].id : null;
     let nextClassId = currentIndex < allClasses.length - 1 ? allClasses[currentIndex + 1].id : null;
 
+    // Check if next class is locked (i.e., current class not completed)
+    let nextLocked = false;
+    if (nextClassId) {
+        const nextClass = allClasses.find(c => c.id === nextClassId);
+        if (nextClass) nextLocked = nextClass.locked;
+    }
+
     const view = isMobile(req) ? 'mobile/level' : 'level';
     res.render(view, {
         user: user,
@@ -1096,6 +1146,7 @@ app.get('/level/:courseId/:levelId', async (req, res) => {
         score,
         prevClassId,
         nextClassId,
+        nextLocked,
         messages: req.session.messages || {},
         showBack: true,
         title: level.name + ' - ' + course.title
@@ -1103,152 +1154,72 @@ app.get('/level/:courseId/:levelId', async (req, res) => {
     req.session.messages = {};
 });
 
-// SETTINGS
-app.get('/settings', async (req, res) => {
-    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
-    const view = isMobile(req) ? 'mobile/settings' : 'settings';
-    res.render(view, {
-        user: user,
-        messages: req.session.messages || {},
-        showBack: true,
-        title: 'Settings'
-    });
-    req.session.messages = {};
-});
-
-// TERMS
-app.get('/terms', (req, res) => {
-    const view = isMobile(req) ? 'mobile/terms' : 'terms';
-    res.render(view, { 
-        user: null, 
-        messages: req.session.messages || {}, 
-        showBack: true, 
-        title: 'Terms & Conditions' 
-    });
-    req.session.messages = {};
-});
-
-// PRIVACY
-app.get('/privacy', (req, res) => {
-    const view = isMobile(req) ? 'mobile/privacy' : 'privacy';
-    res.render(view, { 
-        user: null, 
-        messages: req.session.messages || {}, 
-        showBack: true, 
-        title: 'Privacy Policy' 
-    });
-    req.session.messages = {};
-});
-
-// FAQ
-app.get('/faq', (req, res) => {
-    const view = isMobile(req) ? 'mobile/faq' : 'faq';
-    res.render(view, {
-        user: null,
-        messages: req.session.messages || {},
-        showBack: true,
-        title: 'FAQ'
-    });
-    req.session.messages = {};
-});
-
-// ABOUT
-app.get('/about', (req, res) => {
-    const view = isMobile(req) ? 'mobile/about' : 'about';
-    res.render(view, {
-        user: null,
-        messages: req.session.messages || {},
-        showBack: true,
-        title: 'About Us'
-    });
-    req.session.messages = {};
-});
-
-// SERVICES
-app.get('/services', (req, res) => {
-    const view = isMobile(req) ? 'mobile/services' : 'services';
-    res.render(view, {
-        user: null,
-        messages: req.session.messages || {},
-        showBack: true,
-        title: 'Our Services'
-    });
-    req.session.messages = {};
-});
-
 // ============================================================
-// SETTINGS API
+// LEVEL TEST – SUBMIT
 // ============================================================
-app.post('/settings/update', async (req, res) => {
-    const { firstName, lastName, bio, textSize, darkMode, currentPassword, newPassword, confirmPassword } = req.body;
-    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
-    
-    if (!user) {
-        return res.json({ success: false, error: 'Please log in first.' });
+app.post('/level/:courseId/:levelId/test/submit', requireAuth, async (req, res) => {
+    const { courseId, levelId } = req.params;
+    const user = req.user;
+    const answers = req.body; // answers[questionId] = optionIndex
+
+    const course = await Course.findOne({ id: courseId });
+    if (!course) {
+        req.session.messages = { error: 'Course not found.' };
+        return res.redirect('/');
     }
 
-    try {
-        if (firstName) user.firstName = firstName;
-        if (lastName) user.lastName = lastName;
-        if (bio !== undefined) user.bio = bio;
-        if (textSize) user.textSize = parseInt(textSize);
-        if (darkMode !== undefined) user.darkMode = darkMode === 'on' || darkMode === 'true';
+    const level = course.levels.find(l => l.id === levelId);
+    if (!level || !level.test || !level.test.questions.length) {
+        req.session.messages = { error: 'No test available for this level.' };
+        return res.redirect(`/level/${courseId}/${levelId}`);
+    }
 
-        if (currentPassword && newPassword && confirmPassword) {
-            if (!(await bcrypt.compare(currentPassword, user.password))) {
-                return res.json({ success: false, error: 'Current password is incorrect.' });
-            }
-            if (newPassword !== confirmPassword || newPassword.length < 6) {
-                return res.json({ success: false, error: 'New password must be at least 6 characters and match.' });
-            }
-            user.password = await bcrypt.hash(newPassword, 10);
+    let correct = 0;
+    const total = level.test.questions.length;
+
+    level.test.questions.forEach((q, index) => {
+        const userAnswer = parseInt(answers['q_' + q.id]);
+        if (userAnswer === q.correct) {
+            correct++;
         }
+    });
 
-        await user.save();
-        res.json({ success: true, message: 'Settings updated successfully!' });
-    } catch (error) {
-        res.json({ success: false, error: 'Something went wrong. Please try again.' });
-    }
-});
+    const passed = correct >= (total * 0.6); // 60% to pass
 
-app.post('/logout-all', async (req, res) => {
-    req.session.destroy();
-    res.json({ success: true });
+    // Save result
+    if (!user.testResults) user.testResults = {};
+    user.testResults[levelId] = {
+        score: correct,
+        total: total,
+        passed: passed,
+        date: new Date()
+    };
+    await user.save();
+
+    req.session.messages = {
+        success: `📝 Test completed! You scored ${correct}/${total} (${Math.round((correct/total)*100)}%). ${passed ? '🎉 You passed!' : 'Keep learning and try again later.'}`
+    };
+    res.redirect(`/level/${courseId}/${levelId}`);
 });
 
 // ============================================================
 // PROGRESS TRACKING ROUTES
 // ============================================================
-app.post('/level/complete/:classId', async (req, res) => {
+app.post('/level/complete/:classId', requireAuth, async (req, res) => {
     const { classId } = req.params;
-    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
-    
-    if (!user) {
-        req.session.messages = { error: 'Please log in to track progress.' };
-        return res.redirect('back');
-    }
+    const user = req.user;
     
     if (!user.progress) user.progress = {};
     user.progress[classId] = true;
     await user.save();
     
     const totalCompleted = Object.keys(user.progress).length;
-    
-    req.session.messages = { 
-        success: `✅ Class completed! +10 points! (${totalCompleted} classes done)` 
-    };
-    
-    res.redirect('back');
+    res.json({ success: true, completed: totalCompleted });
 });
 
-app.get('/level/:courseId/:levelId/next/:classId', async (req, res) => {
+app.get('/level/:courseId/:levelId/next/:classId', requireAuth, async (req, res) => {
     const { courseId, levelId, classId } = req.params;
-    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
-    
-    if (!user) {
-        req.session.messages = { error: 'Please log in to track progress.' };
-        return res.redirect('/login');
-    }
+    const user = req.user;
     
     if (!user.progress) user.progress = {};
     user.progress[classId] = true;
@@ -1297,7 +1268,7 @@ app.get('/level/:courseId/:levelId/next/:classId', async (req, res) => {
     }
 });
 
-app.get('/level/:courseId/:levelId/prev/:classId', async (req, res) => {
+app.get('/level/:courseId/:levelId/prev/:classId', requireAuth, async (req, res) => {
     const { courseId, levelId, classId } = req.params;
     
     const course = await Course.findOne({ id: courseId });
@@ -1335,9 +1306,148 @@ app.get('/level/:courseId/:levelId/prev/:classId', async (req, res) => {
 });
 
 // ============================================================
-// ADMIN ROUTES - (All your existing admin routes)
+// SETTINGS ROUTE – UPDATED to handle new fields
 // ============================================================
-// ===== COURSES MANAGEMENT =====
+app.get('/settings', requireAuth, async (req, res) => {
+    const view = isMobile(req) ? 'mobile/settings' : 'settings';
+    res.render(view, {
+        user: req.user,
+        messages: req.session.messages || {},
+        showBack: true,
+        title: 'Settings'
+    });
+    req.session.messages = {};
+});
+
+app.post('/settings/update', requireAuth, async (req, res) => {
+    const user = req.user;
+    const {
+        firstName, lastName, bio,
+        textSize, darkMode,
+        twoFactorEnabled,
+        emailNotifications, browserNotifications, courseUpdates,
+        profileVisibility,
+        learningInterests,
+        currentPassword, newPassword, confirmPassword
+    } = req.body;
+
+    try {
+        // Profile
+        if (firstName) user.firstName = firstName;
+        if (lastName) user.lastName = lastName;
+        if (bio !== undefined) user.bio = bio;
+
+        // Appearance
+        if (textSize) user.textSize = parseInt(textSize);
+        if (darkMode !== undefined) user.darkMode = darkMode === 'on' || darkMode === 'true';
+
+        // Security
+        if (twoFactorEnabled !== undefined) {
+            user.twoFactorEnabled = twoFactorEnabled === 'on' || twoFactorEnabled === 'true';
+        }
+
+        // Notifications
+        if (emailNotifications !== undefined) {
+            user.emailNotifications = emailNotifications === 'on' || emailNotifications === 'true';
+        }
+        if (browserNotifications !== undefined) {
+            user.browserNotifications = browserNotifications === 'on' || browserNotifications === 'true';
+        }
+        if (courseUpdates !== undefined) {
+            user.courseUpdates = courseUpdates === 'on' || courseUpdates === 'true';
+        }
+
+        // Privacy
+        if (profileVisibility) user.profileVisibility = profileVisibility;
+
+        // Learning
+        if (learningInterests !== undefined) user.learningInterests = learningInterests;
+
+        // Password change
+        if (currentPassword && newPassword && confirmPassword) {
+            if (!(await bcrypt.compare(currentPassword, user.password))) {
+                return res.json({ success: false, error: 'Current password is incorrect.' });
+            }
+            if (newPassword !== confirmPassword || newPassword.length < 6) {
+                return res.json({ success: false, error: 'New password must be at least 6 characters and match.' });
+            }
+            user.password = await bcrypt.hash(newPassword, 10);
+        }
+
+        await user.save();
+        res.json({ success: true, message: 'Settings updated successfully!' });
+    } catch (error) {
+        console.error('Settings error:', error);
+        res.json({ success: false, error: 'Something went wrong. Please try again.' });
+    }
+});
+
+app.post('/logout-all', requireAuth, async (req, res) => {
+    req.session.destroy();
+    res.json({ success: true });
+});
+
+// ============================================================
+// OTHER PUBLIC PAGES
+// ============================================================
+app.get('/terms', (req, res) => {
+    const view = isMobile(req) ? 'mobile/terms' : 'terms';
+    res.render(view, { 
+        user: null, 
+        messages: req.session.messages || {}, 
+        showBack: true, 
+        title: 'Terms & Conditions' 
+    });
+    req.session.messages = {};
+});
+
+app.get('/privacy', (req, res) => {
+    const view = isMobile(req) ? 'mobile/privacy' : 'privacy';
+    res.render(view, { 
+        user: null, 
+        messages: req.session.messages || {}, 
+        showBack: true, 
+        title: 'Privacy Policy' 
+    });
+    req.session.messages = {};
+});
+
+app.get('/faq', (req, res) => {
+    const view = isMobile(req) ? 'mobile/faq' : 'faq';
+    res.render(view, {
+        user: null,
+        messages: req.session.messages || {},
+        showBack: true,
+        title: 'FAQ'
+    });
+    req.session.messages = {};
+});
+
+app.get('/about', (req, res) => {
+    const view = isMobile(req) ? 'mobile/about' : 'about';
+    res.render(view, {
+        user: null,
+        messages: req.session.messages || {},
+        showBack: true,
+        title: 'About Us'
+    });
+    req.session.messages = {};
+});
+
+app.get('/services', (req, res) => {
+    const view = isMobile(req) ? 'mobile/services' : 'services';
+    res.render(view, {
+        user: null,
+        messages: req.session.messages || {},
+        showBack: true,
+        title: 'Our Services'
+    });
+    req.session.messages = {};
+});
+
+// ============================================================
+// ADMIN ROUTES – (All original, unchanged)
+// ============================================================
 app.get('/admin/dashboard', blockMobileAdmin, requireAdmin, async (req, res) => {
     const users = await User.find();
     const courses = await Course.find();
@@ -1487,7 +1597,6 @@ app.post('/admin/courses/edit/:id', blockMobileAdmin, requireAdmin, async (req, 
     res.redirect('/admin/courses');
 });
 
-// ===== LEVEL MANAGEMENT =====
 app.post('/admin/courses/:id/levels/add', blockMobileAdmin, requireAdmin, async (req, res) => {
     const { name, duration } = req.body;
     if (!name || !duration) {
@@ -1677,7 +1786,6 @@ app.post('/admin/levels/:courseId/:levelId/lessons/:lessonId/classes/edit/:class
     res.redirect(`/admin/levels/edit/${req.params.courseId}/${req.params.levelId}`);
 });
 
-// ===== TEST MANAGEMENT =====
 app.post('/admin/levels/:courseId/:levelId/test/add', blockMobileAdmin, requireAdmin, async (req, res) => {
     const { question, option1, option2, option3, option4, correct } = req.body;
     if (!question || !option1 || !option2 || !option3 || !option4 || correct === undefined) {
@@ -1724,7 +1832,6 @@ app.post('/admin/levels/:courseId/:levelId/test/delete/:questionId', blockMobile
     res.redirect(`/admin/levels/edit/${req.params.courseId}/${req.params.levelId}`);
 });
 
-// ===== SERVICES MANAGEMENT =====
 app.get('/admin/services', blockMobileAdmin, requireAdmin, async (req, res) => {
     const services = await Service.find().sort({ createdAt: -1 });
     res.render('admin/services', {
@@ -1805,7 +1912,6 @@ app.post('/admin/services/edit/:id', blockMobileAdmin, requireAdmin, async (req,
     res.redirect('/admin/services');
 });
 
-// ===== ADMIN MANAGERS =====
 app.get('/admin/manage-admins', blockMobileAdmin, requireAdmin, async (req, res) => {
     const users = await User.find();
     const admins = users.filter(u => u.isAdmin);

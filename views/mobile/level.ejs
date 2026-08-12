@@ -3,420 +3,482 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title><%= level.name %> – SHINEX</title>
+    <title><%= level.name %> – <%= course.title %></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* Mobile level page styles */
-        .mobile-lesson-card {
-            background: #fff;
-            border-radius: 10px;
-            padding: 12px 14px;
-            border: 1px solid #ede8f5;
-            margin-bottom: 8px;
+        .mobile-level-container {
+            padding: 10px 12px 24px;
+            max-width: 500px;
+            margin: 0 auto;
         }
-        body.dark-mode .mobile-lesson-card {
-            background: #1a1a1a;
-            border-color: #333;
+        .mobile-level-header {
+            padding: 14px 16px !important;
+            border-radius: 12px !important;
+            margin-bottom: 12px !important;
         }
-        .mobile-lesson-title {
-            font-weight: 700;
-            font-size: 0.9rem;
-            color: var(--text-dark);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+        .mobile-level-header h1 {
+            font-size: 1.1rem !important;
+            margin: 0 !important;
         }
-        body.dark-mode .mobile-lesson-title {
-            color: var(--text-light);
-        }
-        .mobile-class-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 8px;
-            margin-top: 4px;
-            border-radius: 6px;
-            background: var(--primary-bg);
-            font-size: 0.8rem;
-            text-decoration: none;
-            color: var(--text-dark);
-            transition: all 0.2s ease;
-        }
-        body.dark-mode .mobile-class-item {
-            background: #2a1a4a;
-            color: var(--text-light);
-        }
-        .mobile-class-item.completed {
-            color: #27ae60 !important;
-        }
-        .mobile-class-item.locked {
-            color: #b0a3c4 !important;
-            opacity: 0.5;
-            pointer-events: none;
-        }
-        .mobile-class-item.current {
-            background: var(--primary-bg);
-            border-left: 3px solid #8B5CF6;
-            font-weight: 600;
-        }
-        body.dark-mode .mobile-class-item.current {
-            background: #2a1a4a;
-        }
-        .mobile-class-item .class-status {
-            margin-left: auto;
-            font-size: 0.7rem;
-        }
-        .mobile-class-content {
-            background: #fff;
-            border-radius: 10px;
-            padding: 14px 16px;
-            border: 1px solid #ede8f5;
-            margin-bottom: 10px;
-        }
-        body.dark-mode .mobile-class-content {
-            background: #1a1a1a;
-            border-color: #333;
-        }
-        .mobile-class-content .class-title {
-            font-weight: 700;
-            font-size: 1rem;
-            color: var(--text-dark);
-            margin: 0 0 8px 0;
-        }
-        body.dark-mode .mobile-class-content .class-title {
-            color: var(--text-light);
-        }
-        .mobile-class-content .class-body {
-            font-size: 0.85rem;
-            line-height: 1.7;
-            color: var(--text-dark);
-        }
-        body.dark-mode .mobile-class-content .class-body {
-            color: #d0d0d0;
+        .mobile-level-header .level-badge {
+            font-size: 0.7rem !important;
+            padding: 2px 10px !important;
         }
         .mobile-progress-bar {
-            background: #ede8f5;
-            border-radius: 20px;
-            overflow: hidden;
-            height: 6px;
-            margin-top: 4px;
+            margin: 8px 0 4px;
         }
-        body.dark-mode .mobile-progress-bar {
-            background: #2a2a2a;
+        .mobile-progress-bar .progress-label {
+            font-size: 0.7rem !important;
         }
-        .mobile-progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #8B5CF6, #a78bfa);
-            border-radius: 20px;
-            transition: width 0.6s ease;
+        .mobile-progress-bar .progress-wrap {
+            height: 6px !important;
+        }
+        .mobile-class-section {
+            background: var(--bg-light);
+            border-radius: 12px;
+            border: 1px solid #ede8f5;
+            padding: 14px 16px;
+            margin-bottom: 12px;
+        }
+        body.dark-mode .mobile-class-section {
+            background: var(--dark-card);
+            border-color: var(--dark-border);
+        }
+        .mobile-class-title {
+            font-size: 1.1rem !important;
+            font-weight: 700 !important;
+            margin: 0 0 8px !important;
+        }
+        .mobile-class-content {
+            font-size: 0.92rem !important;
+            line-height: 1.7 !important;
+        }
+        .mobile-class-content img {
+            max-width: 100% !important;
+            height: auto !important;
+            border-radius: 8px !important;
+        }
+        .mobile-class-content iframe {
+            width: 100% !important;
+            aspect-ratio: 16/9 !important;
+            border-radius: 8px !important;
+        }
+        .mobile-class-status {
+            font-size: 0.78rem !important;
+            margin-top: 10px !important;
+            padding-top: 10px !important;
+            border-top: 1px solid #ede8f5;
+        }
+        body.dark-mode .mobile-class-status {
+            border-color: var(--dark-border);
+        }
+        .mobile-nav-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .mobile-nav-buttons .btn {
+            width: 100%;
+            font-size: 0.85rem !important;
+            padding: 10px !important;
+            min-height: 44px !important;
+            justify-content: center;
         }
         .mobile-nav-row {
             display: flex;
             gap: 8px;
-            margin-top: 10px;
         }
         .mobile-nav-row .btn {
             flex: 1;
-            text-align: center;
+        }
+        .mobile-sidebar-toggle {
+            width: 100%;
+            padding: 10px;
+            background: var(--primary-bg);
+            border: 1px solid #ede8f5;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-dark);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        body.dark-mode .mobile-sidebar-toggle {
+            background: var(--dark-card);
+            border-color: var(--dark-border);
+            color: var(--text-light);
+        }
+        .mobile-sidebar {
+            display: none;
+            background: var(--bg-light);
+            border-radius: 12px;
+            border: 1px solid #ede8f5;
+            padding: 8px 0;
+            margin-bottom: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        body.dark-mode .mobile-sidebar {
+            background: var(--dark-card);
+            border-color: var(--dark-border);
+        }
+        .mobile-sidebar.open {
+            display: block;
+        }
+        .mobile-sidebar .sidebar-header {
+            padding: 6px 14px 8px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            border-bottom: 1px solid #ede8f5;
+        }
+        body.dark-mode .mobile-sidebar .sidebar-header {
+            border-color: var(--dark-border);
+        }
+        .mobile-sidebar .lesson-header {
+            padding: 6px 14px;
+            font-weight: 600;
             font-size: 0.8rem;
-            padding: 8px;
+            background: #f8f6fc;
+        }
+        body.dark-mode .mobile-sidebar .lesson-header {
+            background: #1a1a1a;
+        }
+        .mobile-sidebar .class-link {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 14px 5px 28px;
+            font-size: 0.75rem;
+            text-decoration: none;
+            color: #4a3a60;
+        }
+        body.dark-mode .mobile-sidebar .class-link {
+            color: #cccccc;
+        }
+        .mobile-sidebar .class-link.locked {
+            color: #b0a3c4 !important;
+            cursor: not-allowed;
+        }
+        .mobile-sidebar .class-link.active {
+            background: var(--primary-bg);
+            border-left: 3px solid var(--primary);
+            padding-left: 25px;
+        }
+        body.dark-mode .mobile-sidebar .class-link.active {
+            background: #2a1a4a;
+        }
+        .mobile-sidebar .class-link.completed {
+            color: #27ae60;
+        }
+        .mobile-test-section {
+            margin-top: 12px;
+            padding: 14px 16px !important;
+            border-radius: 12px !important;
+            border: 2px solid #f7d44a !important;
+        }
+        .mobile-test-section h4 {
+            font-size: 0.95rem !important;
+            margin: 0 0 4px !important;
+        }
+        .mobile-test-section p {
+            font-size: 0.82rem !important;
+        }
+        .mobile-test-question {
+            padding: 10px 0;
+            border-bottom: 1px solid #ede8f5;
+        }
+        body.dark-mode .mobile-test-question {
+            border-color: var(--dark-border);
+        }
+        .mobile-test-question:last-child {
+            border-bottom: none;
+        }
+        .mobile-test-question .q-text {
+            font-weight: 600;
+            font-size: 0.88rem !important;
+        }
+        .mobile-test-options label {
+            font-size: 0.82rem !important;
+            padding: 4px 8px !important;
+        }
+        .mobile-test-options input[type="radio"] {
+            width: 18px !important;
+            height: 18px !important;
+            accent-color: var(--primary);
+        }
+        .mobile-test-result {
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 8px;
+        }
+        .mobile-test-result.passed {
+            background: #d5f5e3;
+            color: #1a7a4a;
+        }
+        .mobile-test-result.failed {
+            background: #fadbd8;
+            color: #922b21;
+        }
+        body.dark-mode .mobile-test-result.passed {
+            background: #1a3a2a;
+            color: #7dcea0;
+        }
+        body.dark-mode .mobile-test-result.failed {
+            background: #3a1a1a;
+            color: #f1948a;
+        }
+        .mobile-score-display {
+            font-size: 0.78rem !important;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+        @media (max-width: 400px) {
+            .mobile-nav-row {
+                flex-direction: column;
+            }
+            .mobile-class-content {
+                font-size: 0.88rem !important;
+            }
         }
     </style>
 </head>
 <body>
-    <div id="page-loader">
-        <div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div>
-        <div class="loader-text">SHINEX</div>
-        <div class="loader-sub">LEARNING CIRCLE</div>
-    </div>
+    <%- include('partials/header-mobile', { showBack: true }) %>
 
-    <%- include('../partials/header-mobile') %>
-
-    <main class="main-content" style="padding:12px 0 24px;">
-        <div class="container" style="padding:0 12px;">
-            <% if (messages && messages.error) { %>
-                <div class="alert alert-danger flash-message" data-type="error"><%= messages.error %></div>
-            <% } %>
+    <main class="main-content">
+        <div class="mobile-level-container">
             <% if (messages && messages.success) { %>
-                <div class="alert alert-success flash-message" data-type="success"><%= messages.success %></div>
+                <div class="alert alert-success" style="font-size:0.82rem; padding:10px 14px; border-radius:8px; margin-bottom:10px;"><%= messages.success %></div>
+            <% } %>
+            <% if (messages && messages.error) { %>
+                <div class="alert alert-danger" style="font-size:0.82rem; padding:10px 14px; border-radius:8px; margin-bottom:10px;"><%= messages.error %></div>
             <% } %>
 
-            <!-- ===== LEVEL HEADER ===== -->
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <div>
-                    <div style="font-size:0.7rem; color:var(--text-muted);">
-                        <a href="/course/<%= course.id %>" style="color:var(--text-muted); text-decoration:none;">
-                            <i class="fas fa-arrow-left"></i> <%= course.title %>
-                        </a>
-                    </div>
-                    <div style="font-weight:700; font-size:1rem; color:var(--text-dark);"><%= level.name %></div>
-                </div>
-                <span class="badge badge-purple" style="font-size:0.6rem;"><%= course.level || 'Beginner' %></span>
-            </div>
-
-            <!-- ===== PROGRESS BAR ===== -->
-            <div style="background:#fff; border-radius:10px; padding:10px 14px; border:1px solid #ede8f5; margin-bottom:10px;">
-                <div style="display:flex; justify-content:space-between; font-size:0.7rem; font-weight:500; color:var(--text-dark);">
-                    <span>Progress</span>
-                    <span>
-                        <% 
-                            let allClassIds = [];
-                            if (level.lessons) {
-                                level.lessons.forEach(function(lesson) {
-                                    if (lesson.classes) {
-                                        lesson.classes.forEach(function(cls) {
-                                            allClassIds.push(cls.id);
-                                        });
-                                    }
-                                });
-                            }
-                            let completed = 0;
-                            let total = allClassIds.length;
-                            if (session && session.progress) {
-                                allClassIds.forEach(function(id) {
-                                    if (session.progress[id]) completed++;
-                                });
-                            }
-                            let progressPercent = total > 0 ? Math.round((completed / total) * 100) : 0;
-                        %>
-                        <%= completed %> / <%= total %> • <%= progressPercent %>% 
+            <!-- Level Header -->
+            <div class="card card-purple mobile-level-header">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
+                    <h1><%= level.name %></h1>
+                    <span class="level-badge" style="background:rgba(255,255,255,0.2); color:#fff; padding:2px 12px; border-radius:20px; font-size:0.7rem;">
+                        <%= totalClasses || 0 %> classes
                     </span>
                 </div>
-                <div class="mobile-progress-bar" style="margin-top:2px;">
-                    <div class="mobile-progress-fill" style="width:<%= progressPercent %>%;"></div>
-                </div>
-                <div style="font-size:0.65rem; color:var(--text-muted); margin-top:2px;">
-                    <i class="fas fa-star" style="color:#f39c12;"></i> Score: <strong><%= completed * 10 %></strong> points
+                <!-- Progress -->
+                <div class="mobile-progress-bar">
+                    <div class="progress-label" style="display:flex; justify-content:space-between; color:#d4c4f0; font-size:0.7rem;">
+                        <span>Progress</span>
+                        <span><%= completedClasses %>/<%= totalClasses %></span>
+                    </div>
+                    <div class="progress-wrap" style="height:6px; background:rgba(255,255,255,0.2);">
+                        <div class="progress-fill" style="width:<%= progress || 0 %>%;"></div>
+                    </div>
+                    <div class="mobile-score-display" style="color:#d4c4f0; font-size:0.7rem; margin-top:2px;">
+                        <i class="fas fa-star"></i> <%= score || 0 %> points
+                    </div>
                 </div>
             </div>
 
-            <!-- ===== CURRENT CLASS CONTENT ===== -->
-            <% if (currentClass) { 
-                // Check if current class is locked
-                let allClassIds = [];
-                if (level.lessons) {
-                    level.lessons.forEach(function(lesson) {
-                        if (lesson.classes) {
-                            lesson.classes.forEach(function(cls) {
-                                allClassIds.push(cls.id);
-                            });
-                        }
-                    });
-                }
-                let currentIndex = allClassIds.indexOf(currentClass.id);
-                let isClassLocked = false;
-                if (currentIndex > 0) {
-                    let prevClassId = allClassIds[currentIndex - 1];
-                    if (!(session && session.progress && session.progress[prevClassId])) {
-                        isClassLocked = true;
-                    }
-                }
-            %>
-                <div class="mobile-class-content">
-                    <div class="class-title"><%= currentClass.title %></div>
-                    <div class="class-body">
-                        <% if (currentClass.videoUrl) { %>
-                            <div style="margin:6px 0;">
-                                <iframe src="<%= currentClass.videoUrl %>" frameborder="0" allowfullscreen style="width:100%; aspect-ratio:16/9; border-radius:8px;"></iframe>
-                            </div>
-                        <% } %>
-                        <% if (currentClass.imageUrl) { %>
-                            <div style="margin:6px 0;">
-                                <img src="<%= currentClass.imageUrl %>" alt="<%= currentClass.title %>" style="width:100%; border-radius:8px;">
-                            </div>
-                        <% } %>
-                        <%- currentClass.content || 'No content available.' %>
-                    </div>
-                    <div style="margin-top:8px; padding-top:8px; border-top:1px solid #ede8f5; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:4px;">
-                        <% if (isClassLocked) { %>
-                            <span style="color:#b0a3c4; font-size:0.75rem;"><i class="fas fa-lock"></i> Complete previous class to unlock</span>
-                        <% } else if (session && session.progress && session.progress[currentClass.id]) { %>
-                            <span style="color:#27ae60; font-size:0.75rem;"><i class="fas fa-check-circle"></i> Completed ✓</span>
-                        <% } else { %>
-                            <span style="color:#b0a3c4; font-size:0.75rem;"><i class="far fa-circle"></i> Not completed</span>
-                        <% } %>
-                    </div>
-                </div>
+            <!-- Sidebar Toggle -->
+            <button class="mobile-sidebar-toggle" onclick="toggleSidebar()">
+                <span><i class="fas fa-list"></i> Class List</span>
+                <i class="fas fa-chevron-down" id="sidebarArrow"></i>
+            </button>
 
-                <!-- ===== NAVIGATION ===== -->
-                <div class="mobile-nav-row">
-                    <% if (prevClassId && !isClassLocked) { %>
-                        <a href="/level/<%= course.id %>/<%= level.id %>/prev/<%= currentClass.id %>" class="btn btn-secondary btn-sm">
-                            <i class="fas fa-arrow-left"></i> Prev
-                        </a>
-                    <% } else { %>
-                        <span style="flex:1;"></span>
-                    <% } %>
-
-                    <a href="/course/<%= course.id %>" class="btn btn-outline btn-sm" style="flex:0.5;">
-                        <i class="fas fa-list"></i>
-                    </a>
-
-                    <% if (!isClassLocked && !(session && session.progress && session.progress[currentClass.id])) { %>
-                        <a href="/level/<%= course.id %>/<%= level.id %>/next/<%= currentClass.id %>" 
-                           class="btn btn-primary btn-sm" style="flex:1;" 
-                           onclick="this.classList.add('loading'); this.innerHTML='<i class=\'fas fa-spinner fa-spin\'></i>';">
-                            <i class="fas fa-check"></i> Complete & Next
-                        </a>
-                    <% } else if (nextClassId && !isClassLocked) { %>
-                        <a href="/level/<%= course.id %>/<%= level.id %>?classId=<%= nextClassId %>" class="btn btn-primary btn-sm" style="flex:1;">
-                            Next <i class="fas fa-arrow-right"></i>
-                        </a>
-                    <% } else if (isClassLocked) { %>
-                        <span class="btn btn-secondary btn-sm" style="flex:1; opacity:0.5; cursor:not-allowed;">
-                            <i class="fas fa-lock"></i> Locked
-                        </span>
-                    <% } else { %>
-                        <a href="/course/<%= course.id %>" class="btn btn-success btn-sm" style="flex:1;">
-                            <i class="fas fa-check"></i> Done
-                        </a>
-                    <% } %>
-                </div>
-
-            <% } else { %>
-                <div style="background:#fff; border-radius:10px; padding:24px 16px; border:1px solid #ede8f5; text-align:center;">
-                    <h3 style="font-size:1rem; color:var(--text-dark);">No classes available</h3>
-                    <a href="/course/<%= course.id %>" class="btn btn-primary btn-sm">Back to Course</a>
-                </div>
-            <% } %>
-
-            <!-- ===== ALL LESSONS & CLASSES LIST ===== -->
-            <div style="margin-top:14px;">
-                <div style="font-weight:600; font-size:0.85rem; color:var(--text-dark); margin-bottom:6px;">
-                    <i class="fas fa-list-ul" style="color:#8B5CF6;"></i> Lessons & Classes
-                </div>
-
-                <% if (level.lessons && level.lessons.length > 0) { %>
-                    <% 
-                        let allClassIds = [];
-                        if (level.lessons) {
-                            level.lessons.forEach(function(lesson) {
-                                if (lesson.classes) {
-                                    lesson.classes.forEach(function(cls) {
-                                        allClassIds.push(cls.id);
-                                    });
-                                }
-                            });
-                        }
-                    %>
-                    <% level.lessons.forEach(function(lesson, lessonIdx) { %>
-                        <div class="mobile-lesson-card">
-                            <div class="mobile-lesson-title">
-                                <span><%= lessonIdx+1 %>. <%= lesson.title %></span>
-                                <span style="font-size:0.65rem; color:var(--text-muted);">
-                                    <%= lesson.classes ? lesson.classes.length : 0 %> classes
-                                </span>
-                            </div>
-                            <% if (lesson.classes && lesson.classes.length > 0) { %>
-                                <div style="margin-top:6px;">
-                                    <% lesson.classes.forEach(function(cls) { 
-                                        let isCompleted = session && session.progress && session.progress[cls.id];
-                                        let isCurrent = currentClass && currentClass.id === cls.id;
-                                        let isLockedClass = false;
-                                        
-                                        let currentIdx = allClassIds.indexOf(cls.id);
-                                        if (currentIdx > 0) {
-                                            let prevClassId = allClassIds[currentIdx - 1];
-                                            if (!(session && session.progress && session.progress[prevClassId])) {
-                                                isLockedClass = true;
-                                            }
-                                        }
-                                        if (currentIdx === 0) {
-                                            isLockedClass = false;
-                                        }
-                                    %>
-                                        <a href="<%= isLockedClass ? '#' : '/level/' + course.id + '/' + level.id + '?classId=' + cls.id %>" 
-                                           class="mobile-class-item <%= isLockedClass ? 'locked' : '' %> <%= isCompleted ? 'completed' : '' %> <%= isCurrent ? 'current' : '' %>"
-                                           <% if (isLockedClass) { %>onclick="return false;"<% } %>>
-                                            <span style="font-weight:600; color:#8B5CF6; font-size:0.7rem; min-width:20px;">
-                                                <%= String.fromCharCode(97 + allClassIds.indexOf(cls.id)) %>
-                                            </span>
-                                            <span style="flex:1;"><%= cls.title %></span>
-                                            <% if (isCompleted) { %>
-                                                <span class="class-status" style="color:#27ae60;">✅</span>
-                                            <% } else if (isLockedClass) { %>
-                                                <span class="class-status" style="color:#b0a3c4;">🔒</span>
-                                            <% } else if (isCurrent) { %>
-                                                <span class="class-status" style="color:#8B5CF6;">▶</span>
-                                            <% } else { %>
-                                                <span class="class-status" style="color:#b0a3c4;">○</span>
-                                            <% } %>
-                                        </a>
-                                    <% }); %>
-                                </div>
-                            <% } else { %>
-                                <p style="font-size:0.7rem; color:var(--text-muted); margin:4px 0 0;">No classes in this lesson.</p>
-                            <% } %>
-                        </div>
-                    <% }); %>
+            <!-- Sidebar -->
+            <div class="mobile-sidebar" id="mobileSidebar">
+                <div class="sidebar-header"><%= level.name %></div>
+                <% if (level.lessons && level.lessons.length) { %>
+                    <% level.lessons.forEach((lesson, li) => { %>
+                        <div class="lesson-header">Lesson <%= li+1 %>: <%= lesson.title %></div>
+                        <% lesson.classes.forEach((cls, ci) => { 
+                            const classData = allClasses.find(c => c.id === cls.id);
+                            if (!classData) return;
+                        %>
+                            <a href="/level/<%= course.id %>/<%= level.id %>?classId=<%= cls.id %>" 
+                               class="class-link <%= (classData.locked) ? 'locked' : '' %> <%= (classData.completed) ? 'completed' : '' %> <%= (currentClass && currentClass.id === cls.id) ? 'active' : '' %>"
+                               <% if (classData.locked) { %> onclick="return false;" <% } %>>
+                                <span><%= ci+1 %></span>
+                                <span style="flex:1;"><%= cls.title %></span>
+                                <% if (classData.completed) { %>
+                                    <i class="fas fa-check-circle" style="color:#27ae60;"></i>
+                                <% } else if (classData.locked) { %>
+                                    <i class="fas fa-lock" style="color:#b0a3c4;"></i>
+                                <% } else { %>
+                                    <i class="far fa-circle" style="color:#b0a3c4;"></i>
+                                <% } %>
+                            </a>
+                        <% }) %>
+                    <% }) %>
                 <% } else { %>
-                    <p style="color:var(--text-muted); font-size:0.85rem; text-align:center; padding:16px 0;">
-                        <i class="fas fa-info-circle"></i> No lessons available.
-                    </p>
+                    <div style="padding:12px 16px; color:var(--text-muted); font-size:0.8rem;">No lessons yet.</div>
                 <% } %>
             </div>
 
-            <!-- ===== TEST SECTION ===== -->
-            <% if (level.test && level.test.questions && level.test.questions.length > 0) { 
-                let allCompleted = true;
-                let allClassIds = [];
-                if (level.lessons) {
-                    level.lessons.forEach(function(lesson) {
-                        if (lesson.classes) {
-                            lesson.classes.forEach(function(cls) {
-                                allClassIds.push(cls.id);
-                            });
-                        }
-                    });
-                }
-                if (session && session.progress) {
-                    allClassIds.forEach(function(id) {
-                        if (!session.progress[id]) allCompleted = false;
-                    });
-                }
-            %>
-                <div style="margin-top:12px; padding:14px 16px; background:#fffbf0; border:2px solid #f7d44a; border-radius:10px;">
-                    <h4 style="font-weight:700; color:var(--text-dark); font-size:0.9rem; margin:0 0 4px 0;">
-                        <i class="fas fa-puzzle-piece"></i> Level Test
-                    </h4>
-                    <p style="font-size:0.8rem; color:var(--text-muted); margin:0 0 8px 0;">Test your knowledge after completing all classes!</p>
-                    <% if (allCompleted) { %>
-                        <button class="btn btn-gold btn-sm" style="width:100%; font-size:0.8rem; padding:8px;" onclick="alert('Test feature coming soon!')">
-                            <i class="fas fa-play"></i> Start Test
-                        </button>
+            <!-- Class Content -->
+            <div class="mobile-class-section">
+                <% if (currentClass) { %>
+                    <h2 class="mobile-class-title"><%= currentClass.title %></h2>
+                    
+                    <div class="mobile-class-content">
+                        <%= currentClass.content ? currentClass.content : '<p>No content available.</p>' %>
+                    </div>
+
+                    <!-- Images -->
+                    <% if (currentClass.imageUrl) { %>
+                        <div style="margin:8px 0;">
+                            <img src="<%= currentClass.imageUrl %>" alt="<%= currentClass.title %>" loading="lazy" style="max-width:100%; border-radius:8px;">
+                        </div>
+                    <% } %>
+
+                    <!-- Video -->
+                    <% if (currentClass.videoUrl) { %>
+                        <div style="margin:8px 0;">
+                            <iframe src="<%= currentClass.videoUrl %>" frameborder="0" allowfullscreen style="width:100%; aspect-ratio:16/9; border-radius:8px;"></iframe>
+                        </div>
+                    <% } %>
+
+                    <!-- External Link -->
+                    <% if (currentClass.externalLink) { %>
+                        <div style="margin:8px 0;">
+                            <a href="<%= currentClass.externalLink %>" target="_blank" class="btn btn-secondary btn-sm" style="width:100%;">
+                                <i class="fas fa-external-link-alt"></i> Open External Resource
+                            </a>
+                        </div>
+                    <% } %>
+
+                    <!-- Status -->
+                    <div class="mobile-class-status">
+                        <% if (currentClass.completed) { %>
+                            <span style="color:#27ae60; font-weight:600;"><i class="fas fa-check-circle"></i> Completed</span>
+                        <% } else if (currentClass.locked) { %>
+                            <span style="color:#b0a3c4; font-weight:600;"><i class="fas fa-lock"></i> Locked – Complete previous class</span>
+                        <% } else { %>
+                            <span style="color:#b0a3c4; font-weight:600;"><i class="far fa-circle"></i> Not completed</span>
+                        <% } %>
+                    </div>
+
+                <% } else { %>
+                    <div style="text-align:center; padding:20px 0; color:var(--text-muted);">
+                        <i class="fas fa-book" style="font-size:2rem; display:block; margin-bottom:8px; opacity:0.3;"></i>
+                        <p style="font-size:0.9rem;">No class selected.</p>
+                    </div>
+                <% } %>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="mobile-nav-buttons">
+                <div class="mobile-nav-row">
+                    <% if (prevClassId) { %>
+                        <a href="/level/<%= course.id %>/<%= level.id %>/prev/<%= prevClassId %>" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Previous
+                        </a>
                     <% } else { %>
-                        <span style="color:var(--text-muted); font-size:0.75rem;">
-                            <i class="fas fa-lock"></i> Complete all classes to unlock test
+                        <span class="btn btn-secondary" style="opacity:0.4; cursor:not-allowed;">
+                            <i class="fas fa-arrow-left"></i> Previous
+                        </span>
+                    <% } %>
+
+                    <% if (nextClassId && !nextLocked) { %>
+                        <a href="/level/<%= course.id %>/<%= level.id %>?classId=<%= nextClassId %>" class="btn btn-primary">
+                            Next <i class="fas fa-arrow-right"></i>
+                        </a>
+                    <% } else if (nextClassId && nextLocked) { %>
+                        <span class="btn btn-secondary" style="opacity:0.5; cursor:not-allowed;">
+                            <i class="fas fa-lock"></i> Locked
+                        </span>
+                    <% } else { %>
+                        <span class="btn btn-secondary" style="opacity:0.4; cursor:not-allowed;">
+                            <i class="fas fa-check"></i> Complete!
                         </span>
                     <% } %>
                 </div>
-            <% } %>
 
+                <!-- Complete & Next -->
+                <% if (currentClass && !currentClass.completed && !currentClass.locked) { %>
+                    <a href="/level/<%= course.id %>/<%= level.id %>/next/<%= currentClass.id %>" class="btn btn-success">
+                        <i class="fas fa-check"></i> Complete &amp; Next
+                    </a>
+                <% } else if (currentClass && currentClass.completed) { %>
+                    <span class="btn btn-success" style="opacity:0.6; cursor:default;">
+                        <i class="fas fa-check-circle"></i> Completed
+                    </span>
+                <% } %>
+            </div>
+
+            <!-- ===== LEVEL TEST ===== -->
+            <% if (level.test && level.test.questions && level.test.questions.length > 0) { 
+                const testResult = user && user.testResults && user.testResults[level.id];
+            %>
+                <div class="mobile-test-section">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
+                        <div>
+                            <h4><i class="fas fa-pencil-alt"></i> Level Test</h4>
+                            <p>Test your knowledge after completing all classes.</p>
+                        </div>
+                        <% if (testResult) { %>
+                            <span class="badge <%= testResult.passed ? 'badge-green' : 'badge-red' %>" style="font-size:0.65rem;">
+                                <%= testResult.score %>/<%= testResult.total %>
+                                <%= testResult.passed ? '✅' : '❌' %>
+                            </span>
+                        <% } %>
+                    </div>
+
+                    <% if (testResult) { %>
+                        <div class="mobile-test-result <%= testResult.passed ? 'passed' : 'failed' %>">
+                            <strong><%= testResult.score %> out of <%= testResult.total %> correct</strong>
+                            <p style="margin:2px 0 0; font-size:0.8rem;">
+                                <%= testResult.passed ? '🎉 Congratulations, you passed this level!' : '📚 Keep reviewing and try again.' %>
+                            </p>
+                            <p style="font-size:0.7rem; margin:4px 0 0; opacity:0.7;">
+                                Completed: <%= new Date(testResult.date).toLocaleDateString() %>
+                            </p>
+                        </div>
+                    <% } else if (completedClasses === totalClasses && totalClasses > 0) { %>
+                        <form action="/level/<%= course.id %>/<%= level.id %>/test/submit" method="POST" style="margin-top:8px;">
+                            <% level.test.questions.forEach((q, qi) => { %>
+                                <div class="mobile-test-question">
+                                    <p class="q-text"><%= qi+1 %>. <%= q.question %></p>
+                                    <div class="mobile-test-options">
+                                        <% q.options.forEach((opt, oi) => { %>
+                                            <label style="display:flex; align-items:center; gap:8px; padding:4px 8px;">
+                                                <input type="radio" name="q_<%= q.id %>" value="<%= oi %>" required>
+                                                <%= opt %>
+                                            </label>
+                                        <% }) %>
+                                    </div>
+                                </div>
+                            <% }) %>
+                            <button type="submit" class="btn btn-gold" style="width:100%; margin-top:6px;">
+                                <i class="fas fa-paper-plane"></i> Submit Test
+                            </button>
+                        </form>
+                    <% } else { %>
+                        <p style="font-size:0.82rem; color:var(--text-muted); margin-top:6px;">
+                            <i class="fas fa-info-circle"></i> 
+                            Complete all classes (<%= completedClasses %>/<%= totalClasses %>) to unlock the test.
+                        </p>
+                    <% } %>
+                </div>
+            <% } %>
         </div>
     </main>
 
-    <%- include('../partials/footer-mobile') %>
+    <%- include('partials/footer-mobile') %>
 
-    <!-- AI Bot -->
-    <div class="ai-bot" id="aiBot">
-        <div class="ai-bot-pulse"></div>
-        <button class="ai-bot-btn" id="aiBotBtn" style="width:50px; height:50px; font-size:20px;"><i class="fas fa-robot"></i></button>
-    </div>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('mobileSidebar');
+            const arrow = document.getElementById('sidebarArrow');
+            sidebar.classList.toggle('open');
+            arrow.classList.toggle('fa-chevron-down');
+            arrow.classList.toggle('fa-chevron-up');
+        }
+    </script>
 
-    <div class="ai-chat-modal" id="aiChatModal">
-        <div class="ai-chat-header"><h4><i class="fas fa-robot"></i> AI Tutor</h4><button class="ai-chat-close" id="aiChatClose">&times;</button></div>
-        <div class="ai-chat-body" id="aiChatBody">
-            <div class="ai-chat-messages" id="aiChatMessages">
-                <div class="ai-chat-msg bot">👋 Ask me about this class!</div>
-            </div>
-        </div>
-        <div class="ai-chat-footer">
-            <input type="text" id="aiChatInput" placeholder="Ask..." maxlength="500">
-            <button class="btn btn-primary" id="aiChatSend"><i class="fas fa-paper-plane"></i></button>
-        </div>
-    </div>
-
-    <script src="/js/script.js"></script>
+    <script src="/js/main.js"></script>
 </body>
 </html>

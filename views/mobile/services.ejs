@@ -3,114 +3,229 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Services – SHINEX</title>
+    <title>Our Services – SHINEX Learning Circle</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .mobile-services-container {
+            padding: 12px 12px 24px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .mobile-service-card {
+            padding: 16px 14px !important;
+            border-radius: 12px !important;
+            margin-bottom: 10px !important;
+        }
+        .mobile-service-card .service-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+        .mobile-service-card h3 {
+            font-size: 0.95rem !important;
+            font-weight: 700 !important;
+            margin: 6px 0 2px !important;
+        }
+        .mobile-service-card p {
+            font-size: 0.82rem !important;
+            color: var(--text-muted);
+            margin: 4px 0 8px !important;
+            line-height: 1.6;
+        }
+        .mobile-service-card .price {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--primary);
+            margin: 4px 0;
+        }
+        .mobile-service-card .btn {
+            width: 100%;
+            font-size: 0.82rem !important;
+            padding: 8px !important;
+            min-height: 38px !important;
+        }
+        .mobile-service-card .badge {
+            font-size: 0.6rem !important;
+            padding: 2px 8px !important;
+        }
+        .mobile-category-section {
+            margin-bottom: 12px;
+        }
+        .mobile-categories-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 6px;
+            margin: 8px 0 12px;
+        }
+        .mobile-categories-grid .cat-item {
+            text-align: center;
+            padding: 8px 4px;
+            background: var(--primary-bg);
+            border-radius: 8px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+        body.dark-mode .mobile-categories-grid .cat-item {
+            background: #1a1a1a;
+        }
+        .mobile-categories-grid .cat-item i {
+            display: block;
+            font-size: 1.1rem;
+            color: var(--primary);
+            margin-bottom: 2px;
+        }
+        .mobile-cta-box {
+            padding: 16px;
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 4px;
+        }
+        .mobile-cta-box h4 {
+            font-size: 0.95rem !important;
+            margin: 0 0 4px !important;
+        }
+        .mobile-cta-box p {
+            font-size: 0.82rem !important;
+            color: var(--text-muted);
+            margin: 0 0 10px !important;
+        }
+        .mobile-cta-box .btn {
+            width: 100%;
+            font-size: 0.85rem !important;
+            padding: 10px !important;
+            min-height: 44px !important;
+        }
+        .mobile-alert {
+            font-size: 0.82rem !important;
+            padding: 10px 14px !important;
+            border-radius: 8px !important;
+            margin-bottom: 10px !important;
+        }
+        .mobile-empty-state {
+            padding: 24px !important;
+            border-radius: 12px !important;
+            text-align: center !important;
+        }
+        .mobile-empty-state .empty-icon {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 8px;
+            opacity: 0.3;
+        }
+        .mobile-empty-state h3 {
+            font-size: 1rem !important;
+            margin: 0 0 4px !important;
+        }
+        .mobile-empty-state p {
+            font-size: 0.85rem !important;
+            margin: 0 !important;
+        }
+    </style>
 </head>
 <body>
-    <div id="page-loader">
-        <div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div>
-        <div class="loader-text">SHINEX</div>
-        <div class="loader-sub">LEARNING CIRCLE</div>
-    </div>
+    <%- include('partials/header-mobile', { showBack: true }) %>
 
-    <!-- HEADER -->
-    <header class="header" style="padding:10px 12px; flex-wrap:wrap; gap:6px;">
-        <div style="display:flex; align-items:center; gap:8px; flex:1;">
-            <% if (showBack) { %>
-                <a href="javascript:history.back()" class="back-btn" style="font-size:0.75rem; padding:4px 8px; color:rgba(255,255,255,0.9);"><i class="fas fa-arrow-left"></i></a>
+    <main class="main-content">
+        <div class="mobile-services-container">
+            <h2 style="font-size:1.3rem; font-weight:800; margin:0 0 2px;">🛠️ Our Services</h2>
+            <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:12px;">
+                Professional services to support your academic, creative, and career goals.
+            </p>
+
+            <% if (messages && messages.success) { %>
+                <div class="alert alert-success mobile-alert"><%= messages.success %></div>
             <% } %>
-            <a href="/" class="logo-container" style="gap:8px;">
-                <div class="logo" style="width:36px; height:36px; font-size:11px; background:rgba(255,255,255,0.2);">SLC</div>
-                <div>
-                    <div class="logo-text" style="font-size:15px; color:#fff;">SHINEX<span>.</span></div>
-                    <div class="logo-sub" style="font-size:7px; color:rgba(255,255,255,0.7);">LEARNING CIRCLE</div>
+            <% if (messages && messages.error) { %>
+                <div class="alert alert-danger mobile-alert"><%= messages.error %></div>
+            <% } %>
+
+            <!-- Services List -->
+            <% if (services && services.length > 0) { %>
+                <% services.forEach(service => { %>
+                    <div class="card mobile-service-card" style="border-color: <%= service.isActive ? 'var(--primary)' : '#e74c3c' %>;">
+                        <div class="service-header">
+                            <div>
+                                <span class="badge <%= service.category === 'registration' ? 'badge-purple' : 
+                                                  service.category === 'design' ? 'badge-gold' : 
+                                                  service.category === 'campaign' ? 'badge-green' : 
+                                                  service.category === 'website' ? 'badge-dark' : 'badge' %>">
+                                    <%= service.category ? service.category.charAt(0).toUpperCase() + service.category.slice(1) : 'Service' %>
+                                </span>
+                                <span class="badge <%= service.isActive ? 'badge-green' : 'badge-red' %>">
+                                    <%= service.isActive ? '✅ Active' : '❌ Inactive' %>
+                                </span>
+                            </div>
+                            <span style="font-size:0.65rem; color:var(--text-muted);">
+                                <%= new Date(service.createdAt).toLocaleDateString() %>
+                            </span>
+                        </div>
+                        <h3><%= service.name %></h3>
+                        <p><%= service.description || 'No description available.' %></p>
+                        <div class="price">₦<%= service.price.toLocaleString() %></div>
+                        <a href="/contact" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i> Inquire Now
+                        </a>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <div class="empty-state mobile-empty-state" style="background:#f8f6fc; border:1px solid #ede8f5;">
+                    <span class="empty-icon">🛠️</span>
+                    <h3>No Services Available</h3>
+                    <p>Our services are currently being updated. Check back soon.</p>
                 </div>
-            </a>
-        </div>
-        <div class="header-actions" style="gap:4px; flex-wrap:wrap;">
-            <div class="text-size-control" style="padding:2px 8px; background:rgba(255,255,255,0.15);">
-                <label style="font-size:0.6rem; color:rgba(255,255,255,0.8);"><i class="fas fa-font"></i></label>
-                <input type="range" id="textSizeSliderMobile" min="12" max="24" value="16" step="1" style="width:50px;">
-                <span class="text-size-value" id="textSizeValueMobile" style="font-size:0.6rem; min-width:24px; color:#fff;">16px</span>
+            <% } %>
+
+            <!-- Categories -->
+            <div class="card" style="padding:14px 12px !important; border-radius:12px !important;">
+                <h4 style="font-size:0.9rem; font-weight:700; margin:0 0 6px;">📋 Service Categories</h4>
+                <div class="mobile-categories-grid">
+                    <div class="cat-item">
+                        <i class="fas fa-file-signature"></i>
+                        Registration
+                    </div>
+                    <div class="cat-item">
+                        <i class="fas fa-paint-brush"></i>
+                        Design
+                    </div>
+                    <div class="cat-item">
+                        <i class="fas fa-bullhorn"></i>
+                        Campaign
+                    </div>
+                    <div class="cat-item">
+                        <i class="fas fa-globe"></i>
+                        Website
+                    </div>
+                    <div class="cat-item">
+                        <i class="fas fa-ellipsis-h"></i>
+                        Other
+                    </div>
+                </div>
             </div>
-            <button class="dark-toggle" id="darkToggleMobile" style="font-size:1rem; padding:4px 6px; color:#fff; background:rgba(255,255,255,0.15); border-radius:30px;">🌙</button>
-            <a href="/settings" class="btn btn-secondary btn-sm" style="min-height:32px; padding:4px 10px; border-radius:30px; font-size:0.75rem; background:rgba(255,255,255,0.2); color:#fff;"><i class="fas fa-cog"></i></a>
-        </div>
-    </header>
 
-    <!-- CONTENT -->
-    <main class="main-content" style="padding:12px 0 24px;">
-        <div class="container" style="padding:0 12px;">
-            <div style="background:#fff; border-radius:12px; padding:16px; border:1px solid #ede8f5;">
-                <h1 style="font-size:1.2rem; font-weight:800; color:var(--text-dark); margin:0 0 4px 0;">
-                    <i class="fas fa-cogs" style="color:var(--primary);"></i> Services
-                </h1>
-                <p style="color:var(--text-muted); font-size:0.8rem;">Professional services to help you achieve your goals.</p>
+            <!-- CTA -->
+            <div class="mobile-cta-box">
+                <h4>Need a custom service?</h4>
+                <p>Tell us what you need and we'll create a solution for you.</p>
+                <a href="/contact" class="btn btn-primary">
+                    <i class="fas fa-comment"></i> Request Custom Service
+                </a>
+            </div>
 
-                <div style="background:var(--primary-bg); border-radius:10px; padding:12px; margin:12px 0; border-left:4px solid var(--primary);">
-                    <h4 style="font-weight:700; color:var(--text-dark); margin:0;">🏫 TASUED Registration</h4>
-                    <p style="font-size:0.75rem; color:var(--text-muted);">Full registration + O'Level verification</p>
-                    <div style="font-weight:700; color:var(--primary);">₦20,000</div>
-                    <a href="/contact" class="btn btn-primary btn-sm" style="font-size:0.75rem; padding:4px 12px; margin-top:4px;">Order</a>
-                </div>
-
-                <div style="background:var(--primary-bg); border-radius:10px; padding:12px; margin:12px 0; border-left:4px solid #f39c12;">
-                    <h4 style="font-weight:700; color:var(--text-dark); margin:0;">🚩 SUG Campaign</h4>
-                    <p style="font-size:0.75rem; color:var(--text-muted);">Flyers, posters, social media</p>
-                    <div style="font-weight:700; color:#f39c12;">From ₦5,000</div>
-                    <a href="/contact" class="btn btn-primary btn-sm" style="font-size:0.75rem; padding:4px 12px; margin-top:4px; background:#f39c12;">Order</a>
-                </div>
-
-                <div style="background:var(--primary-bg); border-radius:10px; padding:12px; margin:12px 0; border-left:4px solid var(--primary);">
-                    <h4 style="font-weight:700; color:var(--text-dark); margin:0;">🎨 Graphic Design</h4>
-                    <p style="font-size:0.75rem; color:var(--text-muted);">Logos, flyers, social media graphics</p>
-                    <div style="font-weight:700; color:var(--primary);">From ₦2,000</div>
-                    <a href="/contact" class="btn btn-primary btn-sm" style="font-size:0.75rem; padding:4px 12px; margin-top:4px;">Order</a>
-                </div>
-
-                <div style="background:var(--primary-bg); border-radius:10px; padding:12px; margin:12px 0; border-left:4px solid #27ae60;">
-                    <h4 style="font-weight:700; color:var(--text-dark); margin:0;">💻 Website Design</h4>
-                    <p style="font-size:0.75rem; color:var(--text-muted);">Business websites, portfolios</p>
-                    <div style="font-weight:700; color:#27ae60;">From ₦30,000</div>
-                    <a href="/contact" class="btn btn-primary btn-sm" style="font-size:0.75rem; padding:4px 12px; margin-top:4px; background:#27ae60;">Order</a>
-                </div>
-
-                <div style="text-align:center; margin-top:12px; font-size:0.7rem; color:var(--text-muted);">
-                    <i class="fas fa-clock"></i> We respond within 1-24 hours
-                </div>
+            <!-- Back Link -->
+            <div style="text-align:center; margin-top:12px;">
+                <a href="/" style="color:var(--text-muted); font-size:0.82rem; text-decoration:none;">
+                    <i class="fas fa-arrow-left"></i> Back to Home
+                </a>
             </div>
         </div>
     </main>
 
-    <!-- FOOTER -->
-    <footer class="footer" style="padding:20px 0 16px; margin-top:20px;">
-        <div class="container">
-            <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:10px 16px; margin-bottom:12px;">
-                <a href="/" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-home"></i> Home</a>
-                <a href="/about" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-info-circle"></i> About</a>
-                <a href="/faq" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-question-circle"></i> FAQ</a>
-                <a href="/services" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-cogs"></i> Services</a>
-                <a href="/contact" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-envelope"></i> Contact</a>
-                <a href="/terms" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-file-contract"></i> Terms</a>
-                <a href="/privacy" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-shield-alt"></i> Privacy</a>
-            </div>
-            <div style="display:flex; justify-content:center; gap:14px; margin-bottom:12px;">
-                <a href="#" style="color:rgba(255,255,255,0.6); font-size:1rem;"><i class="fab fa-facebook"></i></a>
-                <a href="#" style="color:rgba(255,255,255,0.6); font-size:1rem;"><i class="fab fa-twitter"></i></a>
-                <a href="#" style="color:rgba(255,255,255,0.6); font-size:1rem;"><i class="fab fa-linkedin"></i></a>
-                <a href="#" style="color:rgba(255,255,255,0.6); font-size:1rem;"><i class="fab fa-youtube"></i></a>
-            </div>
-            <div style="text-align:center; margin-bottom:8px;">
-                <span style="color:#fff; font-weight:700; font-size:1rem;">SHINEX</span>
-                <span style="color:rgba(255,255,255,0.5); font-size:0.65rem; display:block;">Learning Circle</span>
-            </div>
-            <div style="text-align:center; font-size:0.65rem; color:rgba(255,255,255,0.5); border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
-                <p style="margin:0;">&copy; 2026 SHINEX Learning Circle</p>
-            </div>
-        </div>
-    </footer>
-
-    <script src="/js/script.js"></script>
+    <%- include('partials/footer-mobile') %>
+    <script src="/js/main.js"></script>
 </body>
 </html>

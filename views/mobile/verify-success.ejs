@@ -3,33 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Verified – SHINEX</title>
+    <title>Email Verified – SHINEX Learning Circle</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .mobile-verify-container {
+            padding: 20px 16px 30px;
+            max-width: 420px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 70vh;
+        }
+        .mobile-verify-card {
+            padding: 32px 20px !important;
+            border-radius: 14px !important;
+            text-align: center !important;
+            box-shadow: var(--shadow);
+            width: 100%;
+        }
+        .mobile-verify-card .success-icon {
+            font-size: 3.5rem;
+            color: #27ae60;
+            margin-bottom: 8px;
+        }
+        .mobile-verify-card h2 {
+            font-size: 1.4rem !important;
+            font-weight: 700 !important;
+            margin: 0 0 4px !important;
+        }
+        .mobile-verify-card p {
+            font-size: 0.9rem !important;
+            color: var(--text-muted);
+            margin: 0 0 12px !important;
+        }
+        .mobile-verify-card .student-id-box {
+            background: var(--primary-bg);
+            padding: 10px 14px;
+            border-radius: 10px;
+            margin-bottom: 16px;
+        }
+        body.dark-mode .mobile-verify-card .student-id-box {
+            background: #1a1a1a;
+        }
+        .mobile-verify-card .student-id-box p {
+            margin: 0 !important;
+            font-weight: 600 !important;
+            font-size: 0.9rem !important;
+        }
+        .mobile-verify-card .student-id-box span {
+            color: var(--primary);
+        }
+        .mobile-verify-card .btn {
+            width: 100%;
+            font-size: 0.9rem !important;
+            padding: 12px !important;
+            min-height: 48px !important;
+            justify-content: center;
+        }
+        .mobile-verify-card .btn-secondary {
+            margin-top: 8px;
+        }
+    </style>
 </head>
 <body>
-    <%- include('../partials/header-mobile') %>
+    <%- include('partials/header-mobile', { showBack: true }) %>
 
-    <main class="main-content" style="padding:12px 0 24px;">
-        <div class="container" style="padding:0 12px;">
-            <div style="background:#fff; border-radius:12px; padding:24px 16px; border:2px solid #27ae60; text-align:center;">
-                <div style="font-size:3rem; color:#27ae60; margin-bottom:12px;">
+    <main class="main-content">
+        <div class="mobile-verify-container">
+            <div class="card mobile-verify-card">
+                <div class="success-icon">
                     <i class="fas fa-check-circle"></i>
                 </div>
-                <h1 style="font-size:1.3rem; font-weight:800; color:#27ae60; margin:0 0 8px 0;">
-                    Verified! ✅
-                </h1>
-                <p style="color:var(--text-muted); font-size:0.9rem; margin:0 0 12px 0;">
-                    Your email has been verified successfully.
+                <h2>✅ Email Verified!</h2>
+                <p>Your email address has been successfully verified.</p>
+
+                <div class="student-id-box">
+                    <p>
+                        <i class="fas fa-id-card" style="color:var(--primary);"></i>
+                        Student ID: <span><%= user ? user.studentId : 'N/A' %></span>
+                    </p>
+                </div>
+
+                <p style="font-size:0.85rem !important; margin-bottom:16px !important;">
+                    You can now log in to your account and begin your learning journey.
                 </p>
-                <a href="/login" class="btn btn-primary" style="width:100%; text-align:center;">
-                    <i class="fas fa-sign-in-alt"></i> Login
+
+                <a href="/login" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> Log In Now
+                </a>
+                <a href="/" class="btn btn-secondary" style="margin-top:8px; width:100%; display:flex; align-items:center; justify-content:center; gap:6px; font-size:0.9rem; padding:12px; min-height:48px;">
+                    <i class="fas fa-home"></i> Go to Homepage
                 </a>
             </div>
         </div>
     </main>
 
-    <%- include('../partials/footer-mobile') %>
-    <script src="/js/script.js"></script>
+    <%- include('partials/footer-mobile') %>
+    <script src="/js/main.js"></script>
 </body>
 </html>

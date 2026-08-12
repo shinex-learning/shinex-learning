@@ -3,104 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Privacy – SHINEX</title>
+    <title>Privacy Policy – SHINEX Learning Circle</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .mobile-privacy-container {
+            padding: 12px 12px 24px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .mobile-privacy-card {
+            padding: 16px 14px !important;
+            border-radius: 12px !important;
+            margin-bottom: 10px !important;
+        }
+        .mobile-privacy-card h3 {
+            font-size: 0.95rem !important;
+            font-weight: 700 !important;
+            margin: 0 0 4px !important;
+            color: var(--primary);
+        }
+        .mobile-privacy-card p {
+            font-size: 0.82rem !important;
+            line-height: 1.7 !important;
+            margin: 0 !important;
+            color: var(--text-muted);
+        }
+        .mobile-privacy-card ul {
+            padding-left: 18px;
+            margin: 4px 0 0;
+        }
+        .mobile-privacy-card ul li {
+            font-size: 0.82rem !important;
+            line-height: 1.7 !important;
+            color: var(--text-muted);
+            margin-bottom: 2px;
+        }
+        .mobile-privacy-card a {
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .mobile-privacy-divider {
+            height: 1px;
+            background: #ede8f5;
+            margin: 12px 0;
+        }
+        body.dark-mode .mobile-privacy-divider {
+            background: var(--dark-border);
+        }
+        .mobile-back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.82rem;
+            margin-top: 8px;
+            padding: 6px 0;
+        }
+        .mobile-back-link:hover {
+            color: var(--primary);
+        }
+    </style>
 </head>
 <body>
-    <div id="page-loader">
-        <div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div>
-        <div class="loader-text">SHINEX</div>
-        <div class="loader-sub">LEARNING CIRCLE</div>
-    </div>
+    <%- include('partials/header-mobile', { showBack: true }) %>
 
-    <!-- HEADER -->
-    <header class="header" style="padding:10px 12px; flex-wrap:wrap; gap:6px;">
-        <div style="display:flex; align-items:center; gap:8px; flex:1;">
-            <% if (showBack) { %>
-                <a href="javascript:history.back()" class="back-btn" style="font-size:0.75rem; padding:4px 8px; color:rgba(255,255,255,0.9);"><i class="fas fa-arrow-left"></i></a>
-            <% } %>
-            <a href="/" class="logo-container" style="gap:8px;">
-                <div class="logo" style="width:36px; height:36px; font-size:11px; background:rgba(255,255,255,0.2);">SLC</div>
-                <div>
-                    <div class="logo-text" style="font-size:15px; color:#fff;">SHINEX<span>.</span></div>
-                    <div class="logo-sub" style="font-size:7px; color:rgba(255,255,255,0.7);">LEARNING CIRCLE</div>
-                </div>
+    <main class="main-content">
+        <div class="mobile-privacy-container">
+            <h2 style="font-size:1.3rem; font-weight:800; margin:0 0 2px;">🔒 Privacy Policy</h2>
+            <p style="color:var(--text-muted); font-size:0.8rem; margin-bottom:10px;">
+                <strong>Last Updated:</strong> August 2026
+            </p>
+
+            <div class="card mobile-privacy-card">
+
+                <h3>1. Introduction</h3>
+                <p>SHINEX Learning Circle ("SLC", "we", "our", "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website and use our services.</p>
+                <p style="margin-top:6px !important;">By using SHINEX Learning Circle, you agree to the collection and use of information in accordance with this policy.</p>
+
+                <div class="mobile-privacy-divider"></div>
+
+                <h3>2. Information We Collect</h3>
+                <p>We collect the following types of information:</p>
+                <ul>
+                    <li><strong>Personal Information:</strong> Name, email address, phone number, date of birth, gender, address, and Student ID.</li>
+                    <li><strong>Academic Information:</strong> School, department, current level, and student status.</li>
+                    <li><strong>Learning Data:</strong> Course enrollment, progress, completed classes, test scores, and points.</li>
+                    <li><strong>Usage Data:</strong> Pages visited, time spent, interactions with content, and AI chat messages.</li>
+                    <li><strong>Device Information:</strong> IP address, browser type, device type, and operating system.</li>
+                </ul>
+
+                <div class="mobile-privacy-divider"></div>
+
+                <h3>3. How We Use Your Information</h3>
+                <p>We use your information to:</p>
+                <ul>
+                    <li>Create and manage your account</li>
+                    <li>Provide, maintain, and improve our services</li>
+                    <li>Track your learning progress and achievements</li>
+                    <li>Send you email notifications about your account and courses</li>
+                    <li>Respond to your inquiries and support requests</li>
+                    <li>Personalize your learning experience</li>
+                    <li>Analyze usage patterns to improve our platform</li>
+                </ul>
+
+                <div class="mobile-privacy-divider"></div>
+
+                <h3>4. Information Sharing</h3>
+                <p>We do not sell, trade, or rent your personal information to third parties. We may share your information in the following cases:</p>
+                <ul>
+                    <li><strong>With your consent:</strong> We may share information with your explicit permission.</li>
+                    <li><strong>Service Providers:</strong> We use third-party services (e.g., email, hosting, AI) that process data on our behalf.</li>
+                    <li><strong>Legal Requirements:</strong> We may disclose information if required by law or to protect our rights.</li>
+                </ul>
+
+                <div class="mobile-privacy-divider"></div>
+
+                <h3>5. Data Security</h3>
+                <p>We take data security seriously. We implement industry-standard security measures including:</p>
+                <ul>
+                    <li>Password hashing using bcrypt</li>
+                    <li>HTTPS encryption for all data transmission</li>
+                    <li>Session management and authentication controls</li>
+                    <li>Regular security updates and monitoring</li>
+                </ul>
+
+                <div class="mobile-privacy-divider"></div>
+
+                <h3>6. Your Rights</h3>
+                <p>You have the right to:</p>
+                <ul>
+                    <li>Access your personal information</li>
+                    <li>Correct inaccurate information</li>
+                    <li>Delete your account and associated data</li>
+                    <li>Opt out of marketing communications</li>
+                    <li>Request a copy of your data</li>
+                </ul>
+                <p style="margin-top:6px !important;">To exercise these rights, contact us at <strong>support@shinex.ng</strong>.</p>
+
+                <div class="mobile-privacy-divider"></div>
+
+                <h3>7. Cookies and Tracking</h3>
+                <p>We use cookies to enhance your experience. Cookies help us:</p>
+                <ul>
+                    <li>Remember your login session and preferences</li>
+                    <li>Track your learning progress</li>
+                    <li>Analyze site traffic and usage patterns</li>
+                </ul>
+                <p style="margin-top:6px !important;">You can manage cookie preferences in your browser settings.</p>
+
+                <div class="mobile-privacy-divider"></div>
+
+                <h3>8. Data Retention</h3>
+                <p>We retain your personal information for as long as your account is active. If you delete your account, we will delete or anonymize your data within 30 days, except where we are required to retain it for legal or regulatory purposes.</p>
+
+                <div class="mobile-privacy-divider"></div>
+
+                <h3>9. Children's Privacy</h3>
+                <p>Our services are not directed at individuals under the age of 13. We do not knowingly collect personal information from children. If you are a parent or guardian and believe your child has provided us with information, please contact us.</p>
+
+                <div class="mobile-privacy-divider"></div>
+
+                <h3>10. Changes to This Policy</h3>
+                <p>We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new policy on this page and updating the "Last Updated" date. We encourage you to review this policy periodically.</p>
+
+                <div class="mobile-privacy-divider"></div>
+
+                <h3>11. Contact Us</h3>
+                <p>
+                    <i class="fas fa-envelope" style="color:var(--primary);"></i> support@shinex.ng<br>
+                    <i class="fas fa-phone" style="color:var(--primary);"></i> +234 800 SHINEX<br>
+                    <i class="fas fa-map-marker-alt" style="color:var(--primary);"></i> Lagos, Nigeria
+                </p>
+            </div>
+
+            <a href="/" class="mobile-back-link">
+                <i class="fas fa-arrow-left"></i> Back to Home
             </a>
-        </div>
-        <div class="header-actions" style="gap:4px; flex-wrap:wrap;">
-            <div class="text-size-control" style="padding:2px 8px; background:rgba(255,255,255,0.15);">
-                <label style="font-size:0.6rem; color:rgba(255,255,255,0.8);"><i class="fas fa-font"></i></label>
-                <input type="range" id="textSizeSliderMobile" min="12" max="24" value="16" step="1" style="width:50px;">
-                <span class="text-size-value" id="textSizeValueMobile" style="font-size:0.6rem; min-width:24px; color:#fff;">16px</span>
-            </div>
-            <button class="dark-toggle" id="darkToggleMobile" style="font-size:1rem; padding:4px 6px; color:#fff; background:rgba(255,255,255,0.15); border-radius:30px;">🌙</button>
-            <a href="/settings" class="btn btn-secondary btn-sm" style="min-height:32px; padding:4px 10px; border-radius:30px; font-size:0.75rem; background:rgba(255,255,255,0.2); color:#fff;"><i class="fas fa-cog"></i></a>
-        </div>
-    </header>
-
-    <!-- CONTENT -->
-    <main class="main-content" style="padding:12px 0 24px;">
-        <div class="container" style="padding:0 12px;">
-            <div style="background:#fff; border-radius:12px; padding:16px; border:1px solid #ede8f5;">
-                <h1 style="font-size:1.1rem; font-weight:800; color:var(--text-dark); margin:0 0 4px 0;">
-                    <i class="fas fa-shield-alt" style="color:var(--primary);"></i> Privacy Policy
-                </h1>
-                <p style="color:var(--text-muted); font-size:0.7rem; margin:0 0 12px 0;">Last updated: August 2026</p>
-                <div style="font-size:0.85rem; line-height:1.8; color:var(--text-dark);">
-                    <p style="margin-bottom:12px;">
-                        <strong>Information We Collect</strong><br>
-                        We collect minimal data to improve your learning experience.
-                    </p>
-                    <p style="margin-bottom:12px;">
-                        <strong>How We Use Your Data</strong><br>
-                        Data is used to personalize your learning journey.
-                    </p>
-                    <p style="margin-bottom:12px;">
-                        <strong>Data Security</strong><br>
-                        We implement industry-standard security measures.
-                    </p>
-                    <p style="margin-bottom:12px;">
-                        <strong>Your Rights</strong><br>
-                        You can request data deletion at any time.
-                    </p>
-                    <p style="margin-bottom:0;">
-                        <strong>Contact</strong><br>
-                        For privacy concerns, <a href="/contact" style="color:var(--primary);">contact us</a>.
-                    </p>
-                </div>
-            </div>
         </div>
     </main>
 
-    <!-- FOOTER -->
-    <footer class="footer" style="padding:20px 0 16px; margin-top:20px;">
-        <div class="container">
-            <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:10px 16px; margin-bottom:12px;">
-                <a href="/" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-home"></i> Home</a>
-                <a href="/about" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-info-circle"></i> About</a>
-                <a href="/faq" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-question-circle"></i> FAQ</a>
-                <a href="/services" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-cogs"></i> Services</a>
-                <a href="/contact" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-envelope"></i> Contact</a>
-                <a href="/terms" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-file-contract"></i> Terms</a>
-                <a href="/privacy" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:0.8rem;"><i class="fas fa-shield-alt"></i> Privacy</a>
-            </div>
-            <div style="display:flex; justify-content:center; gap:14px; margin-bottom:12px;">
-                <a href="#" style="color:rgba(255,255,255,0.6); font-size:1rem;"><i class="fab fa-facebook"></i></a>
-                <a href="#" style="color:rgba(255,255,255,0.6); font-size:1rem;"><i class="fab fa-twitter"></i></a>
-                <a href="#" style="color:rgba(255,255,255,0.6); font-size:1rem;"><i class="fab fa-linkedin"></i></a>
-                <a href="#" style="color:rgba(255,255,255,0.6); font-size:1rem;"><i class="fab fa-youtube"></i></a>
-            </div>
-            <div style="text-align:center; margin-bottom:8px;">
-                <span style="color:#fff; font-weight:700; font-size:1rem;">SHINEX</span>
-                <span style="color:rgba(255,255,255,0.5); font-size:0.65rem; display:block;">Learning Circle</span>
-            </div>
-            <div style="text-align:center; font-size:0.65rem; color:rgba(255,255,255,0.5); border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
-                <p style="margin:0;">&copy; 2026 SHINEX Learning Circle</p>
-            </div>
-        </div>
-    </footer>
-
-    <script src="/js/script.js"></script>
+    <%- include('partials/footer-mobile') %>
+    <script src="/js/main.js"></script>
 </body>
 </html>
