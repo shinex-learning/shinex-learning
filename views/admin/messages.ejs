@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages – Admin</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <%- include('../partials/admin-header') %>
+
+    <main class="admin-main">
+        <div class="container">
+            <h1 style="display:flex; align-items:center; gap:12px;">
+                <i class="fas fa-envelope" style="color:var(--primary);"></i> Contact Messages
+                <span style="background:#e74c3c; color:#fff; padding:2px 12px; border-radius:20px; font-size:0.8rem;">
+                    <%= unreadCount || 0 %> Unread
+                </span>
+            </h1>
+
+            <% if (messages && messages.error) { %>
+                <div class="alert alert-danger"><%= messages.error %></div>
+            <% } %>
+            <% if (messages && messages.success) { %>
+                <div class="alert alert-success"><%= messages.success %></div>
+            <% } %>
+
+            <div class="card">
+                <table style="width:100%; border-collapse:collapse;">
+                    <thead>
+                        <tr style="border-bottom:2px solid #ede8f5;">
+                            <th style="padding:10px; text-align:left;">Status</th>
+                            <th style="padding:10px; text-align:left;">Name</th>
+                            <th style="padding:10px; text-align:left;">Email</th>
+                            <th style="padding:10px; text-align:left;">Subject</th>
+                            <th style="padding:10px; text-align:left;">Date</th>
+                            <th style="padding:10px; text-align:center;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (messagesList && messagesList.length > 0) { %>
+                            <% messagesList.forEach(function(msg) { %>
+                                <tr style="border-bottom:1px solid #ede8f5;">
+                                    <td style="padding:10px;">
+                                        <% if (msg.status === 'unread') { %>
+                                            <span style="background:#e74c3c; color:#fff; padding:2px 10px; border-radius:12px; font-size:0.7rem;">🔴 Unread</span>
+                                        <% } else if (msg.status === 'read') { %>
+                                            <span style="background:#3498db; color:#fff; padding:2px 10px; border-radius:12px; font-size:0.7rem;">📖 Read</span>
+                                        <% } else if (msg.status === 'replied') { %>
+                                            <span style="background:#27ae60; color:#fff; padding:2px 10px; border-radius:12px; font-size:0.7rem;">✅ Replied</span>
+                                        <% } %>
+                                    </td>
+                                    <td style="padding:10px;"><strong><%= msg.name %></strong></td>
+                                    <td style="padding:10px; color:var(--text-muted);"><%= msg.email %></td>
+                                    <td style="padding:10px;"><%= msg.subject %></td>
+                                    <td style="padding:10px; color:var(--text-muted); font-size:0.85rem;">
+                                        <%= new Date(msg.createdAt).toLocaleDateString() %>
+                                    </td>
+                                    <td style="padding:10px; text-align:center;">
+                                        <a href="/admin/messages/<%= msg.id %>" class="btn btn-sm btn-primary" style="padding:4px 12px;">
+                                            <i class="fas fa-eye"></i> View
+                                        </a>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="6" style="padding:30px; text-align:center; color:var(--text-muted);">
+                                    <i class="fas fa-inbox" style="font-size:2rem; display:block; margin-bottom:8px;"></i>
+                                    No messages yet.
+                                </td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+
+            <a href="/admin/dashboard" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </main>
+
+    <%- include('../partials/admin-footer') %>
+    <script src="/js/script.js"></script>
+</body>
+</html>

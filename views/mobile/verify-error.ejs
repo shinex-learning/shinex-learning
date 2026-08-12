@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Verification Failed – SHINEX</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <%- include('../partials/header-mobile') %>
+
+    <main class="main-content" style="padding:12px 0 24px;">
+        <div class="container" style="padding:0 12px;">
+            <div style="background:#fff; border-radius:12px; padding:24px 16px; border:2px solid #e74c3c; text-align:center;">
+                <div style="font-size:3rem; color:#e74c3c; margin-bottom:12px;">
+                    <i class="fas fa-times-circle"></i>
+                </div>
+                <h1 style="font-size:1.3rem; font-weight:800; color:#e74c3c; margin:0 0 8px 0;">
+                    Verification Failed ❌
+                </h1>
+                <p style="color:var(--text-muted); font-size:0.9rem; margin:0 0 12px 0;">
+                    Invalid or expired verification link.
+                </p>
+                <a href="/register" class="btn btn-primary" style="width:100%; text-align:center;">
+                    <i class="fas fa-user-plus"></i> Register Again
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <%- include('../partials/footer-mobile') %>
+    <script src="/js/script.js"></script>
+</body>
+</html>

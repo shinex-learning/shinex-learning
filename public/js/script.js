@@ -1,5 +1,6 @@
 // ============================================================
 // SHINEX LEARNING CIRCLE – COMPLETE JAVASCRIPT
+// Version: 3.0 - FIXED DARK MODE & MOBILE
 // ============================================================
 
 // ===== PAGE LOADER =====
@@ -8,73 +9,112 @@ document.addEventListener('DOMContentLoaded', function() {
     if (loader) {
         setTimeout(function() {
             loader.classList.add('hidden');
-            // Show page content with fade-in
             document.body.style.opacity = '1';
         }, 1200);
     }
 });
 
-// ===== DARK MODE =====
+// ============================================================
+// DARK MODE - FULLY WORKING (Desktop + Mobile)
+// ============================================================
 function initDarkMode() {
     const darkToggle = document.getElementById('darkToggle');
+    const darkToggleMobile = document.getElementById('darkToggleMobile');
     const body = document.body;
     
     // Check saved preference
     const savedDark = localStorage.getItem('shinex-dark-mode');
     if (savedDark === 'true') {
         body.classList.add('dark-mode');
-        updateDarkToggleIcon(true);
+        updateAllToggles(true);
     }
     
+    // Desktop toggle
     if (darkToggle) {
-        darkToggle.addEventListener('click', function() {
-            body.classList.toggle('dark-mode');
-            const isDark = body.classList.contains('dark-mode');
-            localStorage.setItem('shinex-dark-mode', isDark);
-            updateDarkToggleIcon(isDark);
-            
-            // Show success message
-            showToast(isDark ? '🌙 Dark mode enabled' : '☀️ Light mode enabled', 'success');
+        darkToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            toggleDarkMode();
+        });
+    }
+    
+    // Mobile toggle
+    if (darkToggleMobile) {
+        darkToggleMobile.addEventListener('click', function(e) {
+            e.preventDefault();
+            toggleDarkMode();
         });
     }
 }
 
-function updateDarkToggleIcon(isDark) {
+function toggleDarkMode() {
+    const body = document.body;
+    body.classList.toggle('dark-mode');
+    const isDark = body.classList.contains('dark-mode');
+    localStorage.setItem('shinex-dark-mode', isDark);
+    updateAllToggles(isDark);
+    
+    // Update settings checkbox if it exists
+    const darkModeSetting = document.getElementById('darkModeSetting');
+    if (darkModeSetting) {
+        darkModeSetting.checked = isDark;
+    }
+    const darkModeMobileSetting = document.getElementById('darkModeMobileSetting');
+    if (darkModeMobileSetting) {
+        darkModeMobileSetting.checked = isDark;
+    }
+    
+    showToast(isDark ? '🌙 Dark mode enabled' : '☀️ Light mode enabled', 'success');
+}
+
+function updateAllToggles(isDark) {
     const darkToggle = document.getElementById('darkToggle');
+    const darkToggleMobile = document.getElementById('darkToggleMobile');
+    
     if (darkToggle) {
-        if (isDark) {
-            darkToggle.innerHTML = '☀️ <span class="toggle-label">Light</span>';
-        } else {
-            darkToggle.innerHTML = '🌙 <span class="toggle-label">Dark</span>';
-        }
+        darkToggle.innerHTML = isDark ? '☀️ <span class="toggle-label">Light</span>' : '🌙 <span class="toggle-label">Dark</span>';
+    }
+    if (darkToggleMobile) {
+        darkToggleMobile.textContent = isDark ? '☀️' : '🌙';
     }
 }
 
-// ===== TEXT SIZE SLIDER =====
+// ============================================================
+// TEXT SIZE SLIDER - FULLY WORKING (Desktop + Mobile)
+// ============================================================
 function initTextSize() {
-    const slider = document.getElementById('textSizeSlider');
-    const valueDisplay = document.getElementById('textSizeValue');
+    const sliders = document.querySelectorAll('.text-size-slider');
     const body = document.body;
     
     // Load saved size
-    const savedSize = localStorage.getItem('shinex-text-size');
-    if (savedSize) {
-        body.style.fontSize = savedSize + 'px';
-        if (slider) slider.value = savedSize;
-        if (valueDisplay) valueDisplay.textContent = savedSize + 'px';
-    }
+    const savedSize = localStorage.getItem('shinex-text-size') || 16;
+    body.style.fontSize = savedSize + 'px';
     
-    if (slider) {
+    sliders.forEach(slider => {
+        const valueDisplay = slider.parentElement.querySelector('.text-size-value');
+        
+        // Set initial value
+        slider.value = savedSize;
+        if (valueDisplay) valueDisplay.textContent = savedSize + 'px';
+        
         slider.addEventListener('input', function() {
             const size = this.value;
             body.style.fontSize = size + 'px';
             if (valueDisplay) valueDisplay.textContent = size + 'px';
             localStorage.setItem('shinex-text-size', size);
+            
+            // Sync all sliders
+            document.querySelectorAll('.text-size-slider').forEach(s => {
+                if (s !== this) s.value = size;
+                const display = s.parentElement.querySelector('.text-size-value');
+                if (display) display.textContent = size + 'px';
+            });
         });
-    }
+    });
 }
 
-// ===== FLOATING AI BOT =====
+// ============================================================
+// FLOATING AI BOT
+// ============================================================
 function initAIBot() {
     const botBtn = document.getElementById('aiBotBtn');
     const chatModal = document.getElementById('aiChatModal');
@@ -85,7 +125,6 @@ function initAIBot() {
     
     if (!botBtn || !chatModal) return;
     
-    // Toggle chat
     botBtn.addEventListener('click', function() {
         chatModal.classList.toggle('open');
         if (chatModal.classList.contains('open')) {
@@ -99,7 +138,6 @@ function initAIBot() {
         });
     }
     
-    // Close on outside click
     document.addEventListener('click', function(e) {
         if (chatModal.classList.contains('open')) {
             if (!chatModal.contains(e.target) && e.target !== botBtn && !botBtn.contains(e.target)) {
@@ -108,31 +146,24 @@ function initAIBot() {
         }
     });
     
-    // Send message
     function sendMessage() {
         const message = chatInput.value.trim();
         if (!message) return;
         
-        // Add user message
         addChatMessage(message, 'user');
         chatInput.value = '';
         chatInput.disabled = true;
         chatSend.disabled = true;
         
-        // Show loading
         const loadingMsg = addChatMessage('Thinking...', 'bot', true);
         
-        // Send to API
         fetch('/api/ai-tutor', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userPrompt: message })
         })
         .then(response => response.json())
         .then(data => {
-            // Remove loading message
             if (loadingMsg) loadingMsg.remove();
             
             if (data.error) {
@@ -176,7 +207,6 @@ function addChatMessage(text, type, isLoading = false) {
         div.innerHTML = '<span class="ai-chat-loading">⏳ Thinking...</span>';
         div.id = 'aiChatLoading';
     } else {
-        // Parse markdown-like formatting
         let formatted = text;
         formatted = formatted.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
         formatted = formatted.replace(/\*(.+?)\*/g, '<em>$1</em>');
@@ -190,7 +220,9 @@ function addChatMessage(text, type, isLoading = false) {
     return div;
 }
 
-// ===== TOAST NOTIFICATIONS =====
+// ============================================================
+// TOAST NOTIFICATIONS
+// ============================================================
 function showToast(message, type = 'info') {
     const existing = document.querySelector('.toast-notification');
     if (existing) existing.remove();
@@ -199,7 +231,6 @@ function showToast(message, type = 'info') {
     toast.className = 'toast-notification toast-' + type;
     toast.innerHTML = message;
     
-    // Styles
     toast.style.cssText = `
         position: fixed;
         bottom: 100px;
@@ -231,7 +262,9 @@ function showToast(message, type = 'info') {
     }, 3500);
 }
 
-// ===== SETTINGS: SAVE PROFILE =====
+// ============================================================
+// SETTINGS: SAVE PROFILE
+// ============================================================
 function initSettings() {
     // Profile Save
     const profileForm = document.getElementById('profileForm');
@@ -295,29 +328,30 @@ function initSettings() {
         });
     }
     
-    // Appearance Settings (Dark Mode toggle in settings)
+    // Appearance Settings - Dark Mode
     const darkModeSetting = document.getElementById('darkModeSetting');
     if (darkModeSetting) {
         darkModeSetting.addEventListener('change', function() {
             const body = document.body;
             body.classList.toggle('dark-mode', this.checked);
             localStorage.setItem('shinex-dark-mode', this.checked);
+            updateAllToggles(this.checked);
             showToast(this.checked ? '🌙 Dark mode enabled' : '☀️ Light mode enabled', 'success');
         });
-        
-        // Sync with header toggle
-        const headerToggle = document.getElementById('darkToggle');
-        if (headerToggle) {
-            headerToggle.addEventListener('click', function() {
-                const isDark = document.body.classList.contains('dark-mode');
-                if (darkModeSetting) {
-                    darkModeSetting.checked = isDark;
-                }
-            });
-        }
     }
     
-    // Delete Account (with confirmation)
+    // Mobile Dark Mode in Settings
+    const darkModeMobileSetting = document.getElementById('darkModeMobileSetting');
+    if (darkModeMobileSetting) {
+        darkModeMobileSetting.addEventListener('change', function() {
+            const body = document.body;
+            body.classList.toggle('dark-mode', this.checked);
+            localStorage.setItem('shinex-dark-mode', this.checked);
+            updateAllToggles(this.checked);
+        });
+    }
+    
+    // Delete Account
     const deleteBtn = document.getElementById('deleteAccountBtn');
     if (deleteBtn) {
         deleteBtn.addEventListener('click', function() {
@@ -344,7 +378,9 @@ function initSettings() {
     }
 }
 
-// ===== CLASS COMPLETE TOAST =====
+// ============================================================
+// CLASS COMPLETE TOAST
+// ============================================================
 function initClassComplete() {
     const completeBtn = document.getElementById('completeClassBtn');
     if (completeBtn) {
@@ -357,7 +393,6 @@ function initClassComplete() {
             .then(data => {
                 if (data.success) {
                     showToast('🎉 Class completed! +10 points!', 'success');
-                    // Reload to update progress
                     setTimeout(() => window.location.reload(), 1500);
                 } else {
                     showToast('❌ ' + data.error, 'error');
@@ -370,36 +405,36 @@ function initClassComplete() {
     }
 }
 
-// ===== SETTINGS SIDEBAR NAVIGATION =====
+// ============================================================
+// SETTINGS SIDEBAR NAVIGATION (Desktop)
+// ============================================================
 function initSettingsNav() {
     const navLinks = document.querySelectorAll('.settings-nav a');
     const sections = document.querySelectorAll('.settings-section');
     
     if (navLinks.length === 0) return;
     
-    // Show first section by default
-    sections.forEach((section, index) => {
-        section.style.display = index === 0 ? 'block' : 'none';
-    });
-    
     navLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
             const target = this.getAttribute('data-target');
             
-            // Update active state
             navLinks.forEach(l => l.classList.remove('active'));
             this.classList.add('active');
             
-            // Show target section
             sections.forEach(section => {
-                section.style.display = section.id === target ? 'block' : 'none';
+                section.classList.remove('active');
+                if (section.id === target) {
+                    section.classList.add('active');
+                }
             });
         });
     });
 }
 
-// ===== RESPONSIVE SETTINGS SIDEBAR =====
+// ============================================================
+// RESPONSIVE SETTINGS SIDEBAR
+// ============================================================
 function initResponsiveSettings() {
     const toggleBtn = document.getElementById('settingsToggle');
     const sidebar = document.querySelector('.settings-sidebar');
@@ -411,7 +446,9 @@ function initResponsiveSettings() {
     }
 }
 
-// ===== AUTO-DISMISS ALERTS =====
+// ============================================================
+// AUTO-DISMISS ALERTS
+// ============================================================
 function initAlerts() {
     const alerts = document.querySelectorAll('.alert');
     alerts.forEach(alert => {
@@ -423,18 +460,9 @@ function initAlerts() {
     });
 }
 
-// ===== MARK COMPLETE (Non-AJAX version for compatibility) =====
-function initMarkComplete() {
-    const markCompleteForms = document.querySelectorAll('.mark-complete-form');
-    markCompleteForms.forEach(form => {
-        form.addEventListener('submit', function(e) {
-            // Allow normal submission, just show toast on response
-            // The toast will be shown by the server-side message
-        });
-    });
-}
-
-// ===== INITIALIZE ALL =====
+// ============================================================
+// INITIALIZE ALL
+// ============================================================
 document.addEventListener('DOMContentLoaded', function() {
     initDarkMode();
     initTextSize();
@@ -444,9 +472,8 @@ document.addEventListener('DOMContentLoaded', function() {
     initSettingsNav();
     initResponsiveSettings();
     initAlerts();
-    initMarkComplete();
     
-    // Show any flash messages as toasts
+    // Show flash messages as toasts
     const flashMessages = document.querySelectorAll('.flash-message');
     flashMessages.forEach(msg => {
         const type = msg.dataset.type || 'info';
@@ -458,9 +485,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// ===== KEYBOARD SHORTCUTS =====
+// ============================================================
+// KEYBOARD SHORTCUTS
+// ============================================================
 document.addEventListener('keydown', function(e) {
-    // ESC to close AI chat
     if (e.key === 'Escape') {
         const chatModal = document.getElementById('aiChatModal');
         if (chatModal && chatModal.classList.contains('open')) {
@@ -468,15 +496,15 @@ document.addEventListener('keydown', function(e) {
         }
     }
     
-    // Ctrl + Shift + D for dark mode
     if (e.ctrlKey && e.shiftKey && e.key === 'D') {
         e.preventDefault();
-        const darkToggle = document.getElementById('darkToggle');
-        if (darkToggle) darkToggle.click();
+        toggleDarkMode();
     }
 });
 
-// ===== CONSOLE WELCOME =====
+// ============================================================
+// CONSOLE WELCOME
+// ============================================================
 console.log('🚀 SHINEX Learning Circle (SLC lmt.®)');
 console.log('📚 Empowering minds with cutting-edge courses.');
 console.log('💡 Tip: Press Ctrl+Shift+D to toggle dark mode!');

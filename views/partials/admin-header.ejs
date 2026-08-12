@@ -1,0 +1,15 @@
+<header class="admin-header" style="background:linear-gradient(135deg, #8B5CF6, #6a3dcf); padding:12px 24px; display:flex; justify-content:space-between; align-items:center;">
+    <div style="display:flex; align-items:center; gap:16px;">
+        <a href="/admin/dashboard" style="color:#fff; font-weight:700; font-size:1.2rem; text-decoration:none;">
+            <i class="fas fa-shield-alt"></i> SHINEX Admin
+        </a>
+    </div>
+    <div style="display:flex; align-items:center; gap:12px;">
+        <span style="color:rgba(255,255,255,0.8); font-size:0.9rem;">
+            <i class="fas fa-user"></i> <%= admin ? admin.firstName : 'Admin' %>
+        </span>
+        <a href="/admin/logout" style="color:#fff; background:rgba(255,255,255,0.2); padding:6px 14px; border-radius:20px; text-decoration:none; font-size:0.85rem;">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+</header>

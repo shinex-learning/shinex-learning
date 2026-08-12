@@ -79,34 +79,89 @@ mongoose.connect(MONGODB_URI)
     .catch(err => console.error('❌ MongoDB connection error:', err));
 
 // ============================================================
+// COURSE CODES FOR STUDENT ID
+// ============================================================
+const COURSE_CODES = {
+    'Cybersecurity': 1,
+    'Data Analysis': 2,
+    'Digital Marketing': 3,
+    'Graphic Design': 4,
+    'Motion Design': 5,
+    'Networking': 6,
+    'Programming': 7,
+    'UI/UX Design': 8,
+    'Web Development': 9,
+    'WordPress Development': 10
+};
+
+// ============================================================
 // MONGODB SCHEMAS
 // ============================================================
 
-// User Schema
+// User Schema - with Student ID
 const UserSchema = new mongoose.Schema({
     id: { type: String, unique: true },
-    fullName: String,
-    email: { type: String, unique: true },
-    password: String,
-    firstName: String,
-    lastName: String,
-    gender: String,
-    dob: String,
+    studentId: { type: String, unique: true },
+    
+    // Personal Information
+    firstName: { type: String, required: true },
+    middleName: String,
+    lastName: { type: String, required: true },
+    dateOfBirth: String,
+    gender: { type: String, enum: ['Male', 'Female'] },
     country: String,
-    school: String,
-    experienceLevel: String,
-    courseId: String,
-    interests: [String],
-    bio: String,
-    termsAccepted: Boolean,
-    isAdmin: { type: Boolean, default: false },
-    progress: { type: Object, default: {} },
+    state: String,
+    city: String,
+    
+    // Contact Information
+    email: { type: String, unique: true, required: true },
     phone: String,
+    whatsapp: String,
+    homeAddress: String,
+    
+    // Academic Information
+    school: String,
+    department: String,
+    currentLevel: String,
+    studentStatus: String,
+    
+    // Course & Learning
+    courseId: String,
+    courseName: String,
+    learningLevel: { type: String, enum: ['Beginner', 'Intermediate', 'Advanced'], default: 'Beginner' },
+    
+    // Account
+    password: { type: String, required: true },
     isVerified: { type: Boolean, default: false },
     verificationToken: String,
     tokenExpires: Date,
+    
+    // Progress
+    progress: { type: Object, default: {} },
+    
+    // Admin
+    isAdmin: { type: Boolean, default: false },
+    
+    // Preferences
     textSize: { type: Number, default: 16 },
     darkMode: { type: Boolean, default: false },
+    
+    // Notifications (for future use)
+    notifications: { type: Array, default: [] },
+    
+    createdAt: { type: Date, default: Date.now }
+});
+
+// Contact Message Schema
+const ContactMessageSchema = new mongoose.Schema({
+    id: { type: String, unique: true },
+    name: { type: String, required: true },
+    email: { type: String, required: true },
+    subject: { type: String, required: true },
+    message: { type: String, required: true },
+    status: { type: String, enum: ['unread', 'read', 'replied'], default: 'unread' },
+    adminReply: String,
+    repliedAt: Date,
     createdAt: { type: Date, default: Date.now }
 });
 
@@ -165,6 +220,7 @@ const ServiceSchema = new mongoose.Schema({
 const User = mongoose.model('User', UserSchema);
 const Course = mongoose.model('Course', CourseSchema);
 const Service = mongoose.model('Service', ServiceSchema);
+const ContactMessage = mongoose.model('ContactMessage', ContactMessageSchema);
 
 // ============================================================
 // HELPERS
@@ -175,6 +231,27 @@ function generateId() {
 
 function generateToken() {
     return crypto.randomBytes(32).toString('hex');
+}
+
+// ===== STUDENT ID GENERATOR =====
+async function generateStudentId(courseCode, year = new Date().getFullYear()) {
+    const courseCodePadded = String(courseCode).padStart(2, '0');
+    const regex = new RegExp(`SLC-${year}-${courseCodePadded}-`);
+    
+    const lastStudent = await User.findOne({ 
+        studentId: { $regex: regex } 
+    }).sort({ studentId: -1 });
+    
+    let nextNumber = 1;
+    if (lastStudent) {
+        const parts = lastStudent.studentId.split('-');
+        const lastNumber = parseInt(parts[3]);
+        if (!isNaN(lastNumber)) {
+            nextNumber = lastNumber + 1;
+        }
+    }
+    
+    return `SLC-${year}-${courseCodePadded}-${String(nextNumber).padStart(3, '0')}`;
 }
 
 function sanitize(content) {
@@ -224,7 +301,7 @@ function parseContent(text) {
 }
 
 // ============================================================
-// EMAIL TRANSPORTER (Optional)
+// EMAIL TRANSPORTER
 // ============================================================
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -234,9 +311,41 @@ const transporter = nodemailer.createTransport({
     }
 });
 
+// ===== SEND EMAIL FUNCTION =====
+async function sendEmail(to, subject, html, from = process.env.EMAIL_USER) {
+    try {
+        const mailOptions = {
+            from: from || process.env.EMAIL_USER,
+            to: to,
+            subject: subject,
+            html: html
+        };
+        const info = await transporter.sendMail(mailOptions);
+        console.log('✅ Email sent to:', to);
+        return { success: true, info };
+    } catch (error) {
+        console.error('❌ Email error:', error);
+        return { success: false, error: error.message };
+    }
+}
+
 // ============================================================
-// AUTH MIDDLEWARE (Admin Only)
+// AUTH MIDDLEWARE
 // ============================================================
+async function requireAuth(req, res, next) {
+    if (!req.session.userId) {
+        req.session.messages = { error: 'Please log in to access this page.' };
+        return res.redirect('/login');
+    }
+    const user = await User.findOne({ id: req.session.userId });
+    if (!user) {
+        req.session.destroy();
+        return res.redirect('/login');
+    }
+    req.user = user;
+    next();
+}
+
 async function requireAdmin(req, res, next) {
     if (!req.session.adminId) {
         req.session.messages = { error: 'Please log in as admin.' };
@@ -261,7 +370,7 @@ function blockMobileAdmin(req, res, next) {
 }
 
 // ============================================================
-// AI TUTOR (Free – Groq API)
+// AI TUTOR (Groq API)
 // ============================================================
 app.post('/api/ai-tutor', async (req, res) => {
     const { userPrompt } = req.body;
@@ -300,23 +409,269 @@ app.post('/api/ai-tutor', async (req, res) => {
 });
 
 // ============================================================
-// AUTH DISABLED FOR ADSENSE REVIEW
+// AUTH ROUTES - WORKING LOGIN/REGISTER
 // ============================================================
-app.get('/register/step1', (req, res) => res.redirect('/'));
-app.post('/register/step1', (req, res) => res.redirect('/'));
-app.get('/register/step2', (req, res) => res.redirect('/'));
-app.post('/register/step2', (req, res) => res.redirect('/'));
-app.get('/verify-email/:token', (req, res) => res.redirect('/'));
-app.post('/resend-verification', (req, res) => res.redirect('/'));
-app.get('/login', (req, res) => res.redirect('/'));
-app.post('/login', (req, res) => res.redirect('/'));
-app.get('/forgot-password', (req, res) => res.redirect('/'));
-app.post('/forgot-password', (req, res) => res.redirect('/'));
-app.get('/reset-password/:token', (req, res) => res.redirect('/'));
-app.post('/reset-password/:token', (req, res) => res.redirect('/'));
+
+// Show login page
+app.get('/login', (req, res) => {
+    const view = isMobile(req) ? 'mobile/login' : 'login';
+    res.render(view, {
+        user: null,
+        messages: req.session.messages || {},
+        showBack: true,
+        title: 'Login'
+    });
+    req.session.messages = {};
+});
+
+// Process login - Student ID OR Email
+app.post('/login', async (req, res) => {
+    const { identifier, password } = req.body;
+    
+    try {
+        const user = await User.findOne({ 
+            $or: [
+                { studentId: identifier },
+                { email: identifier }
+            ]
+        });
+        
+        if (!user) {
+            req.session.messages = { error: 'Invalid Student ID or Email.' };
+            return res.redirect('/login');
+        }
+        
+        const match = await bcrypt.compare(password, user.password);
+        if (!match) {
+            req.session.messages = { error: 'Invalid password.' };
+            return res.redirect('/login');
+        }
+        
+        if (!user.isVerified) {
+            req.session.messages = { error: 'Please verify your email first. Check your inbox.' };
+            return res.redirect('/login');
+        }
+        
+        req.session.userId = user.id;
+        req.session.messages = { success: `✅ Welcome back, ${user.firstName}!` };
+        res.redirect('/dashboard');
+        
+    } catch (error) {
+        console.error('Login error:', error);
+        req.session.messages = { error: 'Something went wrong. Please try again.' };
+        res.redirect('/login');
+    }
+});
+
+// Show register page
+app.get('/register', (req, res) => {
+    const courses = Object.keys(COURSE_CODES);
+    const view = isMobile(req) ? 'mobile/register' : 'register';
+    res.render(view, {
+        user: null,
+        courses: courses,
+        messages: req.session.messages || {},
+        showBack: true,
+        title: 'Register'
+    });
+    req.session.messages = {};
+});
+
+// Process registration
+app.post('/register', async (req, res) => {
+    const { 
+        firstName, middleName, lastName, dateOfBirth, gender,
+        country, state, city,
+        email, phone, whatsapp, homeAddress,
+        school, department, currentLevel, studentStatus,
+        courseName, learningLevel,
+        password, confirmPassword
+    } = req.body;
+    
+    // Validation
+    if (!firstName || !lastName || !email || !password || !courseName) {
+        req.session.messages = { error: 'All required fields must be filled.' };
+        return res.redirect('/register');
+    }
+    
+    if (password !== confirmPassword) {
+        req.session.messages = { error: 'Passwords do not match.' };
+        return res.redirect('/register');
+    }
+    
+    if (password.length < 6) {
+        req.session.messages = { error: 'Password must be at least 6 characters.' };
+        return res.redirect('/register');
+    }
+    
+    try {
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            req.session.messages = { error: 'Email already registered.' };
+            return res.redirect('/register');
+        }
+        
+        // Generate Student ID
+        const courseCode = COURSE_CODES[courseName];
+        if (!courseCode) {
+            req.session.messages = { error: 'Invalid course selected.' };
+            return res.redirect('/register');
+        }
+        const studentId = await generateStudentId(courseCode);
+        
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const verificationToken = generateToken();
+        
+        const newUser = new User({
+            id: generateId(),
+            studentId: studentId,
+            firstName,
+            middleName: middleName || '',
+            lastName,
+            dateOfBirth: dateOfBirth || '',
+            gender: gender || '',
+            country: country || '',
+            state: state || '',
+            city: city || '',
+            email,
+            phone: phone || '',
+            whatsapp: whatsapp || '',
+            homeAddress: homeAddress || '',
+            school: school || '',
+            department: department || '',
+            currentLevel: currentLevel || '',
+            studentStatus: studentStatus || '',
+            courseId: null,
+            courseName: courseName,
+            learningLevel: learningLevel || 'Beginner',
+            password: hashedPassword,
+            isVerified: false,
+            verificationToken: verificationToken,
+            createdAt: new Date()
+        });
+        
+        await newUser.save();
+        
+        // ===== SEND WELCOME EMAIL =====
+        const verificationLink = `https://shinex-learning.onrender.com/verify-email/${verificationToken}`;
+        
+        const emailHtml = `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #f8f6fc; border-radius: 12px;">
+                <div style="text-align: center; padding: 20px 0;">
+                    <h1 style="color: #8B5CF6; font-size: 28px;">SHINEX</h1>
+                    <p style="color: #7a6a8f; font-size: 14px;">Learning Circle</p>
+                </div>
+                <div style="background: #fff; padding: 30px; border-radius: 12px;">
+                    <h2 style="color: #1A0A2E;">🎉 Registration Successful!</h2>
+                    <p style="color: #5a4a70; font-size: 16px; line-height: 1.6;">
+                        Dear <strong>${firstName} ${lastName}</strong>,
+                    </p>
+                    <p style="color: #5a4a70; font-size: 16px; line-height: 1.6;">
+                        Congratulations! Your registration with SHINEX Learning Circle (SLC) has been successfully completed.
+                    </p>
+                    
+                    <div style="background: #f8f6fc; padding: 16px; border-radius: 8px; margin: 16px 0;">
+                        <p style="margin: 4px 0;"><strong style="color: #1A0A2E;">Student ID:</strong> <span style="color: #8B5CF6; font-weight: 700;">${studentId}</span></p>
+                        <p style="margin: 4px 0;"><strong style="color: #1A0A2E;">Registered Course:</strong> ${courseName}</p>
+                        <p style="margin: 4px 0;"><strong style="color: #1A0A2E;">Learning Level:</strong> ${learningLevel || 'Beginner'}</p>
+                        <p style="margin: 4px 0;"><strong style="color: #1A0A2E;">Registration Year:</strong> ${new Date().getFullYear()}</p>
+                    </div>
+                    
+                    <p style="color: #5a4a70; font-size: 14px; line-height: 1.6;">
+                        Your Student ID will be used to identify your account and access your learning portal.
+                    </p>
+                    
+                    <div style="text-align: center; margin: 25px 0;">
+                        <a href="${verificationLink}" 
+                           style="background: #8B5CF6; color: #fff; padding: 12px 32px; border-radius: 30px; text-decoration: none; font-weight: 600; font-size: 15px; display: inline-block;">
+                            Verify Email & Go to Student Portal
+                        </a>
+                    </div>
+                    
+                    <p style="color: #5a4a70; font-size: 14px; line-height: 1.6;">
+                        You can also log in with your <strong>Student ID</strong> or <strong>Email Address</strong>.
+                    </p>
+                    
+                    <div style="border-top: 2px solid #ede8f5; padding-top: 16px; margin-top: 16px; text-align: center;">
+                        <p style="color: #7a6a8f; font-size: 13px; line-height: 1.6;">
+                            <strong style="color: #8B5CF6;">Learn. Understand. Protect.</strong><br>
+                            We are glad to have you as part of the SHINEX Learning Circle community.
+                        </p>
+                        <p style="color: #7a6a8f; font-size: 12px;">
+                            Kindly share SHINEX Learning Circle with your friends, classmates, and colleagues so they can also benefit from our learning opportunities.
+                        </p>
+                    </div>
+                </div>
+                <div style="text-align: center; padding: 20px 0; color: #7a6a8f; font-size: 12px;">
+                    <p>&copy; ${new Date().getFullYear()} SHINEX Learning Circle. All rights reserved.</p>
+                    <p style="font-style: italic;">Learn. Understand. Protect.</p>
+                </div>
+            </div>
+        `;
+        
+        await sendEmail(email, 'Welcome to SHINEX Learning Circle - Registration Successful', emailHtml);
+        
+        req.session.messages = { 
+            success: `✅ Registration successful! Your Student ID is: ${studentId}. Please check your email to verify your account.` 
+        };
+        res.redirect('/login');
+        
+    } catch (error) {
+        console.error('Registration error:', error);
+        req.session.messages = { error: 'Something went wrong. Please try again.' };
+        res.redirect('/register');
+    }
+});
+
+// ===== VERIFY EMAIL - WITH SUCCESS/ERROR PAGES =====
+app.get('/verify-email/:token', async (req, res) => {
+    const { token } = req.params;
+    
+    try {
+        const user = await User.findOne({ verificationToken: token });
+        if (!user) {
+            const view = isMobile(req) ? 'mobile/verify-error' : 'verify-error';
+            return res.render(view, {
+                user: null,
+                messages: { error: 'Invalid or expired verification token.' },
+                showBack: true,
+                title: 'Verification Failed'
+            });
+        }
+        
+        user.isVerified = true;
+        user.verificationToken = null;
+        await user.save();
+        
+        const view = isMobile(req) ? 'mobile/verify-success' : 'verify-success';
+        res.render(view, {
+            user: user,
+            messages: { success: '✅ Your email has been verified successfully!' },
+            showBack: true,
+            title: 'Email Verified'
+        });
+        
+    } catch (error) {
+        console.error('Verification error:', error);
+        const view = isMobile(req) ? 'mobile/verify-error' : 'verify-error';
+        res.render(view, {
+            user: null,
+            messages: { error: 'Something went wrong. Please try again.' },
+            showBack: true,
+            title: 'Verification Failed'
+        });
+    }
+});
+
+// Logout
+app.get('/logout', (req, res) => {
+    req.session.destroy(() => {
+        res.redirect('/');
+    });
+});
 
 // ============================================================
-// ADMIN LOGIN (Separate – Still Works)
+// ADMIN LOGIN
 // ============================================================
 app.get('/shinex-admin', (req, res) => {
     if (req.session.adminId) return res.redirect('/admin/dashboard');
@@ -342,26 +697,262 @@ app.post('/shinex-admin', async (req, res) => {
     res.redirect('/admin/dashboard');
 });
 
-app.get('/logout', (req, res) => {
-    req.session.destroy(() => res.redirect('/'));
-});
-
 app.get('/admin/logout', (req, res) => {
     req.session.adminId = null;
     res.redirect('/shinex-admin');
 });
 
 // ============================================================
-// PUBLIC ROUTES – No login required (AdSense Review)
+// CONTACT ROUTES - WITH ADMIN NOTIFICATION
+// ============================================================
+
+// Show contact page
+app.get('/contact', (req, res) => {
+    const view = isMobile(req) ? 'mobile/contact' : 'contact';
+    res.render(view, { 
+        user: null, 
+        messages: req.session.messages || {}, 
+        showBack: true, 
+        title: 'Contact Us' 
+    });
+    req.session.messages = {};
+});
+
+// Submit contact form - Sends email to admin
+app.post('/contact/send', async (req, res) => {
+    const { name, email, subject, message } = req.body;
+    
+    if (!name || !email || !subject || !message) {
+        req.session.messages = { error: 'All fields are required.' };
+        return res.redirect('/contact');
+    }
+    
+    try {
+        // Save to database
+        const newMessage = new ContactMessage({
+            id: generateId(),
+            name,
+            email,
+            subject,
+            message,
+            status: 'unread',
+            createdAt: new Date()
+        });
+        await newMessage.save();
+        
+        // Send notification to admin
+        const adminEmail = process.env.ADMIN_EMAIL || 'balogunmustaphaaddeji@gmail.com';
+        const adminHtml = `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #f8f6fc; border-radius: 12px;">
+                <div style="text-align: center; padding: 20px 0;">
+                    <h1 style="color: #8B5CF6; font-size: 24px;">📬 New Contact Message</h1>
+                    <p style="color: #7a6a8f; font-size: 14px;">SHINEX Learning Circle</p>
+                </div>
+                <div style="background: #fff; padding: 24px; border-radius: 12px;">
+                    <p><strong>From:</strong> ${name}</p>
+                    <p><strong>Email:</strong> ${email}</p>
+                    <p><strong>Subject:</strong> ${subject}</p>
+                    <div style="background: #f8f6fc; padding: 12px; border-radius: 8px; margin: 12px 0;">
+                        <p><strong>Message:</strong></p>
+                        <p style="color: #5a4a70;">${message}</p>
+                    </div>
+                    <div style="text-align: center; margin-top: 16px;">
+                        <a href="https://shinex-learning.onrender.com/admin/messages" 
+                           style="background: #8B5CF6; color: #fff; padding: 10px 24px; border-radius: 30px; text-decoration: none; font-weight: 600;">
+                            View in Admin Panel
+                        </a>
+                    </div>
+                </div>
+                <div style="text-align: center; padding: 16px 0; color: #7a6a8f; font-size: 12px;">
+                    <p>&copy; ${new Date().getFullYear()} SHINEX Learning Circle</p>
+                </div>
+            </div>
+        `;
+        
+        await sendEmail(adminEmail, `📬 New Contact Message from ${name}`, adminHtml);
+        
+        // Send confirmation to user
+        const userHtml = `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #f8f6fc; border-radius: 12px;">
+                <div style="text-align: center; padding: 20px 0;">
+                    <h1 style="color: #8B5CF6; font-size: 24px;">✅ Message Received</h1>
+                    <p style="color: #7a6a8f; font-size: 14px;">SHINEX Learning Circle</p>
+                </div>
+                <div style="background: #fff; padding: 24px; border-radius: 12px;">
+                    <p style="color: #5a4a70; font-size: 16px; line-height: 1.6;">
+                        Dear <strong>${name}</strong>,
+                    </p>
+                    <p style="color: #5a4a70; font-size: 16px; line-height: 1.6;">
+                        Thank you for contacting SHINEX Learning Circle. We have received your message and will get back to you within 24-48 hours.
+                    </p>
+                    <div style="background: #f8f6fc; padding: 12px; border-radius: 8px; margin: 12px 0;">
+                        <p><strong>Your Message:</strong></p>
+                        <p style="color: #5a4a70;">${message}</p>
+                    </div>
+                    <p style="color: #7a6a8f; font-size: 14px; line-height: 1.6;">
+                        In the meantime, feel free to explore our courses and learning resources.
+                    </p>
+                    <div style="text-align: center; margin-top: 16px;">
+                        <a href="https://shinex-learning.onrender.com" 
+                           style="background: #8B5CF6; color: #fff; padding: 10px 24px; border-radius: 30px; text-decoration: none; font-weight: 600;">
+                            Explore Courses
+                        </a>
+                    </div>
+                </div>
+                <div style="text-align: center; padding: 16px 0; color: #7a6a8f; font-size: 12px;">
+                    <p style="font-style: italic;">Learn. Understand. Protect.</p>
+                    <p>&copy; ${new Date().getFullYear()} SHINEX Learning Circle</p>
+                </div>
+            </div>
+        `;
+        
+        await sendEmail(email, '✅ We Received Your Message - SHINEX Learning Circle', userHtml);
+        
+        req.session.messages = { success: '✅ Your message has been sent. We\'ll get back to you soon!' };
+        res.redirect('/contact');
+        
+    } catch (error) {
+        console.error('Contact error:', error);
+        req.session.messages = { error: 'Something went wrong. Please try again.' };
+        res.redirect('/contact');
+    }
+});
+
+// ============================================================
+// ADMIN MESSAGE ROUTES - View and Reply
+// ============================================================
+
+// View all messages
+app.get('/admin/messages', blockMobileAdmin, requireAdmin, async (req, res) => {
+    const messages = await ContactMessage.find().sort({ createdAt: -1 });
+    const unreadCount = messages.filter(m => m.status === 'unread').length;
+    
+    res.render('admin/messages', {
+        admin: req.admin,
+        messages: messages,
+        unreadCount: unreadCount,
+        msg: req.session.messages || {},
+        showBack: true,
+        title: 'Messages'
+    });
+    req.session.messages = {};
+});
+
+// View single message
+app.get('/admin/messages/:id', blockMobileAdmin, requireAdmin, async (req, res) => {
+    const message = await ContactMessage.findOne({ id: req.params.id });
+    if (!message) {
+        req.session.messages = { error: 'Message not found.' };
+        return res.redirect('/admin/messages');
+    }
+    
+    // Mark as read
+    if (message.status === 'unread') {
+        message.status = 'read';
+        await message.save();
+    }
+    
+    res.render('admin/message-view', {
+        admin: req.admin,
+        message: message,
+        messages: req.session.messages || {},
+        showBack: true,
+        title: 'View Message'
+    });
+    req.session.messages = {};
+});
+
+// Reply to message
+app.post('/admin/messages/reply/:id', blockMobileAdmin, requireAdmin, async (req, res) => {
+    const { reply } = req.body;
+    const message = await ContactMessage.findOne({ id: req.params.id });
+    
+    if (!message) {
+        req.session.messages = { error: 'Message not found.' };
+        return res.redirect('/admin/messages');
+    }
+    
+    if (!reply) {
+        req.session.messages = { error: 'Reply message is required.' };
+        return res.redirect('/admin/messages/' + message.id);
+    }
+    
+    try {
+        message.status = 'replied';
+        message.adminReply = reply;
+        message.repliedAt = new Date();
+        await message.save();
+        
+        // Send reply email to user
+        const emailHtml = `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #f8f6fc; border-radius: 12px;">
+                <div style="text-align: center; padding: 20px 0;">
+                    <h1 style="color: #8B5CF6; font-size: 24px;">📩 Reply from SHINEX</h1>
+                    <p style="color: #7a6a8f; font-size: 14px;">SHINEX Learning Circle</p>
+                </div>
+                <div style="background: #fff; padding: 24px; border-radius: 12px;">
+                    <p style="color: #5a4a70; font-size: 16px; line-height: 1.6;">
+                        Dear <strong>${message.name}</strong>,
+                    </p>
+                    <p style="color: #5a4a70; font-size: 16px; line-height: 1.6;">
+                        Thank you for contacting SHINEX Learning Circle. Here is our response to your inquiry:
+                    </p>
+                    <div style="background: #f8f6fc; padding: 12px; border-radius: 8px; margin: 12px 0;">
+                        <p><strong>Your Original Message:</strong></p>
+                        <p style="color: #5a4a70;">${message.message}</p>
+                    </div>
+                    <div style="background: #e8f5e9; padding: 12px; border-radius: 8px; margin: 12px 0; border-left: 4px solid #4CAF50;">
+                        <p><strong style="color: #2E7D32;">Our Reply:</strong></p>
+                        <p style="color: #1B5E20;">${reply}</p>
+                    </div>
+                    <p style="color: #7a6a8f; font-size: 14px; line-height: 1.6;">
+                        If you have any further questions, feel free to reply to this email or contact us again through our website.
+                    </p>
+                    <div style="text-align: center; margin-top: 16px;">
+                        <a href="https://shinex-learning.onrender.com" 
+                           style="background: #8B5CF6; color: #fff; padding: 10px 24px; border-radius: 30px; text-decoration: none; font-weight: 600;">
+                            Visit SHINEX
+                        </a>
+                    </div>
+                </div>
+                <div style="text-align: center; padding: 16px 0; color: #7a6a8f; font-size: 12px;">
+                    <p style="font-style: italic;">Learn. Understand. Protect.</p>
+                    <p>&copy; ${new Date().getFullYear()} SHINEX Learning Circle</p>
+                </div>
+            </div>
+        `;
+        
+        await sendEmail(message.email, '📩 Reply from SHINEX Learning Circle', emailHtml);
+        
+        req.session.messages = { success: '✅ Reply sent successfully!' };
+        res.redirect('/admin/messages');
+        
+    } catch (error) {
+        console.error('Reply error:', error);
+        req.session.messages = { error: 'Something went wrong. Please try again.' };
+        res.redirect('/admin/messages/' + message.id);
+    }
+});
+
+// Delete message
+app.post('/admin/messages/delete/:id', blockMobileAdmin, requireAdmin, async (req, res) => {
+    await ContactMessage.findOneAndDelete({ id: req.params.id });
+    req.session.messages = { success: '🗑️ Message deleted.' };
+    res.redirect('/admin/messages');
+});
+
+// ============================================================
+// PUBLIC ROUTES
 // ============================================================
 
 // HOME
 app.get('/', async (req, res) => {
+    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
     const courses = await Course.find();
     const services = await Service.find({ isActive: true });
     const view = isMobile(req) ? 'mobile/index' : 'index';
     res.render(view, {
-        user: null,
+        user: user,
         courses,
         services,
         messages: req.session.messages || {},
@@ -373,16 +964,37 @@ app.get('/', async (req, res) => {
 
 // DASHBOARD
 app.get('/dashboard', async (req, res) => {
+    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
     const courses = await Course.find();
+    const enrolledCourse = user && user.courseId ? await Course.findOne({ id: user.courseId }) : null;
+    
+    let totalClasses = 0, completedClasses = 0, score = 0;
+    if (enrolledCourse && enrolledCourse.levels && user && user.progress) {
+        enrolledCourse.levels.forEach(level => {
+            if (level.lessons) {
+                level.lessons.forEach(lesson => {
+                    if (lesson.classes) {
+                        lesson.classes.forEach(cls => {
+                            totalClasses++;
+                            if (user.progress && user.progress[cls.id]) completedClasses++;
+                        });
+                    }
+                });
+            }
+        });
+        score = completedClasses * 10;
+    }
+    const progress = totalClasses > 0 ? Math.round((completedClasses / totalClasses) * 100) : 0;
+    
     const view = isMobile(req) ? 'mobile/dashboard' : 'dashboard';
     res.render(view, {
-        user: null,
-        enrolledCourse: null,
-        progress: 0,
-        completedClasses: 0,
-        totalClasses: 0,
-        score: 0,
-        courses,
+        user: user,
+        enrolledCourse: enrolledCourse,
+        progress: progress,
+        completedClasses: completedClasses,
+        totalClasses: totalClasses,
+        score: score,
+        courses: courses,
         messages: req.session.messages || {},
         showBack: false,
         title: 'Dashboard'
@@ -392,6 +1004,7 @@ app.get('/dashboard', async (req, res) => {
 
 // COURSE PAGE
 app.get('/course/:courseId', async (req, res) => {
+    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
     const course = await Course.findOne({ id: req.params.courseId });
     if (!course) {
         req.session.messages = { error: 'Course not found.' };
@@ -399,7 +1012,7 @@ app.get('/course/:courseId', async (req, res) => {
     }
     const view = isMobile(req) ? 'mobile/course' : 'course';
     res.render(view, {
-        user: null,
+        user: user,
         course,
         messages: req.session.messages || {},
         showBack: true,
@@ -410,6 +1023,7 @@ app.get('/course/:courseId', async (req, res) => {
 
 // LEVEL PAGE
 app.get('/level/:courseId/:levelId', async (req, res) => {
+    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
     const course = await Course.findOne({ id: req.params.courseId });
     if (!course) {
         req.session.messages = { error: 'Course not found.' };
@@ -436,7 +1050,7 @@ app.get('/level/:courseId/:levelId', async (req, res) => {
                         imageUrl: cls.imageUrl,
                         videoUrl: cls.videoUrl,
                         externalLink: cls.externalLink,
-                        completed: false
+                        completed: user && user.progress && user.progress[cls.id] || false
                     });
                 });
             }
@@ -451,9 +1065,9 @@ app.get('/level/:courseId/:levelId', async (req, res) => {
     }
 
     let totalClasses = allClasses.length;
-    let completedClasses = 0;
-    let score = 0;
-    let progress = 0;
+    let completedClasses = allClasses.filter(c => c.completed).length;
+    let score = completedClasses * 10;
+    let progress = totalClasses > 0 ? Math.round((completedClasses / totalClasses) * 100) : 0;
 
     let currentLesson = null;
     if (level.lessons) {
@@ -470,7 +1084,7 @@ app.get('/level/:courseId/:levelId', async (req, res) => {
 
     const view = isMobile(req) ? 'mobile/level' : 'level';
     res.render(view, {
-        user: null,
+        user: user,
         course,
         level,
         currentClass,
@@ -491,33 +1105,15 @@ app.get('/level/:courseId/:levelId', async (req, res) => {
 
 // SETTINGS
 app.get('/settings', async (req, res) => {
+    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
     const view = isMobile(req) ? 'mobile/settings' : 'settings';
     res.render(view, {
-        user: null,
+        user: user,
         messages: req.session.messages || {},
         showBack: true,
         title: 'Settings'
     });
     req.session.messages = {};
-});
-
-// CONTACT
-app.get('/contact', (req, res) => {
-    const view = isMobile(req) ? 'mobile/contact' : 'contact';
-    res.render(view, { 
-        user: null, 
-        messages: req.session.messages || {}, 
-        showBack: true, 
-        title: 'Contact Us' 
-    });
-    req.session.messages = {};
-});
-
-// CONTACT FORM SUBMISSION
-app.post('/contact/send', (req, res) => {
-    const { name, email, subject, message } = req.body;
-    req.session.messages = { success: '✅ Your message has been sent. We\'ll get back to you soon!' };
-    res.redirect('/contact');
 });
 
 // TERMS
@@ -544,9 +1140,7 @@ app.get('/privacy', (req, res) => {
     req.session.messages = {};
 });
 
-// ============================================================
-// FAQ PAGE
-// ============================================================
+// FAQ
 app.get('/faq', (req, res) => {
     const view = isMobile(req) ? 'mobile/faq' : 'faq';
     res.render(view, {
@@ -558,9 +1152,7 @@ app.get('/faq', (req, res) => {
     req.session.messages = {};
 });
 
-// ============================================================
-// ABOUT US PAGE
-// ============================================================
+// ABOUT
 app.get('/about', (req, res) => {
     const view = isMobile(req) ? 'mobile/about' : 'about';
     res.render(view, {
@@ -572,9 +1164,7 @@ app.get('/about', (req, res) => {
     req.session.messages = {};
 });
 
-// ============================================================
-// SERVICES PAGE
-// ============================================================
+// SERVICES
 app.get('/services', (req, res) => {
     const view = isMobile(req) ? 'mobile/services' : 'services';
     res.render(view, {
@@ -587,16 +1177,177 @@ app.get('/services', (req, res) => {
 });
 
 // ============================================================
-// ADMIN ROUTES
+// SETTINGS API
 // ============================================================
+app.post('/settings/update', async (req, res) => {
+    const { firstName, lastName, bio, textSize, darkMode, currentPassword, newPassword, confirmPassword } = req.body;
+    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
+    
+    if (!user) {
+        return res.json({ success: false, error: 'Please log in first.' });
+    }
 
+    try {
+        if (firstName) user.firstName = firstName;
+        if (lastName) user.lastName = lastName;
+        if (bio !== undefined) user.bio = bio;
+        if (textSize) user.textSize = parseInt(textSize);
+        if (darkMode !== undefined) user.darkMode = darkMode === 'on' || darkMode === 'true';
+
+        if (currentPassword && newPassword && confirmPassword) {
+            if (!(await bcrypt.compare(currentPassword, user.password))) {
+                return res.json({ success: false, error: 'Current password is incorrect.' });
+            }
+            if (newPassword !== confirmPassword || newPassword.length < 6) {
+                return res.json({ success: false, error: 'New password must be at least 6 characters and match.' });
+            }
+            user.password = await bcrypt.hash(newPassword, 10);
+        }
+
+        await user.save();
+        res.json({ success: true, message: 'Settings updated successfully!' });
+    } catch (error) {
+        res.json({ success: false, error: 'Something went wrong. Please try again.' });
+    }
+});
+
+app.post('/logout-all', async (req, res) => {
+    req.session.destroy();
+    res.json({ success: true });
+});
+
+// ============================================================
+// PROGRESS TRACKING ROUTES
+// ============================================================
+app.post('/level/complete/:classId', async (req, res) => {
+    const { classId } = req.params;
+    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
+    
+    if (!user) {
+        req.session.messages = { error: 'Please log in to track progress.' };
+        return res.redirect('back');
+    }
+    
+    if (!user.progress) user.progress = {};
+    user.progress[classId] = true;
+    await user.save();
+    
+    const totalCompleted = Object.keys(user.progress).length;
+    
+    req.session.messages = { 
+        success: `✅ Class completed! +10 points! (${totalCompleted} classes done)` 
+    };
+    
+    res.redirect('back');
+});
+
+app.get('/level/:courseId/:levelId/next/:classId', async (req, res) => {
+    const { courseId, levelId, classId } = req.params;
+    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
+    
+    if (!user) {
+        req.session.messages = { error: 'Please log in to track progress.' };
+        return res.redirect('/login');
+    }
+    
+    if (!user.progress) user.progress = {};
+    user.progress[classId] = true;
+    await user.save();
+    
+    const course = await Course.findOne({ id: courseId });
+    if (!course) {
+        req.session.messages = { error: 'Course not found.' };
+        return res.redirect('/');
+    }
+    
+    const level = course.levels.find(l => l.id === levelId);
+    if (!level) {
+        req.session.messages = { error: 'Level not found.' };
+        return res.redirect('/course/' + courseId);
+    }
+    
+    let allClassIds = [];
+    if (level.lessons) {
+        level.lessons.forEach(lesson => {
+            if (lesson.classes) {
+                lesson.classes.forEach(cls => {
+                    allClassIds.push(cls.id);
+                });
+            }
+        });
+    }
+    
+    const currentIndex = allClassIds.indexOf(classId);
+    const nextClassId = currentIndex < allClassIds.length - 1 ? allClassIds[currentIndex + 1] : null;
+    const totalCompleted = Object.keys(user.progress).length;
+    const totalClasses = allClassIds.length;
+    const progressPercent = Math.round((totalCompleted / totalClasses) * 100);
+    
+    req.session.messages = { 
+        success: `✅ Class completed! +10 points! (${totalCompleted}/${totalClasses} done - ${progressPercent}%)` 
+    };
+    
+    if (nextClassId) {
+        res.redirect(`/level/${courseId}/${levelId}?classId=${nextClassId}`);
+    } else {
+        req.session.messages = { 
+            success: `🎉 All classes completed! You finished this level! (${totalCompleted}/${totalClasses})` 
+        };
+        res.redirect(`/course/${courseId}`);
+    }
+});
+
+app.get('/level/:courseId/:levelId/prev/:classId', async (req, res) => {
+    const { courseId, levelId, classId } = req.params;
+    
+    const course = await Course.findOne({ id: courseId });
+    if (!course) {
+        req.session.messages = { error: 'Course not found.' };
+        return res.redirect('/');
+    }
+    
+    const level = course.levels.find(l => l.id === levelId);
+    if (!level) {
+        req.session.messages = { error: 'Level not found.' };
+        return res.redirect('/course/' + courseId);
+    }
+    
+    let allClassIds = [];
+    if (level.lessons) {
+        level.lessons.forEach(lesson => {
+            if (lesson.classes) {
+                lesson.classes.forEach(cls => {
+                    allClassIds.push(cls.id);
+                });
+            }
+        });
+    }
+    
+    const currentIndex = allClassIds.indexOf(classId);
+    const prevClassId = currentIndex > 0 ? allClassIds[currentIndex - 1] : null;
+    
+    if (prevClassId) {
+        res.redirect(`/level/${courseId}/${levelId}?classId=${prevClassId}`);
+    } else {
+        req.session.messages = { error: 'This is the first class.' };
+        res.redirect(`/level/${courseId}/${levelId}?classId=${classId}`);
+    }
+});
+
+// ============================================================
+// ADMIN ROUTES - (All your existing admin routes)
+// ============================================================
+// ===== COURSES MANAGEMENT =====
 app.get('/admin/dashboard', blockMobileAdmin, requireAdmin, async (req, res) => {
     const users = await User.find();
     const courses = await Course.find();
     const services = await Service.find();
+    const messages = await ContactMessage.find();
     const totalStudents = users.filter(u => !u.isAdmin).length;
     const totalCourses = courses.length;
     const totalEnrollments = users.filter(u => u.courseId && !u.isAdmin).length;
+    const totalServices = services.length;
+    const unreadCount = messages.filter(m => m.status === 'unread').length;
 
     let totalClasses = 0;
     courses.forEach(c => {
@@ -623,7 +1374,8 @@ app.get('/admin/dashboard', blockMobileAdmin, requireAdmin, async (req, res) => 
         totalCourses,
         totalEnrollments,
         totalClasses,
-        totalServices: services.length,
+        totalServices,
+        unreadCount,
         studentsByCourse,
         courses,
         users,
@@ -735,9 +1487,7 @@ app.post('/admin/courses/edit/:id', blockMobileAdmin, requireAdmin, async (req, 
     res.redirect('/admin/courses');
 });
 
-// ============================================================
-// ADMIN LEVEL ROUTES
-// ============================================================
+// ===== LEVEL MANAGEMENT =====
 app.post('/admin/courses/:id/levels/add', blockMobileAdmin, requireAdmin, async (req, res) => {
     const { name, duration } = req.body;
     if (!name || !duration) {
@@ -927,9 +1677,7 @@ app.post('/admin/levels/:courseId/:levelId/lessons/:lessonId/classes/edit/:class
     res.redirect(`/admin/levels/edit/${req.params.courseId}/${req.params.levelId}`);
 });
 
-// ============================================================
-// ADMIN TEST ROUTES
-// ============================================================
+// ===== TEST MANAGEMENT =====
 app.post('/admin/levels/:courseId/:levelId/test/add', blockMobileAdmin, requireAdmin, async (req, res) => {
     const { question, option1, option2, option3, option4, correct } = req.body;
     if (!question || !option1 || !option2 || !option3 || !option4 || correct === undefined) {
@@ -976,9 +1724,88 @@ app.post('/admin/levels/:courseId/:levelId/test/delete/:questionId', blockMobile
     res.redirect(`/admin/levels/edit/${req.params.courseId}/${req.params.levelId}`);
 });
 
-// ============================================================
-// ADMIN MANAGE ADMINS
-// ============================================================
+// ===== SERVICES MANAGEMENT =====
+app.get('/admin/services', blockMobileAdmin, requireAdmin, async (req, res) => {
+    const services = await Service.find().sort({ createdAt: -1 });
+    res.render('admin/services', {
+        admin: req.admin,
+        services,
+        messages: req.session.messages || {},
+        showBack: true,
+        title: 'Manage Services'
+    });
+    req.session.messages = {};
+});
+
+app.post('/admin/services/add', blockMobileAdmin, requireAdmin, async (req, res) => {
+    const { name, description, price, category } = req.body;
+    if (!name) {
+        req.session.messages = { error: 'Service name is required.' };
+        return res.redirect('/admin/services');
+    }
+    const newService = new Service({
+        id: generateId(),
+        name,
+        description: description || '',
+        price: parseInt(price) || 0,
+        category: category || 'other',
+        isActive: true,
+        createdAt: new Date()
+    });
+    await newService.save();
+    req.session.messages = { success: '✅ Service added successfully!' };
+    res.redirect('/admin/services');
+});
+
+app.get('/admin/services/delete/:id', blockMobileAdmin, requireAdmin, async (req, res) => {
+    await Service.findOneAndDelete({ id: req.params.id });
+    req.session.messages = { success: '🗑️ Service deleted.' };
+    res.redirect('/admin/services');
+});
+
+app.post('/admin/services/toggle/:id', blockMobileAdmin, requireAdmin, async (req, res) => {
+    const service = await Service.findOne({ id: req.params.id });
+    if (service) {
+        service.isActive = !service.isActive;
+        await service.save();
+        req.session.messages = { success: `✅ Service ${service.isActive ? 'activated' : 'deactivated'}.` };
+    }
+    res.redirect('/admin/services');
+});
+
+app.get('/admin/services/edit/:id', blockMobileAdmin, requireAdmin, async (req, res) => {
+    const service = await Service.findOne({ id: req.params.id });
+    if (!service) {
+        req.session.messages = { error: 'Service not found.' };
+        return res.redirect('/admin/services');
+    }
+    res.render('admin/service-edit', {
+        admin: req.admin,
+        service,
+        messages: req.session.messages || {},
+        showBack: true,
+        title: 'Edit Service'
+    });
+    req.session.messages = {};
+});
+
+app.post('/admin/services/edit/:id', blockMobileAdmin, requireAdmin, async (req, res) => {
+    const { name, description, price, category } = req.body;
+    const service = await Service.findOne({ id: req.params.id });
+    if (!service) {
+        req.session.messages = { error: 'Service not found.' };
+        return res.redirect('/admin/services');
+    }
+    if (name) service.name = name;
+    if (description !== undefined) service.description = description;
+    if (price !== undefined) service.price = parseInt(price) || 0;
+    if (category) service.category = category;
+    await service.save();
+    req.session.messages = { success: '✅ Service updated successfully!' };
+    res.redirect('/admin/services');
+});
+
+// ===== ADMIN MANAGERS =====
 app.get('/admin/manage-admins', blockMobileAdmin, requireAdmin, async (req, res) => {
     const users = await User.find();
     const admins = users.filter(u => u.isAdmin);
@@ -1016,252 +1843,6 @@ app.post('/admin/remove-admin/:id', blockMobileAdmin, requireAdmin, async (req, 
 });
 
 // ============================================================
-// ADMIN SERVICES MANAGEMENT
-// ============================================================
-
-// View all services
-app.get('/admin/services', blockMobileAdmin, requireAdmin, async (req, res) => {
-    const services = await Service.find().sort({ createdAt: -1 });
-    res.render('admin/services', {
-        admin: req.admin,
-        services,
-        messages: req.session.messages || {},
-        showBack: true,
-        title: 'Manage Services'
-    });
-    req.session.messages = {};
-});
-
-// Add service
-app.post('/admin/services/add', blockMobileAdmin, requireAdmin, async (req, res) => {
-    const { name, description, price, category } = req.body;
-    
-    if (!name) {
-        req.session.messages = { error: 'Service name is required.' };
-        return res.redirect('/admin/services');
-    }
-    
-    const newService = new Service({
-        id: generateId(),
-        name,
-        description: description || '',
-        price: parseInt(price) || 0,
-        category: category || 'other',
-        isActive: true,
-        createdAt: new Date()
-    });
-    
-    await newService.save();
-    req.session.messages = { success: '✅ Service added successfully!' };
-    res.redirect('/admin/services');
-});
-
-// Delete service
-app.get('/admin/services/delete/:id', blockMobileAdmin, requireAdmin, async (req, res) => {
-    await Service.findOneAndDelete({ id: req.params.id });
-    req.session.messages = { success: '🗑️ Service deleted.' };
-    res.redirect('/admin/services');
-});
-
-// Toggle service active status
-app.post('/admin/services/toggle/:id', blockMobileAdmin, requireAdmin, async (req, res) => {
-    const service = await Service.findOne({ id: req.params.id });
-    if (service) {
-        service.isActive = !service.isActive;
-        await service.save();
-        req.session.messages = { success: `✅ Service ${service.isActive ? 'activated' : 'deactivated'}.` };
-    }
-    res.redirect('/admin/services');
-});
-
-// Edit service
-app.get('/admin/services/edit/:id', blockMobileAdmin, requireAdmin, async (req, res) => {
-    const service = await Service.findOne({ id: req.params.id });
-    if (!service) {
-        req.session.messages = { error: 'Service not found.' };
-        return res.redirect('/admin/services');
-    }
-    res.render('admin/service-edit', {
-        admin: req.admin,
-        service,
-        messages: req.session.messages || {},
-        showBack: true,
-        title: 'Edit Service'
-    });
-    req.session.messages = {};
-});
-
-app.post('/admin/services/edit/:id', blockMobileAdmin, requireAdmin, async (req, res) => {
-    const { name, description, price, category } = req.body;
-    const service = await Service.findOne({ id: req.params.id });
-    
-    if (!service) {
-        req.session.messages = { error: 'Service not found.' };
-        return res.redirect('/admin/services');
-    }
-    
-    if (name) service.name = name;
-    if (description !== undefined) service.description = description;
-    if (price !== undefined) service.price = parseInt(price) || 0;
-    if (category) service.category = category;
-    
-    await service.save();
-    req.session.messages = { success: '✅ Service updated successfully!' };
-    res.redirect('/admin/services');
-});
-
-// ============================================================
-// SETTINGS API (AJAX)
-// ============================================================
-app.post('/settings/update', async (req, res) => {
-    const { firstName, lastName, bio, textSize, darkMode, currentPassword, newPassword, confirmPassword } = req.body;
-    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
-    
-    if (!user) {
-        return res.json({ success: false, error: 'Please log in first.' });
-    }
-
-    try {
-        if (firstName) user.firstName = firstName;
-        if (lastName) user.lastName = lastName;
-        if (bio !== undefined) user.bio = bio;
-        if (textSize) user.textSize = parseInt(textSize);
-        if (darkMode !== undefined) user.darkMode = darkMode === 'on' || darkMode === 'true';
-
-        if (currentPassword && newPassword && confirmPassword) {
-            if (!(await bcrypt.compare(currentPassword, user.password))) {
-                return res.json({ success: false, error: 'Current password is incorrect.' });
-            }
-            if (newPassword !== confirmPassword || newPassword.length < 6) {
-                return res.json({ success: false, error: 'New password must be at least 6 characters and match.' });
-            }
-            user.password = await bcrypt.hash(newPassword, 10);
-        }
-
-        await user.save();
-        res.json({ success: true, message: 'Settings updated successfully!' });
-    } catch (error) {
-        res.json({ success: false, error: 'Something went wrong. Please try again.' });
-    }
-});
-
-// Logout all sessions
-app.post('/logout-all', async (req, res) => {
-    req.session.destroy();
-    res.json({ success: true });
-});
-
-// ============================================================
-// PROGRESS TRACKING ROUTES
-// ============================================================
-
-// Mark class complete
-app.post('/level/complete/:classId', async (req, res) => {
-    const { classId } = req.params;
-    
-    if (!req.session.progress) {
-        req.session.progress = {};
-    }
-    req.session.progress[classId] = true;
-    
-    const totalCompleted = Object.keys(req.session.progress).length;
-    
-    req.session.messages = { 
-        success: `✅ Class completed! +10 points! (${totalCompleted} classes done)` 
-    };
-    
-    res.redirect('back');
-});
-
-// Next class
-app.get('/level/:courseId/:levelId/next/:classId', async (req, res) => {
-    const { courseId, levelId, classId } = req.params;
-    
-    if (!req.session.progress) {
-        req.session.progress = {};
-    }
-    req.session.progress[classId] = true;
-    
-    const course = await Course.findOne({ id: courseId });
-    if (!course) {
-        req.session.messages = { error: 'Course not found.' };
-        return res.redirect('/');
-    }
-    
-    const level = course.levels.find(l => l.id === levelId);
-    if (!level) {
-        req.session.messages = { error: 'Level not found.' };
-        return res.redirect('/course/' + courseId);
-    }
-    
-    let allClassIds = [];
-    if (level.lessons) {
-        level.lessons.forEach(lesson => {
-            if (lesson.classes) {
-                lesson.classes.forEach(cls => {
-                    allClassIds.push(cls.id);
-                });
-            }
-        });
-    }
-    
-    const currentIndex = allClassIds.indexOf(classId);
-    const nextClassId = currentIndex < allClassIds.length - 1 ? allClassIds[currentIndex + 1] : null;
-    const totalCompleted = Object.keys(req.session.progress).length;
-    
-    req.session.messages = { 
-        success: `✅ Class completed! (${totalCompleted} classes done)` 
-    };
-    
-    if (nextClassId) {
-        res.redirect(`/level/${courseId}/${levelId}?classId=${nextClassId}`);
-    } else {
-        req.session.messages = { 
-            success: `🎉 All classes completed! You finished this level!` 
-        };
-        res.redirect(`/course/${courseId}`);
-    }
-});
-
-// Previous class
-app.get('/level/:courseId/:levelId/prev/:classId', async (req, res) => {
-    const { courseId, levelId, classId } = req.params;
-    
-    const course = await Course.findOne({ id: courseId });
-    if (!course) {
-        req.session.messages = { error: 'Course not found.' };
-        return res.redirect('/');
-    }
-    
-    const level = course.levels.find(l => l.id === levelId);
-    if (!level) {
-        req.session.messages = { error: 'Level not found.' };
-        return res.redirect('/course/' + courseId);
-    }
-    
-    let allClassIds = [];
-    if (level.lessons) {
-        level.lessons.forEach(lesson => {
-            if (lesson.classes) {
-                lesson.classes.forEach(cls => {
-                    allClassIds.push(cls.id);
-                });
-            }
-        });
-    }
-    
-    const currentIndex = allClassIds.indexOf(classId);
-    const prevClassId = currentIndex > 0 ? allClassIds[currentIndex - 1] : null;
-    
-    if (prevClassId) {
-        res.redirect(`/level/${courseId}/${levelId}?classId=${prevClassId}`);
-    } else {
-        req.session.messages = { error: 'This is the first class.' };
-        res.redirect(`/level/${courseId}/${levelId}?classId=${classId}`);
-    }
-});
-
-// ============================================================
 // START SERVER
 // ============================================================
 async function startServer() {
@@ -1270,21 +1851,12 @@ async function startServer() {
         const hashed = await bcrypt.hash('SHINEXAdmin@2026', 10);
         const admin = new User({
             id: generateId(),
-            fullName: 'Admin User',
-            email: 'balogunmustaphaaddeji@gmail.com',
-            password: hashed,
             firstName: 'Admin',
             lastName: 'User',
-            gender: 'Male',
-            dob: '1990-01-01',
-            country: 'USA',
-            experienceLevel: 'Advanced',
-            courseId: null,
-            interests: [],
-            bio: 'System Administrator',
-            termsAccepted: true,
+            email: 'balogunmustaphaaddeji@gmail.com',
+            password: hashed,
+            studentId: 'SLC-2026-ADMIN-001',
             isAdmin: true,
-            progress: {},
             isVerified: true,
             createdAt: new Date()
         });

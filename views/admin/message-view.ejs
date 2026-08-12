@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Message – Admin</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <%- include('../partials/admin-header') %>
+
+    <main class="admin-main">
+        <div class="container" style="max-width:800px;">
+            <h1><i class="fas fa-envelope" style="color:var(--primary);"></i> View Message</h1>
+
+            <% if (messages && messages.error) { %>
+                <div class="alert alert-danger"><%= messages.error %></div>
+            <% } %>
+            <% if (messages && messages.success) { %>
+                <div class="alert alert-success"><%= messages.success %></div>
+            <% } %>
+
+            <div class="card">
+                <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; border-bottom:1px solid #ede8f5; padding-bottom:12px; margin-bottom:12px;">
+                    <div>
+                        <span style="font-size:0.7rem; color:var(--text-muted);">From</span>
+                        <p style="font-size:1.1rem; font-weight:700; margin:0;"><%= message.name %></p>
+                        <p style="color:var(--text-muted); font-size:0.85rem; margin:0;">
+                            <i class="fas fa-envelope"></i> <%= message.email %>
+                        </p>
+                    </div>
+                    <div style="text-align:right;">
+                        <span style="font-size:0.7rem; color:var(--text-muted);">Status</span>
+                        <div>
+                            <% if (message.status === 'unread') { %>
+                                <span style="background:#e74c3c; color:#fff; padding:4px 14px; border-radius:20px; font-size:0.8rem;">🔴 Unread</span>
+                            <% } else if (message.status === 'read') { %>
+                                <span style="background:#3498db; color:#fff; padding:4px 14px; border-radius:20px; font-size:0.8rem;">📖 Read</span>
+                            <% } else if (message.status === 'replied') { %>
+                                <span style="background:#27ae60; color:#fff; padding:4px 14px; border-radius:20px; font-size:0.8rem;">✅ Replied</span>
+                            <% } %>
+                        </div>
+                        <p style="color:var(--text-muted); font-size:0.75rem; margin:4px 0 0;">
+                            <i class="fas fa-clock"></i> <%= new Date(message.createdAt).toLocaleString() %>
+                        </p>
+                    </div>
+                </div>
+
+                <div style="margin-bottom:16px;">
+                    <span style="font-size:0.7rem; color:var(--text-muted);">Subject</span>
+                    <p style="font-size:1rem; font-weight:600; margin:0;"><%= message.subject %></p>
+                </div>
+
+                <div style="margin-bottom:16px;">
+                    <span style="font-size:0.7rem; color:var(--text-muted);">Message</span>
+                    <div style="background:var(--primary-bg); border-radius:8px; padding:16px; margin-top:4px; line-height:1.8;">
+                        <p style="margin:0; white-space:pre-wrap;"><%= message.message %></p>
+                    </div>
+                </div>
+
+                <% if (message.adminReply) { %>
+                    <div style="margin-bottom:16px; border-top:2px solid #27ae60; padding-top:12px;">
+                        <span style="font-size:0.7rem; color:var(--text-muted);">
+                            <i class="fas fa-reply"></i> Your Reply
+                        </span>
+                        <div style="background:#e8f5e9; border-radius:8px; padding:16px; margin-top:4px; border-left:4px solid #27ae60;">
+                            <p style="margin:0; white-space:pre-wrap;"><%= message.adminReply %></p>
+                            <p style="color:var(--text-muted); font-size:0.7rem; margin:4px 0 0;">
+                                Replied on: <%= new Date(message.repliedAt).toLocaleString() %>
+                            </p>
+                        </div>
+                    </div>
+                <% } %>
+
+                <!-- Reply Form -->
+                <div style="border-top:1px solid #ede8f5; padding-top:16px; margin-top:16px;">
+                    <h4 style="font-weight:700; color:var(--text-dark); margin:0 0 8px 0;">
+                        <i class="fas fa-reply"></i> Reply to <%= message.name %>
+                    </h4>
+                    <form method="POST" action="/admin/messages/reply/<%= message.id %>">
+                        <div class="settings-group">
+                            <label for="reply">Your Reply</label>
+                            <textarea id="reply" name="reply" rows="4" placeholder="Type your reply here..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i> Send Reply
+                        </button>
+                        <a href="/admin/messages" class="btn btn-secondary">Back</a>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Delete Message -->
+            <form method="POST" action="/admin/messages/delete/<%= message.id %>" style="display:inline;">
+                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this message?')">
+                    <i class="fas fa-trash"></i> Delete Message
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <%- include('../partials/admin-footer') %>
+    <script src="/js/script.js"></script>
+</body>
+</html>
