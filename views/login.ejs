@@ -4,82 +4,242 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login – SHINEX</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* ===== DARK MODE FIXES FOR LOGIN ===== */
-        body.dark-mode .card {
-            background: #1a1a1a !important;
-            border-color: #333 !important;
+        .auth-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 70vh;
+            padding: 20px;
         }
-        body.dark-mode .card h2,
-        body.dark-mode .card p,
-        body.dark-mode .card label {
-            color: #ffffff !important;
+        .auth-box {
+            background: #fff;
+            border-radius: 16px;
+            padding: 36px 32px;
+            max-width: 420px;
+            width: 100%;
+            border: 1px solid #ede8f5;
+            box-shadow: 0 4px 20px rgba(26, 10, 46, 0.08);
         }
-        body.dark-mode .card input {
-            background: #2a2a2a !important;
-            border-color: #444 !important;
-            color: #ffffff !important;
+        body.dark-mode .auth-box {
+            background: #1a1a1a;
+            border-color: #333;
         }
-        body.dark-mode .card input::placeholder {
-            color: #888888 !important;
+        .auth-box .auth-logo {
+            text-align: center;
+            margin-bottom: 20px;
         }
-        body.dark-mode .card .btn-primary {
-            background: #8B5CF6 !important;
-            color: #ffffff !important;
+        .auth-box .auth-logo h1 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin: 0;
         }
-        body.dark-mode .card .alert-success {
-            background: #1a3a2a !important;
-            color: #7dcea0 !important;
+        body.dark-mode .auth-box .auth-logo h1 {
+            color: var(--text-light);
         }
-        body.dark-mode .card .alert-danger {
-            background: #3a1a1a !important;
-            color: #f1948a !important;
+        .auth-box .auth-logo h1 span {
+            color: #8B5CF6;
         }
-        body.dark-mode .card a {
-            color: #a78bfa !important;
+        .auth-box .auth-logo p {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin: 0;
+            letter-spacing: 2px;
+        }
+        .auth-box .auth-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            text-align: center;
+            margin: 0 0 4px 0;
+        }
+        body.dark-mode .auth-box .auth-title {
+            color: var(--text-light);
+        }
+        .auth-box .auth-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-align: center;
+            margin: 0 0 20px 0;
+        }
+        .auth-box .form-group {
+            margin-bottom: 16px;
+        }
+        .auth-box .form-group label {
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: var(--text-dark);
+            display: block;
+            margin-bottom: 4px;
+        }
+        body.dark-mode .auth-box .form-group label {
+            color: var(--text-light);
+        }
+        .auth-box .form-group input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid #ede8f5;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: #fff;
+            color: var(--text-dark);
+        }
+        body.dark-mode .auth-box .form-group input {
+            background: #2a2a2a;
+            color: var(--text-light);
+            border-color: #333;
+        }
+        .auth-box .form-group input:focus {
+            border-color: #8B5CF6;
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.12);
+            outline: none;
+        }
+        .auth-box .help-text {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 3px;
+        }
+        .auth-box .btn-auth {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #8B5CF6;
+            color: #fff;
+            margin-top: 8px;
+        }
+        .auth-box .btn-auth:hover {
+            background: #6a3dcf;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.3);
+        }
+        .auth-box .alert {
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        .auth-box .alert-danger {
+            background: #fadbd8;
+            color: #922b21;
+            border-left: 4px solid #e74c3c;
+        }
+        .auth-box .alert-success {
+            background: #d5f5e3;
+            color: #1a7a4a;
+            border-left: 4px solid #27ae60;
+        }
+        body.dark-mode .auth-box .alert-danger {
+            background: #3a1a1a;
+            color: #f1948a;
+        }
+        body.dark-mode .auth-box .alert-success {
+            background: #1a3a2a;
+            color: #7dcea0;
+        }
+        .auth-box .auth-footer {
+            text-align: center;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #ede8f5;
+        }
+        body.dark-mode .auth-box .auth-footer {
+            border-color: #333;
+        }
+        .auth-box .auth-footer a {
+            color: #8B5CF6;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .auth-box .auth-footer a:hover {
+            text-decoration: underline;
+        }
+        .auth-box .auth-footer p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin: 0;
+        }
+        .slc-note {
+            text-align: center;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 12px;
+            padding-top: 8px;
+            border-top: 1px solid #ede8f5;
         }
     </style>
 </head>
 <body>
-    <%- include('partials/header', { showBack: true }) %>
+    <div id="page-loader">
+        <div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div>
+        <div class="loader-text">SHINEX</div>
+        <div class="loader-sub">LEARNING CIRCLE</div>
+    </div>
 
-    <main class="main-content" style="display:flex; align-items:center; justify-content:center; min-height:70vh;">
-        <div class="container" style="max-width:460px;">
-            <div class="card" style="padding:32px 28px; box-shadow:var(--shadow);">
-                <h2 style="font-size:1.8rem; font-weight:700; margin:0 0 4px; text-align:center;">Welcome Back</h2>
-                <p style="text-align:center; color:var(--text-muted); margin-bottom:24px;">Login with your Student ID or Email</p>
+    <%- include(getHeader()) %>
 
-                <% if (messages && messages.success) { %>
-                    <div class="alert alert-success"><%= messages.success %></div>
-                <% } %>
-                <% if (messages && messages.error) { %>
-                    <div class="alert alert-danger"><%= messages.error %></div>
-                <% } %>
-
-                <form action="/login" method="POST">
-                    <div class="settings-group">
-                        <label for="identifier">Student ID or Email</label>
-                        <input type="text" id="identifier" name="identifier" placeholder="e.g. SLC-2026-01-001 or email@example.com" required>
+    <main class="main-content">
+        <div class="container">
+            <div class="auth-wrapper">
+                <div class="auth-box">
+                    <!-- Logo -->
+                    <div class="auth-logo">
+                        <h1>SHINEX<span>.</span></h1>
+                        <p>LEARNING CIRCLE</p>
                     </div>
-                    <div class="settings-group">
-                        <label for="password">Password</label>
-                        <input type="password" id="password" name="password" placeholder="Enter your password" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-top:8px;">
-                        <i class="fas fa-sign-in-alt"></i> Login
-                    </button>
-                </form>
 
-                <div style="text-align:center; margin-top:16px; font-size:0.9rem;">
-                    <p style="color:var(--text-muted);">Don't have an account? <a href="/register" style="color:var(--primary); font-weight:600;">Register here</a></p>
+                    <div class="auth-title">Welcome Back</div>
+                    <div class="auth-subtitle">Login with your Student ID or Email</div>
+
+                    <!-- Messages -->
+                    <% if (messages && messages.error) { %>
+                        <div class="alert alert-danger"><%= messages.error %></div>
+                    <% } %>
+                    <% if (messages && messages.success) { %>
+                        <div class="alert alert-success"><%= messages.success %></div>
+                    <% } %>
+
+                    <!-- Login Form -->
+                    <form action="/login" method="POST">
+                        <div class="form-group">
+                            <label for="identifier">Student ID or Email</label>
+                            <input type="text" id="identifier" name="identifier" placeholder="Enter your Student ID or Email" required>
+                            <div class="help-text">Enter your Student ID or registered email address</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                        </div>
+                        <button type="submit" class="btn-auth">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </button>
+                    </form>
+
+                    <div class="auth-footer">
+                        <p>Don't have an account? <a href="/register">Register Now</a></p>
+                    </div>
+
+                    <!-- SLC Note -->
+                    <div class="slc-note">
+                        <i class="fas fa-shield-alt" style="color:#8B5CF6;"></i> SHINEX Learning Circle
+                    </div>
                 </div>
             </div>
         </div>
     </main>
 
-    <%- include('partials/footer') %>
-    <script src="/js/main.js"></script>
+    <%- include(getFooter()) %>
+    <script src="/js/script.js"></script>
 </body>
 </html>

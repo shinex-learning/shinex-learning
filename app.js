@@ -1050,6 +1050,23 @@ app.get('/course/:courseId', async (req, res) => {
 });
 
 // ============================================================
+// SERVICES PAGE
+// ============================================================
+app.get('/services', async (req, res) => {
+    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
+    const services = await Service.find({ isActive: true });
+    const view = isMobile(req) ? 'mobile/services' : 'services';
+    res.render(view, {
+        user: user,
+        services: services,
+        messages: req.session.messages || {},
+        showBack: true,
+        title: 'Our Services'
+    });
+    req.session.messages = {};
+});
+
+// ============================================================
 // LEVEL ROUTE – WITH LOCK/UNLOCK LOGIC
 // ============================================================
 app.get('/level/:courseId/:levelId', async (req, res) => {

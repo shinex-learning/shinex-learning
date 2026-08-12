@@ -3,143 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SHINEX Learning Circle – Learn. Understand. Protect.</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <title>SHINEX Learning Circle – Home</title>
     <link rel="stylesheet" href="/css/style.css">
-    <style>
-        /* ===== DARK MODE FIXES FOR INDEX ===== */
-        body.dark-mode .hero-section {
-            background: linear-gradient(135deg, #2a1a4a, #1a0a2e) !important;
-        }
-        body.dark-mode .hero-section h1,
-        body.dark-mode .hero-section p {
-            color: #ffffff !important;
-        }
-        body.dark-mode .hero-section .btn-secondary {
-            background: #8B5CF6 !important;
-            color: #ffffff !important;
-        }
-        body.dark-mode .card {
-            background: #1a1a1a !important;
-            border-color: #333 !important;
-        }
-        body.dark-mode .card h4,
-        body.dark-mode .card p,
-        body.dark-mode .card .price {
-            color: #ffffff !important;
-        }
-        body.dark-mode .card .btn-secondary {
-            background: #2a2a2a !important;
-            color: #ffffff !important;
-        }
-        body.dark-mode .course-card {
-            background: #1a1a1a !important;
-            border-color: #333 !important;
-        }
-        body.dark-mode .course-card .course-title,
-        body.dark-mode .course-card .course-desc {
-            color: #ffffff !important;
-        }
-        body.dark-mode .course-card .btn-primary {
-            background: #8B5CF6 !important;
-            color: #ffffff !important;
-        }
-        body.dark-mode .empty-state {
-            background: #1a1a1a !important;
-            border-color: #333 !important;
-        }
-        body.dark-mode .empty-state h3,
-        body.dark-mode .empty-state p {
-            color: #ffffff !important;
-        }
-        body.dark-mode h2,
-        body.dark-mode p {
-            color: #ffffff !important;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <%- include('partials/header') %>
+    <div id="page-loader">
+        <div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div>
+        <div class="loader-text">SHINEX</div>
+        <div class="loader-sub">LEARNING CIRCLE</div>
+    </div>
+
+    <%- include(getHeader()) %>
 
     <main class="main-content">
         <div class="container">
-            <!-- Flash Messages -->
-            <% if (messages && messages.success) { %>
-                <div class="alert alert-success"><%= messages.success %></div>
-            <% } %>
             <% if (messages && messages.error) { %>
-                <div class="alert alert-danger"><%= messages.error %></div>
+                <div class="alert alert-danger flash-message" data-type="error"><%= messages.error %></div>
+            <% } %>
+            <% if (messages && messages.success) { %>
+                <div class="alert alert-success flash-message" data-type="success"><%= messages.success %></div>
             <% } %>
 
-            <!-- Hero Section -->
-            <div class="hero-section card-purple" style="padding:60px 40px; text-align:center; border-radius:20px; margin-bottom:40px;">
-                <h1 style="font-size:2.8rem; margin-bottom:8px;">Welcome to SHINEX</h1>
-                <p style="font-size:1.2rem; max-width:600px; margin:0 auto;">Learn. Understand. Protect.<br> Explore 10+ cutting‑edge courses taught by industry experts.</p>
-                <div class="hero-buttons" style="margin-top:24px;">
-                    <a href="/courses" class="btn btn-secondary btn-lg" style="background:#fff; color:#6a3dcf; font-weight:700;">Explore Courses</a>
-                    <% if (!user) { %>
-                        <a href="/register" class="btn btn-primary btn-lg" style="background:rgba(255,255,255,0.2); color:#fff; border:2px solid #fff;">Get Started Free</a>
+            <!-- ===== HERO ===== -->
+            <div class="card card-purple hero-section">
+                <h1>SHINEX Learning Circle</h1>
+                <p>Empowering minds with cutting-edge courses in tech, design, and data.</p>
+                <div class="hero-buttons">
+                    <a href="#courses" class="btn btn-secondary" style="background:rgba(255,255,255,0.2); color:#fff;">
+                        <i class="fas fa-arrow-down"></i> Explore Courses
+                    </a>
+                    <a href="/services" class="btn btn-secondary" style="background:rgba(255,255,255,0.2); color:#fff;">
+                        <i class="fas fa-cogs"></i> View Services
+                    </a>
+                </div>
+            </div>
+
+            <!-- ===== COURSES (SHOWCASE ONLY - UNCLICKABLE) ===== -->
+            <div id="courses">
+                <h3 style="font-size:1.2rem; font-weight:700; color:var(--text-dark); margin:0 0 4px 0;">
+                    <i class="fas fa-graduation-cap" style="color:#8B5CF6;"></i> Our Courses
+                </h3>
+                <p style="color:var(--text-muted); font-size:0.85rem; margin:0 0 12px 0;">
+                    Explore our wide range of courses designed to help you build valuable skills.
+                </p>
+
+                <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:20px; margin-bottom:30px;">
+                    <% if (courses && courses.length > 0) { %>
+                        <% courses.forEach(function(c) { %>
+                            <div style="background:#fff; border-radius:10px; padding:18px 20px; border:1px solid #ede8f5; transition:all 0.3s ease; cursor:default;">
+                                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                    <span class="badge badge-purple"><%= c.level || 'Beginner' %></span>
+                                    <span style="font-size:0.75rem; color:var(--text-muted);">
+                                        <i class="far fa-clock"></i> <%= c.duration || 'N/A' %>
+                                    </span>
+                                </div>
+                                <div style="font-size:1.1rem; font-weight:700; color:var(--text-dark); margin:6px 0 2px;"><%= c.title %></div>
+                                <div style="font-size:0.85rem; color:var(--text-muted); margin:0 0 8px;"><%= c.description || 'Learn more about this course.' %></div>
+                                <div style="display:flex; flex-wrap:wrap; gap:6px;">
+                                    <span class="badge badge-dark">
+                                        <i class="fas fa-layer-group"></i> <%= c.levels ? c.levels.length : 0 %> Levels
+                                    </span>
+                                    <span class="badge badge-dark">
+                                        <i class="fas fa-book"></i> 
+                                        <% let totalClasses = 0; %>
+                                        <% if (c.levels) { %>
+                                            <% c.levels.forEach(function(l) { if (l.lessons) { l.lessons.forEach(function(ls) { if (ls.classes) totalClasses += ls.classes.length; }); } }); %>
+                                        <% } %>
+                                        <%= totalClasses %> Classes
+                                    </span>
+                                </div>
+                                <div style="margin-top:10px; padding-top:10px; border-top:1px solid #ede8f5; text-align:center; color:var(--text-muted); font-size:0.75rem;">
+                                    <i class="fas fa-lock" style="color:#8B5CF6;"></i> Available to registered students
+                                </div>
+                            </div>
+                        <% }); %>
                     <% } else { %>
-                        <a href="/dashboard" class="btn btn-primary btn-lg" style="background:rgba(255,255,255,0.2); color:#fff; border:2px solid #fff;">Go to Dashboard</a>
+                        <div style="text-align:center; padding:30px 20px; color:var(--text-muted); grid-column:1/-1;">
+                            <p>No courses available yet. Check back soon!</p>
+                        </div>
                     <% } %>
                 </div>
             </div>
 
-            <!-- Courses Preview -->
-            <h2 style="font-size:1.8rem; font-weight:700; margin-bottom:8px;">Our Courses</h2>
-            <p style="color:var(--text-muted); margin-bottom:16px;">Choose your path and start learning today.</p>
-            <div class="course-grid">
-                <% if (courses && courses.length) { %>
-                    <% courses.forEach(course => { %>
-                        <div class="course-card">
-                            <div style="display:flex; justify-content:space-between; align-items:start;">
-                                <span class="badge badge-purple"><%= course.level || 'Beginner' %></span>
-                                <span class="badge badge-dark"><%= course.duration || 'Self‑paced' %></span>
-                            </div>
-                            <h3 class="course-title"><%= course.title %></h3>
-                            <p class="course-desc"><%= course.description ? course.description.substring(0,120)+'...' : 'Learn the fundamentals and advance your skills.' %></p>
-                            <div class="course-action" style="margin-top:12px;">
-                                <a href="/course/<%= course.id %>" class="btn btn-primary btn-sm" style="width:100%;">View Course</a>
-                            </div>
-                        </div>
-                    <% }) %>
-                <% } else { %>
-                    <div class="empty-state">
-                        <span class="empty-icon">📚</span>
-                        <h3>No Courses Available Yet</h3>
-                        <p>Check back soon for exciting new courses.</p>
-                    </div>
-                <% } %>
+            <!-- ===== SERVICES PREVIEW WITH BUTTON ===== -->
+            <div style="text-align:center; background:var(--primary-bg); border-radius:14px; padding:30px 20px; margin-top:10px;">
+                <h3 style="font-size:1.2rem; font-weight:700; color:var(--text-dark); margin:0 0 4px 0;">
+                    <i class="fas fa-cogs" style="color:#8B5CF6;"></i> Need Professional Services?
+                </h3>
+                <p style="color:var(--text-muted); font-size:0.95rem; margin:0 0 16px 0;">
+                    From school registration to graphic design, we've got you covered.
+                </p>
+                <a href="/services" class="btn btn-primary btn-lg">
+                    <i class="fas fa-arrow-right"></i> View All Services
+                </a>
             </div>
 
-            <!-- Services Preview -->
-            <h2 style="font-size:1.8rem; font-weight:700; margin-top:40px; margin-bottom:8px;">Our Services</h2>
-            <p style="color:var(--text-muted); margin-bottom:16px;">Professional services to accelerate your journey.</p>
-            <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(240px,1fr)); gap:16px;">
-                <% if (services && services.length) { %>
-                    <% services.slice(0,4).forEach(service => { %>
-                        <div class="card" style="text-align:center; padding:16px;">
-                            <h4 style="font-size:1rem; font-weight:700; margin:0 0 4px;"><%= service.name %></h4>
-                            <p style="font-size:0.85rem; color:var(--text-muted);"><%= service.description || '' %></p>
-                            <p style="font-weight:700; color:var(--primary); font-size:1.1rem;">₦<%= service.price.toLocaleString() %></p>
-                            <a href="/services" class="btn btn-secondary btn-sm" style="margin-top:6px;">Learn More</a>
-                        </div>
-                    <% }) %>
-                <% } else { %>
-                    <div class="empty-state" style="grid-column:1/-1;">
-                        <p>Services coming soon.</p>
-                    </div>
-                <% } %>
-            </div>
-            <div style="text-align:center; margin-top:16px;">
-                <a href="/services" class="btn btn-outline">View All Services</a>
-            </div>
         </div>
     </main>
 
-    <%- include('partials/footer') %>
+    <%- include(getFooter()) %>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"></script>
-    <script src="/js/main.js"></script>
+    <!-- AI Bot -->
+    <div class="ai-bot" id="aiBot">
+        <div class="ai-bot-pulse"></div>
+        <button class="ai-bot-btn" id="aiBotBtn"><i class="fas fa-robot"></i></button>
+    </div>
+
+    <div class="ai-chat-modal" id="aiChatModal">
+        <div class="ai-chat-header"><h4><i class="fas fa-robot"></i> AI Tutor</h4><button class="ai-chat-close" id="aiChatClose">&times;</button></div>
+        <div class="ai-chat-body" id="aiChatBody">
+            <div class="ai-chat-messages" id="aiChatMessages">
+                <div class="ai-chat-msg bot">👋 Hello! I'm your AI tutor. Ask me anything!</div>
+            </div>
+        </div>
+        <div class="ai-chat-footer">
+            <input type="text" id="aiChatInput" placeholder="Ask a question..." maxlength="500">
+            <button class="btn btn-primary" id="aiChatSend"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <script src="/js/script.js"></script>
 </body>
 </html>

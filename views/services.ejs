@@ -3,108 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Our Services – SHINEX Learning Circle</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <title>Our Services – SHINEX</title>
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .service-card {
+            background: #fff;
+            border-radius: 14px;
+            padding: 24px;
+            border: 1px solid #ede8f5;
+            transition: all 0.3s ease;
+            margin-bottom: 16px;
+        }
+        body.dark-mode .service-card {
+            background: #1a1a1a;
+            border-color: #333;
+        }
+        .service-card:hover {
+            border-color: #8B5CF6;
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.08);
+        }
+        .service-card .service-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin: 0 0 4px 0;
+        }
+        body.dark-mode .service-card .service-name {
+            color: var(--text-light);
+        }
+        .service-card .service-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin: 0 0 8px 0;
+        }
+        .service-card .service-price {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #8B5CF6;
+        }
+        .service-card .service-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+        .service-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .service-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .service-category-badge {
+            display: inline-block;
+            padding: 2px 12px;
+            border-radius: 12px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            background: var(--primary-bg);
+            color: #8B5CF6;
+        }
+        body.dark-mode .service-category-badge {
+            background: #2a1a4a;
+        }
+    </style>
 </head>
 <body>
-    <%- include('partials/header', { showBack: true }) %>
+    <div id="page-loader">
+        <div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div>
+        <div class="loader-text">SHINEX</div>
+        <div class="loader-sub">LEARNING CIRCLE</div>
+    </div>
+
+    <%- include(getHeader()) %>
 
     <main class="main-content">
-        <div class="container">
-            <h2 style="font-size:2rem; font-weight:800; margin:0 0 4px;">🛠️ Our Services</h2>
-            <p style="color:var(--text-muted); margin-bottom:24px;">
-                Professional services to support your academic, creative, and career goals.
-            </p>
-
-            <% if (messages && messages.success) { %>
-                <div class="alert alert-success"><%= messages.success %></div>
-            <% } %>
+        <div class="container" style="max-width:1000px;">
             <% if (messages && messages.error) { %>
-                <div class="alert alert-danger"><%= messages.error %></div>
+                <div class="alert alert-danger flash-message" data-type="error"><%= messages.error %></div>
+            <% } %>
+            <% if (messages && messages.success) { %>
+                <div class="alert alert-success flash-message" data-type="success"><%= messages.success %></div>
             <% } %>
 
-            <!-- Services Grid -->
-            <% if (services && services.length > 0) { %>
-                <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:20px;">
-                    <% services.forEach(service => { %>
-                        <div class="card" style="padding:20px 18px; transition:all 0.3s ease; border-color: <%= service.isActive ? 'var(--primary)' : '#e74c3c' %>;">
-                            <div style="display:flex; justify-content:space-between; align-items:start;">
-                                <span class="badge <%= service.category === 'registration' ? 'badge-purple' : 
-                                                  service.category === 'design' ? 'badge-gold' : 
-                                                  service.category === 'campaign' ? 'badge-green' : 
-                                                  service.category === 'website' ? 'badge-dark' : 'badge' %>">
-                                    <%= service.category ? service.category.charAt(0).toUpperCase() + service.category.slice(1) : 'Service' %>
-                                </span>
-                                <span class="badge <%= service.isActive ? 'badge-green' : 'badge-red' %>">
-                                    <%= service.isActive ? '✅ Active' : '❌ Inactive' %>
-                                </span>
-                            </div>
-                            <h3 style="font-size:1.2rem; font-weight:700; margin:10px 0 4px;"><%= service.name %></h3>
-                            <p style="font-size:0.9rem; color:var(--text-muted); line-height:1.6; min-height:50px;">
-                                <%= service.description || 'No description available.' %>
-                            </p>
-                            <div style="margin-top:8px;">
-                                <p style="font-weight:700; font-size:1.3rem; color:var(--primary); margin:0;">
-                                    ₦<%= service.price.toLocaleString() %>
-                                </p>
-                                <p style="font-size:0.7rem; color:var(--text-muted); margin:0;">
-                                    <i class="far fa-calendar-alt"></i> Added <%= new Date(service.createdAt).toLocaleDateString() %>
-                                </p>
-                            </div>
-                            <a href="/contact" class="btn btn-primary btn-sm" style="width:100%; margin-top:12px;">
-                                <i class="fas fa-paper-plane"></i> Inquire Now
-                            </a>
-                        </div>
-                    <% }) %>
-                </div>
-            <% } else { %>
-                <div class="empty-state" style="padding:60px 20px;">
-                    <span class="empty-icon">🛠️</span>
-                    <h3>No Services Available</h3>
-                    <p>Our services are currently being updated. Check back soon.</p>
-                </div>
-            <% } %>
-
-            <!-- Service Categories Explained -->
-            <div style="margin-top:32px; padding:20px 24px; background:var(--primary-bg); border-radius:14px;">
-                <h4 style="font-weight:700; margin:0 0 8px;">📋 Service Categories</h4>
-                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr)); gap:12px;">
-                    <div>
-                        <span class="badge badge-purple" style="font-size:0.8rem;">Registration</span>
-                        <p style="font-size:0.8rem; color:var(--text-muted); margin:4px 0 0;">TASUED, JAMB, WAEC/NECO</p>
-                    </div>
-                    <div>
-                        <span class="badge badge-gold" style="font-size:0.8rem;">Design</span>
-                        <p style="font-size:0.8rem; color:var(--text-muted); margin:4px 0 0;">Graphic, Motion, UI/UX</p>
-                    </div>
-                    <div>
-                        <span class="badge badge-green" style="font-size:0.8rem;">Campaign</span>
-                        <p style="font-size:0.8rem; color:var(--text-muted); margin:4px 0 0;">SUG, Political, Brand</p>
-                    </div>
-                    <div>
-                        <span class="badge badge-dark" style="font-size:0.8rem;">Website</span>
-                        <p style="font-size:0.8rem; color:var(--text-muted); margin:4px 0 0;">Custom, E-commerce, CMS</p>
-                    </div>
-                    <div>
-                        <span class="badge" style="font-size:0.8rem; background:#ede8f5; color:var(--text-dark);">Other</span>
-                        <p style="font-size:0.8rem; color:var(--text-muted); margin:4px 0 0;">Tailored to your needs</p>
-                    </div>
-                </div>
+            <div style="text-align:center; margin-bottom:24px;">
+                <h1 style="font-size:1.8rem; font-weight:800; color:var(--text-dark); margin:0;">
+                    <i class="fas fa-cogs" style="color:#8B5CF6;"></i> Our Services
+                </h1>
+                <p style="color:var(--text-muted); font-size:0.95rem; margin:4px 0 0;">
+                    Professional services to help you achieve your goals. Click "Order" to contact us.
+                </p>
             </div>
 
-            <!-- CTA for custom services -->
-            <div style="text-align:center; margin-top:24px; padding:24px; border:2px solid var(--primary); border-radius:14px;">
-                <h4 style="font-weight:700; margin:0 0 4px;">Need a custom service?</h4>
-                <p style="color:var(--text-muted); margin-bottom:12px;">Tell us what you need and we'll create a solution for you.</p>
-                <a href="/contact" class="btn btn-primary">
-                    <i class="fas fa-comment"></i> Request Custom Service
-                </a>
+            <div class="service-grid">
+                <% if (services && services.length > 0) { %>
+                    <% services.forEach(function(service) { %>
+                        <div class="service-card">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:6px;">
+                                <div class="service-name"><%= service.name %></div>
+                                <span class="service-category-badge"><%= service.category || 'Service' %></span>
+                            </div>
+                            <div class="service-desc"><%= service.description || 'Professional service tailored to your needs.' %></div>
+                            <div class="service-price">₦<%= service.price %></div>
+                            <div class="service-actions">
+                                <a href="/contact" class="btn btn-primary">
+                                    <i class="fas fa-envelope"></i> Order Now
+                                </a>
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <div style="grid-column:1/-1; text-align:center; padding:40px 20px; color:var(--text-muted);">
+                        <i class="fas fa-info-circle" style="font-size:2rem; display:block; margin-bottom:8px;"></i>
+                        <p>No services available yet. Check back soon!</p>
+                    </div>
+                <% } %>
             </div>
         </div>
     </main>
 
-    <%- include('partials/footer') %>
-    <script src="/js/main.js"></script>
+    <%- include(getFooter()) %>
+
+    <!-- AI Bot -->
+    <div class="ai-bot" id="aiBot">
+        <div class="ai-bot-pulse"></div>
+        <button class="ai-bot-btn" id="aiBotBtn"><i class="fas fa-robot"></i></button>
+    </div>
+
+    <div class="ai-chat-modal" id="aiChatModal">
+        <div class="ai-chat-header"><h4><i class="fas fa-robot"></i> AI Tutor</h4><button class="ai-chat-close" id="aiChatClose">&times;</button></div>
+        <div class="ai-chat-body" id="aiChatBody">
+            <div class="ai-chat-messages" id="aiChatMessages">
+                <div class="ai-chat-msg bot">👋 Hello! I'm your AI tutor. Ask me anything!</div>
+            </div>
+        </div>
+        <div class="ai-chat-footer">
+            <input type="text" id="aiChatInput" placeholder="Ask a question..." maxlength="500">
+            <button class="btn btn-primary" id="aiChatSend"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <script src="/js/script.js"></script>
 </body>
 </html>
