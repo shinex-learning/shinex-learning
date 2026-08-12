@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* Course Cards */
-        .course-card {
+        /* ===== COURSE CARDS ===== */
+        .course-card-home {
             background: #fff;
             border-radius: 12px;
             padding: 20px 22px;
@@ -20,53 +20,53 @@
             display: flex;
             flex-direction: column;
         }
-        body.dark-mode .course-card {
-            background: #1a1a1a;
-            border-color: #333;
+        body.dark-mode .course-card-home {
+            background: #1a1a1a !important;
+            border-color: #333 !important;
         }
-        .course-card:hover {
+        .course-card-home:hover {
             border-color: #8B5CF6;
             box-shadow: 0 4px 20px rgba(139, 92, 246, 0.08);
         }
-        body.dark-mode .course-card .course-title {
-            color: #ffffff;
+        body.dark-mode .course-card-home .course-title {
+            color: #ffffff !important;
         }
-        body.dark-mode .course-card .course-desc {
-            color: #b0a0c0;
+        body.dark-mode .course-card-home .course-desc {
+            color: #b0a0c0 !important;
         }
-        body.dark-mode .course-card .course-meta {
-            color: #b0a0c0;
+        body.dark-mode .course-card-home .course-meta-text {
+            color: #b0a0c0 !important;
         }
-        body.dark-mode .course-card .course-lock {
-            color: #888;
-            border-top-color: #333;
+        body.dark-mode .course-card-home .course-lock-text {
+            color: #888 !important;
+            border-top-color: #333 !important;
         }
-        .course-card .course-badge {
+        .course-card-home .course-badge-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 6px;
         }
-        .course-card .course-title {
+        .course-card-home .course-title {
             font-size: 1.15rem;
             font-weight: 700;
             color: var(--text-dark);
             margin: 4px 0 4px;
         }
-        .course-card .course-desc {
+        .course-card-home .course-desc {
             font-size: 0.85rem;
             color: var(--text-muted);
             margin: 0 0 10px;
             line-height: 1.5;
             flex: 1;
         }
-        .course-card .course-meta {
+        .course-card-home .course-meta-row {
             display: flex;
             flex-wrap: wrap;
             gap: 6px;
             margin-bottom: 10px;
         }
-        .course-card .course-lock {
+        .course-card-home .course-lock-text {
             margin-top: auto;
             padding-top: 10px;
             border-top: 1px solid #ede8f5;
@@ -74,37 +74,17 @@
             color: var(--text-muted);
             font-size: 0.75rem;
         }
-        .course-card .course-lock i {
+        .course-card-home .course-lock-text i {
             color: #8B5CF6;
             margin-right: 4px;
         }
-        .courses-grid {
+        .course-grid-home {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 24px;
             margin-bottom: 30px;
         }
-        @media (max-width: 768px) {
-            .courses-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 12px;
-            }
-            .course-card {
-                padding: 14px 16px;
-            }
-            .course-card .course-title {
-                font-size: 0.95rem;
-            }
-            .course-card .course-desc {
-                font-size: 0.75rem;
-            }
-        }
-        @media (max-width: 480px) {
-            .courses-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-        .badge-course-level {
+        .badge-level {
             background: var(--primary-bg);
             color: #8B5CF6;
             padding: 2px 12px;
@@ -112,18 +92,18 @@
             font-size: 0.65rem;
             font-weight: 600;
         }
-        body.dark-mode .badge-course-level {
-            background: #2a1a4a;
-            color: #a78bfa;
+        body.dark-mode .badge-level {
+            background: #2a1a4a !important;
+            color: #a78bfa !important;
         }
-        .badge-course-duration {
+        .badge-duration {
             font-size: 0.7rem;
             color: var(--text-muted);
         }
-        body.dark-mode .badge-course-duration {
-            color: #888;
+        body.dark-mode .badge-duration {
+            color: #888 !important;
         }
-        .badge-meta {
+        .badge-meta-item {
             background: #ede8f5;
             color: var(--text-dark);
             padding: 2px 10px;
@@ -131,9 +111,9 @@
             font-size: 0.6rem;
             font-weight: 600;
         }
-        body.dark-mode .badge-meta {
-            background: #333;
-            color: #d0d0d0;
+        body.dark-mode .badge-meta-item {
+            background: #333 !important;
+            color: #d0d0d0 !important;
         }
 
         /* ===== SERVICE CARDS ===== */
@@ -148,51 +128,52 @@
             flex-direction: column;
         }
         body.dark-mode .service-card-home {
-            background: #1a1a1a;
-            border-color: #333;
+            background: #1a1a1a !important;
+            border-color: #333 !important;
         }
         .service-card-home:hover {
             border-color: #8B5CF6;
             box-shadow: 0 4px 20px rgba(139, 92, 246, 0.08);
         }
-        body.dark-mode .service-card-home .service-name {
-            color: #ffffff;
+        body.dark-mode .service-card-home .svc-name {
+            color: #ffffff !important;
         }
-        body.dark-mode .service-card-home .service-desc {
-            color: #b0a0c0;
+        body.dark-mode .service-card-home .svc-desc {
+            color: #b0a0c0 !important;
         }
-        body.dark-mode .service-card-home .service-price {
-            color: #a78bfa;
+        body.dark-mode .service-card-home .svc-price {
+            color: #a78bfa !important;
         }
-        .service-card-home .service-name {
+        body.dark-mode .service-card-home .svc-category {
+            background: #2a1a4a !important;
+            color: #a78bfa !important;
+        }
+        .service-card-home .svc-name {
             font-weight: 700;
             font-size: 1rem;
             color: var(--text-dark);
         }
-        .service-card-home .service-desc {
+        .service-card-home .svc-desc {
             font-size: 0.8rem;
             color: var(--text-muted);
             margin: 4px 0 8px;
             flex: 1;
         }
-        .service-card-home .service-price {
+        .service-card-home .svc-price {
             font-weight: 700;
             color: #8B5CF6;
             font-size: 1.1rem;
         }
-        .service-card-home .service-category {
+        .service-card-home .svc-category {
             background: var(--primary-bg);
             color: #8B5CF6;
             padding: 2px 10px;
             border-radius: 12px;
             font-size: 0.55rem;
             font-weight: 600;
+            white-space: nowrap;
         }
-        body.dark-mode .service-card-home .service-category {
-            background: #2a1a4a;
-            color: #a78bfa;
-        }
-        .service-card-home .service-order-btn {
+        .service-card-home .svc-order-btn {
             margin-top: 10px;
             width: 100%;
             text-align: center;
@@ -205,11 +186,9 @@
             font-weight: 600;
             text-decoration: none;
             display: block;
-            transition: all 0.3s ease;
         }
-        .service-card-home .service-order-btn:hover {
+        .service-card-home .svc-order-btn:hover {
             background: #6a3dcf;
-            transform: translateY(-2px);
         }
         .services-grid-home {
             display: grid;
@@ -217,13 +196,43 @@
             gap: 16px;
             margin-bottom: 20px;
         }
+        .no-services-box {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 30px 20px;
+            color: var(--text-muted);
+            border: 2px dashed #ede8f5;
+            border-radius: 12px;
+        }
+        body.dark-mode .no-services-box {
+            border-color: #333 !important;
+        }
+        body.dark-mode .no-services-box p {
+            color: #888 !important;
+        }
         @media (max-width: 768px) {
+            .course-grid-home {
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+            .course-card-home {
+                padding: 14px 16px;
+            }
+            .course-card-home .course-title {
+                font-size: 0.95rem;
+            }
+            .course-card-home .course-desc {
+                font-size: 0.75rem;
+            }
             .services-grid-home {
                 grid-template-columns: 1fr 1fr;
                 gap: 10px;
             }
         }
         @media (max-width: 480px) {
+            .course-grid-home {
+                grid-template-columns: 1fr;
+            }
             .services-grid-home {
                 grid-template-columns: 1fr;
             }
@@ -271,30 +280,30 @@
                     Explore our wide range of courses designed to help you build valuable skills.
                 </p>
 
-                <div class="courses-grid">
+                <div class="course-grid-home">
                     <% if (courses && courses.length > 0) { %>
                         <% courses.forEach(function(c) { %>
-                            <div class="course-card">
-                                <div class="course-badge">
-                                    <span class="badge-course-level"><%= c.level || 'Beginner' %></span>
-                                    <span class="badge-course-duration"><i class="far fa-clock"></i> <%= c.duration || 'N/A' %></span>
+                            <div class="course-card-home">
+                                <div class="course-badge-row">
+                                    <span class="badge-level"><%= c.level || 'Beginner' %></span>
+                                    <span class="badge-duration"><i class="far fa-clock"></i> <%= c.duration || 'N/A' %></span>
                                 </div>
                                 <div class="course-title"><%= c.title %></div>
-                                <div class="course-desc"><%= c.description ? c.description.substring(0, 80) + (c.description.length > 80 ? '...' : '') : 'Learn more about this course.' %></div>
-                                <div class="course-meta">
-                                    <span class="badge-meta">
-                                        <i class="fas fa-layer-group"></i> <%= c.levels ? c.levels.length : 0 %> Levels
+                                <div class="course-desc"><%= c.description ? c.description.substring(0, 100) + (c.description.length > 100 ? '...' : '') : 'Learn more about this course.' %></div>
+                                <div class="course-meta-row">
+                                    <span class="badge-meta-item">
+                                        <i class="fas fa-layer-group"></i> <%= c.levels ? c.levels.length : 0 %> Level<%= c.levels && c.levels.length > 1 ? 's' : '' %>
                                     </span>
-                                    <span class="badge-meta">
+                                    <span class="badge-meta-item">
                                         <i class="fas fa-book"></i> 
                                         <% let totalClasses = 0; %>
                                         <% if (c.levels) { %>
                                             <% c.levels.forEach(function(l) { if (l.lessons) { l.lessons.forEach(function(ls) { if (ls.classes) totalClasses += ls.classes.length; }); } }); %>
                                         <% } %>
-                                        <%= totalClasses %> Classes
+                                        <%= totalClasses %> Class<%= totalClasses > 1 ? 'es' : '' %>
                                     </span>
                                 </div>
-                                <div class="course-lock">
+                                <div class="course-lock-text">
                                     <i class="fas fa-lock"></i> Available to registered students
                                 </div>
                             </div>
@@ -308,7 +317,7 @@
                 </div>
             </div>
 
-            <!-- ===== SERVICES PREVIEW ===== -->
+            <!-- ===== SERVICES ===== -->
             <h3 style="font-size:1.2rem; font-weight:700; color:var(--text-dark); margin:30px 0 4px 0;">
                 <i class="fas fa-cogs" style="color:#8B5CF6;"></i> Our Services
             </h3>
@@ -321,24 +330,28 @@
                     <% services.forEach(function(service) { %>
                         <div class="service-card-home">
                             <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:6px;">
-                                <div class="service-name"><%= service.name %></div>
-                                <span class="service-category"><%= service.category || 'Service' %></span>
+                                <div class="svc-name"><%= service.name %></div>
+                                <span class="svc-category"><%= service.category || 'Service' %></span>
                             </div>
-                            <div class="service-desc"><%= service.description ? service.description.substring(0, 60) + (service.description.length > 60 ? '...' : '') : 'Professional service tailored to your needs.' %></div>
-                            <div class="service-price">₦<%= service.price %></div>
-                            <a href="/contact" class="service-order-btn">
+                            <div class="svc-desc"><%= service.description ? service.description.substring(0, 60) + (service.description.length > 60 ? '...' : '') : 'Professional service tailored to your needs.' %></div>
+                            <div class="svc-price">₦<%= service.price %></div>
+                            <a href="/contact" class="svc-order-btn">
                                 <i class="fas fa-arrow-right"></i> Order
                             </a>
                         </div>
                     <% }); %>
                 <% } else { %>
-                    <div style="text-align:center; padding:20px; color:var(--text-muted); grid-column:1/-1;">
-                        <p>No services available yet.</p>
+                    <div class="no-services-box">
+                        <i class="fas fa-info-circle" style="font-size:2rem; display:block; margin-bottom:8px; color:#8B5CF6;"></i>
+                        <p style="margin-bottom:12px;">No services available yet. Check back soon!</p>
+                        <a href="/admin/services" class="btn btn-primary btn-sm" style="font-size:0.8rem; padding:6px 16px;">
+                            <i class="fas fa-plus"></i> Add Services (Admin)
+                        </a>
                     </div>
                 <% } %>
             </div>
 
-            <!-- ===== SERVICES BUTTON ===== -->
+            <!-- ===== VIEW ALL SERVICES BUTTON ===== -->
             <div style="text-align:center; background:var(--primary-bg); border-radius:14px; padding:24px 20px; margin-top:10px;">
                 <p style="color:var(--text-muted); font-size:0.95rem; margin:0 0 12px 0;">
                     Need more services? Check out our full list.
