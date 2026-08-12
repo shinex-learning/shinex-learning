@@ -10,11 +10,10 @@
     <style>
         .service-card {
             background: #fff;
-            border-radius: 14px;
-            padding: 24px;
+            border-radius: 10px;
+            padding: 18px 20px;
             border: 1px solid #ede8f5;
             transition: all 0.3s ease;
-            margin-bottom: 16px;
         }
         body.dark-mode .service-card {
             background: #1a1a1a;
@@ -24,52 +23,51 @@
             border-color: #8B5CF6;
             box-shadow: 0 4px 20px rgba(139, 92, 246, 0.08);
         }
-        .service-card .service-name {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--text-dark);
-            margin: 0 0 4px 0;
-        }
         body.dark-mode .service-card .service-name {
-            color: var(--text-light);
+            color: #fff;
+        }
+        body.dark-mode .service-card .service-desc {
+            color: #b0a0c0;
+        }
+        body.dark-mode .service-card .service-price {
+            color: #a78bfa;
+        }
+        .service-card .service-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text-dark);
         }
         .service-card .service-desc {
+            font-size: 0.85rem;
             color: var(--text-muted);
-            font-size: 0.95rem;
-            margin: 0 0 8px 0;
+            margin: 4px 0 8px;
         }
         .service-card .service-price {
-            font-size: 1.3rem;
-            font-weight: 800;
+            font-weight: 700;
             color: #8B5CF6;
+            font-size: 1.2rem;
         }
-        .service-card .service-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 12px;
-            flex-wrap: wrap;
+        .service-category-badge {
+            background: var(--primary-bg);
+            color: #8B5CF6;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            font-weight: 600;
+        }
+        body.dark-mode .service-category-badge {
+            background: #2a1a4a;
+            color: #a78bfa;
         }
         .service-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 20px;
         }
         @media (max-width: 768px) {
             .service-grid {
                 grid-template-columns: 1fr;
             }
-        }
-        .service-category-badge {
-            display: inline-block;
-            padding: 2px 12px;
-            border-radius: 12px;
-            font-size: 0.65rem;
-            font-weight: 600;
-            background: var(--primary-bg);
-            color: #8B5CF6;
-        }
-        body.dark-mode .service-category-badge {
-            background: #2a1a4a;
         }
     </style>
 </head>
@@ -100,30 +98,33 @@
                 </p>
             </div>
 
-            <div class="service-grid">
-                <% if (services && services.length > 0) { %>
+            <!-- Services Grid -->
+            <% if (typeof services !== 'undefined' && services && services.length > 0) { %>
+                <div class="service-grid">
                     <% services.forEach(function(service) { %>
                         <div class="service-card">
                             <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:6px;">
                                 <div class="service-name"><%= service.name %></div>
-                                <span class="service-category-badge"><%= service.category || 'Service' %></span>
+                                <span class="service-category-badge">
+                                    <%= service.category || 'Service' %>
+                                </span>
                             </div>
                             <div class="service-desc"><%= service.description || 'Professional service tailored to your needs.' %></div>
                             <div class="service-price">₦<%= service.price %></div>
-                            <div class="service-actions">
-                                <a href="/contact" class="btn btn-primary">
+                            <div style="margin-top:12px;">
+                                <a href="/contact" class="btn btn-primary btn-sm" style="width:100%; text-align:center;">
                                     <i class="fas fa-envelope"></i> Order Now
                                 </a>
                             </div>
                         </div>
                     <% }); %>
-                <% } else { %>
-                    <div style="grid-column:1/-1; text-align:center; padding:40px 20px; color:var(--text-muted);">
-                        <i class="fas fa-info-circle" style="font-size:2rem; display:block; margin-bottom:8px;"></i>
-                        <p>No services available yet. Check back soon!</p>
-                    </div>
-                <% } %>
-            </div>
+                </div>
+            <% } else { %>
+                <div style="text-align:center; padding:40px 20px; color:var(--text-muted);">
+                    <i class="fas fa-info-circle" style="font-size:2rem; display:block; margin-bottom:8px;"></i>
+                    <p>No services available yet. Check back soon!</p>
+                </div>
+            <% } %>
         </div>
     </main>
 
