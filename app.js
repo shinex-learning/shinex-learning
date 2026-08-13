@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const nodemailer = require('nodemailer');
 const compression = require('compression');
 const helmet = require('helmet');
+require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -295,12 +296,19 @@ function parseContent(text) {
 }
 
 // ============================================================
-// EMAIL TRANSPORTER
+// ===== EMAIL SYSTEM - COMPLETE INTEGRATION =====
 // ============================================================
-const hasEmailConfig = process.env.EMAIL_USER && process.env.EMAIL_APP_PASSWORD;
 
+// Email configuration check
+const hasEmailConfig = process.env.EMAIL_USER && process.env.EMAIL_APP_PASSWORD;
 let transporter = null;
 
+// Email queue system
+const emailQueue = [];
+let isProcessingQueue = false;
+const emailRetryMap = new Map();
+
+// Create transporter if credentials exist
 if (hasEmailConfig) {
     try {
         transporter = nodemailer.createTransport({
@@ -310,10 +318,29 @@ if (hasEmailConfig) {
                 pass: process.env.EMAIL_APP_PASSWORD
             },
             pool: true,
-            maxConnections: 1,
+            maxConnections: 5,
+            maxMessages: 100,
             rateDelta: 1000,
-            rateLimit: 5
+            rateLimit: 5,
+            socketTimeout: 30000,
+            connectionTimeout: 30000,
+            tls: {
+                rejectUnauthorized: process.env.NODE_ENV === 'production'
+            }
         });
+
+        // Verify connection on startup
+        transporter.verify((error, success) => {
+            if (error) {
+                console.error('❌ Email verification failed:', error.message);
+                console.log('⚠️ Check your EMAIL_APP_PASSWORD - it should be a 16-character app password');
+                console.log('   Go to: https://myaccount.google.com/apppasswords');
+            } else {
+                console.log('✅ Email transporter verified and ready');
+                console.log(`📧 Using: ${process.env.EMAIL_USER}`);
+            }
+        });
+
         console.log('✅ Email transporter configured successfully');
     } catch (error) {
         console.error('❌ Email transporter configuration error:', error.message);
@@ -321,15 +348,76 @@ if (hasEmailConfig) {
     }
 } else {
     console.log('⚠️ Email credentials not found. Emails will be logged instead.');
+    console.log('   To enable emails, add to .env:');
+    console.log('   EMAIL_USER=your-email@gmail.com');
+    console.log('   EMAIL_APP_PASSWORD=your-16-char-app-password');
 }
 
-async function sendEmail(to, subject, html, from = process.env.EMAIL_USER) {
+// Process email queue
+async function processEmailQueue() {
+    if (isProcessingQueue || emailQueue.length === 0) return;
+    
+    isProcessingQueue = true;
+    
+    while (emailQueue.length > 0) {
+        const emailJob = emailQueue.shift();
+        const key = `${emailJob.to}-${emailJob.subject}`;
+        
+        try {
+            if (!transporter) {
+                console.log('📧 EMAIL LOGGED (no transporter):', emailJob.to);
+                console.log('   Subject:', emailJob.subject);
+                console.log('   HTML length:', emailJob.html ? emailJob.html.length : 0);
+                continue;
+            }
+
+            const mailOptions = {
+                from: `"SHINEX Learning Circle" <${process.env.EMAIL_USER}>`,
+                to: emailJob.to,
+                subject: emailJob.subject,
+                html: emailJob.html
+            };
+            
+            const info = await transporter.sendMail(mailOptions);
+            console.log('✅ Email sent to:', emailJob.to);
+            emailRetryMap.delete(key);
+            
+        } catch (error) {
+            console.error(`❌ Failed to send email to ${emailJob.to}:`, error.message);
+            
+            // Retry logic
+            const retryCount = emailRetryMap.get(key) || 0;
+            if (retryCount < 3) {
+                emailRetryMap.set(key, retryCount + 1);
+                emailQueue.push(emailJob);
+                console.log(`🔄 Retry ${retryCount + 1}/3 for ${emailJob.to}`);
+            } else {
+                console.log(`❌ Failed after 3 retries: ${emailJob.to}`);
+                emailRetryMap.delete(key);
+            }
+        }
+        
+        // Delay between emails to avoid rate limiting
+        await new Promise(resolve => setTimeout(resolve, 2000));
+    }
+    
+    isProcessingQueue = false;
+}
+
+// Queue email function
+function queueEmail(to, subject, html) {
+    emailQueue.push({ to, subject, html });
+    processEmailQueue();
+}
+
+// Main send email function
+async function sendEmail(to, subject, html, from = null) {
+    // If no transporter, log and queue
     if (!transporter) {
-        console.log('📧 EMAIL WOULD BE SENT (no transporter):');
-        console.log('   To:', to);
+        console.log('📧 EMAIL QUEUED (no transporter):', to);
         console.log('   Subject:', subject);
-        console.log('   HTML length:', html ? html.length : 0);
-        return { success: true, info: { messageId: 'simulated-' + Date.now() } };
+        queueEmail(to, subject, html);
+        return { success: true, info: { messageId: 'queued-' + Date.now() }, queued: true };
     }
 
     try {
@@ -345,83 +433,91 @@ async function sendEmail(to, subject, html, from = process.env.EMAIL_USER) {
         return { success: true, info };
     } catch (error) {
         console.error('❌ Email error:', error.message);
-        console.log('📧 Email content (logged due to error):');
-        console.log('   To:', to);
-        console.log('   Subject:', subject);
-        return { success: false, error: error.message };
+        // Queue for retry
+        queueEmail(to, subject, html);
+        return { success: false, error: error.message, queued: true };
     }
 }
 
 // ============================================================
-// ===== AUTH MIDDLEWARE - SEPARATED ROLES =====
+// TEST EMAIL ROUTE
 // ============================================================
-
-// ===== USER AUTH - For regular users only =====
-async function requireUser(req, res, next) {
-    if (!req.session.userId) {
-        req.session.messages = { error: 'Please log in to access this page.' };
-        return res.redirect('/login');
-    }
-    
+app.get('/test-email', async (req, res) => {
     try {
-        const user = await User.findOne({ id: req.session.userId });
-        if (!user) {
-            req.session.destroy();
-            req.session.messages = { error: 'Session expired. Please log in again.' };
-            return res.redirect('/login');
-        }
-        
-        if (user.isAdmin) {
-            return res.redirect('/admin/dashboard');
-        }
-        
-        req.user = user;
-        next();
-    } catch (error) {
-        console.error('Auth error:', error);
-        req.session.messages = { error: 'Authentication error. Please try again.' };
-        res.redirect('/login');
-    }
-}
+        const testHtml = `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #f8f6fc; border-radius: 12px;">
+                <div style="text-align: center; padding: 20px 0;">
+                    <h1 style="color: #8B5CF6; font-size: 28px;">🧪 Email Test</h1>
+                </div>
+                <div style="background: #fff; padding: 24px; border-radius: 12px;">
+                    <h2 style="color: #1A0A2E;">✅ Email Configuration Working!</h2>
+                    <p style="color: #5a4a70; font-size: 16px; line-height: 1.6;">
+                        Your SHINEX app is successfully configured to send emails.
+                    </p>
+                    <div style="background: #f8f6fc; padding: 16px; border-radius: 8px; margin: 16px 0;">
+                        <p><strong>From:</strong> ${process.env.EMAIL_USER || 'Not Set'}</p>
+                        <p><strong>To:</strong> ${process.env.ADMIN_EMAIL || 'Admin Email'}</p>
+                        <p><strong>Time:</strong> ${new Date().toLocaleString()}</p>
+                        <p><strong>Status:</strong> ✅ Email sent successfully</p>
+                    </div>
+                    <div style="text-align: center; margin-top: 16px;">
+                        <a href="https://shinex-learning.onrender.com" 
+                           style="background: #8B5CF6; color: #fff; padding: 10px 24px; border-radius: 30px; text-decoration: none; font-weight: 600;">
+                            Visit SHINEX
+                        </a>
+                    </div>
+                </div>
+                <div style="text-align: center; padding: 16px 0; color: #7a6a8f; font-size: 12px;">
+                    <p>Learn. Understand. Protect. 🛡️</p>
+                </div>
+            </div>
+        `;
 
-// ===== ADMIN AUTH - For admins only =====
-async function requireAdmin(req, res, next) {
-    if (!req.session.adminId) {
-        req.session.messages = { error: 'Please log in as admin.' };
-        return res.redirect('/shinex-admin');
-    }
-    
-    try {
-        const admin = await User.findOne({ id: req.session.adminId });
-        if (!admin) {
-            req.session.destroy();
-            req.session.messages = { error: 'Session expired. Please log in again.' };
-            return res.redirect('/shinex-admin');
-        }
-        
-        if (!admin.isAdmin) {
-            req.session.destroy();
-            req.session.messages = { error: 'Admin access required.' };
-            return res.redirect('/shinex-admin');
-        }
-        
-        req.admin = admin;
-        next();
-    } catch (error) {
-        console.error('Admin auth error:', error);
-        req.session.messages = { error: 'Authentication error. Please try again.' };
-        res.redirect('/shinex-admin');
-    }
-}
+        const result = await sendEmail(
+            process.env.ADMIN_EMAIL || 'your-email@gmail.com',
+            '🧪 Test Email from SHINEX',
+            testHtml
+        );
 
-// ===== BLOCK MOBILE ACCESS TO ADMIN =====
-function blockMobileAdmin(req, res, next) {
-    if (isMobile(req)) {
-        req.session.messages = { error: 'Admin panel is only available on desktop.' };
-        return res.redirect('/');
+        if (result.success) {
+            res.send(`
+                <html>
+                    <head><title>Email Test</title></head>
+                    <body style="font-family: Arial; text-align: center; padding: 50px;">
+                        <h1 style="color: #4CAF50;">✅ Test Email Sent!</h1>
+                        <p>Check your inbox: ${process.env.ADMIN_EMAIL || 'your-email@gmail.com'}</p>
+                        <p>Message ID: ${result.info?.messageId || 'queued'}</p>
+                        ${result.queued ? '<p style="color: #FF9800;">⚠️ Email was queued (no transporter)</p>' : ''}
+                        <a href="/" style="color: #8B5CF6;">← Back to Home</a>
+                    </body>
+                </html>
+            `);
+        } else {
+            res.send(`
+                <html>
+                    <head><title>Email Test Failed</title></head>
+                    <body style="font-family: Arial; text-align: center; padding: 50px;">
+                        <h1 style="color: #f44336;">❌ Test Failed</h1>
+                        <p>Error: ${result.error}</p>
+                        <p>Check your .env file and restart the server.</p>
+                        <a href="/" style="color: #8B5CF6;">← Back to Home</a>
+                    </body>
+                </html>
+            `);
+        }
+    } catch (error) {
+        res.send(`
+            <html>
+                <head><title>Email Test Error</title></head>
+                <body style="font-family: Arial; text-align: center; padding: 50px;">
+                    <h1 style="color: #f44336;">❌ Error</h1>
+                    <p>${error.message}</p>
+                    <a href="/" style="color: #8B5CF6;">← Back to Home</a>
+                </body>
+            </html>
+        `);
     }
-    next();
-}
+});
 
 // ============================================================
 // AI TUTOR
@@ -620,14 +716,15 @@ app.post('/register', async (req, res) => {
         
         const verificationLink = `https://shinex-learning.onrender.com/verify-email/${verificationToken}`;
         
+        // Enhanced welcome email with better design
         const emailHtml = `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #f8f6fc; border-radius: 12px;">
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: linear-gradient(135deg, #f8f6fc 0%, #ede8f5 100%); border-radius: 12px;">
                 <div style="text-align: center; padding: 20px 0;">
-                    <h1 style="color: #8B5CF6; font-size: 28px;">SHINEX</h1>
-                    <p style="color: #7a6a8f; font-size: 14px;">Learning Circle</p>
+                    <h1 style="color: #8B5CF6; font-size: 32px; margin: 0;">SHINEX</h1>
+                    <p style="color: #7a6a8f; font-size: 14px; margin: 5px 0;">Learning Circle</p>
                 </div>
-                <div style="background: #fff; padding: 30px; border-radius: 12px;">
-                    <h2 style="color: #1A0A2E;">🎉 Registration Successful!</h2>
+                <div style="background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                    <h2 style="color: #1A0A2E; margin-top: 0;">🎉 Registration Successful!</h2>
                     <p style="color: #5a4a70; font-size: 16px; line-height: 1.6;">
                         Dear <strong>${firstName} ${lastName}</strong>,
                     </p>
@@ -635,8 +732,8 @@ app.post('/register', async (req, res) => {
                         Congratulations! Your registration with SHINEX Learning Circle (SLC) has been successfully completed.
                     </p>
                     
-                    <div style="background: #f8f6fc; padding: 16px; border-radius: 8px; margin: 16px 0;">
-                        <p style="margin: 4px 0;"><strong style="color: #1A0A2E;">Student ID:</strong> <span style="color: #8B5CF6; font-weight: 700;">${studentId}</span></p>
+                    <div style="background: #f8f6fc; padding: 16px; border-radius: 8px; margin: 16px 0; border-left: 4px solid #8B5CF6;">
+                        <p style="margin: 4px 0;"><strong style="color: #1A0A2E;">Student ID:</strong> <span style="color: #8B5CF6; font-weight: 700; font-size: 18px;">${studentId}</span></p>
                         <p style="margin: 4px 0;"><strong style="color: #1A0A2E;">Registered Course:</strong> ${courseName}</p>
                         <p style="margin: 4px 0;"><strong style="color: #1A0A2E;">Learning Level:</strong> ${learningLevel || 'Beginner'}</p>
                         <p style="margin: 4px 0;"><strong style="color: #1A0A2E;">Registration Year:</strong> ${new Date().getFullYear()}</p>
@@ -648,8 +745,8 @@ app.post('/register', async (req, res) => {
                     
                     <div style="text-align: center; margin: 25px 0;">
                         <a href="${verificationLink}" 
-                           style="background: #8B5CF6; color: #fff; padding: 12px 32px; border-radius: 30px; text-decoration: none; font-weight: 600; font-size: 15px; display: inline-block;">
-                            Verify Email & Go to Student Portal
+                           style="background: linear-gradient(135deg, #8B5CF6 0%, #6d28d9 100%); color: #fff; padding: 14px 36px; border-radius: 30px; text-decoration: none; font-weight: 600; font-size: 16px; display: inline-block; box-shadow: 0 4px 15px rgba(139,92,246,0.3);">
+                            Verify Email & Get Started
                         </a>
                     </div>
                     
@@ -666,6 +763,10 @@ app.post('/register', async (req, res) => {
                 </div>
                 <div style="text-align: center; padding: 20px 0; color: #7a6a8f; font-size: 12px;">
                     <p>&copy; ${new Date().getFullYear()} SHINEX Learning Circle. All rights reserved.</p>
+                    <p style="margin: 5px 0;">
+                        <a href="https://shinex-learning.onrender.com/terms" style="color: #8B5CF6; text-decoration: none;">Terms</a> • 
+                        <a href="https://shinex-learning.onrender.com/privacy" style="color: #8B5CF6; text-decoration: none;">Privacy</a>
+                    </p>
                 </div>
             </div>
         `;
@@ -684,7 +785,9 @@ app.post('/register', async (req, res) => {
     }
 });
 
-// ===== VERIFY EMAIL =====
+// ============================================================
+// VERIFY EMAIL - SHOW SUCCESS/FAILURE PAGE
+// ============================================================
 app.get('/verify-email/:token', async (req, res) => {
     const { token } = req.params;
     
@@ -704,6 +807,9 @@ app.get('/verify-email/:token', async (req, res) => {
         user.verificationToken = null;
         await user.save();
         
+        // Auto-login the user after verification
+        req.session.userId = user.id;
+        
         const view = isMobile(req) ? 'mobile/verify-success' : 'verify-success';
         res.render(view, {
             user: user,
@@ -722,14 +828,6 @@ app.get('/verify-email/:token', async (req, res) => {
             title: 'Verification Failed'
         });
     }
-});
-
-// ===== LOGOUT =====
-app.get('/logout', (req, res) => {
-    req.session.destroy((err) => {
-        if (err) console.error('Logout error:', err);
-        res.redirect('/');
-    });
 });
 
 // ===== ADMIN LOGOUT =====
@@ -785,7 +883,7 @@ app.post('/shinex-admin', async (req, res) => {
 });
 
 // ============================================================
-// CONTACT ROUTES
+// CONTACT ROUTES WITH ENHANCED EMAIL
 // ============================================================
 app.get('/contact', (req, res) => {
     const view = isMobile(req) ? 'mobile/contact' : 'contact';
@@ -819,56 +917,74 @@ app.post('/contact/send', async (req, res) => {
         await newMessage.save();
         
         const adminEmail = process.env.ADMIN_EMAIL || 'balogunmustaphaaddeji@gmail.com';
+        
+        // Enhanced admin notification
         const adminHtml = `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #f8f6fc; border-radius: 12px;">
                 <div style="text-align: center; padding: 20px 0;">
-                    <h1 style="color: #8B5CF6; font-size: 24px;">📬 New Contact Message</h1>
+                    <h1 style="color: #8B5CF6; font-size: 28px;">📬 New Contact Message</h1>
+                    <p style="color: #7a6a8f;">From ${name}</p>
                 </div>
                 <div style="background: #fff; padding: 24px; border-radius: 12px;">
-                    <p><strong>From:</strong> ${name}</p>
-                    <p><strong>Email:</strong> ${email}</p>
-                    <p><strong>Subject:</strong> ${subject}</p>
-                    <div style="background: #f8f6fc; padding: 12px; border-radius: 8px; margin: 12px 0;">
-                        <p><strong>Message:</strong></p>
-                        <p style="color: #5a4a70;">${message}</p>
+                    <div style="display: grid; gap: 12px;">
+                        <div style="background: #f8f6fc; padding: 10px; border-radius: 6px;">
+                            <strong>Name:</strong> ${name}
+                        </div>
+                        <div style="background: #f8f6fc; padding: 10px; border-radius: 6px;">
+                            <strong>Email:</strong> <a href="mailto:${email}">${email}</a>
+                        </div>
+                        <div style="background: #f8f6fc; padding: 10px; border-radius: 6px;">
+                            <strong>Subject:</strong> ${subject}
+                        </div>
+                        <div style="background: #f8f6fc; padding: 15px; border-radius: 6px; margin-top: 10px;">
+                            <strong>Message:</strong>
+                            <p style="color: #5a4a70; margin-top: 8px;">${message}</p>
+                        </div>
                     </div>
-                    <div style="text-align: center; margin-top: 16px;">
-                        <a href="https://shinex-learning.onrender.com/admin/messages" 
+                    <div style="text-align: center; margin-top: 20px;">
+                        <a href="https://shinex-learning.onrender.com/admin/messages/${newMessage.id}" 
                            style="background: #8B5CF6; color: #fff; padding: 10px 24px; border-radius: 30px; text-decoration: none; font-weight: 600;">
-                            View in Admin Panel
+                            View & Reply
                         </a>
                     </div>
+                </div>
+                <div style="text-align: center; padding: 16px 0; color: #7a6a8f; font-size: 12px;">
+                    <p>Received: ${new Date().toLocaleString()}</p>
                 </div>
             </div>
         `;
         
-        await sendEmail(adminEmail, `📬 New Contact Message from ${name}`, adminHtml);
+        await sendEmail(adminEmail, `📬 New Contact Message from ${name} - ${subject}`, adminHtml);
         
+        // Enhanced user confirmation
         const userHtml = `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #f8f6fc; border-radius: 12px;">
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: linear-gradient(135deg, #f8f6fc 0%, #ede8f5 100%); border-radius: 12px;">
                 <div style="text-align: center; padding: 20px 0;">
-                    <h1 style="color: #8B5CF6; font-size: 24px;">✅ Message Received</h1>
+                    <h1 style="color: #8B5CF6; font-size: 28px;">✅ Message Received</h1>
                 </div>
-                <div style="background: #fff; padding: 24px; border-radius: 12px;">
+                <div style="background: #fff; padding: 24px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
                     <p style="color: #5a4a70; font-size: 16px; line-height: 1.6;">
                         Dear <strong>${name}</strong>,
                     </p>
                     <p style="color: #5a4a70; font-size: 16px; line-height: 1.6;">
                         Thank you for contacting SHINEX Learning Circle. We have received your message and will get back to you within 24-48 hours.
                     </p>
-                    <div style="background: #f8f6fc; padding: 12px; border-radius: 8px; margin: 12px 0;">
-                        <p><strong>Your Message:</strong></p>
-                        <p style="color: #5a4a70;">${message}</p>
+                    <div style="background: #f8f6fc; padding: 15px; border-radius: 8px; margin: 16px 0; border-left: 4px solid #8B5CF6;">
+                        <p style="margin: 0;"><strong>Your Message:</strong></p>
+                        <p style="color: #5a4a70; margin: 8px 0 0 0;">${message}</p>
                     </div>
-                    <div style="text-align: center; margin-top: 16px;">
+                    <div style="background: #e8f5e9; padding: 12px; border-radius: 8px; margin: 12px 0; border-left: 4px solid #4CAF50;">
+                        <p style="color: #2E7D32; margin: 0;">📩 Our team will respond within 24-48 hours</p>
+                    </div>
+                    <div style="text-align: center; margin-top: 20px;">
                         <a href="https://shinex-learning.onrender.com" 
-                           style="background: #8B5CF6; color: #fff; padding: 10px 24px; border-radius: 30px; text-decoration: none; font-weight: 600;">
-                            Explore Courses
+                           style="background: linear-gradient(135deg, #8B5CF6 0%, #6d28d9 100%); color: #fff; padding: 12px 32px; border-radius: 30px; text-decoration: none; font-weight: 600; display: inline-block;">
+                            Explore Our Courses
                         </a>
                     </div>
                 </div>
                 <div style="text-align: center; padding: 16px 0; color: #7a6a8f; font-size: 12px;">
-                    <p style="font-style: italic;">Learn. Understand. Protect.</p>
+                    <p style="font-style: italic;">Learn. Understand. Protect. 🛡️</p>
                 </div>
             </div>
         `;
@@ -886,7 +1002,7 @@ app.post('/contact/send', async (req, res) => {
 });
 
 // ============================================================
-// ADMIN MESSAGE ROUTES
+// ADMIN MESSAGE ROUTES WITH REPLY EMAIL
 // ============================================================
 app.get('/admin/messages', blockMobileAdmin, requireAdmin, async (req, res) => {
     const messages = await ContactMessage.find().sort({ createdAt: -1 });
@@ -945,32 +1061,39 @@ app.post('/admin/messages/reply/:id', blockMobileAdmin, requireAdmin, async (req
         message.repliedAt = new Date();
         await message.save();
         
+        // Enhanced reply email
         const emailHtml = `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #f8f6fc; border-radius: 12px;">
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: linear-gradient(135deg, #f8f6fc 0%, #ede8f5 100%); border-radius: 12px;">
                 <div style="text-align: center; padding: 20px 0;">
-                    <h1 style="color: #8B5CF6; font-size: 24px;">📩 Reply from SHINEX</h1>
+                    <h1 style="color: #8B5CF6; font-size: 28px;">📩 Reply from SHINEX</h1>
                 </div>
-                <div style="background: #fff; padding: 24px; border-radius: 12px;">
+                <div style="background: #fff; padding: 24px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
                     <p style="color: #5a4a70; font-size: 16px; line-height: 1.6;">
                         Dear <strong>${message.name}</strong>,
                     </p>
                     <p style="color: #5a4a70; font-size: 16px; line-height: 1.6;">
-                        Thank you for contacting SHINEX Learning Circle. Here is our response:
+                        Thank you for contacting SHINEX Learning Circle. Here is our response to your inquiry:
                     </p>
-                    <div style="background: #f8f6fc; padding: 12px; border-radius: 8px; margin: 12px 0;">
-                        <p><strong>Your Original Message:</strong></p>
-                        <p style="color: #5a4a70;">${message.message}</p>
+                    <div style="background: #f8f6fc; padding: 15px; border-radius: 8px; margin: 16px 0; border-left: 4px solid #f44336;">
+                        <p style="margin: 0;"><strong>Your Original Message:</strong></p>
+                        <p style="color: #5a4a70; margin: 8px 0 0 0;">${message.message}</p>
                     </div>
-                    <div style="background: #e8f5e9; padding: 12px; border-radius: 8px; margin: 12px 0; border-left: 4px solid #4CAF50;">
-                        <p><strong style="color: #2E7D32;">Our Reply:</strong></p>
-                        <p style="color: #1B5E20;">${reply}</p>
+                    <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin: 16px 0; border-left: 4px solid #4CAF50;">
+                        <p style="margin: 0;"><strong style="color: #2E7D32;">Our Reply:</strong></p>
+                        <p style="color: #1B5E20; margin: 8px 0 0 0;">${reply}</p>
                     </div>
-                    <div style="text-align: center; margin-top: 16px;">
-                        <a href="https://shinex-learning.onrender.com" 
-                           style="background: #8B5CF6; color: #fff; padding: 10px 24px; border-radius: 30px; text-decoration: none; font-weight: 600;">
-                            Visit SHINEX
+                    <div style="text-align: center; margin-top: 20px;">
+                        <a href="https://shinex-learning.onrender.com/contact" 
+                           style="background: linear-gradient(135deg, #8B5CF6 0%, #6d28d9 100%); color: #fff; padding: 12px 32px; border-radius: 30px; text-decoration: none; font-weight: 600; display: inline-block;">
+                            Reply to This Email
                         </a>
                     </div>
+                    <p style="color: #7a6a8f; font-size: 13px; margin-top: 16px;">
+                        If you have more questions, feel free to reply to this email or visit our contact page.
+                    </p>
+                </div>
+                <div style="text-align: center; padding: 16px 0; color: #7a6a8f; font-size: 12px;">
+                    <p>Learn. Understand. Protect. 🛡️</p>
                 </div>
             </div>
         `;
@@ -992,6 +1115,77 @@ app.post('/admin/messages/delete/:id', blockMobileAdmin, requireAdmin, async (re
     req.session.messages = { success: '🗑️ Message deleted.' };
     res.redirect('/admin/messages');
 });
+
+// ============================================================
+// ===== AUTH MIDDLEWARE - SEPARATED ROLES =====
+// ============================================================
+
+// ===== USER AUTH - For regular users only =====
+async function requireUser(req, res, next) {
+    if (!req.session.userId) {
+        req.session.messages = { error: 'Please log in to access this page.' };
+        return res.redirect('/login');
+    }
+    
+    try {
+        const user = await User.findOne({ id: req.session.userId });
+        if (!user) {
+            req.session.destroy();
+            req.session.messages = { error: 'Session expired. Please log in again.' };
+            return res.redirect('/login');
+        }
+        
+        if (user.isAdmin) {
+            return res.redirect('/admin/dashboard');
+        }
+        
+        req.user = user;
+        next();
+    } catch (error) {
+        console.error('Auth error:', error);
+        req.session.messages = { error: 'Authentication error. Please try again.' };
+        res.redirect('/login');
+    }
+}
+
+// ===== ADMIN AUTH - For admins only =====
+async function requireAdmin(req, res, next) {
+    if (!req.session.adminId) {
+        req.session.messages = { error: 'Please log in as admin.' };
+        return res.redirect('/shinex-admin');
+    }
+    
+    try {
+        const admin = await User.findOne({ id: req.session.adminId });
+        if (!admin) {
+            req.session.destroy();
+            req.session.messages = { error: 'Session expired. Please log in again.' };
+            return res.redirect('/shinex-admin');
+        }
+        
+        if (!admin.isAdmin) {
+            req.session.destroy();
+            req.session.messages = { error: 'Admin access required.' };
+            return res.redirect('/shinex-admin');
+        }
+        
+        req.admin = admin;
+        next();
+    } catch (error) {
+        console.error('Admin auth error:', error);
+        req.session.messages = { error: 'Authentication error. Please try again.' };
+        res.redirect('/shinex-admin');
+    }
+}
+
+// ===== BLOCK MOBILE ACCESS TO ADMIN =====
+function blockMobileAdmin(req, res, next) {
+    if (isMobile(req)) {
+        req.session.messages = { error: 'Admin panel is only available on desktop.' };
+        return res.redirect('/');
+    }
+    next();
+}
 
 // ============================================================
 // ===== PUBLIC ROUTES =====
@@ -1942,15 +2136,19 @@ async function startServer() {
         }
 
         app.listen(PORT, () => {
-            console.log(`🚀 SHINEX running on http://localhost:${PORT}`);
+            console.log(`\n🚀 SHINEX running on http://localhost:${PORT}`);
             console.log(`🔐 Admin: balogunmustaphaaddeji@gmail.com / SHINEXAdmin@2026`);
             console.log(`📚 Admin Login: http://localhost:${PORT}/shinex-admin`);
-            console.log(`📚 MongoDB connected. Data is now PERSISTENT!`);
+            console.log(`📧 Test Email: http://localhost:${PORT}/test-email`);
+            console.log(`📚 MongoDB connected. Data is now PERSISTENT!\n`);
             
             if (process.env.EMAIL_USER && process.env.EMAIL_APP_PASSWORD) {
-                console.log(`📧 Email configured: ${process.env.EMAIL_USER}`);
+                console.log(`✅ Email configured: ${process.env.EMAIL_USER}`);
+                console.log(`📧 Email status: READY TO SEND\n`);
             } else {
-                console.log('⚠️ Email not configured. Set EMAIL_USER and EMAIL_APP_PASSWORD in .env');
+                console.log('⚠️ Email not configured. Create .env file with:');
+                console.log('   EMAIL_USER=your-email@gmail.com');
+                console.log('   EMAIL_APP_PASSWORD=your-16-char-app-password\n');
             }
         });
     } catch (error) {

@@ -6,28 +6,48 @@
     <title>Verification Failed – SHINEX</title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div id="page-loader">
+        <div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div>
+        <div class="loader-text">SHINEX</div>
+        <div class="loader-sub">LEARNING CIRCLE</div>
+    </div>
+
     <%- include(getHeader()) %>
 
     <main class="main-content">
-        <div class="container" style="max-width:500px;">
-            <div class="card" style="text-align:center; padding:40px 30px; border:2px solid #e74c3c;">
-                <div style="font-size:4rem; color:#e74c3c; margin-bottom:16px;">
+        <div class="container" style="max-width:550px;">
+            <div class="card" style="text-align:center; padding:50px 30px; border:3px solid #e74c3c;">
+                <div style="font-size:4.5rem; color:#e74c3c; margin-bottom:16px;">
                     <i class="fas fa-times-circle"></i>
                 </div>
-                <h1 style="font-size:1.6rem; font-weight:800; color:#e74c3c; margin:0 0 8px 0;">
+                <h1 style="font-size:1.8rem; font-weight:800; color:#e74c3c; margin:0 0 8px 0;">
                     Verification Failed ❌
                 </h1>
-                <p style="color:var(--text-muted); font-size:1rem; margin:0 0 16px 0;">
+                <p style="color:var(--text-muted); font-size:1.05rem; margin:0 0 16px 0;">
                     The verification link is invalid or has expired.
                 </p>
-                <p style="color:var(--text-muted); font-size:0.9rem; margin:0 0 16px 0;">
-                    Please contact support or try registering again.
+                <p style="color:var(--text-muted); font-size:0.9rem; margin:0 0 20px 0;">
+                    This could be because:
                 </p>
-                <a href="/register" class="btn btn-primary">
-                    <i class="fas fa-user-plus"></i> Register Again
-                </a>
+                <ul style="text-align:left; color:var(--text-muted); font-size:0.85rem; line-height:1.8; max-width:350px; margin:0 auto 20px auto;">
+                    <li>✓ The link has already been used</li>
+                    <li>✓ The link expired (it's valid for 24 hours)</li>
+                    <li>✓ The link was copied incorrectly</li>
+                </ul>
+                <p style="color:var(--text-muted); font-size:0.9rem; margin:0 0 20px 0;">
+                    Please try registering again or contact support.
+                </p>
+                <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+                    <a href="/register" class="btn btn-primary">
+                        <i class="fas fa-user-plus"></i> Register Again
+                    </a>
+                    <a href="/contact" class="btn btn-secondary">
+                        <i class="fas fa-headset"></i> Contact Support
+                    </a>
+                </div>
             </div>
         </div>
     </main>

@@ -6,31 +6,53 @@
     <title>Email Verified – SHINEX</title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div id="page-loader">
+        <div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div>
+        <div class="loader-text">SHINEX</div>
+        <div class="loader-sub">LEARNING CIRCLE</div>
+    </div>
+
     <%- include(getHeader()) %>
 
     <main class="main-content">
-        <div class="container" style="max-width:500px;">
-            <div class="card" style="text-align:center; padding:40px 30px; border:2px solid #27ae60;">
-                <div style="font-size:4rem; color:#27ae60; margin-bottom:16px;">
+        <div class="container" style="max-width:550px;">
+            <div class="card" style="text-align:center; padding:50px 30px; border:3px solid #27ae60;">
+                <div style="font-size:4.5rem; color:#27ae60; margin-bottom:16px;">
                     <i class="fas fa-check-circle"></i>
                 </div>
-                <h1 style="font-size:1.6rem; font-weight:800; color:#27ae60; margin:0 0 8px 0;">
+                <h1 style="font-size:1.8rem; font-weight:800; color:#27ae60; margin:0 0 8px 0;">
                     Email Verified! ✅
                 </h1>
-                <p style="color:var(--text-muted); font-size:1rem; margin:0 0 8px 0;">
+                <p style="color:var(--text-muted); font-size:1.05rem; margin:0 0 8px 0;">
                     Your email has been successfully verified.
                 </p>
                 <% if (user) { %>
-                    <p style="color:var(--text-dark); font-size:0.9rem; margin:0 0 16px 0;">
-                        Welcome, <strong><%= user.firstName %></strong>! Your Student ID is: 
-                        <strong style="color:#8B5CF6;"><%= user.studentId %></strong>
-                    </p>
+                    <div style="background:var(--primary-bg); border-radius:10px; padding:16px; margin:16px 0;">
+                        <p style="margin:4px 0; font-size:0.95rem; color:var(--text-dark);">
+                            <strong>Welcome, <%= user.firstName %>!</strong>
+                        </p>
+                        <p style="margin:4px 0; font-size:0.85rem; color:var(--text-muted);">
+                            Student ID: <strong style="color:#8B5CF6;"><%= user.studentId %></strong>
+                        </p>
+                        <p style="margin:4px 0; font-size:0.85rem; color:var(--text-muted);">
+                            Course: <strong><%= user.courseName %></strong>
+                        </p>
+                    </div>
                 <% } %>
-                <a href="/login" class="btn btn-primary">
-                    <i class="fas fa-sign-in-alt"></i> Login Now
-                </a>
+                <p style="color:var(--text-muted); font-size:0.9rem; margin:0 0 20px 0;">
+                    You can now access all courses and start learning.
+                </p>
+                <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+                    <a href="/dashboard" class="btn btn-primary">
+                        <i class="fas fa-tachometer-alt"></i> Go to Dashboard
+                    </a>
+                    <a href="/" class="btn btn-secondary">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                </div>
             </div>
         </div>
     </main>
