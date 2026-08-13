@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Verify Email – SHINEX</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div id="page-loader">
+        <div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div>
+        <div class="loader-text">SHINEX</div>
+        <div class="loader-sub">LEARNING CIRCLE</div>
+    </div>
+
+    <%- include('../partials/header-mobile') %>
+
+    <main class="main-content" style="padding:12px 0 24px;">
+        <div class="container" style="padding:0 12px;">
+            <div style="background:#fff; border-radius:12px; padding:20px 16px; border:1px solid #ede8f5; text-align:center;">
+                <div style="font-size:3rem; color:#8B5CF6; margin-bottom:12px;">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <h1 style="font-size:1.3rem; font-weight:800; color:var(--text-dark); margin:0 0 6px 0;">
+                    Verify Your Email
+                </h1>
+                <p style="color:var(--text-muted); font-size:0.85rem; margin:0 0 4px 0;">
+                    We've sent a verification link to your email.
+                </p>
+
+                <div style="background:var(--primary-bg); border-radius:8px; padding:10px; margin:12px 0;">
+                    <p style="font-size:0.7rem; color:var(--text-muted); margin:0;">
+                        <i class="fas fa-envelope" style="color:#8B5CF6;"></i> Sent to:
+                    </p>
+                    <p style="font-size:0.9rem; font-weight:600; color:var(--text-dark); margin:0;">
+                        <%= user ? user.email : '' %>
+                    </p>
+                </div>
+
+                <div id="verifyMessagesMobile"></div>
+
+                <button id="resendBtnMobile" class="btn btn-primary" style="width:100%;" onclick="resendVerificationMobile()">
+                    <i class="fas fa-paper-plane"></i> Resend Email
+                </button>
+                <span id="cooldownTimerMobile" style="font-size:0.7rem; color:var(--text-muted); display:none; margin-top:6px;">
+                    Resend available in <span id="countdownMobile">60</span> seconds
+                </span>
+
+                <div style="margin-top:12px; padding-top:12px; border-top:1px solid #ede8f5;">
+                    <a href="/login" style="width:100%; text-align:center; font-size:0.85rem; padding:8px; border-radius:30px; background:#ede8f5; color:var(--text-dark); border:none; font-weight:600; text-decoration:none; display:block;">
+                        <i class="fas fa-arrow-left"></i> Back to Login
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <%- include('../partials/footer-mobile') %>
+
+    <script>
+        let cooldownMobile = 60;
+        let timerIntervalMobile = null;
+        let isCooldownMobile = false;
+
+        function resendVerificationMobile() {
+            if (isCooldownMobile) {
+                alert('Please wait ' + cooldownMobile + ' seconds.');
+                return;
+            }
+
+            const email = '<%= user ? user.email : "" %>';
+            
+            fetch('/resend-verification', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email })
+            })
+            .then(res => res.json())
+            .then(data => {
+                const messagesDiv = document.getElementById('verifyMessagesMobile');
+                if (data.success) {
+                    messagesDiv.innerHTML = `
+                        <div class="alert alert-success" style="font-size:0.8rem; padding:8px 12px;">
+                            ✅ ${data.message}
+                        </div>
+                    `;
+                    startCooldownMobile();
+                } else {
+                    messagesDiv.innerHTML = `
+                        <div class="alert alert-danger" style="font-size:0.8rem; padding:8px 12px;">
+                            ❌ ${data.error}
+                        </div>
+                    `;
+                }
+            })
+            .catch(() => {
+                document.getElementById('verifyMessagesMobile').innerHTML = `
+                    <div class="alert alert-danger" style="font-size:0.8rem; padding:8px 12px;">
+                        ❌ Something went wrong. Please try again.
+                    </div>
+                `;
+            });
+        }
+
+        function startCooldownMobile() {
+            isCooldownMobile = true;
+            cooldownMobile = 60;
+            const btn = document.getElementById('resendBtnMobile');
+            const display = document.getElementById('cooldownTimerMobile');
+            
+            btn.disabled = true;
+            btn.style.opacity = '0.5';
+            display.style.display = 'block';
+            
+            timerIntervalMobile = setInterval(() => {
+                cooldownMobile--;
+                document.getElementById('countdownMobile').textContent = cooldownMobile;
+                if (cooldownMobile <= 0) {
+                    clearInterval(timerIntervalMobile);
+                    display.style.display = 'none';
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
+                    isCooldownMobile = false;
+                }
+            }, 1000);
+        }
+    </script>
+    <script src="/js/script.js"></script>
+</body>
+</html>

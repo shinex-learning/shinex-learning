@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Your Email – SHINEX</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div id="page-loader">
+        <div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div>
+        <div class="loader-text">SHINEX</div>
+        <div class="loader-sub">LEARNING CIRCLE</div>
+    </div>
+
+    <%- include(getHeader()) %>
+
+    <main class="main-content">
+        <div class="container" style="max-width:550px;">
+            <div class="card" style="text-align:center; padding:40px 30px;">
+                <div style="font-size:4rem; color:#8B5CF6; margin-bottom:16px;">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <h1 style="font-size:1.6rem; font-weight:800; color:var(--text-dark); margin:0 0 8px 0;">
+                    Verify Your Email
+                </h1>
+                <p style="color:var(--text-muted); font-size:1rem; margin:0 0 4px 0;">
+                    We've sent a verification link to your email address.
+                </p>
+                <p style="color:var(--text-muted); font-size:0.9rem; margin:0 0 16px 0;">
+                    Please check your inbox and click the link to activate your account.
+                </p>
+
+                <div style="background:var(--primary-bg); border-radius:10px; padding:12px 16px; margin-bottom:16px;">
+                    <p style="font-size:0.8rem; color:var(--text-muted); margin:0;">
+                        <i class="fas fa-envelope" style="color:#8B5CF6;"></i> Verification email sent to:
+                    </p>
+                    <p style="font-size:1.1rem; font-weight:600; color:var(--text-dark); margin:0;">
+                        <%= user ? user.email : '' %>
+                    </p>
+                    <p style="font-size:0.8rem; color:var(--text-muted); margin:2px 0 0;">
+                        Student ID: <strong style="color:#8B5CF6;"><%= user ? user.studentId : '' %></strong>
+                    </p>
+                </div>
+
+                <!-- Messages -->
+                <div id="verifyMessages"></div>
+
+                <!-- Resend Button -->
+                <div style="display:flex; flex-direction:column; gap:10px; margin-top:10px;">
+                    <button id="resendBtn" class="btn btn-primary" onclick="resendVerification()">
+                        <i class="fas fa-paper-plane"></i> Resend Verification Email
+                    </button>
+                    <span id="cooldownTimer" style="font-size:0.8rem; color:var(--text-muted); display:none;">
+                        Resend available in <span id="countdown">60</span> seconds
+                    </span>
+                </div>
+
+                <div style="margin-top:16px; padding-top:16px; border-top:1px solid #ede8f5;">
+                    <p style="font-size:0.85rem; color:var(--text-muted); margin:0 0 4px 0;">
+                        <i class="fas fa-info-circle" style="color:#8B5CF6;"></i> Didn't receive the email?
+                    </p>
+                    <p style="font-size:0.8rem; color:var(--text-muted); margin:0;">
+                        Check your spam folder or <a href="#" onclick="resendVerification(); return false;" style="color:#8B5CF6; font-weight:600;">click here</a> to resend.
+                    </p>
+                </div>
+
+                <div style="margin-top:16px; padding-top:16px; border-top:1px solid #ede8f5;">
+                    <a href="/login" class="btn btn-secondary" style="width:100%; text-align:center;">
+                        <i class="fas fa-arrow-left"></i> Back to Login
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <%- include(getFooter()) %>
+
+    <script>
+        let cooldown = 60;
+        let timerInterval = null;
+        let isCooldown = false;
+
+        function resendVerification() {
+            if (isCooldown) {
+                alert('Please wait ' + cooldown + ' seconds before resending.');
+                return;
+            }
+
+            const email = '<%= user ? user.email : "" %>';
+            
+            fetch('/resend-verification', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email: email })
+            })
+            .then(res => res.json())
+            .then(data => {
+                const messagesDiv = document.getElementById('verifyMessages');
+                if (data.success) {
+                    messagesDiv.innerHTML = `
+                        <div class="alert alert-success" style="margin-bottom:12px;">
+                            <i class="fas fa-check-circle"></i> ${data.message}
+                        </div>
+                    `;
+                    startCooldown();
+                } else {
+                    messagesDiv.innerHTML = `
+                        <div class="alert alert-danger" style="margin-bottom:12px;">
+                            <i class="fas fa-exclamation-circle"></i> ${data.error}
+                        </div>
+                    `;
+                }
+            })
+            .catch(err => {
+                document.getElementById('verifyMessages').innerHTML = `
+                    <div class="alert alert-danger" style="margin-bottom:12px;">
+                        <i class="fas fa-exclamation-circle"></i> Something went wrong. Please try again.
+                    </div>
+                `;
+            });
+        }
+
+        function startCooldown() {
+            isCooldown = true;
+            cooldown = 60;
+            const timerDisplay = document.getElementById('countdown');
+            const cooldownDisplay = document.getElementById('cooldownTimer');
+            const resendBtn = document.getElementById('resendBtn');
+            
+            resendBtn.disabled = true;
+            resendBtn.style.opacity = '0.5';
+            cooldownDisplay.style.display = 'block';
+            
+            timerInterval = setInterval(() => {
+                cooldown--;
+                timerDisplay.textContent = cooldown;
+                
+                if (cooldown <= 0) {
+                    clearInterval(timerInterval);
+                    cooldownDisplay.style.display = 'none';
+                    resendBtn.disabled = false;
+                    resendBtn.style.opacity = '1';
+                    isCooldown = false;
+                }
+            }, 1000);
+        }
+    </script>
+    <script src="/js/script.js"></script>
+</body>
+</html>
