@@ -7,35 +7,145 @@
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        /* ===== PAGE WRAPPER ===== */
+        .mobile-register-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 70vh;
+            padding: 20px 12px;
+            background: transparent;
+        }
+        body.dark-mode .mobile-register-wrapper {
+            background: transparent !important;
+        }
+
+        /* ===== REGISTER CARD ===== */
+        .mobile-register-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 24px 16px;
+            border: 1px solid #ede8f5;
+            width: 100%;
+            max-width: 480px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(26, 10, 46, 0.08);
+        }
+        body.dark-mode .mobile-register-card {
+            background: #151320 !important;
+            border-color: #2a1a4a !important;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4) !important;
+        }
+
+        /* ===== LOGO ===== */
+        .mobile-register-card .auth-logo {
+            text-align: center;
+            margin-bottom: 12px;
+        }
+        .mobile-register-card .auth-logo h1 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #1A0A2E;
+            margin: 0;
+        }
+        body.dark-mode .mobile-register-card .auth-logo h1 {
+            color: #ffffff !important;
+        }
+        .mobile-register-card .auth-logo h1 span {
+            color: #8B5CF6;
+        }
+        .mobile-register-card .auth-logo p {
+            color: #7a6a8f;
+            font-size: 0.65rem;
+            margin: 0;
+            letter-spacing: 2px;
+        }
+        body.dark-mode .mobile-register-card .auth-logo p {
+            color: #b0a0c0 !important;
+        }
+
+        /* ===== TITLE ===== */
+        .mobile-register-card .auth-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1A0A2E;
+            text-align: center;
+            margin: 0 0 2px 0;
+        }
+        body.dark-mode .mobile-register-card .auth-title {
+            color: #ffffff !important;
+        }
+        .mobile-register-card .auth-subtitle {
+            font-size: 0.75rem;
+            color: #7a6a8f;
+            text-align: center;
+            margin: 0 0 12px 0;
+        }
+        body.dark-mode .mobile-register-card .auth-subtitle {
+            color: #b0a0c0 !important;
+        }
+
+        /* ===== FORM SECTIONS ===== */
+        .mobile-form-section {
+            background: var(--primary-bg);
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 12px;
+            transition: background 0.3s ease;
+        }
+        body.dark-mode .mobile-form-section {
+            background: #1a1a1a !important;
+            border: 1px solid #2a1a4a !important;
+        }
+        .mobile-form-section h4 {
+            font-weight: 700;
+            color: #1A0A2E;
+            margin: 0 0 2px 0;
+            font-size: 0.9rem;
+        }
+        body.dark-mode .mobile-form-section h4 {
+            color: #ffffff !important;
+        }
+        .mobile-form-section .sub {
+            font-size: 0.7rem;
+            color: #7a6a8f;
+            margin: 0 0 10px 0;
+        }
+        body.dark-mode .mobile-form-section .sub {
+            color: #b0a0c0 !important;
+        }
+
+        /* ===== FORM FIELDS ===== */
         .mobile-form-group {
             margin-bottom: 12px;
         }
         .mobile-form-group label {
             font-weight: 600;
-            font-size: 0.8rem;
-            color: var(--text-dark);
+            font-size: 0.75rem;
+            color: #1A0A2E;
             display: block;
             margin-bottom: 3px;
         }
         body.dark-mode .mobile-form-group label {
-            color: var(--text-light);
+            color: #ffffff !important;
         }
         .mobile-form-group input,
         .mobile-form-group select {
             width: 100%;
-            padding: 10px 12px;
+            padding: 8px 12px;
             border: 2px solid #ede8f5;
             border-radius: 8px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-family: inherit;
-            background: #fff;
-            color: var(--text-dark);
+            background: #ffffff;
+            color: #1A0A2E;
+            transition: all 0.3s ease;
         }
         body.dark-mode .mobile-form-group input,
         body.dark-mode .mobile-form-group select {
-            background: #2a2a2a;
-            color: var(--text-light);
-            border-color: #333;
+            background: #2a2a2a !important;
+            color: #ffffff !important;
+            border-color: #3a3a4a !important;
         }
         .mobile-form-group input:focus,
         .mobile-form-group select:focus {
@@ -43,29 +153,18 @@
             box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.12);
             outline: none;
         }
-        .mobile-form-section {
-            background: var(--primary-bg);
-            border-radius: 10px;
-            padding: 14px;
-            margin-bottom: 12px;
+        body.dark-mode .mobile-form-group input:focus,
+        body.dark-mode .mobile-form-group select:focus {
+            border-color: #8B5CF6 !important;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2) !important;
         }
-        body.dark-mode .mobile-form-section {
-            background: #1a1a1a;
+        .mobile-form-group input::placeholder {
+            color: #b0a3c4;
         }
-        .mobile-form-section h4 {
-            font-weight: 700;
-            color: var(--text-dark);
-            margin: 0 0 2px 0;
-            font-size: 0.9rem;
+        body.dark-mode .mobile-form-group input::placeholder {
+            color: #666 !important;
         }
-        body.dark-mode .mobile-form-section h4 {
-            color: var(--text-light);
-        }
-        .mobile-form-section .sub {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            margin: 0 0 10px 0;
-        }
+
         .mobile-form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -76,10 +175,51 @@
         }
         .mobile-help-text {
             font-size: 0.65rem;
-            color: var(--text-muted);
+            color: #7a6a8f;
             margin-top: 2px;
         }
-        .btn-mobile-auth {
+        body.dark-mode .mobile-help-text {
+            color: #888 !important;
+        }
+
+        /* ===== PASSWORD TOGGLE ===== */
+        .password-wrapper {
+            position: relative;
+            width: 100%;
+        }
+        .password-wrapper input {
+            width: 100%;
+            padding-right: 40px !important;
+        }
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #7a6a8f;
+            font-size: 1rem;
+            padding: 4px 6px;
+            transition: color 0.3s ease;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .toggle-password:hover {
+            color: #8B5CF6;
+        }
+        body.dark-mode .toggle-password {
+            color: #888 !important;
+        }
+        body.dark-mode .toggle-password:hover {
+            color: #a78bfa !important;
+        }
+
+        /* ===== BUTTON ===== */
+        .btn-mobile-register {
             width: 100%;
             padding: 12px;
             border: none;
@@ -89,10 +229,15 @@
             background: #8B5CF6;
             color: #fff;
             cursor: pointer;
+            transition: all 0.3s ease;
         }
-        .btn-mobile-auth:hover {
+        .btn-mobile-register:hover {
             background: #6a3dcf;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
         }
+
+        /* ===== ALERTS ===== */
         .alert {
             padding: 8px 12px;
             border-radius: 8px;
@@ -111,53 +256,102 @@
             border-left: 4px solid #27ae60;
         }
         body.dark-mode .alert-danger {
-            background: #3a1a1a;
-            color: #f1948a;
+            background: #3a1a1a !important;
+            color: #f1948a !important;
         }
         body.dark-mode .alert-success {
-            background: #1a3a2a;
-            color: #7dcea0;
+            background: #1a3a2a !important;
+            color: #7dcea0 !important;
         }
 
-        /* ===== PASSWORD VISIBILITY TOGGLE ===== */
-        .password-wrapper {
-            position: relative;
-            width: 100%;
+        /* ===== FOOTER ===== */
+        .mobile-register-card .auth-footer {
+            text-align: center;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #ede8f5;
         }
-        .password-wrapper input {
-            width: 100%;
-            padding-right: 40px !important;
+        body.dark-mode .mobile-register-card .auth-footer {
+            border-color: #2a1a4a !important;
         }
-        .toggle-password {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: var(--text-muted);
-            font-size: 1rem;
-            padding: 4px 6px;
-            transition: color 0.3s ease;
-            z-index: 2;
+        .mobile-register-card .auth-footer a {
+            color: #8B5CF6;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .mobile-register-card .auth-footer a:hover {
+            text-decoration: underline;
+        }
+        .mobile-register-card .auth-footer p {
+            color: #7a6a8f;
+            font-size: 0.8rem;
+            margin: 0;
+        }
+        body.dark-mode .mobile-register-card .auth-footer p {
+            color: #b0a0c0 !important;
+        }
+
+        /* ===== PASSWORD VALIDATION ===== */
+        .password-requirements-mobile {
+            list-style: none;
+            padding: 6px 0 0 0;
+            margin: 2px 0 0 0;
+            font-size: 0.7rem;
+            color: #7a6a8f;
+        }
+        body.dark-mode .password-requirements-mobile {
+            color: #b0a0c0 !important;
+        }
+        .password-requirements-mobile li {
+            padding: 1px 0;
             display: flex;
             align-items: center;
-            justify-content: center;
+            gap: 6px;
         }
-        .toggle-password:hover {
-            color: #8B5CF6;
+        .password-requirements-mobile li .req-icon {
+            font-size: 0.5rem;
+            width: 14px;
+            text-align: center;
         }
-        body.dark-mode .toggle-password {
-            color: #888;
+        .password-requirements-mobile li .req-icon.valid {
+            color: #27ae60;
         }
-        body.dark-mode .toggle-password:hover {
-            color: #a78bfa;
+        .password-requirements-mobile li .req-icon.invalid {
+            color: #b0a3c4;
+        }
+        body.dark-mode .password-requirements-mobile li .req-icon.invalid {
+            color: #555 !important;
+        }
+        .password-requirements-mobile li .req-text.valid {
+            color: #27ae60;
+        }
+        .password-requirements-mobile li .req-text.invalid {
+            color: #7a6a8f;
+        }
+        body.dark-mode .password-requirements-mobile li .req-text.invalid {
+            color: #888 !important;
+        }
+        .password-match-status-mobile {
+            font-size: 0.7rem;
+            margin-top: 4px;
+            padding: 2px 0;
+        }
+        .password-match-status-mobile .match-valid {
+            color: #27ae60;
+        }
+        .password-match-status-mobile .match-invalid {
+            color: #e74c3c;
+        }
+        body.dark-mode .password-match-status-mobile .match-invalid {
+            color: #f1948a !important;
         }
 
         @media (max-width: 400px) {
             .mobile-form-row {
                 grid-template-columns: 1fr;
+            }
+            .mobile-register-card {
+                padding: 16px 12px;
             }
         }
     </style>
@@ -171,22 +365,19 @@
 
     <%- include('../partials/header-mobile') %>
 
-    <main class="main-content" style="padding:12px 0 24px;">
-        <div class="container" style="padding:0 12px;">
-            <div style="background:#fff; border-radius:12px; padding:16px; border:1px solid #ede8f5;">
-                <div style="text-align:center; margin-bottom:12px;">
-                    <h1 style="font-size:1.3rem; font-weight:800; color:#8B5CF6; margin:0;">SHINEX</h1>
-                    <p style="color:var(--text-muted); font-size:0.65rem; letter-spacing:2px; margin:0;">LEARNING CIRCLE</p>
+    <main class="main-content" style="padding:0; min-height:auto;">
+        <div class="mobile-register-wrapper">
+            <div class="mobile-register-card">
+                <div class="auth-logo">
+                    <h1>SHINEX<span>.</span></h1>
+                    <p>LEARNING CIRCLE</p>
                 </div>
 
-                <div style="font-size:1.1rem; font-weight:700; color:var(--text-dark); text-align:center; margin-bottom:2px;">Student Registration</div>
-                <div style="font-size:0.75rem; color:var(--text-muted); text-align:center; margin-bottom:12px;">Join SHINEX Learning Circle (SLC)</div>
+                <div class="auth-title">Student Registration</div>
+                <div class="auth-subtitle">Join SHINEX Learning Circle (SLC)</div>
 
                 <% if (messages && messages.error) { %>
                     <div class="alert alert-danger"><%= messages.error %></div>
-                <% } %>
-                <% if (messages && messages.success) { %>
-                    <div class="alert alert-success"><%= messages.success %></div>
                 <% } %>
 
                 <form action="/register" method="POST">
@@ -367,6 +558,24 @@
                                         <i class="fas fa-eye"></i>
                                     </button>
                                 </div>
+                                <ul class="password-requirements-mobile" id="mobilePasswordRequirements">
+                                    <li>
+                                        <span class="req-icon invalid" id="mReqLengthIcon"><i class="fas fa-circle"></i></span>
+                                        <span class="req-text invalid" id="mReqLengthText">At least 6 characters</span>
+                                    </li>
+                                    <li>
+                                        <span class="req-icon invalid" id="mReqUpperIcon"><i class="fas fa-circle"></i></span>
+                                        <span class="req-text invalid" id="mReqUpperText">At least 1 uppercase</span>
+                                    </li>
+                                    <li>
+                                        <span class="req-icon invalid" id="mReqLowerIcon"><i class="fas fa-circle"></i></span>
+                                        <span class="req-text invalid" id="mReqLowerText">At least 1 lowercase</span>
+                                    </li>
+                                    <li>
+                                        <span class="req-icon invalid" id="mReqNumberIcon"><i class="fas fa-circle"></i></span>
+                                        <span class="req-text invalid" id="mReqNumberText">At least 1 number</span>
+                                    </li>
+                                </ul>
                             </div>
                             <div class="mobile-form-group">
                                 <label>Confirm <span class="mobile-required">*</span></label>
@@ -376,6 +585,9 @@
                                         <i class="fas fa-eye"></i>
                                     </button>
                                 </div>
+                                <div class="password-match-status-mobile" id="mobilePasswordMatchStatus">
+                                    <span class="match-invalid"><i class="fas fa-times-circle"></i> Passwords do not match</span>
+                                </div>
                             </div>
                         </div>
 
@@ -384,24 +596,21 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn-mobile-auth">
+                    <button type="submit" class="btn-mobile-register" id="mobileRegisterBtn">
                         <i class="fas fa-user-plus"></i> Register
                     </button>
                 </form>
 
-                <div style="text-align:center; margin-top:12px; padding-top:12px; border-top:1px solid #ede8f5;">
-                    <p style="font-size:0.8rem; color:var(--text-muted); margin:0;">
-                        Already have an account? <a href="/login" style="color:#8B5CF6; font-weight:600; text-decoration:none;">Login</a>
-                    </p>
+                <div class="auth-footer">
+                    <p>Already have an account? <a href="/login">Login</a></p>
                 </div>
             </div>
         </div>
     </main>
 
     <%- include('../partials/footer-mobile') %>
-    
+
     <script>
-        // ===== PASSWORD VISIBILITY TOGGLE =====
         function togglePassword(inputId, button) {
             const input = document.getElementById(inputId);
             if (!input) return;
@@ -416,9 +625,86 @@
                 icon.className = 'fas fa-eye';
             }
             
-            // Prevent form submission
             event.preventDefault();
         }
+
+        // Mobile Password Validation
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordInput = document.getElementById('mobileRegisterPassword');
+            const confirmInput = document.getElementById('mobileRegisterConfirmPassword');
+            const submitBtn = document.getElementById('mobileRegisterBtn');
+            
+            const reqLengthIcon = document.getElementById('mReqLengthIcon');
+            const reqUpperIcon = document.getElementById('mReqUpperIcon');
+            const reqLowerIcon = document.getElementById('mReqLowerIcon');
+            const reqNumberIcon = document.getElementById('mReqNumberIcon');
+            const reqLengthText = document.getElementById('mReqLengthText');
+            const reqUpperText = document.getElementById('mReqUpperText');
+            const reqLowerText = document.getElementById('mReqLowerText');
+            const reqNumberText = document.getElementById('mReqNumberText');
+            const matchStatus = document.getElementById('mobilePasswordMatchStatus');
+            
+            function validatePassword(password) {
+                const hasLength = password.length >= 6;
+                const hasUpper = /[A-Z]/.test(password);
+                const hasLower = /[a-z]/.test(password);
+                const hasNumber = /[0-9]/.test(password);
+                
+                updateRequirement(reqLengthIcon, reqLengthText, hasLength);
+                updateRequirement(reqUpperIcon, reqUpperText, hasUpper);
+                updateRequirement(reqLowerIcon, reqLowerText, hasLower);
+                updateRequirement(reqNumberIcon, reqNumberText, hasNumber);
+                
+                return hasLength && hasUpper && hasLower && hasNumber;
+            }
+            
+            function updateRequirement(iconEl, textEl, isValid) {
+                if (isValid) {
+                    iconEl.className = 'req-icon valid';
+                    iconEl.innerHTML = '<i class="fas fa-check-circle"></i>';
+                    textEl.className = 'req-text valid';
+                } else {
+                    iconEl.className = 'req-icon invalid';
+                    iconEl.innerHTML = '<i class="fas fa-circle"></i>';
+                    textEl.className = 'req-text invalid';
+                }
+            }
+            
+            function checkPasswordMatch() {
+                const password = passwordInput.value;
+                const confirm = confirmInput.value;
+                
+                if (confirm.length === 0) {
+                    matchStatus.innerHTML = '<span class="match-invalid"><i class="fas fa-times-circle"></i> Confirm your password</span>';
+                    return false;
+                }
+                
+                if (password === confirm) {
+                    matchStatus.innerHTML = '<span class="match-valid"><i class="fas fa-check-circle"></i> Passwords match ✓</span>';
+                    return true;
+                } else {
+                    matchStatus.innerHTML = '<span class="match-invalid"><i class="fas fa-times-circle"></i> Passwords do not match</span>';
+                    return false;
+                }
+            }
+            
+            passwordInput.addEventListener('input', function() {
+                const password = this.value;
+                const isValid = validatePassword(password);
+                checkPasswordMatch();
+                const passwordsMatch = password === confirmInput.value && password.length > 0;
+                submitBtn.disabled = !(isValid && passwordsMatch);
+            });
+            
+            confirmInput.addEventListener('input', function() {
+                const password = passwordInput.value;
+                const isValid = validatePassword(password);
+                const passwordsMatch = password === this.value && password.length > 0;
+                submitBtn.disabled = !(isValid && passwordsMatch);
+            });
+            
+            submitBtn.disabled = true;
+        });
     </script>
     <script src="/js/script.js"></script>
 </body>
