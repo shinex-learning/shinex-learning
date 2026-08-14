@@ -3,6 +3,762 @@
    COMPLETE DARK/LIGHT MODE WITH ZERO THEME MIXING
    ============================================================ */
 
+/* ============================================================
+   SHINEX LEARNING CIRCLE – COMPLETE GLOBAL THEME SYSTEM v5.0
+   FIXED: All dark mode overrides included
+   ============================================================ */
+
+/* ===== CSS VARIABLES - THE ENTIRE THEME IN ONE PLACE ===== */
+:root {
+    /* ---- LIGHT MODE (Default) ---- */
+    --bg-page: #f8f6fc;
+    --bg-card: #ffffff;
+    --bg-card-secondary: #f0ebfb;
+    --bg-input: #ffffff;
+    --bg-input-hover: #f8f6fc;
+    --bg-sidebar: #ffffff;
+    --bg-modal: #ffffff;
+    --bg-dropdown: #ffffff;
+    --bg-alert-success: #d5f5e3;
+    --bg-alert-error: #fadbd8;
+    --bg-alert-info: #d6eaf8;
+    --bg-alert-warning: #fef9e7;
+    --bg-table-hover: #f8f6fc;
+    --bg-code: #f0ebfb;
+    
+    --text-primary: #1A0A2E;
+    --text-secondary: #5a4a70;
+    --text-muted: #7a6a8f;
+    --text-light: #b0a0c0;
+    --text-white: #ffffff;
+    --text-success: #27ae60;
+    --text-error: #e74c3c;
+    --text-warning: #f39c12;
+    
+    --border-color: #ede8f5;
+    --border-dark: #d4c4f0;
+    --border-light: #f5f0fa;
+    
+    --shadow-sm: 0 2px 8px rgba(26, 10, 46, 0.06);
+    --shadow-md: 0 4px 20px rgba(26, 10, 46, 0.08);
+    --shadow-lg: 0 8px 40px rgba(26, 10, 46, 0.12);
+    --shadow-xl: 0 12px 60px rgba(26, 10, 46, 0.16);
+    
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --radius-full: 9999px;
+    
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+    --spacing-2xl: 48px;
+    
+    --purple-primary: #8B5CF6;
+    --purple-dark: #6a3dcf;
+    --purple-light: #a78bfa;
+    --purple-bg: #f0ebfb;
+    --purple-gradient: linear-gradient(135deg, #8B5CF6, #6a3dcf);
+    --purple-gradient-light: linear-gradient(135deg, #a78bfa, #8B5CF6);
+    
+    --font-base: 16px;
+    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* ============================================================
+   DARK MODE VARIABLES - COMPLETE OVERRIDE
+   ============================================================ */
+body.dark-mode {
+    /* ---- Backgrounds ---- */
+    --bg-page: #0a0a0a !important;
+    --bg-card: #1a1a1a !important;
+    --bg-card-secondary: #2a1a4a !important;
+    --bg-input: #2a2a2a !important;
+    --bg-input-hover: #333333 !important;
+    --bg-sidebar: #1a1a1a !important;
+    --bg-modal: #1a1a1a !important;
+    --bg-dropdown: #2a2a2a !important;
+    --bg-alert-success: #1a3a2a !important;
+    --bg-alert-error: #3a1a1a !important;
+    --bg-alert-info: #1a2a3a !important;
+    --bg-alert-warning: #2a2a1a !important;
+    --bg-table-hover: #2a1a4a !important;
+    --bg-code: #2a2a2a !important;
+    
+    /* ---- Text Colors ---- */
+    --text-primary: #ffffff !important;
+    --text-secondary: #cccccc !important;
+    --text-muted: #999999 !important;
+    --text-light: #666666 !important;
+    --text-white: #ffffff !important;
+    --text-success: #7dcea0 !important;
+    --text-error: #f1948a !important;
+    --text-warning: #f7dc6f !important;
+    
+    /* ---- Borders ---- */
+    --border-color: #333333 !important;
+    --border-dark: #444444 !important;
+    --border-light: #2a2a2a !important;
+    
+    /* ---- Shadows ---- */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+    --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+    --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.5) !important;
+    --shadow-xl: 0 12px 60px rgba(0, 0, 0, 0.6) !important;
+    
+    --purple-bg: #2a1a4a !important;
+}
+
+/* ============================================================
+   DARK MODE - ALL COMPONENT OVERRIDES
+   ============================================================ */
+
+/* ----- ALL TEXT IN DARK MODE ----- */
+body.dark-mode,
+body.dark-mode * {
+    color: var(--text-primary) !important;
+}
+
+/* ----- EXCEPTIONS: Inputs, Textareas, Selects ----- */
+body.dark-mode input,
+body.dark-mode textarea,
+body.dark-mode select {
+    color: #ffffff !important;
+    background: #2a2a2a !important;
+    border-color: #444 !important;
+}
+
+body.dark-mode input::placeholder,
+body.dark-mode textarea::placeholder {
+    color: #888888 !important;
+}
+
+body.dark-mode input:focus,
+body.dark-mode textarea:focus,
+body.dark-mode select:focus {
+    border-color: var(--purple-primary) !important;
+    box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.2) !important;
+}
+
+/* ----- ALL CARDS & CONTAINERS ----- */
+body.dark-mode .card,
+body.dark-mode .course-card,
+body.dark-mode .level-card,
+body.dark-mode .settings-card,
+body.dark-mode .settings-sidebar,
+body.dark-mode .admin-card,
+body.dark-mode .contact-form-card,
+body.dark-mode .contact-info-card,
+body.dark-mode .social-card,
+body.dark-mode .privacy-card,
+body.dark-mode .terms-card,
+body.dark-mode .verify-card,
+body.dark-mode .success-card,
+body.dark-mode .error-card,
+body.dark-mode .mobile-course-card,
+body.dark-mode .mobile-service-card,
+body.dark-mode .mobile-settings-card,
+body.dark-mode .mobile-level-card,
+body.dark-mode .service-card-home,
+body.dark-mode .course-card-home {
+    background: #1a1a1a !important;
+    border-color: #333 !important;
+}
+
+/* ----- ALL HEADINGS ----- */
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5,
+body.dark-mode h6 {
+    color: #ffffff !important;
+}
+
+/* ----- ALL PARAGRAPHS, LISTS, SPANS ----- */
+body.dark-mode p,
+body.dark-mode li,
+body.dark-mode span,
+body.dark-mode label,
+body.dark-mode .text-muted,
+body.dark-mode .course-title,
+body.dark-mode .course-desc,
+body.dark-mode .level-name,
+body.dark-mode .level-duration,
+body.dark-mode .level-lessons,
+body.dark-mode .service-name,
+body.dark-mode .service-desc {
+    color: #ffffff !important;
+}
+
+/* ----- SECONDARY TEXT ----- */
+body.dark-mode .text-secondary,
+body.dark-mode .text-muted,
+body.dark-mode .service-desc,
+body.dark-mode .course-desc,
+body.dark-mode .level-duration,
+body.dark-mode .level-lessons {
+    color: #cccccc !important;
+}
+
+/* ----- BADGES ----- */
+body.dark-mode .badge-dark {
+    background: #333 !important;
+    color: #ffffff !important;
+}
+
+body.dark-mode .badge-purple {
+    background: #2a1a4a !important;
+    color: #a78bfa !important;
+}
+
+body.dark-mode .badge-green {
+    background: #1a3a2a !important;
+    color: #7dcea0 !important;
+}
+
+body.dark-mode .badge-red {
+    background: #3a1a1a !important;
+    color: #f1948a !important;
+}
+
+body.dark-mode .badge-gold {
+    background: #2a2a1a !important;
+    color: #f7dc6f !important;
+}
+
+/* ----- BUTTONS ----- */
+body.dark-mode .btn-secondary {
+    background: #2a2a2a !important;
+    color: #ffffff !important;
+    border-color: #444 !important;
+}
+
+body.dark-mode .btn-secondary:hover {
+    background: #3a3a3a !important;
+}
+
+body.dark-mode .btn-outline {
+    border-color: var(--purple-primary) !important;
+    color: var(--purple-primary) !important;
+}
+
+body.dark-mode .btn-outline:hover {
+    background: var(--purple-primary) !important;
+    color: #fff !important;
+}
+
+/* ----- HERO SECTION ----- */
+body.dark-mode .hero-section {
+    background: var(--purple-gradient) !important;
+}
+
+body.dark-mode .hero-section h1,
+body.dark-mode .hero-section p {
+    color: #ffffff !important;
+}
+
+/* ----- STAT BOXES ----- */
+body.dark-mode .stat-box {
+    background: #2a1a4a !important;
+    border-color: #333 !important;
+}
+
+body.dark-mode .stat-box .stat-number {
+    color: #a78bfa !important;
+}
+
+body.dark-mode .stat-box .stat-label {
+    color: #cccccc !important;
+}
+
+/* ----- PROGRESS BAR ----- */
+body.dark-mode .progress-wrap {
+    background: #2a2a2a !important;
+}
+
+body.dark-mode .progress-fill {
+    background: var(--purple-gradient) !important;
+}
+
+/* ----- ALERTS ----- */
+body.dark-mode .alert-success {
+    background: #1a3a2a !important;
+    color: #7dcea0 !important;
+    border-color: #7dcea0 !important;
+}
+
+body.dark-mode .alert-danger {
+    background: #3a1a1a !important;
+    color: #f1948a !important;
+    border-color: #f1948a !important;
+}
+
+body.dark-mode .alert-info {
+    background: #1a2a3a !important;
+    color: #85c1e9 !important;
+    border-color: #85c1e9 !important;
+}
+
+body.dark-mode .alert-warning {
+    background: #2a2a1a !important;
+    color: #f7dc6f !important;
+    border-color: #f7dc6f !important;
+}
+
+/* ----- SIDEBAR ----- */
+body.dark-mode .sidebar {
+    background: #1a1a1a !important;
+    border-color: #333 !important;
+}
+
+body.dark-mode .sidebar-header {
+    border-color: #333 !important;
+    color: #ffffff !important;
+}
+
+body.dark-mode .lesson-header {
+    color: #ffffff !important;
+    background: #1a1a1a !important;
+}
+
+body.dark-mode .lesson-header.active {
+    background: #2a1a4a !important;
+}
+
+body.dark-mode .class-link {
+    color: #cccccc !important;
+}
+
+body.dark-mode .class-link:hover:not(.disabled) {
+    background: #2a1a4a !important;
+}
+
+body.dark-mode .class-item.active .class-link {
+    background: #2a1a4a !important;
+}
+
+body.dark-mode .class-link.locked {
+    color: #666 !important;
+}
+
+body.dark-mode .content-header {
+    background: #1a1a1a !important;
+    border-color: #333 !important;
+}
+
+body.dark-mode .content-header h1 {
+    color: #ffffff !important;
+}
+
+body.dark-mode .content-body {
+    background: #1a1a1a !important;
+    border-color: #333 !important;
+}
+
+body.dark-mode .content-body .class-title {
+    color: #ffffff !important;
+}
+
+body.dark-mode .class-content {
+    color: #e0e0e0 !important;
+}
+
+body.dark-mode .class-content h1,
+body.dark-mode .class-content h2,
+body.dark-mode .class-content h3 {
+    color: #ffffff !important;
+}
+
+body.dark-mode .class-content strong,
+body.dark-mode .class-content b {
+    color: #ffffff !important;
+}
+
+body.dark-mode .class-content hr {
+    border-color: #333 !important;
+}
+
+body.dark-mode .content-footer {
+    background: #1a1a1a !important;
+    border-color: #333 !important;
+}
+
+body.dark-mode .progress-label {
+    color: #ffffff !important;
+}
+
+body.dark-mode .score-display {
+    color: #cccccc !important;
+}
+
+/* ----- TEST SECTION ----- */
+body.dark-mode .test-section {
+    background: #2a1a2a !important;
+    border-color: #f7d44a !important;
+}
+
+body.dark-mode .test-section h4 {
+    color: #ffffff !important;
+}
+
+body.dark-mode .test-section p {
+    color: #cccccc !important;
+}
+
+body.dark-mode .test-question .q-text {
+    color: #ffffff !important;
+}
+
+body.dark-mode .test-options label {
+    color: #cccccc !important;
+}
+
+body.dark-mode .test-options label:hover {
+    background: #2a1a4a !important;
+}
+
+/* ----- EMPTY STATE ----- */
+body.dark-mode .empty-state {
+    background: #1a1a1a !important;
+    border-color: #333 !important;
+}
+
+body.dark-mode .empty-state h3 {
+    color: #ffffff !important;
+}
+
+body.dark-mode .empty-state p {
+    color: #cccccc !important;
+}
+
+/* ----- FAQ ----- */
+body.dark-mode .faq-item {
+    border-color: #333 !important;
+}
+
+body.dark-mode .faq-question {
+    color: #ffffff !important;
+}
+
+body.dark-mode .faq-answer {
+    color: #cccccc !important;
+}
+
+/* ----- FORM ELEMENTS ----- */
+body.dark-mode input,
+body.dark-mode textarea,
+body.dark-mode select {
+    background: #2a2a2a !important;
+    color: #ffffff !important;
+    border-color: #444 !important;
+}
+
+body.dark-mode input::placeholder,
+body.dark-mode textarea::placeholder {
+    color: #888888 !important;
+}
+
+body.dark-mode label {
+    color: #ffffff !important;
+}
+
+body.dark-mode .form-group label {
+    color: #ffffff !important;
+}
+
+body.dark-mode .help-text {
+    color: #888888 !important;
+}
+
+body.dark-mode .settings-group label {
+    color: #ffffff !important;
+}
+
+body.dark-mode .settings-group .help-text {
+    color: #888888 !important;
+}
+
+/* ----- SETTINGS ----- */
+body.dark-mode .settings-card {
+    background: #1a1a1a !important;
+    border-color: #333 !important;
+}
+
+body.dark-mode .settings-card h3 {
+    color: #ffffff !important;
+}
+
+body.dark-mode .settings-card p {
+    color: #cccccc !important;
+}
+
+body.dark-mode .settings-nav a {
+    color: #cccccc !important;
+}
+
+body.dark-mode .settings-nav a:hover {
+    background: #2a1a4a !important;
+    color: var(--purple-primary) !important;
+}
+
+body.dark-mode .settings-nav a.active {
+    background: #2a1a4a !important;
+    color: var(--purple-primary) !important;
+}
+
+body.dark-mode .danger-zone {
+    background: #2a1a1a !important;
+    border-color: #e74c3c !important;
+}
+
+body.dark-mode .danger-zone h4 {
+    color: #f1948a !important;
+}
+
+body.dark-mode .danger-zone p {
+    color: #cccccc !important;
+}
+
+/* ----- DASHBOARD ----- */
+body.dark-mode .welcome-card {
+    background: var(--purple-gradient) !important;
+}
+
+body.dark-mode .welcome-card * {
+    color: #ffffff !important;
+}
+
+/* ----- COURSE/LEVEL CARDS ----- */
+body.dark-mode .level-card {
+    background: #1a1a1a !important;
+    border-color: #333 !important;
+}
+
+body.dark-mode .level-card .level-name {
+    color: #ffffff !important;
+}
+
+body.dark-mode .level-card .level-duration,
+body.dark-mode .level-card .level-lessons {
+    color: #cccccc !important;
+}
+
+body.dark-mode .course-card {
+    background: #1a1a1a !important;
+    border-color: #333 !important;
+}
+
+body.dark-mode .course-card .course-title {
+    color: #ffffff !important;
+}
+
+body.dark-mode .course-card .course-desc {
+    color: #cccccc !important;
+}
+
+/* ----- ADMIN TABLES ----- */
+body.dark-mode .admin-table th {
+    border-color: #333 !important;
+    color: #999999 !important;
+}
+
+body.dark-mode .admin-table td {
+    border-color: #333 !important;
+    color: #cccccc !important;
+}
+
+body.dark-mode .admin-table tr:hover {
+    background: #2a1a4a !important;
+}
+
+/* ----- AD BOX ----- */
+body.dark-mode .ad-box {
+    background: #1a1a1a !important;
+    border-color: #333 !important;
+}
+
+/* ----- MODALS ----- */
+body.dark-mode .modal-box {
+    background: #1a1a1a !important;
+    border-color: #333 !important;
+}
+
+body.dark-mode .modal-box h3 {
+    color: #ffffff !important;
+}
+
+body.dark-mode .modal-close {
+    color: #999999 !important;
+}
+
+body.dark-mode .modal-close:hover {
+    color: #ffffff !important;
+}
+
+/* ----- AI CHAT ----- */
+body.dark-mode .ai-chat-modal {
+    background: #1a1a1a !important;
+    border-color: #333 !important;
+}
+
+body.dark-mode .ai-chat-msg.bot {
+    background: #2a1a4a !important;
+    color: #ffffff !important;
+}
+
+body.dark-mode .ai-chat-footer {
+    border-color: #333 !important;
+}
+
+body.dark-mode .ai-chat-footer input {
+    background: #2a2a2a !important;
+    color: #ffffff !important;
+    border-color: #333 !important;
+}
+
+/* ----- TOAST ----- */
+body.dark-mode .toast-notification {
+    background: #2a2a2a !important;
+    color: #ffffff !important;
+}
+
+/* ----- CONTACT PAGE ----- */
+body.dark-mode .contact-form-card,
+body.dark-mode .contact-info-card,
+body.dark-mode .social-card {
+    background: #1a1a1a !important;
+    border-color: #333 !important;
+}
+
+body.dark-mode .contact-item .info-text .info-value {
+    color: #cccccc !important;
+}
+
+body.dark-mode .contact-item .icon-box {
+    background: #2a1a4a !important;
+}
+
+body.dark-mode .response-box {
+    background: #2a1a4a !important;
+    border-color: #333 !important;
+}
+
+body.dark-mode .faq-link {
+    border-color: #333 !important;
+}
+
+/* ----- VERIFICATION PAGES ----- */
+body.dark-mode .verify-card,
+body.dark-mode .success-card,
+body.dark-mode .error-card {
+    background: #1a1a1a !important;
+    border-color: #333 !important;
+}
+
+body.dark-mode .verify-title,
+body.dark-mode .success-title {
+    color: #ffffff !important;
+}
+
+body.dark-mode .verify-subtitle,
+body.dark-mode .success-subtitle {
+    color: #cccccc !important;
+}
+
+body.dark-mode .user-info-box {
+    background: #2a1a4a !important;
+}
+
+body.dark-mode .user-info-box .info-value {
+    color: #ffffff !important;
+}
+
+body.dark-mode .email-display {
+    background: #2a1a2a !important;
+    color: #ffffff !important;
+}
+
+/* ----- PRIVACY & TERMS ----- */
+body.dark-mode .privacy-card,
+body.dark-mode .terms-card {
+    background: #1a1a1a !important;
+    border-color: #333 !important;
+}
+
+body.dark-mode .privacy-card p,
+body.dark-mode .terms-card p,
+body.dark-mode .privacy-card li,
+body.dark-mode .terms-card li {
+    color: #cccccc !important;
+}
+
+body.dark-mode .privacy-card .section-title,
+body.dark-mode .terms-card .section-title {
+    color: var(--purple-primary) !important;
+}
+
+/* ----- FOOTER ----- */
+body.dark-mode .footer {
+    background: var(--purple-gradient) !important;
+}
+
+body.dark-mode .footer * {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* ----- HEADER ----- */
+body.dark-mode .header {
+    background: var(--purple-gradient) !important;
+}
+
+body.dark-mode .header * {
+    color: #ffffff !important;
+}
+
+/* ----- TEXT SIZE CONTROL ----- */
+body.dark-mode .text-size-control {
+    background: rgba(255, 255, 255, 0.15) !important;
+}
+
+body.dark-mode .text-size-control label {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+body.dark-mode .text-size-value {
+    color: #ffffff !important;
+}
+
+/* ============================================================
+   REST OF STYLES (Keep your existing styles below)
+   ============================================================ */
+
+/* ============================================================
+   GLOBAL RESET & BASE
+   ============================================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-family);
+    background: var(--bg-page);
+    color: var(--text-primary);
+    font-size: var(--font-base);
+    line-height: 1.6;
+    transition: background 0.3s ease, color 0.3s ease;
+    min-height: 100vh;
+}
+
 /* ===== CSS VARIABLES - THE ENTIRE THEME IN ONE PLACE ===== */
 :root {
     /* ---- LIGHT MODE (Default) ---- */
