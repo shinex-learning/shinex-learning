@@ -2,33 +2,38 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Students – SHINEX Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title><%= title %> | SHINEX Admin</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/style.css">
     <style>
+        /* ============================================================
+           ADMIN STUDENTS PAGE STYLES
+           ============================================================ */
+        
+        /* ----- Admin Layout ----- */
         .admin-layout {
             display: flex;
-            gap: 24px;
+            gap: var(--spacing-lg);
             max-width: 1400px;
             margin: 0 auto;
         }
+        
+        /* ----- Admin Sidebar ----- */
         .admin-sidebar {
-            width: 240px;
-            min-width: 200px;
-            background: var(--bg-light);
-            border-radius: var(--radius);
-            border: 1px solid #ede8f5;
+            width: 260px;
+            min-width: 220px;
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
             padding: 12px 0;
             height: fit-content;
             position: sticky;
             top: 80px;
+            box-shadow: var(--shadow-sm);
             transition: all 0.3s ease;
         }
-        body.dark-mode .admin-sidebar {
-            background: var(--dark-card);
-            border-color: var(--dark-border);
-        }
+        
         .admin-sidebar .sidebar-title {
             padding: 8px 18px 12px;
             font-weight: 700;
@@ -36,147 +41,566 @@
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 1px;
-            border-bottom: 1px solid #ede8f5;
+            border-bottom: 1px solid var(--border-color);
         }
-        body.dark-mode .admin-sidebar .sidebar-title {
-            border-color: var(--dark-border);
-        }
+        
         .admin-nav {
             list-style: none;
             padding: 4px 0;
             margin: 0;
         }
+        
         .admin-nav li {
             margin: 0;
         }
+        
         .admin-nav a {
             display: flex;
             align-items: center;
             gap: 10px;
             padding: 8px 18px;
-            color: var(--text-muted);
+            color: var(--text-secondary);
             text-decoration: none;
             font-size: 0.85rem;
             font-weight: 500;
             transition: all 0.2s ease;
             border-left: 3px solid transparent;
         }
+        
         .admin-nav a:hover {
-            background: var(--primary-bg);
-            color: var(--primary);
+            background: var(--purple-bg);
+            color: var(--purple-primary);
         }
+        
         .admin-nav a.active {
-            background: var(--primary-bg);
-            color: var(--primary);
-            border-left-color: var(--primary);
+            background: var(--purple-bg);
+            color: var(--purple-primary);
+            border-left-color: var(--purple-primary);
         }
-        body.dark-mode .admin-nav a:hover {
-            background: #2a1a4a;
+        
+        .admin-nav a i {
+            width: 20px;
+            text-align: center;
         }
-        body.dark-mode .admin-nav a.active {
-            background: #2a1a4a;
+        
+        .admin-nav a.logout-link {
+            color: var(--text-error);
         }
+        
+        .admin-nav a.logout-link:hover {
+            background: var(--bg-alert-error);
+            color: var(--text-error);
+        }
+        
+        /* ----- Admin Content ----- */
         .admin-content {
             flex: 1;
             min-width: 0;
         }
+        
+        /* ----- Admin Cards ----- */
         .admin-card {
-            background: var(--bg-light);
-            border-radius: var(--radius);
-            border: 1px solid #ede8f5;
-            padding: 20px 24px;
-            margin-bottom: 16px;
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-md);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
         }
-        body.dark-mode .admin-card {
-            background: var(--dark-card);
-            border-color: var(--dark-border);
+        
+        .admin-card:hover {
+            box-shadow: var(--shadow-md);
         }
-        .admin-card h4 {
-            font-size: 1rem;
+        
+        /* ----- Page Header ----- */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .page-header .page-title {
+            font-size: 1.5rem;
             font-weight: 700;
-            margin: 0 0 8px;
+            color: var(--text-primary);
+            margin: 0;
         }
+        
+        .page-header .page-subtitle {
+            color: var(--text-muted);
+            margin: 2px 0 0 0;
+            font-size: 0.9rem;
+        }
+        
+        .page-header .header-stats {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        
+        .page-header .header-stats .total-badge {
+            background: var(--bg-card-secondary);
+            padding: 4px 14px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .page-header .header-stats .verified-badge {
+            background: var(--bg-alert-success);
+            padding: 4px 14px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            color: var(--text-success);
+        }
+        
+        .page-header .header-stats .unverified-badge {
+            background: var(--bg-alert-error);
+            padding: 4px 14px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            color: var(--text-error);
+        }
+        
+        /* ----- Search Box ----- */
+        .search-box {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+            flex-wrap: wrap;
+        }
+        
+        .search-box .search-input-wrapper {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+        
+        .search-box .search-input-wrapper i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+        
+        .search-box .search-input-wrapper input {
+            width: 100%;
+            padding: 10px 14px 10px 38px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: var(--bg-input);
+            color: var(--text-primary);
+        }
+        
+        .search-box .search-input-wrapper input:focus {
+            border-color: var(--purple-primary);
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.12);
+            outline: none;
+        }
+        
+        .search-box .search-input-wrapper input::placeholder {
+            color: var(--text-muted);
+        }
+        
+        .search-box select {
+            padding: 10px 14px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 0.95rem;
+            font-family: inherit;
+            background: var(--bg-input);
+            color: var(--text-primary);
+            min-width: 150px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .search-box select:focus {
+            border-color: var(--purple-primary);
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.12);
+            outline: none;
+        }
+        
+        .search-box .clear-btn {
+            padding: 10px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .search-box .clear-btn:hover {
+            border-color: var(--purple-primary);
+            color: var(--purple-primary);
+        }
+        
+        /* ----- Table ----- */
+        .table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
         .admin-table {
             width: 100%;
             border-collapse: collapse;
             font-size: 0.85rem;
         }
+        
         .admin-table th {
             text-align: left;
-            padding: 8px 12px;
-            border-bottom: 2px solid #ede8f5;
+            padding: 10px 14px;
+            border-bottom: 2px solid var(--border-color);
             font-weight: 600;
             color: var(--text-muted);
             font-size: 0.7rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            white-space: nowrap;
         }
-        body.dark-mode .admin-table th {
-            border-color: var(--dark-border);
+        
+        .admin-table th i {
+            margin-right: 4px;
         }
+        
         .admin-table td {
-            padding: 8px 12px;
-            border-bottom: 1px solid #ede8f5;
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border-color);
             vertical-align: middle;
         }
-        body.dark-mode .admin-table td {
-            border-color: var(--dark-border);
+        
+        .admin-table tr {
+            transition: background 0.2s ease;
         }
+        
         .admin-table tr:hover {
-            background: var(--primary-bg);
+            background: var(--purple-bg);
         }
-        body.dark-mode .admin-table tr:hover {
-            background: #1a1a1a;
+        
+        .admin-table .student-id {
+            font-weight: 700;
+            color: var(--purple-primary);
+            font-family: monospace;
+            font-size: 0.85rem;
         }
-        .admin-table .badge {
+        
+        .admin-table .student-name {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .admin-table .student-email {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+        
+        .admin-table .student-email a {
+            color: var(--purple-primary);
+            text-decoration: none;
+        }
+        
+        .admin-table .student-email a:hover {
+            text-decoration: underline;
+        }
+        
+        .admin-table .student-course {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .admin-table .student-date {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+        
+        /* ----- Badges ----- */
+        .badge-level {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 12px;
+            border-radius: var(--radius-full);
             font-size: 0.65rem;
-            padding: 2px 10px;
+            font-weight: 600;
         }
-        .search-box {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
+        
+        .badge-level.beginner {
+            background: var(--bg-alert-success);
+            color: var(--text-success);
         }
-        .search-box input {
-            flex: 1;
-            min-width: 200px;
+        
+        .badge-level.intermediate {
+            background: var(--bg-alert-warning);
+            color: var(--text-warning);
         }
-        @media (max-width: 768px) {
+        
+        .badge-level.advanced {
+            background: var(--bg-alert-error);
+            color: var(--text-error);
+        }
+        
+        .badge-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 12px;
+            border-radius: var(--radius-full);
+            font-size: 0.65rem;
+            font-weight: 600;
+        }
+        
+        .badge-status.verified {
+            background: var(--bg-alert-success);
+            color: var(--text-success);
+        }
+        
+        .badge-status.unverified {
+            background: var(--bg-alert-error);
+            color: var(--text-error);
+        }
+        
+        /* ----- Empty State ----- */
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-xl) var(--spacing-lg);
+            color: var(--text-muted);
+        }
+        
+        .empty-state i {
+            font-size: 64px;
+            color: var(--text-light);
+            margin-bottom: var(--spacing-md);
+            display: block;
+            opacity: 0.5;
+        }
+        
+        .empty-state h4 {
+            color: var(--text-primary);
+            margin: 0 0 4px 0;
+        }
+        
+        .empty-state p {
+            margin: 0;
+        }
+        
+        /* ----- Stats Cards ----- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-md);
+        }
+        
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            padding: var(--spacing-md);
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+        
+        .stat-card .stat-number {
+            font-size: 1.8rem;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+        
+        .stat-card .stat-number.primary-color {
+            color: var(--purple-primary);
+        }
+        
+        .stat-card .stat-number.success-color {
+            color: var(--text-success);
+        }
+        
+        .stat-card .stat-number.error-color {
+            color: var(--text-error);
+        }
+        
+        .stat-card .stat-number.warning-color {
+            color: var(--text-warning);
+        }
+        
+        .stat-card .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+        
+        /* ----- No Results ----- */
+        .no-results {
+            text-align: center;
+            padding: var(--spacing-lg);
+            color: var(--text-muted);
+        }
+        
+        .no-results i {
+            font-size: 32px;
+            display: block;
+            margin-bottom: var(--spacing-sm);
+            opacity: 0.5;
+        }
+        
+        /* ----- Responsive ----- */
+        @media (max-width: 1024px) {
             .admin-layout {
                 flex-direction: column;
             }
+            
             .admin-sidebar {
                 width: 100%;
                 min-width: unset;
                 position: relative;
                 top: 0;
+                max-height: 0;
+                overflow: hidden;
+                padding: 0;
+                transition: max-height 0.3s ease, padding 0.3s ease;
+                box-shadow: none;
             }
+            
+            .admin-sidebar.open {
+                max-height: 600px;
+                padding: 12px 0;
+                overflow-y: auto;
+            }
+            
+            .admin-sidebar-toggle {
+                display: flex !important;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .admin-card {
+                padding: var(--spacing-md);
+            }
+            
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .page-header .header-stats {
+                width: 100%;
+                flex-wrap: wrap;
+            }
+            
+            .search-box {
+                flex-direction: column;
+            }
+            
+            .search-box .search-input-wrapper {
+                min-width: unset;
+            }
+            
+            .search-box select {
+                width: 100%;
+            }
+            
+            .search-box .clear-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
             .admin-table {
                 font-size: 0.75rem;
             }
+            
             .admin-table th,
             .admin-table td {
                 padding: 6px 8px;
+            }
+            
+            .admin-table th:nth-child(2),
+            .admin-table td:nth-child(2) {
+                display: none;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .admin-table th:nth-child(4),
+            .admin-table td:nth-child(4) {
+                display: none;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <%- include('partials/header', { showBack: true }) %>
 
+    <!-- ===== ADMIN HEADER (Built-in) ===== -->
+    <header style="background:linear-gradient(135deg, #8B5CF6, #6a3dcf); padding:12px 24px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:1000; box-shadow:0 2px 15px rgba(139,92,246,0.3);">
+        <div style="display:flex; align-items:center; gap:12px;">
+            <!-- Back Button -->
+            <a href="/admin/dashboard" style="color:rgba(255,255,255,0.8); text-decoration:none; padding:4px 10px; border-radius:8px; transition:all 0.3s ease; font-size:14px;">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div style="width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.2); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:11px;">SLC</div>
+            <div>
+                <div style="font-weight:700; font-size:16px; color:#fff;">SHINEX <span style="opacity:0.7; font-weight:400;">Admin</span></div>
+                <div style="font-size:7px; color:rgba(255,255,255,0.6); letter-spacing:2px;">LEARNING CIRCLE</div>
+            </div>
+        </div>
+        <div style="display:flex; gap:12px; align-items:center;">
+            <span style="color:rgba(255,255,255,0.9); font-size:13px;">
+                <i class="fas fa-user"></i> <%= admin && admin.firstName ? admin.firstName : 'Admin' %>
+            </span>
+            <button onclick="document.body.classList.toggle('dark-mode'); localStorage.setItem('shinex-theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');" style="background:rgba(255,255,255,0.15); border:none; color:#fff; padding:6px 12px; border-radius:20px; font-size:14px; cursor:pointer;">
+                <i class="fas fa-moon"></i>
+            </button>
+            <a href="/admin/logout" style="color:#fff; text-decoration:none; background:rgba(255,255,255,0.15); padding:6px 14px; border-radius:20px; font-size:13px; transition:all 0.3s ease;">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </header>
+
+    <!-- ===== MAIN CONTENT ===== -->
     <main class="main-content">
         <div class="container">
+
+            <!-- Flash Messages -->
             <% if (messages && messages.success) { %>
-                <div class="alert alert-success"><%= messages.success %></div>
+                <div class="alert alert-success flash-message" data-type="success">
+                    <i class="fas fa-check-circle"></i> <%= messages.success %>
+                </div>
             <% } %>
             <% if (messages && messages.error) { %>
-                <div class="alert alert-danger"><%= messages.error %></div>
+                <div class="alert alert-danger flash-message" data-type="error">
+                    <i class="fas fa-exclamation-circle"></i> <%= messages.error %>
+                </div>
             <% } %>
 
+            <!-- ===== ADMIN LAYOUT ===== -->
             <div class="admin-layout">
-                <!-- ===== Admin Sidebar ===== -->
-                <aside class="admin-sidebar">
+
+                <!-- ===== SIDEBAR ===== -->
+                <aside class="admin-sidebar" id="adminSidebar">
                     <div class="sidebar-title"><i class="fas fa-crown"></i> Admin Panel</div>
                     <ul class="admin-nav">
                         <li><a href="/admin/dashboard"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
@@ -185,26 +609,63 @@
                         <li><a href="/admin/services"><i class="fas fa-concierge-bell"></i> Services</a></li>
                         <li><a href="/admin/messages"><i class="fas fa-envelope"></i> Messages</a></li>
                         <li><a href="/admin/manage-admins"><i class="fas fa-user-shield"></i> Admins</a></li>
-                        <li><a href="/admin/logout" style="color:#e74c3c;"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                        <li><a href="/admin/logout" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                     </ul>
                 </aside>
 
-                <!-- ===== Admin Content ===== -->
+                <!-- ===== CONTENT ===== -->
                 <div class="admin-content">
-                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:16px;">
+
+                    <!-- Page Header -->
+                    <div class="page-header">
                         <div>
-                            <h2 style="font-size:1.5rem; font-weight:700; margin:0 0 2px;">👥 Manage Students</h2>
-                            <p style="color:var(--text-muted); margin:0;">View and manage all registered students.</p>
+                            <h1 class="page-title">
+                                <i class="fas fa-users" style="color:var(--purple-primary);"></i> 
+                                Manage Students
+                            </h1>
+                            <p class="page-subtitle">
+                                <i class="fas fa-info-circle"></i> 
+                                View and manage all registered students
+                            </p>
                         </div>
-                        <div style="font-size:0.9rem; color:var(--text-muted);">
-                            <i class="fas fa-users"></i> Total: <strong><%= students ? students.length : 0 %></strong>
+                        <div class="header-stats">
+                            <span class="total-badge">
+                                <i class="fas fa-users"></i> 
+                                <%= students ? students.length : 0 %> Total
+                            </span>
+                            <% 
+                                const verified = students ? students.filter(s => s.isVerified).length : 0;
+                                const unverified = students ? students.filter(s => !s.isVerified).length : 0;
+                            %>
+                            <span class="verified-badge">
+                                <i class="fas fa-check-circle"></i> 
+                                <%= verified %> Verified
+                            </span>
+                            <% if (unverified > 0) { %>
+                                <span class="unverified-badge">
+                                    <i class="fas fa-times-circle"></i> 
+                                    <%= unverified %> Unverified
+                                </span>
+                            <% } %>
+                            <button class="btn btn-secondary btn-sm admin-sidebar-toggle" onclick="toggleSidebar()" style="display:none;">
+                                <i class="fas fa-bars"></i> Menu
+                            </button>
                         </div>
                     </div>
 
-                    <!-- Search -->
+                    <!-- ===== SEARCH & FILTER ===== -->
                     <div class="search-box">
-                        <input type="text" id="studentSearch" placeholder="Search by name, email, or Student ID..." onkeyup="filterStudents()">
-                        <select id="courseFilter" onchange="filterStudents()" style="width:auto; min-width:150px;">
+                        <div class="search-input-wrapper">
+                            <i class="fas fa-search"></i>
+                            <input 
+                                type="text" 
+                                id="studentSearch" 
+                                placeholder="Search by name, email, or Student ID..." 
+                                onkeyup="filterStudents()"
+                                autocomplete="off"
+                            >
+                        </div>
+                        <select id="courseFilter" onchange="filterStudents()">
                             <option value="">All Courses</option>
                             <% if (courseMap) { %>
                                 <% Object.values(courseMap).forEach(c => { %>
@@ -212,80 +673,248 @@
                                 <% }) %>
                             <% } %>
                         </select>
+                        <button class="clear-btn" onclick="clearFilters()">
+                            <i class="fas fa-times"></i> Clear
+                        </button>
                     </div>
 
-                    <!-- Students Table -->
-                    <div class="admin-card" style="overflow-x:auto;">
-                        <table class="admin-table" id="studentTable">
-                            <thead>
-                                <tr>
-                                    <th>Student ID</th>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Course</th>
-                                    <th>Level</th>
-                                    <th>Status</th>
-                                    <th>Joined</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% if (students && students.length > 0) { %>
-                                    <% students.forEach(s => { %>
-                                        <tr class="student-row" data-course="<%= s.courseName || '' %>" data-name="<%= s.firstName + ' ' + s.lastName %>" data-id="<%= s.studentId %>">
-                                            <td><strong><%= s.studentId || 'N/A' %></strong></td>
-                                            <td><%= s.firstName || '' %> <%= s.lastName || '' %></td>
-                                            <td><%= s.email || '' %></td>
-                                            <td><%= s.courseName || 'Not enrolled' %></td>
-                                            <td><span class="badge badge-purple"><%= s.learningLevel || 'Beginner' %></span></td>
-                                            <td>
-                                                <span class="badge <%= s.isVerified ? 'badge-green' : 'badge-red' %>">
-                                                    <%= s.isVerified ? '✅ Verified' : '❌ Unverified' %>
-                                                </span>
-                                            </td>
-                                            <td style="font-size:0.8rem;"><%= new Date(s.createdAt).toLocaleDateString() %></td>
-                                        </tr>
-                                    <% }) %>
-                                <% } else { %>
+                    <!-- ===== STUDENTS TABLE ===== -->
+                    <div class="admin-card">
+                        <div class="table-wrapper">
+                            <table class="admin-table" id="studentTable">
+                                <thead>
                                     <tr>
-                                        <td colspan="7" style="text-align:center; padding:30px; color:var(--text-muted);">
-                                            <i class="fas fa-users" style="font-size:2rem; display:block; margin-bottom:8px; opacity:0.3;"></i>
-                                            No students registered yet.
-                                        </td>
+                                        <th><i class="fas fa-id-card"></i> Student ID</th>
+                                        <th><i class="fas fa-user"></i> Name</th>
+                                        <th><i class="fas fa-envelope"></i> Email</th>
+                                        <th><i class="fas fa-graduation-cap"></i> Course</th>
+                                        <th><i class="fas fa-signal"></i> Level</th>
+                                        <th><i class="fas fa-check-circle"></i> Status</th>
+                                        <th><i class="fas fa-calendar"></i> Joined</th>
                                     </tr>
-                                <% } %>
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody id="studentTableBody">
+                                    <% if (students && students.length > 0) { %>
+                                        <% students.forEach(s => { %>
+                                            <tr class="student-row" 
+                                                data-course="<%= s.courseName || '' %>" 
+                                                data-name="<%= (s.firstName || '') + ' ' + (s.lastName || '') %>" 
+                                                data-email="<%= s.email || '' %>"
+                                                data-id="<%= s.studentId || '' %>">
+                                                <td>
+                                                    <span class="student-id">
+                                                        <i class="fas fa-hashtag" style="font-size:0.6rem; opacity:0.5;"></i>
+                                                        <%= s.studentId || 'N/A' %>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <div class="student-name">
+                                                        <i class="fas fa-user-circle" style="color:var(--purple-primary);"></i>
+                                                        <%= s.firstName || '' %> <%= s.lastName || '' %>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="student-email">
+                                                        <a href="mailto:<%= s.email %>">
+                                                            <%= s.email || 'N/A' %>
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span class="student-course">
+                                                        <%= s.courseName || 'Not enrolled' %>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="badge-level <%= (s.learningLevel || 'beginner').toLowerCase() %>">
+                                                        <i class="fas fa-signal"></i>
+                                                        <%= s.learningLevel || 'Beginner' %>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="badge-status <%= s.isVerified ? 'verified' : 'unverified' %>">
+                                                        <i class="fas <%= s.isVerified ? 'fa-check-circle' : 'fa-times-circle' %>"></i>
+                                                        <%= s.isVerified ? 'Verified' : 'Unverified' %>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="student-date">
+                                                        <i class="far fa-calendar-alt"></i>
+                                                        <%= new Date(s.createdAt).toLocaleDateString() %>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        <% }) %>
+                                    <% } else { %>
+                                        <tr>
+                                            <td colspan="7">
+                                                <div class="empty-state">
+                                                    <i class="fas fa-users"></i>
+                                                    <h4>No Students Registered</h4>
+                                                    <p>When students register, they will appear here.</p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
+
+                    <!-- ===== STATS ===== -->
+                    <% if (students && students.length > 0) { 
+                        const total = students.length;
+                        const verifiedCount = students.filter(s => s.isVerified).length;
+                        const unverifiedCount = students.filter(s => !s.isVerified).length;
+                        const enrolledCount = students.filter(s => s.courseName).length;
+                    %>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-number primary-color"><%= total %></div>
+                                <div class="stat-label"><i class="fas fa-users"></i> Total Students</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number success-color"><%= verifiedCount %></div>
+                                <div class="stat-label"><i class="fas fa-check-circle" style="color:var(--text-success);"></i> Verified</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number error-color"><%= unverifiedCount %></div>
+                                <div class="stat-label"><i class="fas fa-times-circle" style="color:var(--text-error);"></i> Unverified</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number warning-color"><%= enrolledCount %></div>
+                                <div class="stat-label"><i class="fas fa-graduation-cap" style="color:var(--text-warning);"></i> Enrolled</div>
+                            </div>
+                        </div>
+                    <% } %>
+
                 </div>
             </div>
         </div>
     </main>
 
-    <%- include('partials/footer') %>
+    <!-- ===== FOOTER ===== -->
+    <footer style="background:linear-gradient(135deg, #6a3dcf, #4a1a8a); padding:24px 0 16px; margin-top:40px;">
+        <div style="max-width:1200px; margin:0 auto; padding:0 20px; text-align:center; font-size:0.8rem; color:rgba(255,255,255,0.6);">
+            &copy; 2026 SHINEX Learning Circle. All rights reserved.
+        </div>
+    </footer>
 
     <script>
+        // ============================================================
+        // FILTER STUDENTS
+        // ============================================================
+        
         function filterStudents() {
-            const search = document.getElementById('studentSearch').value.toLowerCase();
+            const search = document.getElementById('studentSearch').value.toLowerCase().trim();
             const course = document.getElementById('courseFilter').value;
             const rows = document.querySelectorAll('.student-row');
+            let visibleCount = 0;
             
             rows.forEach(row => {
                 const name = row.getAttribute('data-name').toLowerCase();
+                const email = row.getAttribute('data-email').toLowerCase();
                 const id = row.getAttribute('data-id').toLowerCase();
                 const rowCourse = row.getAttribute('data-course');
                 
                 let show = true;
-                if (search && !name.includes(search) && !id.includes(search)) {
-                    show = false;
+                
+                // Search filter
+                if (search) {
+                    const searchMatch = name.includes(search) || 
+                                       email.includes(search) || 
+                                       id.includes(search);
+                    if (!searchMatch) {
+                        show = false;
+                    }
                 }
+                
+                // Course filter
                 if (course && rowCourse !== course) {
                     show = false;
                 }
+                
                 row.style.display = show ? '' : 'none';
+                if (show) visibleCount++;
             });
+            
+            // Show/hide no results message
+            let noResults = document.getElementById('noResultsMessage');
+            if (visibleCount === 0 && rows.length > 0) {
+                if (!noResults) {
+                    noResults = document.createElement('tr');
+                    noResults.id = 'noResultsMessage';
+                    noResults.innerHTML = `
+                        <td colspan="7">
+                            <div class="no-results">
+                                <i class="fas fa-search"></i>
+                                <p>No students match your search criteria.</p>
+                            </div>
+                        </td>
+                    `;
+                    document.getElementById('studentTableBody').appendChild(noResults);
+                }
+                noResults.style.display = '';
+            } else if (noResults) {
+                noResults.style.display = 'none';
+            }
         }
+        
+        // ============================================================
+        // CLEAR FILTERS
+        // ============================================================
+        
+        function clearFilters() {
+            document.getElementById('studentSearch').value = '';
+            document.getElementById('courseFilter').value = '';
+            filterStudents();
+            document.getElementById('studentSearch').focus();
+        }
+        
+        // ============================================================
+        // SIDEBAR TOGGLE (Mobile)
+        // ============================================================
+        
+        function toggleSidebar() {
+            const sidebar = document.getElementById('adminSidebar');
+            if (sidebar) {
+                sidebar.classList.toggle('open');
+            }
+        }
+        
+        // ============================================================
+        // DARK MODE INIT
+        // ============================================================
+        
+        if (localStorage.getItem('shinex-theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
+        
+        // ============================================================
+        // AUTO DISMISS FLASH MESSAGES
+        // ============================================================
+        
+        document.querySelectorAll('.flash-message').forEach(msg => {
+            setTimeout(() => {
+                msg.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                msg.style.opacity = '0';
+                msg.style.transform = 'translateY(-10px)';
+                setTimeout(() => {
+                    if (msg.parentNode) msg.remove();
+                }, 500);
+            }, 5000);
+        });
+        
+        // ============================================================
+        // CONSOLE WELCOME
+        // ============================================================
+        
+        console.log('🔐 SHINEX Admin Panel');
+        console.log('👥 Students Management');
+        console.log('📊 Total Students: <%= students ? students.length : 0 %>');
+        console.log('✅ Verified: <%= students ? students.filter(s => s.isVerified).length : 0 %>');
+        console.log('❌ Unverified: <%= students ? students.filter(s => !s.isVerified).length : 0 %>');
     </script>
 
-    <script src="/js/main.js"></script>
 </body>
 </html>

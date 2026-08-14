@@ -1,52 +1,277 @@
 <!-- ============================================================
      FOOTER – DESKTOP (includes AI Bot)
      ============================================================ -->
-<footer class="footer">
+<footer class="footer" style="
+    background: var(--purple-gradient);
+    padding: 40px 0 20px;
+    margin-top: 40px;
+    border-top: none;
+    transition: all 0.3s ease;
+">
     <div class="container">
-        <div class="footer-grid">
+        <div class="footer-grid" style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        ">
+            <!-- Brand Column -->
             <div>
-                <h5>SHINEX Learning Circle</h5>
-                <p style="color:rgba(255,255,255,0.7); font-size:0.85rem; line-height:1.6;">
+                <h5 style="
+                    font-size: 0.95rem;
+                    font-weight: 700;
+                    color: #fff;
+                    margin: 0 0 12px 0;
+                ">
+                    SHINEX Learning Circle
+                </h5>
+                <p style="
+                    color: rgba(255,255,255,0.7);
+                    font-size: 0.85rem;
+                    line-height: 1.6;
+                    margin: 0;
+                ">
                     Learn. Understand. Protect.<br>
                     Empowering minds with cutting-edge courses.
                 </p>
-                <div class="social-icons" style="display:flex; gap:12px; margin-top:10px;">
-                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                    <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                <div class="social-icons" style="
+                    display: flex;
+                    gap: 12px;
+                    margin-top: 12px;
+                ">
+                    <a href="#" aria-label="Facebook" style="
+                        color: rgba(255,255,255,0.7);
+                        font-size: 1.2rem;
+                        transition: all 0.3s ease;
+                        text-decoration: none;
+                    ">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="#" aria-label="Twitter" style="
+                        color: rgba(255,255,255,0.7);
+                        font-size: 1.2rem;
+                        transition: all 0.3s ease;
+                        text-decoration: none;
+                    ">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" aria-label="Instagram" style="
+                        color: rgba(255,255,255,0.7);
+                        font-size: 1.2rem;
+                        transition: all 0.3s ease;
+                        text-decoration: none;
+                    ">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" aria-label="YouTube" style="
+                        color: rgba(255,255,255,0.7);
+                        font-size: 1.2rem;
+                        transition: all 0.3s ease;
+                        text-decoration: none;
+                    ">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                    <a href="#" aria-label="WhatsApp" style="
+                        color: rgba(255,255,255,0.7);
+                        font-size: 1.2rem;
+                        transition: all 0.3s ease;
+                        text-decoration: none;
+                    ">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
                 </div>
             </div>
+
+            <!-- Quick Links -->
             <div>
-                <h5>Quick Links</h5>
-                <a href="/">Home</a>
-                <a href="/courses">Courses</a>
-                <a href="/services">Services</a>
-                <a href="/about">About</a>
-                <a href="/contact">Contact</a>
+                <h5 style="
+                    font-size: 0.95rem;
+                    font-weight: 700;
+                    color: #fff;
+                    margin: 0 0 12px 0;
+                ">
+                    Quick Links
+                </h5>
+                <a href="/" style="
+                    color: rgba(255,255,255,0.7);
+                    text-decoration: none;
+                    font-size: 0.85rem;
+                    display: block;
+                    padding: 4px 0;
+                    transition: all 0.3s ease;
+                ">
+                    Home
+                </a>
+                <a href="/courses" style="
+                    color: rgba(255,255,255,0.7);
+                    text-decoration: none;
+                    font-size: 0.85rem;
+                    display: block;
+                    padding: 4px 0;
+                    transition: all 0.3s ease;
+                ">
+                    Courses
+                </a>
+                <a href="/services" style="
+                    color: rgba(255,255,255,0.7);
+                    text-decoration: none;
+                    font-size: 0.85rem;
+                    display: block;
+                    padding: 4px 0;
+                    transition: all 0.3s ease;
+                ">
+                    Services
+                </a>
+                <a href="/about" style="
+                    color: rgba(255,255,255,0.7);
+                    text-decoration: none;
+                    font-size: 0.85rem;
+                    display: block;
+                    padding: 4px 0;
+                    transition: all 0.3s ease;
+                ">
+                    About
+                </a>
+                <a href="/contact" style="
+                    color: rgba(255,255,255,0.7);
+                    text-decoration: none;
+                    font-size: 0.85rem;
+                    display: block;
+                    padding: 4px 0;
+                    transition: all 0.3s ease;
+                ">
+                    Contact
+                </a>
             </div>
+
+            <!-- Support -->
             <div>
-                <h5>Support</h5>
-                <a href="/faq">FAQ</a>
-                <a href="/terms">Terms</a>
-                <a href="/privacy">Privacy</a>
-                <a href="/contact">Help Desk</a>
+                <h5 style="
+                    font-size: 0.95rem;
+                    font-weight: 700;
+                    color: #fff;
+                    margin: 0 0 12px 0;
+                ">
+                    Support
+                </h5>
+                <a href="/faq" style="
+                    color: rgba(255,255,255,0.7);
+                    text-decoration: none;
+                    font-size: 0.85rem;
+                    display: block;
+                    padding: 4px 0;
+                    transition: all 0.3s ease;
+                ">
+                    FAQ
+                </a>
+                <a href="/terms" style="
+                    color: rgba(255,255,255,0.7);
+                    text-decoration: none;
+                    font-size: 0.85rem;
+                    display: block;
+                    padding: 4px 0;
+                    transition: all 0.3s ease;
+                ">
+                    Terms & Conditions
+                </a>
+                <a href="/privacy" style="
+                    color: rgba(255,255,255,0.7);
+                    text-decoration: none;
+                    font-size: 0.85rem;
+                    display: block;
+                    padding: 4px 0;
+                    transition: all 0.3s ease;
+                ">
+                    Privacy Policy
+                </a>
+                <a href="/contact" style="
+                    color: rgba(255,255,255,0.7);
+                    text-decoration: none;
+                    font-size: 0.85rem;
+                    display: block;
+                    padding: 4px 0;
+                    transition: all 0.3s ease;
+                ">
+                    Help Desk
+                </a>
             </div>
+
+            <!-- Get in Touch -->
             <div>
-                <h5>Get in Touch</h5>
-                <p style="font-size:0.85rem; margin-bottom:4px;">
-                    <i class="fas fa-envelope" style="color:#fff;"></i> support@shinex.ng
+                <h5 style="
+                    font-size: 0.95rem;
+                    font-weight: 700;
+                    color: #fff;
+                    margin: 0 0 12px 0;
+                ">
+                    Get in Touch
+                </h5>
+                <p style="
+                    font-size: 0.85rem;
+                    margin: 0 0 4px 0;
+                    color: rgba(255,255,255,0.7);
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                ">
+                    <i class="fas fa-envelope" style="color: #fff; width: 18px;"></i>
+                    <a href="mailto:support@shinex.ng" style="color: rgba(255,255,255,0.7); text-decoration: none;">
+                        support@shinex.ng
+                    </a>
                 </p>
-                <p style="font-size:0.85rem; margin-bottom:4px;">
-                    <i class="fas fa-phone" style="color:#fff;"></i> +234 800 SHINEX
+                <p style="
+                    font-size: 0.85rem;
+                    margin: 0 0 4px 0;
+                    color: rgba(255,255,255,0.7);
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                ">
+                    <i class="fas fa-phone" style="color: #fff; width: 18px;"></i>
+                    <a href="tel:+2348025052852" style="color: rgba(255,255,255,0.7); text-decoration: none;">
+                        +234 802 505 2852
+                    </a>
                 </p>
-                <p style="font-size:0.85rem;">
-                    <i class="fab fa-whatsapp" style="color:#25D366;"></i> +234 812 345 6789
+                <p style="
+                    font-size: 0.85rem;
+                    margin: 0 0 4px 0;
+                    color: rgba(255,255,255,0.7);
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                ">
+                    <i class="fab fa-whatsapp" style="color: #25D366; width: 18px;"></i>
+                    <a href="https://wa.me/2348025052852" target="_blank" style="color: rgba(255,255,255,0.7); text-decoration: none;">
+                        +234 802 505 2852
+                    </a>
+                </p>
+                <p style="
+                    font-size: 0.85rem;
+                    margin: 4px 0 0 0;
+                    color: rgba(255,255,255,0.6);
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                ">
+                    <i class="fas fa-map-marker-alt" style="color: #fff; width: 18px;"></i>
+                    Lagos, Nigeria
                 </p>
             </div>
         </div>
-        <div class="footer-bottom">
+
+        <!-- Footer Bottom -->
+        <div class="footer-bottom" style="
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 16px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.6);
+        ">
             &copy; <%= new Date().getFullYear() %> SHINEX Learning Circle (SLC). All rights reserved.
+            <span style="margin: 0 8px;">•</span>
+            <span>Learn. Understand. Protect. 🛡️</span>
+            <span style="margin: 0 8px;">•</span>
+            <span>v4.0</span>
         </div>
     </div>
 </footer>
@@ -54,25 +279,307 @@
 <!-- ============================================================
      AI BOT – FLOATING WIDGET (Global)
      ============================================================ -->
-<div class="ai-bot" id="aiBot">
-    <button class="ai-bot-btn" id="aiBotBtn" aria-label="Ask AI Tutor">
+<div class="ai-bot" id="aiBot" style="
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 999;
+    cursor: pointer;
+">
+    <button class="ai-bot-btn" id="aiBotBtn" aria-label="Ask AI Tutor" style="
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: var(--purple-gradient);
+        color: #fff;
+        border: none;
+        font-size: 26px;
+        box-shadow: 0 8px 30px rgba(139, 92, 246, 0.4);
+        cursor: pointer;
+        position: relative;
+        z-index: 2;
+        transition: all 0.3s ease;
+    ">
         🤖
-        <span class="ai-bot-pulse"></span>
+        <span class="ai-bot-pulse" style="
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(139, 92, 246, 0.3);
+            animation: pulseRing 2s ease-out infinite;
+            z-index: 1;
+            top: 0;
+            left: 0;
+        "></span>
     </button>
 </div>
 
-<div class="ai-chat-modal" id="aiChatModal">
-    <div class="ai-chat-header">
-        <h4>🤖 AI Tutor</h4>
-        <button class="ai-chat-close" id="aiChatClose">&times;</button>
+<!-- AI Chat Modal -->
+<div class="ai-chat-modal" id="aiChatModal" style="
+    position: fixed;
+    bottom: 100px;
+    right: 30px;
+    width: 380px;
+    max-width: calc(100vw - 40px);
+    max-height: 500px;
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-xl);
+    z-index: 1000;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    transition: all 0.3s ease;
+">
+    <div class="ai-chat-header" style="
+        padding: 14px 18px;
+        background: var(--purple-gradient);
+        color: #fff;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    ">
+        <h4 style="
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin: 0;
+            color: #fff;
+        ">
+            🤖 AI Tutor
+        </h4>
+        <button class="ai-chat-close" id="aiChatClose" style="
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 4px;
+            transition: all 0.3s ease;
+        ">
+            &times;
+        </button>
     </div>
-    <div class="ai-chat-body" id="aiChatBody">
-        <div class="ai-chat-messages" id="aiChatMessages">
-            <div class="ai-chat-msg bot">👋 Hi! I'm your SHINEX AI Tutor. Ask me anything about your courses, tech, or careers.</div>
+    <div class="ai-chat-body" id="aiChatBody" style="
+        padding: 16px 18px;
+        flex: 1;
+        overflow-y: auto;
+        max-height: 300px;
+        background: var(--bg-page);
+    ">
+        <div class="ai-chat-messages" id="aiChatMessages" style="
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        ">
+            <div class="ai-chat-msg bot" style="
+                padding: 10px 14px;
+                border-radius: var(--radius-md);
+                font-size: 0.9rem;
+                max-width: 85%;
+                line-height: 1.5;
+                background: var(--purple-bg);
+                color: var(--text-primary);
+                align-self: flex-start;
+                border-bottom-left-radius: 4px;
+            ">
+                👋 Hi! I'm your SHINEX AI Tutor. Ask me anything about your courses, tech, or careers.
+            </div>
         </div>
     </div>
-    <div class="ai-chat-footer">
-        <input type="text" id="aiChatInput" placeholder="Type your question..." autocomplete="off">
-        <button class="btn btn-primary" id="aiChatSend">Send</button>
+    <div class="ai-chat-footer" style="
+        padding: 12px 18px;
+        border-top: 1px solid var(--border-color);
+        display: flex;
+        gap: 8px;
+        background: var(--bg-card);
+    ">
+        <input type="text" id="aiChatInput" placeholder="Type your question..." autocomplete="off" style="
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            font-size: 0.85rem;
+            background: var(--bg-input);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        ">
+        <button class="btn btn-primary" id="aiChatSend" style="
+            padding: 8px 16px;
+            border: none;
+            border-radius: var(--radius-full);
+            background: var(--purple-primary);
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        ">
+            Send
+        </button>
     </div>
 </div>
+
+<!-- ============================================================
+     FOOTER SCRIPTS
+     ============================================================ -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // ============================================================
+        // AI BOT
+        // ============================================================
+        
+        const botBtn = document.getElementById('aiBotBtn');
+        const chatModal = document.getElementById('aiChatModal');
+        const chatClose = document.getElementById('aiChatClose');
+        const chatInput = document.getElementById('aiChatInput');
+        const chatSend = document.getElementById('aiChatSend');
+        const chatMessages = document.getElementById('aiChatMessages');
+        
+        if (botBtn && chatModal) {
+            botBtn.addEventListener('click', function() {
+                chatModal.classList.toggle('open');
+                if (chatModal.classList.contains('open')) {
+                    chatModal.style.display = 'flex';
+                    if (chatInput) chatInput.focus();
+                } else {
+                    chatModal.style.display = 'none';
+                }
+            });
+        }
+        
+        if (chatClose) {
+            chatClose.addEventListener('click', function() {
+                chatModal.classList.remove('open');
+                chatModal.style.display = 'none';
+            });
+        }
+        
+        // Close modal on click outside
+        document.addEventListener('click', function(e) {
+            if (chatModal && chatModal.classList.contains('open')) {
+                if (!chatModal.contains(e.target) && e.target !== botBtn && !botBtn.contains(e.target)) {
+                    chatModal.classList.remove('open');
+                    chatModal.style.display = 'none';
+                }
+            }
+        });
+        
+        // ============================================================
+        // AI CHAT FUNCTIONALITY
+        // ============================================================
+        
+        function addChatMessage(text, type) {
+            if (!chatMessages) return;
+            
+            const div = document.createElement('div');
+            div.className = 'ai-chat-msg ' + type;
+            
+            let formatted = text;
+            formatted = formatted.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            formatted = formatted.replace(/\n/g, '<br>');
+            div.innerHTML = formatted;
+            
+            // Style based on type
+            if (type === 'bot') {
+                div.style.cssText = `
+                    padding: 10px 14px;
+                    border-radius: var(--radius-md);
+                    font-size: 0.9rem;
+                    max-width: 85%;
+                    line-height: 1.5;
+                    background: var(--purple-bg);
+                    color: var(--text-primary);
+                    align-self: flex-start;
+                    border-bottom-left-radius: 4px;
+                `;
+            } else {
+                div.style.cssText = `
+                    padding: 10px 14px;
+                    border-radius: var(--radius-md);
+                    font-size: 0.9rem;
+                    max-width: 85%;
+                    line-height: 1.5;
+                    background: var(--purple-primary);
+                    color: #fff;
+                    align-self: flex-end;
+                    border-bottom-right-radius: 4px;
+                `;
+            }
+            
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        function sendMessage() {
+            if (!chatInput || !chatSend) return;
+            
+            const message = chatInput.value.trim();
+            if (!message) return;
+            
+            addChatMessage(message, 'user');
+            chatInput.value = '';
+            chatInput.disabled = true;
+            chatSend.disabled = true;
+            
+            // Show loading
+            const loadingMsg = document.createElement('div');
+            loadingMsg.className = 'ai-chat-msg bot';
+            loadingMsg.innerHTML = '⏳ Thinking...';
+            loadingMsg.style.cssText = `
+                padding: 10px 14px;
+                border-radius: var(--radius-md);
+                font-size: 0.9rem;
+                max-width: 85%;
+                line-height: 1.5;
+                background: var(--purple-bg);
+                color: var(--text-primary);
+                align-self: flex-start;
+                border-bottom-left-radius: 4px;
+            `;
+            loadingMsg.id = 'aiChatLoading';
+            chatMessages.appendChild(loadingMsg);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            fetch('/api/ai-tutor', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userPrompt: message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const loading = document.getElementById('aiChatLoading');
+                if (loading) loading.remove();
+                
+                if (data.error) {
+                    addChatMessage('❌ ' + data.error, 'bot');
+                } else {
+                    addChatMessage(data.answer, 'bot');
+                }
+                chatInput.disabled = false;
+                chatSend.disabled = false;
+                chatInput.focus();
+            })
+            .catch(error => {
+                const loading = document.getElementById('aiChatLoading');
+                if (loading) loading.remove();
+                addChatMessage('❌ Sorry, I\'m having trouble connecting. Please try again.', 'bot');
+                chatInput.disabled = false;
+                chatSend.disabled = false;
+            });
+        }
+        
+        if (chatSend) {
+            chatSend.addEventListener('click', sendMessage);
+        }
+        
+        if (chatInput) {
+            chatInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+        }
+    });
+</script>

@@ -4,10 +4,9 @@ const bcrypt = require('bcrypt');
 const path = require('path');
 const crypto = require('crypto');
 const mongoose = require('mongoose');
-const nodemailer = require('nodemailer');
+const sgMail = require('@sendgrid/mail');
 const compression = require('compression');
 const helmet = require('helmet');
-const sgMail = require('@sendgrid/mail');
 require('dotenv').config();
 
 const app = express();
@@ -297,7 +296,7 @@ function parseContent(text) {
 }
 
 // ============================================================
-// ===== EMAIL SYSTEM - SENDGRID + NODEMAILER FALLBACK =====
+// ===== EMAIL SYSTEM - SENDGRID ONLY =====
 // ============================================================
 
 // Configure SendGrid
@@ -307,50 +306,13 @@ if (process.env.SENDGRID_API_KEY) {
         sgMail.setApiKey(process.env.SENDGRID_API_KEY);
         useSendGrid = true;
         console.log('✅ SendGrid configured successfully');
+        console.log(`📧 Sending from: ${process.env.EMAIL_FROM || 'shinexlearning@gmail.com'}`);
     } catch (error) {
         console.error('❌ SendGrid configuration error:', error.message);
         useSendGrid = false;
     }
 } else {
-    console.log('⚠️ SENDGRID_API_KEY not found. Trying Nodemailer...');
-}
-
-// Configure Nodemailer as fallback
-const hasEmailConfig = process.env.EMAIL_USER && process.env.EMAIL_APP_PASSWORD;
-let transporter = null;
-
-if (hasEmailConfig) {
-    try {
-        transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_APP_PASSWORD
-            },
-            pool: true,
-            maxConnections: 5,
-            maxMessages: 100,
-            rateDelta: 1000,
-            rateLimit: 5,
-            socketTimeout: 30000,
-            connectionTimeout: 30000,
-            tls: {
-                rejectUnauthorized: process.env.NODE_ENV === 'production'
-            }
-        });
-
-        transporter.verify((error, success) => {
-            if (error) {
-                console.error('❌ Nodemailer verification failed:', error.message);
-            } else {
-                console.log('✅ Nodemailer configured successfully');
-                console.log(`📧 Using: ${process.env.EMAIL_USER}`);
-            }
-        });
-    } catch (error) {
-        console.error('❌ Nodemailer configuration error:', error.message);
-        transporter = null;
-    }
+    console.log('⚠️ SENDGRID_API_KEY not found. Emails will be logged.');
 }
 
 // Email queue system
@@ -403,14 +365,18 @@ function queueEmail(to, subject, html) {
 
 // Main send email function
 async function sendEmailDirect(to, subject, html, from = null) {
-    // Try SendGrid first
+    // Try SendGrid
     if (useSendGrid) {
         try {
             const msg = {
                 to: to,
                 from: from || process.env.EMAIL_FROM || 'shinexlearning@gmail.com',
                 subject: subject,
-                html: html
+                html: html,
+                trackingSettings: {
+                    clickTracking: { enable: true },
+                    openTracking: { enable: true }
+                }
             };
             
             await sgMail.send(msg);
@@ -422,25 +388,7 @@ async function sendEmailDirect(to, subject, html, from = null) {
             if (error.response) {
                 console.error('SendGrid response:', error.response.body);
             }
-        }
-    }
-    
-    // Fallback: Use Nodemailer
-    if (transporter) {
-        try {
-            const mailOptions = {
-                from: from || `"SHINEX Learning Circle" <${process.env.EMAIL_USER}>`,
-                to: to,
-                subject: subject,
-                html: html
-            };
-            
-            const info = await transporter.sendMail(mailOptions);
-            console.log('✅ Email sent via Nodemailer to:', to);
-            return { success: true, service: 'Nodemailer' };
-            
-        } catch (error) {
-            console.error('❌ Nodemailer error:', error.message);
+            return { success: false, error: error.message };
         }
     }
     
@@ -449,13 +397,13 @@ async function sendEmailDirect(to, subject, html, from = null) {
     console.log('   To:', to);
     console.log('   Subject:', subject);
     console.log('   HTML length:', html ? html.length : 0);
-    return { success: true, queued: true };
+    return { success: true, queued: true, service: 'Log' };
 }
 
 async function sendEmail(to, subject, html, from = null) {
     // If no service is available, queue the email
-    if (!useSendGrid && !transporter) {
-        console.log('📧 EMAIL QUEUED (no service):', to);
+    if (!useSendGrid) {
+        console.log('📧 EMAIL QUEUED (no SendGrid):', to);
         queueEmail(to, subject, html);
         return { success: true, queued: true };
     }
@@ -481,15 +429,16 @@ app.get('/test-email', async (req, res) => {
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #f8f6fc; border-radius: 12px;">
                 <div style="text-align: center; padding: 20px 0;">
                     <h1 style="color: #8B5CF6; font-size: 28px;">🧪 Email Test</h1>
+                    <p style="color: #7a6a8f;">SHINEX Learning Circle</p>
                 </div>
                 <div style="background: #fff; padding: 24px; border-radius: 12px;">
-                    <h2 style="color: #1A0A2E;">✅ Email Configuration Working!</h2>
+                    <h2 style="color: #1A0A2E;">✅ SendGrid Working!</h2>
                     <p style="color: #5a4a70; font-size: 16px; line-height: 1.6;">
-                        Your SHINEX app is successfully configured to send emails.
+                        Your SHINEX app is successfully configured with SendGrid.
                     </p>
                     <div style="background: #f8f6fc; padding: 16px; border-radius: 8px; margin: 16px 0;">
-                        <p><strong>Service:</strong> ${useSendGrid ? '✅ SendGrid' : transporter ? '✅ Nodemailer' : '⚠️ No Service'}</p>
-                        <p><strong>From:</strong> ${process.env.EMAIL_FROM || process.env.EMAIL_USER || 'Not Set'}</p>
+                        <p><strong>Service:</strong> ${useSendGrid ? '✅ SendGrid' : '⚠️ No Service'}</p>
+                        <p><strong>From:</strong> ${process.env.EMAIL_FROM || 'Not Set'}</p>
                         <p><strong>To:</strong> ${process.env.ADMIN_EMAIL || 'Admin Email'}</p>
                         <p><strong>Time:</strong> ${new Date().toLocaleString()}</p>
                     </div>
@@ -520,7 +469,7 @@ app.get('/test-email', async (req, res) => {
                         <h1 style="color: #4CAF50;">✅ Test Email Sent!</h1>
                         <p>Check your inbox: <strong>${process.env.ADMIN_EMAIL || 'your-email@gmail.com'}</strong></p>
                         <p>Service used: <strong>${result.service || 'Queued'}</strong></p>
-                        ${result.queued ? '<p style="color: #FF9800;">⚠️ Email was queued (no service)</p>' : ''}
+                        ${result.queued ? '<p style="color: #FF9800;">⚠️ Email was queued</p>' : ''}
                         <a href="/" style="color: #8B5CF6; text-decoration: none;">← Back to Home</a>
                     </body>
                 </html>
@@ -652,7 +601,7 @@ app.post('/login', async (req, res) => {
 });
 
 // ============================================================
-// ===== REGISTER - WITH VERIFICATION PAGE REDIRECT =====
+// ===== REGISTER =====
 // ============================================================
 app.get('/register', (req, res) => {
     const courses = Object.keys(COURSE_CODES);
@@ -747,8 +696,9 @@ app.post('/register', async (req, res) => {
         const emailHtml = `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #f8f6fc; border-radius: 12px;">
                 <div style="text-align: center; padding: 20px 0;">
-                    <h1 style="color: #8B5CF6; font-size: 28px;">SHINEX</h1>
-                    <p style="color: #7a6a8f; font-size: 14px;">Learning Circle</p>
+                    <div style="width: 60px; height: 60px; border-radius: 50%; background: #8B5CF6; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 28px; margin-bottom: 10px;">📚</div>
+                    <h1 style="color: #8B5CF6; font-size: 28px; margin: 0;">SHINEX</h1>
+                    <p style="color: #7a6a8f; font-size: 14px; margin: 0;">Learning Circle</p>
                 </div>
                 <div style="background: #fff; padding: 30px; border-radius: 12px;">
                     <h2 style="color: #1A0A2E;">✅ Registration Successful!</h2>
@@ -762,6 +712,7 @@ app.post('/register', async (req, res) => {
                     <div style="background: #f8f6fc; padding: 16px; border-radius: 8px; margin: 16px 0;">
                         <p style="margin: 4px 0;"><strong style="color: #1A0A2E;">Student ID:</strong> <span style="color: #8B5CF6; font-weight: 700;">${studentId}</span></p>
                         <p style="margin: 4px 0;"><strong style="color: #1A0A2E;">Course:</strong> ${courseName}</p>
+                        <p style="margin: 4px 0;"><strong style="color: #1A0A2E;">Level:</strong> ${learningLevel || 'Beginner'}</p>
                     </div>
                     
                     <p style="color: #5a4a70; font-size: 14px; line-height: 1.6;">
@@ -780,11 +731,11 @@ app.post('/register', async (req, res) => {
                     </p>
                     
                     <p style="color: #7a6a8f; font-size: 12px; text-align: center; margin-top: 16px;">
-                        This link expires in 24 hours.
+                        ⏰ This link expires in 24 hours.
                     </p>
                 </div>
                 <div style="text-align: center; padding: 16px 0; color: #7a6a8f; font-size: 12px;">
-                    <p style="font-style: italic;">Learn. Understand. Protect.</p>
+                    <p style="font-style: italic;">Learn. Understand. Protect. 🛡️</p>
                 </div>
             </div>
         `;
@@ -850,11 +801,11 @@ app.post('/resend-verification', async (req, res) => {
         const emailHtml = `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #f8f6fc; border-radius: 12px;">
                 <div style="text-align: center; padding: 20px 0;">
-                    <h1 style="color: #8B5CF6; font-size: 28px;">SHINEX</h1>
-                    <p style="color: #7a6a8f; font-size: 14px;">Learning Circle</p>
+                    <h1 style="color: #8B5CF6; font-size: 28px;">📧 Resend Verification</h1>
+                    <p style="color: #7a6a8f;">SHINEX Learning Circle</p>
                 </div>
                 <div style="background: #fff; padding: 30px; border-radius: 12px;">
-                    <h2 style="color: #1A0A2E;">📧 Resend Verification</h2>
+                    <h2 style="color: #1A0A2E;">New Verification Link</h2>
                     <p style="color: #5a4a70; font-size: 16px; line-height: 1.6;">
                         Dear <strong>${user.firstName}</strong>,
                     </p>
@@ -868,8 +819,11 @@ app.post('/resend-verification', async (req, res) => {
                         </a>
                     </div>
                     <p style="color: #7a6a8f; font-size: 12px; text-align: center;">
-                        This link expires in 24 hours.
+                        ⏰ This link expires in 24 hours.
                     </p>
+                </div>
+                <div style="text-align: center; padding: 16px 0; color: #7a6a8f; font-size: 12px;">
+                    <p>Learn. Understand. Protect. 🛡️</p>
                 </div>
             </div>
         `;
@@ -2244,9 +2198,6 @@ async function startServer() {
             
             if (useSendGrid) {
                 console.log(`✅ Email configured with SendGrid`);
-                console.log(`📧 Email status: READY TO SEND\n`);
-            } else if (process.env.EMAIL_USER && process.env.EMAIL_APP_PASSWORD) {
-                console.log(`✅ Email configured with Gmail: ${process.env.EMAIL_USER}`);
                 console.log(`📧 Email status: READY TO SEND\n`);
             } else {
                 console.log('⚠️ Email not configured. Create .env file with:');

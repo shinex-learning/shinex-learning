@@ -3,56 +3,296 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verification Failed – SHINEX</title>
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Verification Failed – SHINEX Learning Circle</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* ============================================================
+           VERIFICATION ERROR STYLES
+           ============================================================ */
+        
+        .error-container {
+            max-width: 550px;
+            margin: 0 auto;
+        }
+        
+        /* ----- Error Card ----- */
+        .error-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 3px solid var(--text-error);
+            padding: var(--spacing-xl) var(--spacing-lg);
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s ease;
+        }
+        
+        .error-card:hover {
+            box-shadow: var(--shadow-xl);
+        }
+        
+        /* ----- Error Icon ----- */
+        .error-card .error-icon {
+            font-size: 4.5rem;
+            color: var(--text-error);
+            margin-bottom: var(--spacing-md);
+            display: block;
+            animation: shakeIcon 0.6s ease;
+        }
+        
+        @keyframes shakeIcon {
+            0%, 100% { transform: rotate(0deg); }
+            20% { transform: rotate(-15deg); }
+            40% { transform: rotate(15deg); }
+            60% { transform: rotate(-10deg); }
+            80% { transform: rotate(10deg); }
+        }
+        
+        /* ----- Title ----- */
+        .error-card .error-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-error);
+            margin: 0 0 8px 0;
+        }
+        
+        .error-card .error-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            margin: 0 0 4px 0;
+        }
+        
+        .error-card .error-message {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin: 0 0 var(--spacing-md) 0;
+            line-height: 1.6;
+        }
+        
+        /* ----- Error Reasons ----- */
+        .error-card .error-reasons {
+            text-align: left;
+            max-width: 350px;
+            margin: 0 auto var(--spacing-md) auto;
+        }
+        
+        .error-card .error-reasons .reason-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .error-card .error-reasons .reason-list li {
+            padding: 6px 0;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .error-card .error-reasons .reason-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .error-card .error-reasons .reason-list li .reason-icon {
+            color: var(--text-error);
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
+        
+        .error-card .error-reasons .reason-list li .reason-text {
+            flex: 1;
+        }
+        
+        .error-card .error-reasons .reason-list li .reason-text strong {
+            color: var(--text-primary);
+        }
+        
+        /* ----- Action Buttons ----- */
+        .error-card .error-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: var(--spacing-sm);
+        }
+        
+        .error-card .error-actions .btn {
+            padding: 10px 28px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: var(--radius-full);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .error-card .error-actions .btn-primary {
+            background: var(--purple-gradient);
+            color: #fff;
+            border: none;
+        }
+        
+        .error-card .error-actions .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.3);
+        }
+        
+        .error-card .error-actions .btn-secondary {
+            background: var(--bg-card-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+        
+        .error-card .error-actions .btn-secondary:hover {
+            border-color: var(--purple-primary);
+            color: var(--purple-primary);
+        }
+        
+        .error-card .error-actions .btn i {
+            font-size: 0.9rem;
+        }
+        
+        /* ----- Back Link ----- */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-top: var(--spacing-md);
+            transition: all 0.3s ease;
+            justify-content: center;
+            width: 100%;
+        }
+        
+        .back-link:hover {
+            color: var(--purple-primary);
+        }
+        
+        .back-link i {
+            font-size: 0.8rem;
+        }
+        
+        /* ----- Responsive ----- */
+        @media (max-width: 480px) {
+            .error-card {
+                padding: var(--spacing-lg) var(--spacing-md);
+            }
+            
+            .error-card .error-title {
+                font-size: 1.3rem;
+            }
+            
+            .error-card .error-icon {
+                font-size: 3.5rem;
+            }
+            
+            .error-card .error-subtitle {
+                font-size: 0.95rem;
+            }
+            
+            .error-card .error-actions {
+                flex-direction: column;
+            }
+            
+            .error-card .error-actions .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .error-card .error-reasons .reason-list li {
+                font-size: 0.82rem;
+            }
+        }
+    </style>
 </head>
 <body>
+
+    <!-- ============================================================
+    PAGE LOADER
+    ============================================================ -->
     <div id="page-loader">
         <div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div>
         <div class="loader-text">SHINEX</div>
         <div class="loader-sub">LEARNING CIRCLE</div>
     </div>
 
+    <!-- ===== HEADER ===== -->
     <%- include(getHeader()) %>
 
+    <!-- ===== MAIN CONTENT ===== -->
     <main class="main-content">
-        <div class="container" style="max-width:550px;">
-            <div class="card" style="text-align:center; padding:50px 30px; border:3px solid #e74c3c;">
-                <div style="font-size:4.5rem; color:#e74c3c; margin-bottom:16px;">
-                    <i class="fas fa-times-circle"></i>
-                </div>
-                <h1 style="font-size:1.8rem; font-weight:800; color:#e74c3c; margin:0 0 8px 0;">
-                    Verification Failed ❌
-                </h1>
-                <p style="color:var(--text-muted); font-size:1.05rem; margin:0 0 16px 0;">
-                    The verification link is invalid or has expired.
-                </p>
-                <p style="color:var(--text-muted); font-size:0.9rem; margin:0 0 20px 0;">
-                    This could be because:
-                </p>
-                <ul style="text-align:left; color:var(--text-muted); font-size:0.85rem; line-height:1.8; max-width:350px; margin:0 auto 20px auto;">
-                    <li>✓ The link has already been used</li>
-                    <li>✓ The link expired (it's valid for 24 hours)</li>
-                    <li>✓ The link was copied incorrectly</li>
-                </ul>
-                <p style="color:var(--text-muted); font-size:0.9rem; margin:0 0 20px 0;">
-                    Please try registering again or contact support.
-                </p>
-                <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
-                    <a href="/register" class="btn btn-primary">
-                        <i class="fas fa-user-plus"></i> Register Again
+        <div class="container">
+            <div class="error-container">
+
+                <!-- ===== ERROR CARD ===== -->
+                <div class="error-card">
+
+                    <!-- Error Icon -->
+                    <span class="error-icon">
+                        <i class="fas fa-times-circle"></i>
+                    </span>
+
+                    <!-- Title -->
+                    <h1 class="error-title">Verification Failed ❌</h1>
+                    <p class="error-subtitle">The verification link is invalid or has expired.</p>
+                    <p class="error-message">
+                        This could be because:
+                    </p>
+
+                    <!-- Reasons -->
+                    <div class="error-reasons">
+                        <ul class="reason-list">
+                            <li>
+                                <span class="reason-icon"><i class="fas fa-check-circle"></i></span>
+                                <span class="reason-text">The link has already been <strong>used</strong></span>
+                            </li>
+                            <li>
+                                <span class="reason-icon"><i class="fas fa-check-circle"></i></span>
+                                <span class="reason-text">The link <strong>expired</strong> (it's valid for 24 hours)</span>
+                            </li>
+                            <li>
+                                <span class="reason-icon"><i class="fas fa-check-circle"></i></span>
+                                <span class="reason-text">The link was <strong>copied incorrectly</strong></span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <p class="error-message" style="margin-top:0;">
+                        Please try registering again or contact our support team for assistance.
+                    </p>
+
+                    <!-- Action Buttons -->
+                    <div class="error-actions">
+                        <a href="/register" class="btn btn-primary">
+                            <i class="fas fa-user-plus"></i> Register Again
+                        </a>
+                        <a href="/contact" class="btn btn-secondary">
+                            <i class="fas fa-headset"></i> Contact Support
+                        </a>
+                    </div>
+
+                    <!-- Back Link -->
+                    <a href="/" class="back-link">
+                        <i class="fas fa-arrow-left"></i> Back to Home
                     </a>
-                    <a href="/contact" class="btn btn-secondary">
-                        <i class="fas fa-headset"></i> Contact Support
-                    </a>
+
                 </div>
+
             </div>
         </div>
     </main>
 
+    <!-- ===== FOOTER ===== -->
     <%- include(getFooter()) %>
-    <script src="/js/script.js"></script>
+
+    <script src="/js/main.js"></script>
 </body>
 </html>

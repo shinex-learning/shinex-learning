@@ -3,152 +3,322 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Our Services – SHINEX</title>
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Our Services – SHINEX Learning Circle</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        .service-card {
-            background: #fff;
-            border-radius: 10px;
-            padding: 18px 20px;
-            border: 1px solid #ede8f5;
-            transition: all 0.3s ease;
+        /* ============================================================
+           SERVICES PAGE STYLES
+           ============================================================ */
+        
+        .services-container {
+            max-width: 1000px;
+            margin: 0 auto;
         }
-        body.dark-mode .service-card {
-            background: #1a1a1a;
-            border-color: #333;
+        
+        /* ----- Page Header ----- */
+        .services-header {
+            text-align: center;
+            margin-bottom: var(--spacing-lg);
         }
-        .service-card:hover {
-            border-color: #8B5CF6;
-            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.08);
+        
+        .services-header h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin: 0;
         }
-        body.dark-mode .service-card .service-name {
-            color: #fff;
+        
+        .services-header h1 i {
+            color: var(--purple-primary);
         }
-        body.dark-mode .service-card .service-desc {
-            color: #b0a0c0;
+        
+        .services-header p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin: 4px 0 0 0;
         }
-        body.dark-mode .service-card .service-price {
-            color: #a78bfa;
-        }
-        .service-card .service-name {
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: var(--text-dark);
-        }
-        .service-card .service-desc {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin: 4px 0 8px;
-        }
-        .service-card .service-price {
-            font-weight: 700;
-            color: #8B5CF6;
-            font-size: 1.2rem;
-        }
-        .service-category-badge {
-            background: var(--primary-bg);
-            color: #8B5CF6;
-            padding: 2px 10px;
-            border-radius: 12px;
-            font-size: 0.6rem;
-            font-weight: 600;
-        }
-        body.dark-mode .service-category-badge {
-            background: #2a1a4a;
-            color: #a78bfa;
-        }
+        
+        /* ----- Service Grid ----- */
         .service-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
+            gap: var(--spacing-md);
         }
+        
+        /* ----- Service Card ----- */
+        .service-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            padding: var(--spacing-lg);
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .service-card:hover {
+            border-color: var(--purple-primary);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-4px);
+        }
+        
+        .service-card .service-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 4px;
+        }
+        
+        .service-card .service-top .service-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        .service-card .service-top .category-badge {
+            background: var(--purple-bg);
+            color: var(--purple-primary);
+            padding: 2px 12px;
+            border-radius: var(--radius-full);
+            font-size: 0.6rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        
+        .service-card .service-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin: 0 0 var(--spacing-sm) 0;
+            line-height: 1.6;
+            flex: 1;
+        }
+        
+        .service-card .service-price {
+            font-weight: 700;
+            color: var(--purple-primary);
+            font-size: 1.2rem;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .service-card .service-price .price-label {
+            font-weight: 400;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        
+        .service-card .btn-order {
+            width: 100%;
+            padding: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: var(--radius-full);
+            background: var(--purple-gradient);
+            color: #fff;
+            border: none;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .service-card .btn-order:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+        }
+        
+        .service-card .btn-order i {
+            margin-right: 6px;
+        }
+        
+        /* ----- Empty State ----- */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: var(--spacing-xl) var(--spacing-md);
+            background: var(--bg-card-secondary);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+        }
+        
+        .empty-state .empty-icon {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: var(--spacing-sm);
+            opacity: 0.5;
+        }
+        
+        .empty-state h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0 0 4px 0;
+        }
+        
+        .empty-state p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin: 0;
+        }
+        
+        /* ----- Back Link ----- */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            margin-top: var(--spacing-lg);
+            transition: all 0.3s ease;
+        }
+        
+        .back-link:hover {
+            color: var(--purple-primary);
+        }
+        
+        .back-link i {
+            font-size: 0.85rem;
+        }
+        
+        /* ----- Responsive ----- */
         @media (max-width: 768px) {
+            .services-header h1 {
+                font-size: 1.4rem;
+            }
+            
             .service-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            .service-card {
+                padding: var(--spacing-md);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .service-card .service-top {
+                flex-direction: column;
+                align-items: flex-start;
             }
         }
     </style>
 </head>
 <body>
+
+    <!-- ============================================================
+    PAGE LOADER
+    ============================================================ -->
     <div id="page-loader">
         <div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div>
         <div class="loader-text">SHINEX</div>
         <div class="loader-sub">LEARNING CIRCLE</div>
     </div>
 
+    <!-- ===== HEADER ===== -->
     <%- include(getHeader()) %>
 
+    <!-- ===== MAIN CONTENT ===== -->
     <main class="main-content">
-        <div class="container" style="max-width:1000px;">
-            <% if (messages && messages.error) { %>
-                <div class="alert alert-danger flash-message" data-type="error"><%= messages.error %></div>
-            <% } %>
-            <% if (messages && messages.success) { %>
-                <div class="alert alert-success flash-message" data-type="success"><%= messages.success %></div>
-            <% } %>
+        <div class="container">
+            <div class="services-container">
 
-            <div style="text-align:center; margin-bottom:24px;">
-                <h1 style="font-size:1.8rem; font-weight:800; color:var(--text-dark); margin:0;">
-                    <i class="fas fa-cogs" style="color:#8B5CF6;"></i> Our Services
-                </h1>
-                <p style="color:var(--text-muted); font-size:0.95rem; margin:4px 0 0;">
-                    Professional services to help you achieve your goals. Click "Order" to contact us.
-                </p>
-            </div>
+                <!-- ===== FLASH MESSAGES ===== -->
+                <% if (messages && messages.error) { %>
+                    <div class="alert alert-danger flash-message" data-type="error">
+                        <i class="fas fa-exclamation-circle"></i> <%= messages.error %>
+                    </div>
+                <% } %>
+                <% if (messages && messages.success) { %>
+                    <div class="alert alert-success flash-message" data-type="success">
+                        <i class="fas fa-check-circle"></i> <%= messages.success %>
+                    </div>
+                <% } %>
 
-            <!-- Services Grid -->
-            <% if (typeof services !== 'undefined' && services && services.length > 0) { %>
+                <!-- ===== PAGE HEADER ===== -->
+                <div class="services-header">
+                    <h1><i class="fas fa-cogs"></i> Our Services</h1>
+                    <p>Professional services to help you achieve your goals. Click "Order" to contact us.</p>
+                </div>
+
+                <!-- ===== SERVICES GRID ===== -->
                 <div class="service-grid">
-                    <% services.forEach(function(service) { %>
-                        <div class="service-card">
-                            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:6px;">
-                                <div class="service-name"><%= service.name %></div>
-                                <span class="service-category-badge">
-                                    <%= service.category || 'Service' %>
-                                </span>
-                            </div>
-                            <div class="service-desc"><%= service.description || 'Professional service tailored to your needs.' %></div>
-                            <div class="service-price">₦<%= service.price %></div>
-                            <div style="margin-top:12px;">
-                                <a href="/contact" class="btn btn-primary btn-sm" style="width:100%; text-align:center;">
+                    <% if (typeof services !== 'undefined' && services && services.length > 0) { %>
+                        <% services.forEach(function(service) { %>
+                            <div class="service-card">
+                                <div class="service-top">
+                                    <span class="service-name"><%= service.name %></span>
+                                    <span class="category-badge">
+                                        <%= service.category ? service.category.charAt(0).toUpperCase() + service.category.slice(1) : 'Service' %>
+                                    </span>
+                                </div>
+                                <div class="service-desc">
+                                    <%= service.description || 'Professional service tailored to your needs.' %>
+                                </div>
+                                <div class="service-price">
+                                    <span class="price-label">₦</span> <%= service.price.toLocaleString() %>
+                                </div>
+                                <a href="/contact" class="btn-order">
                                     <i class="fas fa-envelope"></i> Order Now
                                 </a>
                             </div>
+                        <% }); %>
+                    <% } else { %>
+                        <div class="empty-state">
+                            <span class="empty-icon">🔧</span>
+                            <h4>No Services Available</h4>
+                            <p>Check back soon for our professional services.</p>
                         </div>
-                    <% }); %>
+                    <% } %>
                 </div>
-            <% } else { %>
-                <div style="text-align:center; padding:40px 20px; color:var(--text-muted);">
-                    <i class="fas fa-info-circle" style="font-size:2rem; display:block; margin-bottom:8px;"></i>
-                    <p>No services available yet. Check back soon!</p>
-                </div>
-            <% } %>
+
+                <!-- ===== BACK LINK ===== -->
+                <a href="/" class="back-link">
+                    <i class="fas fa-arrow-left"></i> Back to Home
+                </a>
+
+            </div>
         </div>
     </main>
 
+    <!-- ===== FOOTER ===== -->
     <%- include(getFooter()) %>
 
-    <!-- AI Bot -->
-    <div class="ai-bot" id="aiBot">
-        <div class="ai-bot-pulse"></div>
-        <button class="ai-bot-btn" id="aiBotBtn"><i class="fas fa-robot"></i></button>
+    <!-- ============================================================
+    AI BOT
+    ============================================================ -->
+    <div class="ai-bot" id="aiBot" style="position:fixed; bottom:30px; right:30px; z-index:999; cursor:pointer;">
+        <button class="ai-bot-btn" id="aiBotBtn" style="width:60px; height:60px; border-radius:50%; background:var(--purple-gradient); color:#fff; border:none; font-size:26px; box-shadow:0 8px 30px rgba(139,92,246,0.4); cursor:pointer; position:relative; z-index:2;">
+            🤖
+            <span class="ai-bot-pulse" style="position:absolute; width:60px; height:60px; border-radius:50%; background:rgba(139,92,246,0.3); animation:pulseRing 2s ease-out infinite; z-index:1; top:0; left:0;"></span>
+        </button>
     </div>
 
-    <div class="ai-chat-modal" id="aiChatModal">
-        <div class="ai-chat-header"><h4><i class="fas fa-robot"></i> AI Tutor</h4><button class="ai-chat-close" id="aiChatClose">&times;</button></div>
-        <div class="ai-chat-body" id="aiChatBody">
-            <div class="ai-chat-messages" id="aiChatMessages">
-                <div class="ai-chat-msg bot">👋 Hello! I'm your AI tutor. Ask me anything!</div>
+    <!-- AI Chat Modal -->
+    <div class="ai-chat-modal" id="aiChatModal" style="position:fixed; bottom:100px; right:30px; width:380px; max-width:calc(100vw - 40px); max-height:500px; background:var(--bg-card); border-radius:var(--radius-lg); border:1px solid var(--border-color); box-shadow:var(--shadow-xl); z-index:1000; display:none; flex-direction:column; overflow:hidden;">
+        <div class="ai-chat-header" style="padding:14px 18px; background:var(--purple-gradient); color:#fff; display:flex; justify-content:space-between; align-items:center;">
+            <h4 style="font-size:0.95rem; font-weight:700; margin:0;">🤖 AI Tutor</h4>
+            <button class="ai-chat-close" id="aiChatClose" style="background:none; border:none; color:#fff; font-size:1.2rem; cursor:pointer; padding:4px;">&times;</button>
+        </div>
+        <div class="ai-chat-body" id="aiChatBody" style="padding:16px 18px; flex:1; overflow-y:auto; max-height:300px; background:var(--bg-page);">
+            <div class="ai-chat-messages" id="aiChatMessages" style="display:flex; flex-direction:column; gap:8px;">
+                <div class="ai-chat-msg bot" style="padding:10px 14px; border-radius:var(--radius-md); font-size:0.9rem; max-width:85%; line-height:1.5; background:var(--purple-bg); color:var(--text-primary); align-self:flex-start; border-bottom-left-radius:4px;">
+                    👋 Hello! I'm your SHINEX AI Tutor. Ask me anything about our services or any topic!
+                </div>
             </div>
         </div>
-        <div class="ai-chat-footer">
-            <input type="text" id="aiChatInput" placeholder="Ask a question..." maxlength="500">
-            <button class="btn btn-primary" id="aiChatSend"><i class="fas fa-paper-plane"></i></button>
+        <div class="ai-chat-footer" style="padding:12px 18px; border-top:1px solid var(--border-color); display:flex; gap:8px; background:var(--bg-card);">
+            <input type="text" id="aiChatInput" placeholder="Ask a question..." autocomplete="off" style="flex:1; padding:8px 12px; border-radius:var(--radius-sm); border:1px solid var(--border-color); font-size:0.85rem; background:var(--bg-input); color:var(--text-primary);">
+            <button class="btn btn-primary" id="aiChatSend" style="padding:8px 16px; border:none; border-radius:var(--radius-full); background:var(--purple-primary); color:#fff; font-weight:600; cursor:pointer; transition:all 0.3s ease;">
+                Send
+            </button>
         </div>
     </div>
 
-    <script src="/js/script.js"></script>
+    <script src="/js/main.js"></script>
 </body>
 </html>

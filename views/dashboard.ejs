@@ -2,322 +2,691 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Register – SHINEX</title>
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard – SHINEX Learning Circle</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/style.css">
     <style>
-        .mobile-form-group {
-            margin-bottom: 12px;
+        /* ============================================================
+           DASHBOARD PAGE STYLES
+           ============================================================ */
+        
+        .dashboard-container {
+            max-width: 1100px;
+            margin: 0 auto;
         }
-        .mobile-form-group label {
-            font-weight: 600;
-            font-size: 0.8rem;
-            color: var(--text-dark);
-            display: block;
-            margin-bottom: 3px;
+        
+        /* ----- Welcome Card ----- */
+        .welcome-card {
+            background: var(--purple-gradient);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl) var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: var(--spacing-md);
         }
-        body.dark-mode .mobile-form-group label {
-            color: var(--text-light);
-        }
-        .mobile-form-group input,
-        .mobile-form-group select {
-            width: 100%;
-            padding: 10px 12px;
-            border: 2px solid #ede8f5;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-family: inherit;
-            background: #fff;
-            color: var(--text-dark);
-        }
-        body.dark-mode .mobile-form-group input,
-        body.dark-mode .mobile-form-group select {
-            background: #2a2a2a;
-            color: var(--text-light);
-            border-color: #333;
-        }
-        .mobile-form-section {
-            background: var(--primary-bg);
-            border-radius: 10px;
-            padding: 14px;
-            margin-bottom: 12px;
-        }
-        body.dark-mode .mobile-form-section {
-            background: #1a1a1a;
-        }
-        .mobile-form-section h4 {
+        
+        .welcome-card .welcome-text h1 {
+            font-size: 1.6rem;
             font-weight: 700;
-            color: var(--text-dark);
-            margin: 0 0 2px 0;
-            font-size: 0.9rem;
+            color: #fff;
+            margin: 0;
         }
-        body.dark-mode .mobile-form-section h4 {
-            color: var(--text-light);
+        
+        .welcome-card .welcome-text h1 i {
+            margin-right: 8px;
         }
-        .mobile-form-section .sub {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            margin: 0 0 10px 0;
+        
+        .welcome-card .welcome-text .welcome-sub {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 0.95rem;
+            margin: 4px 0 0 0;
         }
-        .mobile-form-row {
+        
+        .welcome-card .welcome-text .welcome-sub .student-id-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 2px 14px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        
+        .welcome-card .welcome-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .welcome-card .welcome-actions .btn {
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 18px;
+            border-radius: var(--radius-full);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .welcome-card .welcome-actions .btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+        
+        /* ----- Stats Grid ----- */
+        .stats-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .stat-box {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            padding: var(--spacing-md);
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+        }
+        
+        .stat-box:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+        
+        .stat-box .stat-icon {
+            font-size: 1.5rem;
+            color: var(--purple-primary);
+            display: block;
+            margin-bottom: 2px;
+            opacity: 0.5;
+        }
+        
+        .stat-box .stat-number {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--purple-primary);
+            display: block;
+        }
+        
+        .stat-box .stat-number.success {
+            color: var(--text-success);
+        }
+        
+        .stat-box .stat-number.warning {
+            color: var(--text-warning);
+        }
+        
+        .stat-box .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            display: block;
+            margin-top: 2px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        /* ----- Progress Section ----- */
+        .progress-section {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+        }
+        
+        .progress-section:hover {
+            box-shadow: var(--shadow-md);
+        }
+        
+        .progress-section .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .progress-section .progress-header h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        
+        .progress-section .progress-header h3 i {
+            color: var(--purple-primary);
+            margin-right: 6px;
+        }
+        
+        .progress-section .progress-header .progress-percent {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--purple-primary);
+        }
+        
+        .progress-section .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: var(--bg-card-secondary);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+        }
+        
+        .progress-section .progress-bar .progress-fill {
+            height: 100%;
+            background: var(--purple-gradient);
+            border-radius: var(--radius-full);
+            transition: width 0.6s ease;
+        }
+        
+        .progress-section .progress-details {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-sm);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        
+        /* ----- Section Title ----- */
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: var(--spacing-lg) 0 var(--spacing-sm) 0;
+            display: flex;
+            align-items: center;
             gap: 10px;
         }
-        .mobile-required {
-            color: #e74c3c;
+        
+        .section-title i {
+            color: var(--purple-primary);
         }
-        .mobile-help-text {
-            font-size: 0.65rem;
-            color: var(--text-muted);
-            margin-top: 2px;
+        
+        /* ----- Course Card ----- */
+        .course-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-md);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--purple-primary);
         }
-        .btn-mobile-auth {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 30px;
+        
+        .course-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+        
+        .course-card .course-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+            margin-bottom: 4px;
+        }
+        
+        .course-card .course-top h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        
+        .course-card .course-top .level-badge {
+            background: var(--purple-bg);
+            color: var(--purple-primary);
+            padding: 2px 14px;
+            border-radius: var(--radius-full);
+            font-size: 0.7rem;
             font-weight: 600;
-            font-size: 1rem;
-            background: #8B5CF6;
+        }
+        
+        .course-card .course-description {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin: 0 0 var(--spacing-sm) 0;
+            line-height: 1.6;
+        }
+        
+        .course-card .course-meta {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .course-card .course-meta .meta-tag {
+            background: var(--bg-card-secondary);
+            color: var(--text-secondary);
+            padding: 2px 14px;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .course-card .course-meta .meta-tag i {
+            font-size: 0.65rem;
+        }
+        
+        .course-card .course-meta .meta-tag.progress-tag {
+            background: var(--bg-alert-success);
+            color: var(--text-success);
+        }
+        
+        .course-card .course-actions .btn-continue {
+            padding: 10px 28px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: var(--radius-full);
+            background: var(--purple-gradient);
             color: #fff;
-            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
         }
-        .btn-mobile-auth:hover {
-            background: #6a3dcf;
+        
+        .course-card .course-actions .btn-continue:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.3);
         }
-        @media (max-width: 400px) {
-            .mobile-form-row {
+        
+        /* ----- More Courses Grid ----- */
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-sm);
+        }
+        
+        .course-mini-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            padding: var(--spacing-md);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+        }
+        
+        .course-mini-card:hover {
+            border-color: var(--purple-primary);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-4px);
+        }
+        
+        .course-mini-card h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0 0 2px 0;
+        }
+        
+        .course-mini-card p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin: 0 0 var(--spacing-sm) 0;
+            line-height: 1.4;
+        }
+        
+        .course-mini-card .btn-view {
+            padding: 6px 16px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: var(--radius-full);
+            background: var(--bg-card-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .course-mini-card .btn-view:hover {
+            background: var(--purple-bg);
+            border-color: var(--purple-primary);
+            color: var(--purple-primary);
+        }
+        
+        /* ----- Quick Links ----- */
+        .quick-links {
+            display: flex;
+            gap: var(--spacing-sm);
+            flex-wrap: wrap;
+            margin-top: var(--spacing-lg);
+            padding-top: var(--spacing-md);
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .quick-links .btn-quick {
+            padding: 8px 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: var(--radius-full);
+            background: var(--bg-card-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+        }
+        
+        .quick-links .btn-quick:hover {
+            background: var(--purple-bg);
+            border-color: var(--purple-primary);
+            color: var(--purple-primary);
+            transform: translateY(-2px);
+        }
+        
+        /* ----- Empty State ----- */
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-xl) var(--spacing-md);
+            background: var(--bg-card-secondary);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+        }
+        
+        .empty-state .empty-icon {
+            font-size: 3.5rem;
+            display: block;
+            margin-bottom: var(--spacing-sm);
+            opacity: 0.5;
+        }
+        
+        .empty-state h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0 0 4px 0;
+        }
+        
+        .empty-state p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin: 0 0 var(--spacing-md) 0;
+        }
+        
+        .empty-state .btn-explore {
+            padding: 10px 32px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: var(--radius-full);
+            background: var(--purple-gradient);
+            color: #fff;
+            border: none;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .empty-state .btn-explore:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.3);
+        }
+        
+        /* ----- Responsive ----- */
+        @media (max-width: 768px) {
+            .welcome-card {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: var(--spacing-lg) var(--spacing-md);
+            }
+            
+            .welcome-card .welcome-actions {
+                width: 100%;
+            }
+            
+            .welcome-card .welcome-actions .btn {
+                flex: 1;
+                justify-content: center;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .courses-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .course-card .course-top {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .section-title {
+                font-size: 1.1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .stats-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            .courses-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .course-card {
+                padding: var(--spacing-md);
+            }
+            
+            .quick-links {
+                flex-direction: column;
+            }
+            
+            .quick-links .btn-quick {
+                width: 100%;
+                justify-content: center;
             }
         }
     </style>
 </head>
 <body>
-    <div id="page-loader">
-        <div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div>
-        <div class="loader-text">SHINEX</div>
-        <div class="loader-sub">LEARNING CIRCLE</div>
-    </div>
 
-    <%- include('../partials/header-mobile') %>
+    <!-- ===== HEADER ===== -->
+    <%- include('partials/header', { showBack: false }) %>
 
-    <main class="main-content" style="padding:12px 0 24px;">
-        <div class="container" style="padding:0 12px;">
-            <div style="background:#fff; border-radius:12px; padding:16px; border:1px solid #ede8f5;">
-                <div style="text-align:center; margin-bottom:12px;">
-                    <h1 style="font-size:1.3rem; font-weight:800; color:#8B5CF6; margin:0;">SHINEX</h1>
-                    <p style="color:var(--text-muted); font-size:0.65rem; letter-spacing:2px; margin:0;">LEARNING CIRCLE</p>
-                </div>
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main-content">
+        <div class="container">
+            <div class="dashboard-container">
 
-                <div style="font-size:1.1rem; font-weight:700; color:var(--text-dark); text-align:center; margin-bottom:2px;">Student Registration</div>
-                <div style="font-size:0.75rem; color:var(--text-muted); text-align:center; margin-bottom:12px;">Join SHINEX Learning Circle (SLC)</div>
-
+                <!-- ===== FLASH MESSAGES ===== -->
+                <% if (messages && messages.success) { %>
+                    <div class="alert alert-success flash-message" data-type="success">
+                        <i class="fas fa-check-circle"></i> <%= messages.success %>
+                    </div>
+                <% } %>
                 <% if (messages && messages.error) { %>
-                    <div class="alert alert-danger"><%= messages.error %></div>
+                    <div class="alert alert-danger flash-message" data-type="error">
+                        <i class="fas fa-exclamation-circle"></i> <%= messages.error %>
+                    </div>
                 <% } %>
 
-                <form action="/register" method="POST">
-
-                    <!-- Personal Information -->
-                    <div class="mobile-form-section">
-                        <h4><i class="fas fa-user" style="color:#8B5CF6;"></i> Personal Information</h4>
-                        <p class="sub">Tell us about yourself</p>
-
-                        <div class="mobile-form-row">
-                            <div class="mobile-form-group">
-                                <label>First Name <span class="mobile-required">*</span></label>
-                                <input type="text" name="firstName" placeholder="John" required>
-                            </div>
-                            <div class="mobile-form-group">
-                                <label>Middle Name</label>
-                                <input type="text" name="middleName" placeholder="(Optional)">
-                            </div>
-                        </div>
-
-                        <div class="mobile-form-group">
-                            <label>Last Name <span class="mobile-required">*</span></label>
-                            <input type="text" name="lastName" placeholder="Doe" required>
-                        </div>
-
-                        <div class="mobile-form-row">
-                            <div class="mobile-form-group">
-                                <label>Date of Birth</label>
-                                <input type="date" name="dateOfBirth">
-                            </div>
-                            <div class="mobile-form-group">
-                                <label>Gender <span class="mobile-required">*</span></label>
-                                <select name="gender" required>
-                                    <option value="">Select...</option>
-                                    <option value="Male">Male</option>
-                                    <option value="Female">Female</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="mobile-form-group">
-                            <label>Country <span class="mobile-required">*</span></label>
-                            <select name="country" required>
-                                <option value="">Select...</option>
-                                <option value="Nigeria">Nigeria</option>
-                                <option value="USA">USA</option>
-                                <option value="UK">UK</option>
-                                <option value="Canada">Canada</option>
-                                <option value="Australia">Australia</option>
-                                <option value="Ghana">Ghana</option>
-                                <option value="Kenya">Kenya</option>
-                                <option value="South Africa">South Africa</option>
-                                <option value="Other">Other</option>
-                            </select>
-                        </div>
-
-                        <div class="mobile-form-row">
-                            <div class="mobile-form-group">
-                                <label>State <span class="mobile-required">*</span></label>
-                                <input type="text" name="state" placeholder="e.g., Ogun State" required>
-                            </div>
-                            <div class="mobile-form-group">
-                                <label>City/Town <span class="mobile-required">*</span></label>
-                                <input type="text" name="city" placeholder="e.g., Abeokuta" required>
-                            </div>
+                <!-- ===== WELCOME CARD ===== -->
+                <div class="welcome-card">
+                    <div class="welcome-text">
+                        <h1><i class="fas fa-hand-wave"></i> Hi, <%= user.firstName %>!</h1>
+                        <div class="welcome-sub">
+                            <span class="student-id-badge">
+                                <i class="fas fa-id-card"></i> <%= user.studentId %>
+                            </span>
+                            <span style="margin-left: 12px;">
+                                <i class="fas fa-graduation-cap"></i> <%= user.courseName || 'Not enrolled' %>
+                            </span>
                         </div>
                     </div>
-
-                    <!-- Contact Information -->
-                    <div class="mobile-form-section">
-                        <h4><i class="fas fa-phone" style="color:#8B5CF6;"></i> Contact Information</h4>
-                        <p class="sub">How can we reach you?</p>
-
-                        <div class="mobile-form-group">
-                            <label>Email Address <span class="mobile-required">*</span></label>
-                            <input type="email" name="email" placeholder="you@email.com" required>
-                        </div>
-
-                        <div class="mobile-form-row">
-                            <div class="mobile-form-group">
-                                <label>Phone Number <span class="mobile-required">*</span></label>
-                                <input type="tel" name="phone" placeholder="080 1234 5678" required>
-                            </div>
-                            <div class="mobile-form-group">
-                                <label>WhatsApp Number</label>
-                                <input type="tel" name="whatsapp" placeholder="080 1234 5678">
-                            </div>
-                        </div>
-
-                        <div class="mobile-form-group">
-                            <label>Home Address</label>
-                            <input type="text" name="homeAddress" placeholder="Your home address">
-                        </div>
+                    <div class="welcome-actions">
+                        <a href="/enroll" class="btn">
+                            <i class="fas fa-exchange-alt"></i> Change Course
+                        </a>
+                        <a href="/settings" class="btn">
+                            <i class="fas fa-cog"></i> Settings
+                        </a>
                     </div>
-
-                    <!-- Academic Information -->
-                    <div class="mobile-form-section">
-                        <h4><i class="fas fa-graduation-cap" style="color:#8B5CF6;"></i> Academic Information</h4>
-                        <p class="sub">Tell us about your education</p>
-
-                        <div class="mobile-form-group">
-                            <label>School/Institution <span class="mobile-required">*</span></label>
-                            <input type="text" name="school" placeholder="e.g., TASUED" required>
-                        </div>
-
-                        <div class="mobile-form-group">
-                            <label>Department <span class="mobile-required">*</span></label>
-                            <input type="text" name="department" placeholder="e.g., Computer Science" required>
-                        </div>
-
-                        <div class="mobile-form-row">
-                            <div class="mobile-form-group">
-                                <label>Current Level <span class="mobile-required">*</span></label>
-                                <input type="text" name="currentLevel" placeholder="e.g., Year 1" required>
-                            </div>
-                            <div class="mobile-form-group">
-                                <label>Student Status</label>
-                                <select name="studentStatus">
-                                    <option value="">Select...</option>
-                                    <option value="Full-time">Full-time</option>
-                                    <option value="Part-time">Part-time</option>
-                                    <option value="Graduate">Graduate</option>
-                                    <option value="Working Professional">Working Professional</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Choose Course -->
-                    <div class="mobile-form-section">
-                        <h4><i class="fas fa-book-open" style="color:#8B5CF6;"></i> Choose Your Course</h4>
-                        <p class="sub">Select the course you want to study</p>
-
-                        <div class="mobile-form-group">
-                            <label>Course <span class="mobile-required">*</span></label>
-                            <select name="courseName" required>
-                                <option value="">Select a course...</option>
-                                <% if (courses && courses.length > 0) { %>
-                                    <% courses.forEach(function(c) { %>
-                                        <option value="<%= c %>"><%= c %></option>
-                                    <% }); %>
-                                <% } %>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Learning Level -->
-                    <div class="mobile-form-section">
-                        <h4><i class="fas fa-chart-line" style="color:#8B5CF6;"></i> Learning Level</h4>
-                        <p class="sub">Choose your experience level</p>
-
-                        <div class="mobile-form-group">
-                            <label>Learning Level <span class="mobile-required">*</span></label>
-                            <select name="learningLevel" required>
-                                <option value="Beginner">Beginner</option>
-                                <option value="Intermediate">Intermediate</option>
-                                <option value="Advanced">Advanced</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Account Details -->
-                    <div class="mobile-form-section" style="border:2px solid #8B5CF6;">
-                        <h4><i class="fas fa-lock" style="color:#8B5CF6;"></i> Account Details</h4>
-                        <p class="sub">Create your login credentials</p>
-
-                        <div class="mobile-form-group">
-                            <label>Email Address <span class="mobile-required">*</span></label>
-                            <input type="email" name="email" placeholder="you@email.com" required>
-                        </div>
-
-                        <div class="mobile-form-row">
-                            <div class="mobile-form-group">
-                                <label>Password <span class="mobile-required">*</span></label>
-                                <input type="password" name="password" placeholder="Min 6 chars" required>
-                            </div>
-                            <div class="mobile-form-group">
-                                <label>Confirm <span class="mobile-required">*</span></label>
-                                <input type="password" name="confirmPassword" placeholder="Confirm" required>
-                            </div>
-                        </div>
-
-                        <div class="mobile-help-text">
-                            <i class="fas fa-info-circle"></i> Student ID will be generated: <strong>SLC-2026-XX-XXX</strong>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn-mobile-auth">
-                        <i class="fas fa-user-plus"></i> Register
-                    </button>
-                </form>
-
-                <div style="text-align:center; margin-top:12px; padding-top:12px; border-top:1px solid #ede8f5;">
-                    <p style="font-size:0.8rem; color:var(--text-muted); margin:0;">
-                        Already have an account? <a href="/login" style="color:#8B5CF6; font-weight:600; text-decoration:none;">Login</a>
-                    </p>
                 </div>
+
+                <!-- ===== STATS ===== -->
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <span class="stat-icon"><i class="fas fa-book-open"></i></span>
+                        <span class="stat-number"><%= totalClasses || 0 %></span>
+                        <span class="stat-label">Total Classes</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-icon"><i class="fas fa-check-circle" style="color:var(--text-success);"></i></span>
+                        <span class="stat-number success"><%= completedClasses || 0 %></span>
+                        <span class="stat-label">Completed</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-icon"><i class="fas fa-chart-line"></i></span>
+                        <span class="stat-number"><%= progress || 0 %>%</span>
+                        <span class="stat-label">Progress</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-icon"><i class="fas fa-star" style="color:var(--text-warning);"></i></span>
+                        <span class="stat-number warning"><%= score || 0 %></span>
+                        <span class="stat-label">Points</span>
+                    </div>
+                </div>
+
+                <!-- ===== PROGRESS ===== -->
+                <div class="progress-section">
+                    <div class="progress-header">
+                        <h3><i class="fas fa-tasks"></i> Overall Progress</h3>
+                        <span class="progress-percent"><%= progress || 0 %>%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: <%= progress || 0 %>%;"></div>
+                    </div>
+                    <div class="progress-details">
+                        <span><i class="fas fa-check-circle" style="color:var(--text-success);"></i> <%= completedClasses || 0 %> classes completed</span>
+                        <span><i class="fas fa-flag-checkered"></i> <%= totalClasses || 0 %> classes total</span>
+                    </div>
+                </div>
+
+                <!-- ===== ENROLLED COURSE ===== -->
+                <% if (enrolledCourse) { %>
+                    <h2 class="section-title">
+                        <i class="fas fa-graduation-cap"></i> Your Course
+                    </h2>
+                    <div class="course-card">
+                        <div class="course-top">
+                            <h2><%= enrolledCourse.title %></h2>
+                            <span class="level-badge">
+                                <i class="fas fa-signal"></i> <%= enrolledCourse.level || 'Beginner' %>
+                            </span>
+                        </div>
+                        <p class="course-description">
+                            <%= enrolledCourse.description ? enrolledCourse.description.substring(0, 150) + (enrolledCourse.description.length > 150 ? '...' : '') : 'No description available.' %>
+                        </p>
+                        <div class="course-meta">
+                            <span class="meta-tag">
+                                <i class="far fa-clock"></i> <%= enrolledCourse.duration || 'Self-paced' %>
+                            </span>
+                            <span class="meta-tag">
+                                <i class="fas fa-layer-group"></i> <%= enrolledCourse.levels ? enrolledCourse.levels.length : 0 %> Levels
+                            </span>
+                            <span class="meta-tag progress-tag">
+                                <i class="fas fa-check-circle"></i> <%= progress || 0 %>% Complete
+                            </span>
+                        </div>
+                        <div class="course-actions">
+                            <a href="/course/<%= enrolledCourse.id %>" class="btn-continue">
+                                <i class="fas fa-arrow-right"></i> Continue Learning
+                            </a>
+                        </div>
+                    </div>
+                <% } else { %>
+                    <!-- ===== NO COURSE ENROLLED ===== -->
+                    <div class="empty-state">
+                        <span class="empty-icon">📖</span>
+                        <h3>No Course Enrolled</h3>
+                        <p>Browse our courses and start your learning journey today!</p>
+                        <a href="/" class="btn-explore">
+                            <i class="fas fa-search"></i> Explore Courses
+                        </a>
+                    </div>
+                <% } %>
+
+                <!-- ===== MORE COURSES ===== -->
+                <% if (enrolledCourse) { %>
+                    <h2 class="section-title">
+                        <i class="fas fa-rocket"></i> More Courses
+                    </h2>
+                    <div class="courses-grid">
+                        <% let shown = 0; %>
+                        <% courses.forEach(c => { %>
+                            <% if ((!enrolledCourse || c.id !== enrolledCourse.id) && shown < 4) { %>
+                                <% shown++; %>
+                                <div class="course-mini-card">
+                                    <h4><%= c.title %></h4>
+                                    <p><%= c.description ? c.description.substring(0, 50) + (c.description.length > 50 ? '...' : '') : '' %></p>
+                                    <a href="/course/<%= c.id %>" class="btn-view">
+                                        <i class="fas fa-eye"></i> View
+                                    </a>
+                                </div>
+                            <% } %>
+                        <% }) %>
+                        <% if (shown === 0) { %>
+                            <div style="grid-column: 1 / -1; text-align:center; padding: var(--spacing-md); color: var(--text-muted); font-size: 0.95rem;">
+                                <i class="fas fa-info-circle"></i> No other courses available
+                            </div>
+                        <% } %>
+                    </div>
+                <% } %>
+
+                <!-- ===== QUICK LINKS ===== -->
+                <div class="quick-links">
+                    <a href="/settings" class="btn-quick">
+                        <i class="fas fa-cog"></i> Settings
+                    </a>
+                    <a href="/faq" class="btn-quick">
+                        <i class="fas fa-question-circle"></i> FAQ
+                    </a>
+                    <a href="/contact" class="btn-quick">
+                        <i class="fas fa-headset"></i> Help
+                    </a>
+                    <a href="/about" class="btn-quick">
+                        <i class="fas fa-info-circle"></i> About
+                    </a>
+                </div>
+
             </div>
         </div>
     </main>
 
-    <%- include('../partials/footer-mobile') %>
-    <script src="/js/script.js"></script>
+    <!-- ===== FOOTER ===== -->
+    <%- include('partials/footer') %>
+
+    <script src="/js/main.js"></script>
 </body>
 </html>

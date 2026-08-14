@@ -5,160 +5,634 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact Us – SHINEX Learning Circle</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        /* ============================================================
+           CONTACT PAGE STYLES
+           ============================================================ */
+        
+        .contact-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        /* ----- Page Header ----- */
+        .contact-header {
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .contact-header h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin: 0 0 4px 0;
+        }
+        
+        .contact-header h1 i {
+            color: var(--purple-primary);
+        }
+        
+        .contact-header p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin: 0;
+        }
+        
+        .contact-header p strong {
+            color: var(--purple-primary);
+        }
+        
+        /* ----- Contact Layout ----- */
+        .contact-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-lg);
+        }
+        
+        /* ----- Form Card ----- */
+        .contact-form-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+        }
+        
+        .contact-form-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+        
+        .contact-form-card .form-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0 0 4px 0;
+        }
+        
+        .contact-form-card .form-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin: 0 0 var(--spacing-md) 0;
+        }
+        
+        /* ----- Form ----- */
+        .form-group {
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        
+        .form-group label .required {
+            color: var(--text-error);
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: var(--bg-input);
+            color: var(--text-primary);
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--purple-primary);
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.12);
+            outline: none;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        .form-group .help-text {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+        
+        .form-group .help-text i {
+            margin-right: 4px;
+        }
+        
+        /* ----- Submit Button ----- */
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: var(--radius-full);
+            background: var(--purple-gradient);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.3);
+        }
+        
+        .btn-submit i {
+            font-size: 1rem;
+        }
+        
+        /* ----- Contact Info Card ----- */
+        .contact-info-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .contact-info-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+        
+        .contact-info-card .info-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0 0 var(--spacing-md) 0;
+        }
+        
+        .contact-info-card .info-title i {
+            color: var(--purple-primary);
+        }
+        
+        /* ----- Contact Info Items ----- */
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: var(--spacing-sm) 0;
+        }
+        
+        .contact-item .icon-box {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--purple-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .contact-item .icon-box i {
+            color: var(--purple-primary);
+            font-size: 1.1rem;
+        }
+        
+        .contact-item .icon-box.whatsapp i {
+            color: #25D366;
+        }
+        
+        .contact-item .icon-box.web i {
+            color: #00BCD4;
+        }
+        
+        .contact-item .info-text .info-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+            font-size: 0.85rem;
+        }
+        
+        .contact-item .info-text .info-value {
+            color: var(--text-secondary);
+            margin: 0;
+            font-size: 0.85rem;
+        }
+        
+        .contact-item .info-text .info-value a {
+            color: var(--purple-primary);
+            text-decoration: none;
+        }
+        
+        .contact-item .info-text .info-value a:hover {
+            text-decoration: underline;
+        }
+        
+        /* ----- Response Time Box ----- */
+        .response-box {
+            background: var(--purple-bg);
+            border-radius: var(--radius-sm);
+            padding: var(--spacing-md);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            border: 1px solid var(--border-color);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .response-box i {
+            color: var(--purple-primary);
+            font-size: 1.5rem;
+        }
+        
+        .response-box .response-text .response-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        
+        .response-box .response-text .response-value {
+            color: var(--text-secondary);
+            margin: 0;
+            font-size: 0.85rem;
+        }
+        
+        .response-box .response-text .response-value strong {
+            color: var(--purple-primary);
+        }
+        
+        /* ----- Social Card ----- */
+        .social-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            padding: var(--spacing-md);
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+        }
+        
+        .social-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+        
+        .social-card .social-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0 0 2px 0;
+        }
+        
+        .social-card .social-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin: 0 0 var(--spacing-sm) 0;
+        }
+        
+        .social-card .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            font-size: 1.5rem;
+        }
+        
+        .social-card .social-icons a {
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .social-card .social-icons a:hover {
+            transform: translateY(-3px);
+        }
+        
+        .social-card .social-icons a.facebook:hover { color: #1877F2; }
+        .social-card .social-icons a.twitter:hover { color: #1DA1F2; }
+        .social-card .social-icons a.instagram:hover { color: #E4405F; }
+        .social-card .social-icons a.whatsapp:hover { color: #25D366; }
+        .social-card .social-icons a.youtube:hover { color: #FF0000; }
+        .social-card .social-icons a.linkedin:hover { color: #0A66C2; }
+        
+        /* ----- FAQ Link ----- */
+        .faq-link {
+            text-align: center;
+            padding: var(--spacing-md);
+            border-top: 1px solid var(--border-color);
+            margin-top: var(--spacing-md);
+        }
+        
+        .faq-link p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+        
+        .faq-link p i {
+            color: var(--purple-primary);
+            margin-right: 6px;
+        }
+        
+        .faq-link p a {
+            color: var(--purple-primary);
+            font-weight: 600;
+            text-decoration: none;
+        }
+        
+        .faq-link p a:hover {
+            text-decoration: underline;
+        }
+        
+        /* ----- WhatsApp Button ----- */
+        .whatsapp-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            background: #25D366;
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-full);
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            margin-top: var(--spacing-sm);
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .whatsapp-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.3);
+        }
+        
+        .whatsapp-btn i {
+            font-size: 1.2rem;
+        }
+        
+        /* ----- Responsive ----- */
+        @media (max-width: 768px) {
+            .contact-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .contact-header h1 {
+                font-size: 1.6rem;
+            }
+            
+            .contact-form-card {
+                padding: var(--spacing-md);
+            }
+            
+            .contact-info-card {
+                padding: var(--spacing-md);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .contact-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+            }
+            
+            .contact-item .icon-box {
+                width: 36px;
+                height: 36px;
+            }
+            
+            .contact-item .icon-box i {
+                font-size: 0.9rem;
+            }
+            
+            .social-card .social-icons {
+                font-size: 1.2rem;
+                gap: 12px;
+            }
+        }
+    </style>
 </head>
 <body>
+
+    <!-- ===== HEADER ===== -->
     <%- include('partials/header', { showBack: true }) %>
 
+    <!-- ===== MAIN CONTENT ===== -->
     <main class="main-content">
-        <div class="container" style="max-width:900px;">
-            <h2 style="font-size:2rem; font-weight:800; margin:0 0 4px;">📬 Contact Us</h2>
-            <p style="color:var(--text-muted); margin-bottom:24px;">
-                Have a question, feedback, or need help? Fill out the form below and we'll get back to you within <strong>24-48 hours</strong>.
-            </p>
+        <div class="container">
+            <div class="contact-container">
 
-            <% if (messages && messages.success) { %>
-                <div class="alert alert-success"><%= messages.success %></div>
-            <% } %>
-            <% if (messages && messages.error) { %>
-                <div class="alert alert-danger"><%= messages.error %></div>
-            <% } %>
-
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
-                <!-- ===== CONTACT FORM ===== -->
-                <div class="card" style="padding:28px 24px;">
-                    <h3 style="font-size:1.2rem; font-weight:700; margin:0 0 16px;">Send a Message</h3>
-                    <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:16px;">
-                        Fill in the form below and our team will respond within 24-48 hours.
+                <!-- ===== PAGE HEADER ===== -->
+                <div class="contact-header">
+                    <h1><i class="fas fa-envelope"></i> Contact Us</h1>
+                    <p>
+                        Have a question, feedback, or need help? Fill out the form below and we'll get back to you within 
+                        <strong>24-48 hours</strong>.
                     </p>
-
-                    <form action="/contact/send" method="POST">
-                        <div class="settings-group">
-                            <label for="name">Your Full Name <span style="color:red;">*</span></label>
-                            <input type="text" id="name" name="name" placeholder="e.g. John Doe" required>
-                        </div>
-                        <div class="settings-group">
-                            <label for="email">Email Address <span style="color:red;">*</span></label>
-                            <input type="email" id="email" name="email" placeholder="you@example.com" required>
-                            <p class="help-text">We'll send our reply to this email.</p>
-                        </div>
-                        <div class="settings-group">
-                            <label for="subject">Subject <span style="color:red;">*</span></label>
-                            <select id="subject" name="subject" required>
-                                <option value="">Select a subject...</option>
-                                <option value="Course Inquiry">📚 Course Inquiry</option>
-                                <option value="Technical Support">🛠️ Technical Support</option>
-                                <option value="Account Issue">👤 Account Issue</option>
-                                <option value="Service Request">🛒 Service Request</option>
-                                <option value="Feedback/Suggestion">💡 Feedback / Suggestion</option>
-                                <option value="Partnership">🤝 Partnership</option>
-                                <option value="Other">📌 Other</option>
-                            </select>
-                        </div>
-                        <div class="settings-group">
-                            <label for="message">Message <span style="color:red;">*</span></label>
-                            <textarea id="message" name="message" rows="5" placeholder="Describe your issue or question in detail..." required></textarea>
-                            <p class="help-text">Please be as detailed as possible so we can assist you better.</p>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-block btn-lg">
-                            <i class="fas fa-paper-plane"></i> Send Message
-                        </button>
-                    </form>
                 </div>
 
-                <!-- ===== CONTACT INFO ===== -->
-                <div>
-                    <div class="card" style="padding:24px; margin-bottom:16px;">
-                        <h3 style="font-size:1.1rem; font-weight:700; margin:0 0 12px;">Contact Information</h3>
-                        <div style="display:flex; flex-direction:column; gap:12px;">
-                            <div style="display:flex; align-items:center; gap:12px;">
-                                <div style="width:40px; height:40px; border-radius:50%; background:var(--primary-bg); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
-                                    <i class="fas fa-envelope" style="color:var(--primary);"></i>
-                                </div>
-                                <div>
-                                    <p style="font-weight:600; margin:0;">Email</p>
-                                    <p style="color:var(--text-muted); margin:0; font-size:0.85rem;">support@shinex.ng</p>
+                <!-- ===== FLASH MESSAGES ===== -->
+                <% if (messages && messages.success) { %>
+                    <div class="alert alert-success flash-message" data-type="success">
+                        <i class="fas fa-check-circle"></i> <%= messages.success %>
+                    </div>
+                <% } %>
+                <% if (messages && messages.error) { %>
+                    <div class="alert alert-danger flash-message" data-type="error">
+                        <i class="fas fa-exclamation-circle"></i> <%= messages.error %>
+                    </div>
+                <% } %>
+
+                <!-- ===== CONTACT LAYOUT ===== -->
+                <div class="contact-layout">
+
+                    <!-- ===== LEFT: CONTACT FORM ===== -->
+                    <div class="contact-form-card">
+                        <h3 class="form-title"><i class="fas fa-paper-plane" style="color:var(--purple-primary);"></i> Send a Message</h3>
+                        <p class="form-subtitle">Fill in the form below and our team will respond within 24-48 hours.</p>
+
+                        <form action="/contact/send" method="POST">
+                            <!-- Name -->
+                            <div class="form-group">
+                                <label for="name">Your Full Name <span class="required">*</span></label>
+                                <input type="text" id="name" name="name" placeholder="e.g. John Doe" required>
+                            </div>
+
+                            <!-- Email -->
+                            <div class="form-group">
+                                <label for="email">Email Address <span class="required">*</span></label>
+                                <input type="email" id="email" name="email" placeholder="you@example.com" required>
+                                <div class="help-text">
+                                    <i class="fas fa-info-circle"></i> We'll send our reply to this email.
                                 </div>
                             </div>
-                            <div style="display:flex; align-items:center; gap:12px;">
-                                <div style="width:40px; height:40px; border-radius:50%; background:var(--primary-bg); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
-                                    <i class="fas fa-phone" style="color:var(--primary);"></i>
-                                </div>
-                                <div>
-                                    <p style="font-weight:600; margin:0;">Phone</p>
-                                    <p style="color:var(--text-muted); margin:0; font-size:0.85rem;">+234 800 SHINEX (744639)</p>
+
+                            <!-- Subject -->
+                            <div class="form-group">
+                                <label for="subject">Subject <span class="required">*</span></label>
+                                <select id="subject" name="subject" required>
+                                    <option value="">Select a subject...</option>
+                                    <option value="Course Inquiry">📚 Course Inquiry</option>
+                                    <option value="Technical Support">🛠️ Technical Support</option>
+                                    <option value="Account Issue">👤 Account Issue</option>
+                                    <option value="Service Request">🛒 Service Request</option>
+                                    <option value="Feedback/Suggestion">💡 Feedback / Suggestion</option>
+                                    <option value="Partnership">🤝 Partnership</option>
+                                    <option value="Other">📌 Other</option>
+                                </select>
+                            </div>
+
+                            <!-- Message -->
+                            <div class="form-group">
+                                <label for="message">Message <span class="required">*</span></label>
+                                <textarea id="message" name="message" rows="5" placeholder="Describe your issue or question in detail..." required></textarea>
+                                <div class="help-text">
+                                    <i class="fas fa-info-circle"></i> Please be as detailed as possible so we can assist you better.
                                 </div>
                             </div>
-                            <div style="display:flex; align-items:center; gap:12px;">
-                                <div style="width:40px; height:40px; border-radius:50%; background:var(--primary-bg); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
-                                    <i class="fab fa-whatsapp" style="color:#25D366; font-size:1.3rem;"></i>
-                                </div>
-                                <div>
-                                    <p style="font-weight:600; margin:0;">WhatsApp</p>
-                                    <p style="color:var(--text-muted); margin:0; font-size:0.85rem;">+234 812 345 6789</p>
-                                </div>
-                            </div>
-                            <div style="display:flex; align-items:center; gap:12px;">
-                                <div style="width:40px; height:40px; border-radius:50%; background:var(--primary-bg); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
-                                    <i class="fas fa-map-marker-alt" style="color:var(--primary);"></i>
-                                </div>
-                                <div>
-                                    <p style="font-weight:600; margin:0;">Address</p>
-                                    <p style="color:var(--text-muted); margin:0; font-size:0.85rem;">Lagos, Nigeria</p>
-                                </div>
-                            </div>
-                        </div>
+
+                            <!-- Submit -->
+                            <button type="submit" class="btn-submit">
+                                <i class="fas fa-paper-plane"></i> Send Message
+                            </button>
+                        </form>
                     </div>
 
-                    <!-- Response Time Info -->
-                    <div style="background:var(--primary-bg); padding:16px 20px; border-radius:10px; margin-bottom:16px;">
-                        <div style="display:flex; align-items:center; gap:12px;">
-                            <i class="fas fa-clock" style="color:var(--primary); font-size:1.5rem;"></i>
-                            <div>
-                                <p style="font-weight:600; margin:0;">Response Time</p>
-                                <p style="color:var(--text-muted); margin:0; font-size:0.85rem;">
+                    <!-- ===== RIGHT: CONTACT INFO ===== -->
+                    <div>
+
+                        <!-- Contact Information -->
+                        <div class="contact-info-card">
+                            <h3 class="info-title"><i class="fas fa-address-card"></i> Contact Information</h3>
+
+                            <!-- Email -->
+                            <div class="contact-item">
+                                <div class="icon-box">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <div class="info-text">
+                                    <p class="info-label">Email</p>
+                                    <p class="info-value">
+                                        <a href="mailto:shinexlearning@gmail.com">shinexlearning@gmail.com</a>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Phone -->
+                            <div class="contact-item">
+                                <div class="icon-box">
+                                    <i class="fas fa-phone"></i>
+                                </div>
+                                <div class="info-text">
+                                    <p class="info-label">Phone</p>
+                                    <p class="info-value">
+                                        <a href="tel:+2348025052852">+234 802 505 2852</a>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- WhatsApp -->
+                            <div class="contact-item">
+                                <div class="icon-box whatsapp">
+                                    <i class="fab fa-whatsapp"></i>
+                                </div>
+                                <div class="info-text">
+                                    <p class="info-label">WhatsApp</p>
+                                    <p class="info-value">
+                                        <a href="https://wa.me/2348025052852?text=Hello%20from%20SHINEX%20Learning%20Circle%20(SLC%20lmt.%C2%AE)" target="_blank">
+                                            +234 802 505 2852
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Website -->
+                            <div class="contact-item">
+                                <div class="icon-box web">
+                                    <i class="fas fa-globe"></i>
+                                </div>
+                                <div class="info-text">
+                                    <p class="info-label">Website</p>
+                                    <p class="info-value">
+                                        <a href="https://shinex-learning.onrender.com" target="_blank">
+                                            shinex-learning.onrender.com
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Address -->
+                            <div class="contact-item">
+                                <div class="icon-box">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <div class="info-text">
+                                    <p class="info-label">Address</p>
+                                    <p class="info-value">Lagos, Nigeria</p>
+                                </div>
+                            </div>
+
+                            <!-- WhatsApp Button -->
+                            <a href="https://wa.me/2348025052852?text=Hello%20from%20SHINEX%20Learning%20Circle%20(SLC%20lmt.%C2%AE)" 
+                               target="_blank" 
+                               class="whatsapp-btn">
+                                <i class="fab fa-whatsapp"></i> Chat with us on WhatsApp
+                            </a>
+                        </div>
+
+                        <!-- Response Time -->
+                        <div class="response-box">
+                            <i class="fas fa-clock"></i>
+                            <div class="response-text">
+                                <p class="response-label">Response Time</p>
+                                <p class="response-value">
                                     We respond within <strong>24-48 hours</strong>
                                 </p>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Social Media -->
-                    <div class="card" style="padding:16px 20px; text-align:center;">
-                        <h4 style="font-size:1rem; font-weight:700; margin:0 0 4px;">📱 Connect With Us</h4>
-                        <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:12px;">Follow us on social media</p>
-                        <div style="display:flex; justify-content:center; gap:16px; font-size:1.4rem;">
-                            <a href="#" style="color:var(--text-muted); transition:color 0.3s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-muted)'">
-                                <i class="fab fa-facebook-f"></i>
-                            </a>
-                            <a href="#" style="color:var(--text-muted); transition:color 0.3s;" onmouseover="this.style.color='#1DA1F2'" onmouseout="this.style.color='var(--text-muted)'">
-                                <i class="fab fa-twitter"></i>
-                            </a>
-                            <a href="#" style="color:var(--text-muted); transition:color 0.3s;" onmouseover="this.style.color='#E4405F'" onmouseout="this.style.color='var(--text-muted)'">
-                                <i class="fab fa-instagram"></i>
-                            </a>
-                            <a href="#" style="color:var(--text-muted); transition:color 0.3s;" onmouseover="this.style.color='#25D366'" onmouseout="this.style.color='var(--text-muted)'">
-                                <i class="fab fa-whatsapp"></i>
-                            </a>
-                            <a href="#" style="color:var(--text-muted); transition:color 0.3s;" onmouseover="this.style.color='#FF0000'" onmouseout="this.style.color='var(--text-muted)'">
-                                <i class="fab fa-youtube"></i>
-                            </a>
+                        <!-- Social Media -->
+                        <div class="social-card">
+                            <p class="social-title"><i class="fas fa-share-alt" style="color:var(--purple-primary);"></i> Connect With Us</p>
+                            <p class="social-subtitle">Follow us on social media</p>
+                            <div class="social-icons">
+                                <a href="#" class="facebook" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                                <a href="#" class="twitter" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                                <a href="#" class="instagram" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                                <a href="#" class="whatsapp" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                                <a href="#" class="youtube" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                                <a href="#" class="linkedin" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                            </div>
                         </div>
+
                     </div>
                 </div>
-            </div>
 
-            <!-- FAQ Link -->
-            <div style="text-align:center; margin-top:24px; padding:16px; border-top:1px solid #ede8f5;">
-                <p style="color:var(--text-muted); font-size:0.9rem;">
-                    <i class="fas fa-question-circle" style="color:var(--primary);"></i>
-                    Check our <a href="/faq" style="color:var(--primary); font-weight:600;">FAQ</a> for quick answers to common questions.
-                </p>
+                <!-- ===== FAQ LINK ===== -->
+                <div class="faq-link">
+                    <p>
+                        <i class="fas fa-question-circle"></i>
+                        Check our <a href="/faq">FAQ</a> for quick answers to common questions.
+                    </p>
+                </div>
+
             </div>
         </div>
     </main>
 
+    <!-- ===== FOOTER ===== -->
     <%- include('partials/footer') %>
+
     <script src="/js/main.js"></script>
 </body>
 </html>

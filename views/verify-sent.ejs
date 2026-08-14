@@ -3,152 +3,532 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verify Your Email – SHINEX</title>
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title><%= title %> | SHINEX Learning Circle</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* ============================================================
+           VERIFICATION SENT STYLES
+           ============================================================ */
+        
+        .verify-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: var(--spacing-lg) var(--spacing-sm);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 70vh;
+        }
+        
+        /* ----- Verify Card ----- */
+        .verify-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-xl) var(--spacing-lg);
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        
+        .verify-card:hover {
+            box-shadow: var(--shadow-xl);
+        }
+        
+        /* ----- Verify Icon ----- */
+        .verify-card .verify-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--purple-gradient);
+            color: #fff;
+            font-size: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--spacing-md);
+            animation: floatIcon 2s ease-in-out infinite;
+            box-shadow: 0 8px 30px rgba(139, 92, 246, 0.3);
+        }
+        
+        @keyframes floatIcon {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        
+        /* ----- Title ----- */
+        .verify-card .verify-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        
+        .verify-card .verify-subtitle {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        /* ----- Email Display ----- */
+        .verify-card .email-display {
+            background: var(--purple-bg);
+            border-radius: var(--radius-sm);
+            padding: var(--spacing-sm) var(--spacing-md);
+            margin: 0 0 var(--spacing-md) 0;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            word-break: break-all;
+            border: 1px solid var(--border-color);
+        }
+        
+        .verify-card .email-display i {
+            color: var(--purple-primary);
+            margin-right: 8px;
+        }
+        
+        /* ----- User Info Box ----- */
+        .verify-card .user-info-box {
+            background: var(--bg-card-secondary);
+            border-radius: var(--radius-sm);
+            padding: var(--spacing-md);
+            margin: 0 0 var(--spacing-md) 0;
+            text-align: left;
+            border-left: 4px solid var(--purple-primary);
+        }
+        
+        .verify-card .user-info-box .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            font-size: 0.9rem;
+        }
+        
+        .verify-card .user-info-box .info-label {
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        
+        .verify-card .user-info-box .info-label i {
+            margin-right: 6px;
+            color: var(--purple-primary);
+        }
+        
+        .verify-card .user-info-box .info-value {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        
+        .verify-card .user-info-box .info-value.student-id {
+            color: var(--purple-primary);
+        }
+        
+        /* ----- Resend Section ----- */
+        .verify-card .resend-section {
+            margin: var(--spacing-md) 0;
+        }
+        
+        .verify-card .resend-section .resend-timer {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .verify-card .resend-section .resend-timer strong {
+            color: var(--purple-primary);
+            font-size: 1.1rem;
+        }
+        
+        .verify-card .resend-section .btn-resend {
+            width: 100%;
+            padding: 12px;
+            border-radius: var(--radius-full);
+            font-size: 1rem;
+            font-weight: 600;
+            background: var(--purple-gradient);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .verify-card .resend-section .btn-resend:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.3);
+        }
+        
+        .verify-card .resend-section .btn-resend:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .verify-card .resend-section .btn-resend.loading {
+            background: var(--purple-dark);
+            cursor: wait;
+        }
+        
+        .verify-card .resend-section .btn-resend .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 0.8s linear infinite;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* ----- Edit Email Button ----- */
+        .verify-card .btn-edit-email {
+            width: 100%;
+            padding: 12px;
+            border-radius: var(--radius-full);
+            font-size: 1rem;
+            font-weight: 600;
+            background: transparent;
+            color: var(--purple-primary);
+            border: 2px solid var(--purple-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            margin-top: var(--spacing-sm);
+        }
+        
+        .verify-card .btn-edit-email:hover {
+            background: var(--purple-primary);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+        
+        .verify-card .btn-edit-email i {
+            margin-right: 6px;
+        }
+        
+        /* ----- Back Button ----- */
+        .verify-card .btn-back {
+            background: transparent;
+            color: var(--text-muted);
+            border: none;
+            padding: var(--spacing-sm);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: var(--spacing-sm);
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .verify-card .btn-back:hover {
+            color: var(--text-primary);
+        }
+        
+        .verify-card .btn-back i {
+            margin-right: 6px;
+        }
+        
+        /* ----- Warning Text ----- */
+        .verify-card .warning-text {
+            font-size: 0.8rem;
+            color: var(--text-warning);
+            margin-top: var(--spacing-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        
+        .verify-card .warning-text i {
+            font-size: 0.9rem;
+        }
+        
+        /* ----- Toast ----- */
+        .toast-message {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 24px;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 0.9rem;
+            z-index: 99999;
+            max-width: 90%;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+            animation: slideDown 0.4s ease;
+        }
+        
+        @keyframes slideDown {
+            0% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+        
+        .toast-success {
+            background: var(--text-success);
+            color: #fff;
+        }
+        
+        .toast-error {
+            background: var(--text-error);
+            color: #fff;
+        }
+        
+        .toast-info {
+            background: #3498db;
+            color: #fff;
+        }
+        
+        /* ----- Responsive ----- */
+        @media (max-width: 768px) {
+            .verify-card {
+                padding: var(--spacing-lg) var(--spacing-md);
+            }
+            
+            .verify-card .verify-title {
+                font-size: 1.2rem;
+            }
+            
+            .verify-card .verify-icon {
+                width: 64px;
+                height: 64px;
+                font-size: 28px;
+            }
+            
+            .verify-card .user-info-box .info-row {
+                font-size: 0.82rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .verify-card {
+                padding: var(--spacing-md);
+            }
+            
+            .verify-card .user-info-box .info-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 2px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div id="page-loader">
-        <div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div>
-        <div class="loader-text">SHINEX</div>
-        <div class="loader-sub">LEARNING CIRCLE</div>
-    </div>
 
+    <!-- ============================================================
+    HEADER
+    ============================================================ -->
     <%- include(getHeader()) %>
 
-    <main class="main-content">
-        <div class="container" style="max-width:550px;">
-            <div class="card" style="text-align:center; padding:40px 30px;">
-                <div style="font-size:4rem; color:#8B5CF6; margin-bottom:16px;">
-                    <i class="fas fa-envelope"></i>
-                </div>
-                <h1 style="font-size:1.6rem; font-weight:800; color:var(--text-dark); margin:0 0 8px 0;">
-                    Verify Your Email
-                </h1>
-                <p style="color:var(--text-muted); font-size:1rem; margin:0 0 4px 0;">
-                    We've sent a verification link to your email address.
-                </p>
-                <p style="color:var(--text-muted); font-size:0.9rem; margin:0 0 16px 0;">
-                    Please check your inbox and click the link to activate your account.
-                </p>
+    <!-- ============================================================
+    MAIN CONTENT
+    ============================================================ -->
+    <main class="main-content" style="padding:0; min-height:auto;">
+        <div class="container">
+            <div class="verify-container">
 
-                <div style="background:var(--primary-bg); border-radius:10px; padding:12px 16px; margin-bottom:16px;">
-                    <p style="font-size:0.8rem; color:var(--text-muted); margin:0;">
-                        <i class="fas fa-envelope" style="color:#8B5CF6;"></i> Verification email sent to:
-                    </p>
-                    <p style="font-size:1.1rem; font-weight:600; color:var(--text-dark); margin:0;">
-                        <%= user ? user.email : '' %>
-                    </p>
-                    <p style="font-size:0.8rem; color:var(--text-muted); margin:2px 0 0;">
-                        Student ID: <strong style="color:#8B5CF6;"><%= user ? user.studentId : '' %></strong>
-                    </p>
-                </div>
+                <!-- ===== VERIFY CARD ===== -->
+                <div class="verify-card">
 
-                <!-- Messages -->
-                <div id="verifyMessages"></div>
+                    <!-- Icon -->
+                    <div class="verify-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
 
-                <!-- Resend Button -->
-                <div style="display:flex; flex-direction:column; gap:10px; margin-top:10px;">
-                    <button id="resendBtn" class="btn btn-primary" onclick="resendVerification()">
-                        <i class="fas fa-paper-plane"></i> Resend Verification Email
-                    </button>
-                    <span id="cooldownTimer" style="font-size:0.8rem; color:var(--text-muted); display:none;">
-                        Resend available in <span id="countdown">60</span> seconds
-                    </span>
-                </div>
+                    <!-- Title -->
+                    <h1 class="verify-title">📧 Verify Your Email</h1>
+                    <p class="verify-subtitle">We've sent a verification link to your email</p>
 
-                <div style="margin-top:16px; padding-top:16px; border-top:1px solid #ede8f5;">
-                    <p style="font-size:0.85rem; color:var(--text-muted); margin:0 0 4px 0;">
-                        <i class="fas fa-info-circle" style="color:#8B5CF6;"></i> Didn't receive the email?
-                    </p>
-                    <p style="font-size:0.8rem; color:var(--text-muted); margin:0;">
-                        Check your spam folder or <a href="#" onclick="resendVerification(); return false;" style="color:#8B5CF6; font-weight:600;">click here</a> to resend.
-                    </p>
-                </div>
+                    <!-- Email Display -->
+                    <div class="email-display">
+                        <i class="fas fa-envelope"></i>
+                        <%= user && user.email ? user.email : 'Loading...' %>
+                    </div>
 
-                <div style="margin-top:16px; padding-top:16px; border-top:1px solid #ede8f5;">
-                    <a href="/login" class="btn btn-secondary" style="width:100%; text-align:center;">
+                    <!-- User Info -->
+                    <div class="user-info-box">
+                        <div class="info-row">
+                            <span class="info-label"><i class="fas fa-user"></i> Name</span>
+                            <span class="info-value"><%= user && user.firstName ? user.firstName + ' ' + (user.lastName || '') : 'Loading...' %></span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label"><i class="fas fa-id-card"></i> Student ID</span>
+                            <span class="info-value student-id">
+                                <%= user && user.studentId ? user.studentId : 'Not assigned yet' %>
+                            </span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label"><i class="fas fa-graduation-cap"></i> Course</span>
+                            <span class="info-value"><%= user && user.courseName ? user.courseName : 'Not assigned' %></span>
+                        </div>
+                    </div>
+
+                    <!-- Resend Section -->
+                    <div class="resend-section">
+                        <div class="resend-timer">
+                            <i class="fas fa-clock"></i> 
+                            Resend available in <strong id="timerDisplay">30</strong> seconds
+                        </div>
+
+                        <button id="resendBtn" class="btn-resend" disabled>
+                            <i class="fas fa-paper-plane"></i> Send Verification Link
+                        </button>
+                    </div>
+
+                    <!-- Edit Email -->
+                    <a href="/register" class="btn-edit-email">
+                        <i class="fas fa-edit"></i> Edit Email Address
+                    </a>
+
+                    <!-- Back to Login -->
+                    <a href="/login" class="btn-back">
                         <i class="fas fa-arrow-left"></i> Back to Login
                     </a>
+
+                    <!-- Warning -->
+                    <div class="warning-text">
+                        <i class="fas fa-exclamation-circle"></i>
+                        Check your spam folder if you don't see the email
+                    </div>
+
                 </div>
+
             </div>
         </div>
     </main>
 
+    <!-- ============================================================
+    FOOTER
+    ============================================================ -->
     <%- include(getFooter()) %>
 
+    <!-- ============================================================
+    SCRIPTS
+    ============================================================ -->
     <script>
-        let cooldown = 60;
-        let timerInterval = null;
-        let isCooldown = false;
-
-        function resendVerification() {
-            if (isCooldown) {
-                alert('Please wait ' + cooldown + ' seconds before resending.');
-                return;
-            }
-
-            const email = '<%= user ? user.email : "" %>';
-            
-            fetch('/resend-verification', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ email: email })
-            })
-            .then(res => res.json())
-            .then(data => {
-                const messagesDiv = document.getElementById('verifyMessages');
-                if (data.success) {
-                    messagesDiv.innerHTML = `
-                        <div class="alert alert-success" style="margin-bottom:12px;">
-                            <i class="fas fa-check-circle"></i> ${data.message}
-                        </div>
-                    `;
-                    startCooldown();
-                } else {
-                    messagesDiv.innerHTML = `
-                        <div class="alert alert-danger" style="margin-bottom:12px;">
-                            <i class="fas fa-exclamation-circle"></i> ${data.error}
-                        </div>
-                    `;
-                }
-            })
-            .catch(err => {
-                document.getElementById('verifyMessages').innerHTML = `
-                    <div class="alert alert-danger" style="margin-bottom:12px;">
-                        <i class="fas fa-exclamation-circle"></i> Something went wrong. Please try again.
-                    </div>
-                `;
-            });
-        }
-
-        function startCooldown() {
-            isCooldown = true;
-            cooldown = 60;
-            const timerDisplay = document.getElementById('countdown');
-            const cooldownDisplay = document.getElementById('cooldownTimer');
-            const resendBtn = document.getElementById('resendBtn');
-            
+        // ============================================================
+        // RESEND VERIFICATION
+        // ============================================================
+        
+        let timer = 30;
+        let timerInterval;
+        let isResending = false;
+        
+        const resendBtn = document.getElementById('resendBtn');
+        const timerDisplay = document.getElementById('timerDisplay');
+        
+        function startTimer() {
+            timer = 30;
             resendBtn.disabled = true;
-            resendBtn.style.opacity = '0.5';
-            cooldownDisplay.style.display = 'block';
+            timerDisplay.textContent = timer;
             
+            clearInterval(timerInterval);
             timerInterval = setInterval(() => {
-                cooldown--;
-                timerDisplay.textContent = cooldown;
+                timer--;
+                timerDisplay.textContent = timer;
                 
-                if (cooldown <= 0) {
+                if (timer <= 0) {
                     clearInterval(timerInterval);
-                    cooldownDisplay.style.display = 'none';
                     resendBtn.disabled = false;
-                    resendBtn.style.opacity = '1';
-                    isCooldown = false;
+                    timerDisplay.textContent = 'Now';
                 }
             }, 1000);
         }
+        
+        function showToast(message, type) {
+            const existing = document.querySelector('.toast-message');
+            if (existing) existing.remove();
+            
+            const toast = document.createElement('div');
+            toast.className = 'toast-message toast-' + type;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(-50%) translateY(-20px)';
+                toast.style.transition = 'all 0.4s ease';
+                setTimeout(() => toast.remove(), 400);
+            }, 4000);
+        }
+        
+        resendBtn.addEventListener('click', async function() {
+            if (this.disabled || isResending) return;
+            
+            const email = '<%= user && user.email ? user.email : "" %>';
+            if (!email) {
+                showToast('❌ Email not found. Please try again.', 'error');
+                return;
+            }
+            
+            isResending = true;
+            this.disabled = true;
+            this.innerHTML = '<span class="spinner"></span> Sending...';
+            this.classList.add('loading');
+            
+            try {
+                const response = await fetch('/resend-verification', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showToast('✅ Verification email resent! Check your inbox.', 'success');
+                    startTimer();
+                } else {
+                    showToast('❌ ' + (data.error || 'Failed to resend. Please try again.'), 'error');
+                }
+            } catch (error) {
+                showToast('❌ Network error. Please check your connection.', 'error');
+            } finally {
+                isResending = false;
+                this.classList.remove('loading');
+                if (timer > 0) {
+                    this.innerHTML = '<i class="fas fa-paper-plane"></i> Send Verification Link';
+                }
+            }
+        });
+        
+        // ============================================================
+        // DARK MODE INIT
+        // ============================================================
+        
+        if (localStorage.getItem('shinex-theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
+        
+        // ============================================================
+        // START TIMER
+        // ============================================================
+        
+        startTimer();
+        
+        // ============================================================
+        // CONSOLE WELCOME
+        // ============================================================
+        
+        console.log('📧 SHINEX Verification Sent');
+        console.log('📨 Check your email for verification link');
+        console.log('⏰ Link expires in 24 hours');
     </script>
-    <script src="/js/script.js"></script>
+
+    <script src="/js/main.js"></script>
 </body>
 </html>

@@ -2,33 +2,38 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Courses – SHINEX Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title><%= title %> | SHINEX Admin</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/style.css">
     <style>
+        /* ============================================================
+           ADMIN COURSES PAGE STYLES
+           ============================================================ */
+        
+        /* ----- Admin Layout ----- */
         .admin-layout {
             display: flex;
-            gap: 24px;
+            gap: var(--spacing-lg);
             max-width: 1400px;
             margin: 0 auto;
         }
+        
+        /* ----- Admin Sidebar ----- */
         .admin-sidebar {
-            width: 240px;
-            min-width: 200px;
-            background: var(--bg-light);
-            border-radius: var(--radius);
-            border: 1px solid #ede8f5;
+            width: 260px;
+            min-width: 220px;
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
             padding: 12px 0;
             height: fit-content;
             position: sticky;
             top: 80px;
+            box-shadow: var(--shadow-sm);
             transition: all 0.3s ease;
         }
-        body.dark-mode .admin-sidebar {
-            background: var(--dark-card);
-            border-color: var(--dark-border);
-        }
+        
         .admin-sidebar .sidebar-title {
             padding: 8px 18px 12px;
             font-weight: 700;
@@ -36,102 +41,197 @@
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 1px;
-            border-bottom: 1px solid #ede8f5;
+            border-bottom: 1px solid var(--border-color);
         }
-        body.dark-mode .admin-sidebar .sidebar-title {
-            border-color: var(--dark-border);
-        }
+        
         .admin-nav {
             list-style: none;
             padding: 4px 0;
             margin: 0;
         }
+        
         .admin-nav li {
             margin: 0;
         }
+        
         .admin-nav a {
             display: flex;
             align-items: center;
             gap: 10px;
             padding: 8px 18px;
-            color: var(--text-muted);
+            color: var(--text-secondary);
             text-decoration: none;
             font-size: 0.85rem;
             font-weight: 500;
             transition: all 0.2s ease;
             border-left: 3px solid transparent;
         }
+        
         .admin-nav a:hover {
-            background: var(--primary-bg);
-            color: var(--primary);
+            background: var(--purple-bg);
+            color: var(--purple-primary);
         }
+        
         .admin-nav a.active {
-            background: var(--primary-bg);
-            color: var(--primary);
-            border-left-color: var(--primary);
+            background: var(--purple-bg);
+            color: var(--purple-primary);
+            border-left-color: var(--purple-primary);
         }
-        body.dark-mode .admin-nav a:hover {
-            background: #2a1a4a;
+        
+        .admin-nav a i {
+            width: 20px;
+            text-align: center;
         }
-        body.dark-mode .admin-nav a.active {
-            background: #2a1a4a;
+        
+        .admin-nav a.logout-link {
+            color: var(--text-error);
         }
+        
+        .admin-nav a.logout-link:hover {
+            background: var(--bg-alert-error);
+            color: var(--text-error);
+        }
+        
+        /* ----- Admin Content ----- */
         .admin-content {
             flex: 1;
             min-width: 0;
         }
+        
+        /* ----- Admin Cards ----- */
         .admin-card {
-            background: var(--bg-light);
-            border-radius: var(--radius);
-            border: 1px solid #ede8f5;
-            padding: 20px 24px;
-            margin-bottom: 16px;
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-md);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
         }
-        body.dark-mode .admin-card {
-            background: var(--dark-card);
-            border-color: var(--dark-border);
+        
+        .admin-card:hover {
+            box-shadow: var(--shadow-md);
         }
-        .admin-card h4 {
-            font-size: 1rem;
+        
+        /* ----- Page Header ----- */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .page-header .page-title {
+            font-size: 1.5rem;
             font-weight: 700;
-            margin: 0 0 8px;
+            color: var(--text-primary);
+            margin: 0;
         }
+        
+        .page-header .page-subtitle {
+            color: var(--text-muted);
+            margin: 2px 0 0 0;
+            font-size: 0.9rem;
+        }
+        
+        .page-header .header-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        /* ----- Table ----- */
+        .table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
         .admin-table {
             width: 100%;
             border-collapse: collapse;
             font-size: 0.85rem;
         }
+        
         .admin-table th {
             text-align: left;
-            padding: 8px 12px;
-            border-bottom: 2px solid #ede8f5;
+            padding: 10px 14px;
+            border-bottom: 2px solid var(--border-color);
             font-weight: 600;
             color: var(--text-muted);
             font-size: 0.7rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            white-space: nowrap;
         }
-        body.dark-mode .admin-table th {
-            border-color: var(--dark-border);
-        }
+        
         .admin-table td {
-            padding: 8px 12px;
-            border-bottom: 1px solid #ede8f5;
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border-color);
             vertical-align: middle;
         }
-        body.dark-mode .admin-table td {
-            border-color: var(--dark-border);
+        
+        .admin-table tr {
+            transition: background 0.2s ease;
         }
+        
         .admin-table tr:hover {
-            background: var(--primary-bg);
+            background: var(--purple-bg);
         }
-        body.dark-mode .admin-table tr:hover {
-            background: #1a1a1a;
+        
+        .admin-table .course-title {
+            font-weight: 600;
+            color: var(--text-primary);
         }
-        .admin-table .badge {
-            font-size: 0.65rem;
-            padding: 2px 10px;
+        
+        .admin-table .course-title i {
+            color: var(--purple-primary);
+            margin-right: 6px;
         }
+        
+        .admin-table .course-meta {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        
+        .admin-table .actions-cell {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+        
+        .admin-table .actions-cell .btn {
+            padding: 4px 10px;
+            font-size: 0.7rem;
+            min-height: 30px;
+        }
+        
+        /* ----- Empty State ----- */
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-xl) var(--spacing-lg);
+            color: var(--text-muted);
+        }
+        
+        .empty-state i {
+            font-size: 64px;
+            color: var(--text-light);
+            margin-bottom: var(--spacing-md);
+            display: block;
+            opacity: 0.5;
+        }
+        
+        .empty-state h4 {
+            color: var(--text-primary);
+            margin: 0 0 4px 0;
+        }
+        
+        .empty-state p {
+            margin: 0;
+        }
+        
+        /* ----- Modal ----- */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -139,81 +239,268 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 999;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
             align-items: center;
             justify-content: center;
+            backdrop-filter: blur(4px);
         }
+        
         .modal-overlay.open {
             display: flex;
         }
+        
         .modal-box {
-            background: var(--bg-light);
-            border-radius: var(--radius);
-            padding: 32px 28px;
-            max-width: 500px;
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+            max-width: 550px;
             width: 90%;
             max-height: 90vh;
             overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border-color);
+            animation: modalSlideIn 0.3s ease;
         }
-        body.dark-mode .modal-box {
-            background: var(--dark-card);
+        
+        @keyframes modalSlideIn {
+            0% { opacity: 0; transform: translateY(30px) scale(0.95); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
         }
-        .modal-box h3 {
+        
+        .modal-box .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-md);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: var(--spacing-sm);
+        }
+        
+        .modal-box .modal-header h3 {
             font-size: 1.2rem;
             font-weight: 700;
-            margin: 0 0 16px;
+            color: var(--text-primary);
+            margin: 0;
         }
+        
         .modal-close {
-            float: right;
             background: none;
             border: none;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             cursor: pointer;
             color: var(--text-muted);
+            transition: all 0.3s ease;
+            line-height: 1;
+            padding: 0 4px;
         }
+        
         .modal-close:hover {
-            color: var(--text-dark);
+            color: var(--text-error);
+            transform: rotate(90deg);
         }
-        body.dark-mode .modal-close:hover {
-            color: var(--text-light);
+        
+        .modal-box .form-group {
+            margin-bottom: var(--spacing-md);
         }
-        @media (max-width: 768px) {
+        
+        .modal-box .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--text-primary);
+        }
+        
+        .modal-box .form-group label .required {
+            color: var(--text-error);
+        }
+        
+        .modal-box .form-group input,
+        .modal-box .form-group textarea,
+        .modal-box .form-group select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: var(--bg-input);
+            color: var(--text-primary);
+        }
+        
+        .modal-box .form-group input:focus,
+        .modal-box .form-group textarea:focus,
+        .modal-box .form-group select:focus {
+            border-color: var(--purple-primary);
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.12);
+            outline: none;
+        }
+        
+        .modal-box .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .modal-box .form-group .help-text {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+        
+        .modal-box .form-group .help-text i {
+            margin-right: 4px;
+        }
+        
+        .modal-box .modal-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: var(--spacing-md);
+        }
+        
+        .modal-box .modal-actions .btn {
+            flex: 1;
+        }
+        
+        /* ----- Responsive ----- */
+        @media (max-width: 1024px) {
             .admin-layout {
                 flex-direction: column;
             }
+            
             .admin-sidebar {
                 width: 100%;
                 min-width: unset;
                 position: relative;
                 top: 0;
+                max-height: 0;
+                overflow: hidden;
+                padding: 0;
+                transition: max-height 0.3s ease, padding 0.3s ease;
+                box-shadow: none;
             }
+            
+            .admin-sidebar.open {
+                max-height: 600px;
+                padding: 12px 0;
+                overflow-y: auto;
+            }
+            
+            .admin-sidebar-toggle {
+                display: flex !important;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .admin-card {
+                padding: var(--spacing-md);
+            }
+            
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .page-header .header-actions {
+                width: 100%;
+            }
+            
+            .page-header .header-actions .btn {
+                flex: 1;
+                justify-content: center;
+                font-size: 0.8rem;
+                padding: 8px 12px;
+            }
+            
             .admin-table {
                 font-size: 0.75rem;
             }
+            
             .admin-table th,
             .admin-table td {
                 padding: 6px 8px;
+            }
+            
+            .admin-table .actions-cell {
+                flex-direction: column;
+                gap: 4px;
+            }
+            
+            .admin-table .actions-cell .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .modal-box {
+                padding: var(--spacing-md);
+            }
+            
+            .modal-box .modal-actions {
+                flex-direction: column;
+            }
+            
+            .modal-box .modal-actions .btn {
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .admin-table th:nth-child(3),
+            .admin-table td:nth-child(3) {
+                display: none;
             }
         }
     </style>
 </head>
 <body>
-    <%- include('partials/header', { showBack: true }) %>
 
+    <!-- ===== ADMIN HEADER (Built-in) ===== -->
+    <header style="background:linear-gradient(135deg, #8B5CF6, #6a3dcf); padding:12px 24px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:1000; box-shadow:0 2px 15px rgba(139,92,246,0.3);">
+        <div style="display:flex; align-items:center; gap:12px;">
+            <!-- Back Button -->
+            <a href="/admin/dashboard" style="color:rgba(255,255,255,0.8); text-decoration:none; padding:4px 10px; border-radius:8px; transition:all 0.3s ease; font-size:14px;">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div style="width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.2); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:11px;">SLC</div>
+            <div>
+                <div style="font-weight:700; font-size:16px; color:#fff;">SHINEX <span style="opacity:0.7; font-weight:400;">Admin</span></div>
+                <div style="font-size:7px; color:rgba(255,255,255,0.6); letter-spacing:2px;">LEARNING CIRCLE</div>
+            </div>
+        </div>
+        <div style="display:flex; gap:12px; align-items:center;">
+            <span style="color:rgba(255,255,255,0.9); font-size:13px;">
+                <i class="fas fa-user"></i> <%= admin && admin.firstName ? admin.firstName : 'Admin' %>
+            </span>
+            <button onclick="document.body.classList.toggle('dark-mode'); localStorage.setItem('shinex-theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');" style="background:rgba(255,255,255,0.15); border:none; color:#fff; padding:6px 12px; border-radius:20px; font-size:14px; cursor:pointer;">
+                <i class="fas fa-moon"></i>
+            </button>
+            <a href="/admin/logout" style="color:#fff; text-decoration:none; background:rgba(255,255,255,0.15); padding:6px 14px; border-radius:20px; font-size:13px; transition:all 0.3s ease;">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </header>
+
+    <!-- ===== MAIN CONTENT ===== -->
     <main class="main-content">
         <div class="container">
+
+            <!-- Flash Messages -->
             <% if (messages && messages.success) { %>
-                <div class="alert alert-success"><%= messages.success %></div>
+                <div class="alert alert-success flash-message" data-type="success">
+                    <i class="fas fa-check-circle"></i> <%= messages.success %>
+                </div>
             <% } %>
             <% if (messages && messages.error) { %>
-                <div class="alert alert-danger"><%= messages.error %></div>
+                <div class="alert alert-danger flash-message" data-type="error">
+                    <i class="fas fa-exclamation-circle"></i> <%= messages.error %>
+                </div>
             <% } %>
 
+            <!-- ===== ADMIN LAYOUT ===== -->
             <div class="admin-layout">
-                <!-- ===== Admin Sidebar ===== -->
-                <aside class="admin-sidebar">
+
+                <!-- ===== SIDEBAR ===== -->
+                <aside class="admin-sidebar" id="adminSidebar">
                     <div class="sidebar-title"><i class="fas fa-crown"></i> Admin Panel</div>
                     <ul class="admin-nav">
                         <li><a href="/admin/dashboard"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
@@ -222,70 +509,141 @@
                         <li><a href="/admin/services"><i class="fas fa-concierge-bell"></i> Services</a></li>
                         <li><a href="/admin/messages"><i class="fas fa-envelope"></i> Messages</a></li>
                         <li><a href="/admin/manage-admins"><i class="fas fa-user-shield"></i> Admins</a></li>
-                        <li><a href="/admin/logout" style="color:#e74c3c;"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                        <li><a href="/admin/logout" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                     </ul>
                 </aside>
 
-                <!-- ===== Admin Content ===== -->
+                <!-- ===== CONTENT ===== -->
                 <div class="admin-content">
-                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:16px;">
+
+                    <!-- Page Header -->
+                    <div class="page-header">
                         <div>
-                            <h2 style="font-size:1.5rem; font-weight:700; margin:0 0 2px;">📚 Manage Courses</h2>
-                            <p style="color:var(--text-muted); margin:0;">Add, edit, or delete courses.</p>
+                            <h1 class="page-title">
+                                <i class="fas fa-book" style="color:var(--purple-primary);"></i> 
+                                Manage Courses
+                            </h1>
+                            <p class="page-subtitle">
+                                <i class="fas fa-info-circle"></i> 
+                                <%= courses ? courses.length : 0 %> courses available
+                            </p>
                         </div>
-                        <div>
-                            <button class="btn btn-primary" onclick="openAddCourse()">
+                        <div class="header-actions">
+                            <button class="btn btn-primary" onclick="openModal('addCourseModal')">
                                 <i class="fas fa-plus"></i> Add Course
                             </button>
-                            <button class="btn btn-danger btn-sm" onclick="deleteAllCourses()" style="margin-left:8px;">
+                            <button class="btn btn-danger btn-sm" onclick="deleteAllCourses()">
                                 <i class="fas fa-trash-alt"></i> Delete All
+                            </button>
+                            <button class="btn btn-secondary btn-sm admin-sidebar-toggle" onclick="toggleSidebar()" style="display:none;">
+                                <i class="fas fa-bars"></i> Menu
                             </button>
                         </div>
                     </div>
 
                     <!-- Courses Table -->
-                    <div class="admin-card" style="overflow-x:auto;">
-                        <table class="admin-table">
-                            <thead>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Level</th>
-                                    <th>Duration</th>
-                                    <th>Students</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% if (courses && courses.length > 0) { %>
-                                    <% courses.forEach(c => { %>
+                    <div class="admin-card">
+                        <div class="table-wrapper">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th><i class="fas fa-book-open"></i> Title</th>
+                                        <th><i class="fas fa-signal"></i> Level</th>
+                                        <th><i class="fas fa-clock"></i> Duration</th>
+                                        <th><i class="fas fa-users"></i> Students</th>
+                                        <th><i class="fas fa-cog"></i> Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if (courses && courses.length > 0) { %>
+                                        <% courses.forEach(c => { %>
+                                            <tr>
+                                                <td>
+                                                    <div class="course-title">
+                                                        <i class="fas fa-graduation-cap"></i>
+                                                        <%= c.title %>
+                                                    </div>
+                                                    <% if (c.description) { %>
+                                                        <div class="course-meta">
+                                                            <%= c.description.substring(0, 50) + (c.description.length > 50 ? '...' : '') %>
+                                                        </div>
+                                                    <% } %>
+                                                </td>
+                                                <td>
+                                                    <span class="badge badge-purple">
+                                                        <i class="fas fa-signal"></i> <%= c.level || 'Beginner' %>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="badge badge-dark">
+                                                        <i class="fas fa-clock"></i> <%= c.duration || 'Self-paced' %>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span style="font-weight:600; color:var(--purple-primary);">
+                                                        <%= c.studentCount || 0 %>
+                                                    </span>
+                                                    <span style="color:var(--text-muted); font-size:0.7rem;">
+                                                        enrolled
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <div class="actions-cell">
+                                                        <a href="/admin/courses/edit/<%= c.id %>" class="btn btn-primary btn-sm">
+                                                            <i class="fas fa-edit"></i> Edit
+                                                        </a>
+                                                        <form action="/admin/courses/delete/<%= c.id %>" method="POST" style="display:inline;" onsubmit="return confirm('⚠️ Delete this course? This cannot be undone.');">
+                                                            <button type="submit" class="btn btn-danger btn-sm">
+                                                                <i class="fas fa-trash-alt"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        <% }) %>
+                                    <% } else { %>
                                         <tr>
-                                            <td><strong><%= c.title %></strong></td>
-                                            <td><span class="badge badge-purple"><%= c.level || 'Beginner' %></span></td>
-                                            <td><%= c.duration || 'Self-paced' %></td>
-                                            <td><%= c.studentCount || 0 %></td>
-                                            <td>
-                                                <a href="/admin/courses/edit/<%= c.id %>" class="btn btn-primary btn-sm" style="padding:3px 10px; font-size:0.7rem;">
-                                                    <i class="fas fa-edit"></i> Edit
-                                                </a>
-                                                <form action="/admin/courses/delete/<%= c.id %>" method="POST" style="display:inline;" onsubmit="return confirm('Delete this course? This cannot be undone.');">
-                                                    <button type="submit" class="btn btn-danger btn-sm" style="padding:3px 10px; font-size:0.7rem;">
-                                                        <i class="fas fa-trash-alt"></i>
+                                            <td colspan="5">
+                                                <div class="empty-state">
+                                                    <i class="fas fa-book"></i>
+                                                    <h4>No Courses Yet</h4>
+                                                    <p>Click "Add Course" to create your first course.</p>
+                                                    <button class="btn btn-primary" onclick="openModal('addCourseModal')" style="margin-top:12px;">
+                                                        <i class="fas fa-plus"></i> Add Course
                                                     </button>
-                                                </form>
+                                                </div>
                                             </td>
                                         </tr>
-                                    <% }) %>
-                                <% } else { %>
-                                    <tr>
-                                        <td colspan="5" style="text-align:center; padding:30px; color:var(--text-muted);">
-                                            <i class="fas fa-book" style="font-size:2rem; display:block; margin-bottom:8px; opacity:0.3;"></i>
-                                            No courses created yet.
-                                        </td>
-                                    </tr>
-                                <% } %>
-                            </tbody>
-                        </table>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
+
+                    <!-- ===== COURSE STATS ===== -->
+                    <% if (courses && courses.length > 0) { %>
+                        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap:12px; margin-top:var(--spacing-md);">
+                            <div class="admin-card" style="text-align:center; padding:12px;">
+                                <div style="font-size:28px; font-weight:800; color:var(--purple-primary);">
+                                    <%= courses.length %>
+                                </div>
+                                <div style="font-size:12px; color:var(--text-muted);">Total Courses</div>
+                            </div>
+                            <div class="admin-card" style="text-align:center; padding:12px;">
+                                <div style="font-size:28px; font-weight:800; color:var(--text-success);">
+                                    <%= courses.filter(c => c.studentCount && c.studentCount > 0).length %>
+                                </div>
+                                <div style="font-size:12px; color:var(--text-muted);">Active Courses</div>
+                            </div>
+                            <div class="admin-card" style="text-align:center; padding:12px;">
+                                <div style="font-size:28px; font-weight:800; color:var(--text-warning);">
+                                    <%= courses.reduce((acc, c) => acc + (c.studentCount || 0), 0) %>
+                                </div>
+                                <div style="font-size:12px; color:var(--text-muted);">Total Enrollments</div>
+                            </div>
+                        </div>
+                    <% } %>
+
                 </div>
             </div>
         </div>
@@ -294,22 +652,30 @@
     <!-- ===== ADD COURSE MODAL ===== -->
     <div class="modal-overlay" id="addCourseModal">
         <div class="modal-box">
-            <button class="modal-close" onclick="closeModal('addCourseModal')">&times;</button>
-            <h3><i class="fas fa-plus-circle" style="color:var(--primary);"></i> Add New Course</h3>
+            <div class="modal-header">
+                <h3><i class="fas fa-plus-circle" style="color:var(--purple-primary);"></i> Add New Course</h3>
+                <button class="modal-close" onclick="closeModal('addCourseModal')">&times;</button>
+            </div>
             <form action="/admin/courses/add" method="POST">
-                <div class="settings-group">
-                    <label for="title">Course Title <span style="color:red;">*</span></label>
-                    <input type="text" id="title" name="title" placeholder="e.g. Cybersecurity" required>
+                <div class="form-group">
+                    <label for="title">Course Title <span class="required">*</span></label>
+                    <input type="text" id="title" name="title" placeholder="e.g. Cybersecurity Fundamentals" required>
+                    <div class="help-text">
+                        <i class="fas fa-info-circle"></i> Give your course a clear, descriptive title
+                    </div>
                 </div>
-                <div class="settings-group">
-                    <label for="description">Description <span style="color:red;">*</span></label>
-                    <textarea id="description" name="description" rows="3" placeholder="Course description..." required></textarea>
+                <div class="form-group">
+                    <label for="description">Description <span class="required">*</span></label>
+                    <textarea id="description" name="description" rows="3" placeholder="What will students learn?" required></textarea>
                 </div>
-                <div class="settings-group">
-                    <label for="duration">Duration <span style="color:red;">*</span></label>
-                    <input type="text" id="duration" name="duration" placeholder="e.g. 6 weeks, Self-paced" required>
+                <div class="form-group">
+                    <label for="duration">Duration <span class="required">*</span></label>
+                    <input type="text" id="duration" name="duration" placeholder="e.g. 6 weeks, 4 hours" required>
+                    <div class="help-text">
+                        <i class="fas fa-info-circle"></i> Estimated time to complete the course
+                    </div>
                 </div>
-                <div class="settings-group">
+                <div class="form-group">
                     <label for="level">Level</label>
                     <select id="level" name="level">
                         <option value="Beginner">Beginner</option>
@@ -317,44 +683,133 @@
                         <option value="Advanced">Advanced</option>
                     </select>
                 </div>
-                <div class="settings-group">
+                <div class="form-group">
                     <label for="review">Course Review (optional)</label>
                     <textarea id="review" name="review" rows="2" placeholder="What students say about this course..."></textarea>
+                    <div class="help-text">
+                        <i class="fas fa-info-circle"></i> A testimonial or review from a student
+                    </div>
                 </div>
-                <button type="submit" class="btn btn-primary btn-block">
-                    <i class="fas fa-save"></i> Add Course
-                </button>
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Add Course
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addCourseModal')">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                </div>
             </form>
         </div>
     </div>
 
-    <%- include('partials/footer') %>
+    <!-- ===== DELETE ALL FORM (Hidden) ===== -->
+    <form action="/admin/courses/delete-all" method="POST" id="deleteAllForm" style="display:none;"></form>
+
+    <!-- ===== FOOTER ===== -->
+    <footer style="background:linear-gradient(135deg, #6a3dcf, #4a1a8a); padding:24px 0 16px; margin-top:40px;">
+        <div style="max-width:1200px; margin:0 auto; padding:0 20px; text-align:center; font-size:0.8rem; color:rgba(255,255,255,0.6);">
+            &copy; 2026 SHINEX Learning Circle. All rights reserved.
+        </div>
+    </footer>
 
     <script>
-        function openAddCourse() {
-            document.getElementById('addCourseModal').classList.add('open');
-        }
-
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('open');
-        }
-
-        function deleteAllCourses() {
-            if (confirm('⚠️ Are you sure you want to delete ALL courses? This action cannot be undone!')) {
-                document.querySelector('form[action="/admin/courses/delete-all"]').submit();
+        // ============================================================
+        // MODAL CONTROLS
+        // ============================================================
+        
+        function openModal(id) {
+            const modal = document.getElementById(id);
+            if (modal) {
+                modal.classList.add('open');
+                document.body.style.overflow = 'hidden';
             }
         }
-
-        // Close modal on click outside
+        
+        function closeModal(id) {
+            const modal = document.getElementById(id);
+            if (modal) {
+                modal.classList.remove('open');
+                document.body.style.overflow = '';
+            }
+        }
+        
+        // Close modal on overlay click
         document.querySelectorAll('.modal-overlay').forEach(modal => {
             modal.addEventListener('click', function(e) {
                 if (e.target === this) {
                     this.classList.remove('open');
+                    document.body.style.overflow = '';
                 }
             });
         });
+        
+        // Close modal on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal-overlay.open').forEach(modal => {
+                    modal.classList.remove('open');
+                    document.body.style.overflow = '';
+                });
+            }
+        });
+        
+        // ============================================================
+        // DELETE ALL COURSES
+        // ============================================================
+        
+        function deleteAllCourses() {
+            if (confirm('⚠️ Are you sure you want to delete ALL courses?\n\nThis action cannot be undone!\n\nAll levels, lessons, and classes will be permanently deleted.')) {
+                const confirmText = prompt('Type "DELETE ALL" to confirm:');
+                if (confirmText === 'DELETE ALL') {
+                    document.getElementById('deleteAllForm').submit();
+                } else {
+                    alert('Deletion cancelled.');
+                }
+            }
+        }
+        
+        // ============================================================
+        // SIDEBAR TOGGLE (Mobile)
+        // ============================================================
+        
+        function toggleSidebar() {
+            const sidebar = document.getElementById('adminSidebar');
+            if (sidebar) {
+                sidebar.classList.toggle('open');
+            }
+        }
+        
+        // ============================================================
+        // DARK MODE INIT
+        // ============================================================
+        
+        if (localStorage.getItem('shinex-theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
+        
+        // ============================================================
+        // AUTO DISMISS FLASH MESSAGES
+        // ============================================================
+        
+        document.querySelectorAll('.flash-message').forEach(msg => {
+            setTimeout(() => {
+                msg.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                msg.style.opacity = '0';
+                msg.style.transform = 'translateY(-10px)';
+                setTimeout(() => {
+                    if (msg.parentNode) msg.remove();
+                }, 500);
+            }, 5000);
+        });
+        
+        // ============================================================
+        // CONSOLE WELCOME
+        // ============================================================
+        
+        console.log('🔐 SHINEX Admin Panel');
+        console.log('📚 Courses Management');
+        console.log('📊 Total Courses: <%= courses ? courses.length : 0 %>');
     </script>
 
-    <script src="/js/main.js"></script>
 </body>
 </html>

@@ -3,224 +3,207 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Registration – SHINEX</title>
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Student Registration – SHINEX Learning Circle</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
+        /* ============================================================
+           REGISTER PAGE STYLES
+           ============================================================ */
+        
+        /* ----- Auth Wrapper ----- */
         .auth-wrapper {
             display: flex;
             align-items: center;
             justify-content: center;
             min-height: 70vh;
-            padding: 20px;
+            padding: var(--spacing-lg);
         }
+        
+        /* ----- Auth Box ----- */
         .auth-box {
-            background: #fff;
-            border-radius: 16px;
-            padding: 36px 32px;
-            max-width: 700px;
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl) var(--spacing-lg);
+            max-width: 750px;
             width: 100%;
-            border: 1px solid #ede8f5;
-            box-shadow: 0 4px 20px rgba(26, 10, 46, 0.08);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
         }
-        body.dark-mode .auth-box {
-            background: #1a1a1a;
-            border-color: #333;
+        
+        .auth-box:hover {
+            box-shadow: var(--shadow-lg);
         }
+        
+        /* ----- Logo ----- */
         .auth-box .auth-logo {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: var(--spacing-md);
         }
+        
+        .auth-box .auth-logo .logo-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--purple-gradient);
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 18px;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);
+            margin-bottom: var(--spacing-sm);
+        }
+        
         .auth-box .auth-logo h1 {
             font-size: 1.6rem;
             font-weight: 800;
-            color: var(--text-dark);
+            color: var(--text-primary);
             margin: 0;
         }
-        body.dark-mode .auth-box .auth-logo h1 {
-            color: var(--text-light);
-        }
+        
         .auth-box .auth-logo h1 span {
-            color: #8B5CF6;
+            color: var(--purple-primary);
         }
+        
         .auth-box .auth-logo p {
             color: var(--text-muted);
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             margin: 0;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
         }
+        
+        /* ----- Titles ----- */
         .auth-box .auth-title {
             font-size: 1.2rem;
             font-weight: 700;
-            color: var(--text-dark);
+            color: var(--text-primary);
             text-align: center;
             margin: 0 0 4px 0;
         }
-        body.dark-mode .auth-box .auth-title {
-            color: var(--text-light);
-        }
+        
         .auth-box .auth-subtitle {
             font-size: 0.85rem;
-            color: var(--text-muted);
+            color: var(--text-secondary);
             text-align: center;
-            margin: 0 0 20px 0;
+            margin: 0 0 var(--spacing-lg) 0;
         }
+        
+        /* ----- Form Sections ----- */
         .auth-box .form-section {
-            background: var(--primary-bg);
-            border-radius: 10px;
-            padding: 16px;
-            margin-bottom: 16px;
+            background: var(--bg-card-secondary);
+            border-radius: var(--radius-sm);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
         }
-        body.dark-mode .auth-box .form-section {
-            background: #1a1a1a;
-            border-color: #333;
+        
+        .auth-box .form-section.highlight {
+            border: 2px solid var(--purple-primary);
         }
-        .auth-box .form-section h4 {
+        
+        .auth-box .form-section .section-title {
             font-weight: 700;
-            color: var(--text-dark);
-            margin: 0 0 4px 0;
+            color: var(--text-primary);
+            margin: 0 0 2px 0;
             font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        body.dark-mode .auth-box .form-section h4 {
-            color: var(--text-light);
+        
+        .auth-box .form-section .section-title i {
+            color: var(--purple-primary);
         }
-        .auth-box .form-section .sub {
+        
+        .auth-box .form-section .section-subtitle {
             font-size: 0.75rem;
             color: var(--text-muted);
-            margin: 0 0 12px 0;
+            margin: 0 0 var(--spacing-sm) 0;
         }
+        
+        /* ----- Form Fields ----- */
         .auth-box .form-group {
-            margin-bottom: 14px;
+            margin-bottom: var(--spacing-sm);
         }
+        
         .auth-box .form-group label {
             font-weight: 600;
             font-size: 0.8rem;
-            color: var(--text-dark);
+            color: var(--text-primary);
             display: block;
             margin-bottom: 4px;
         }
-        body.dark-mode .auth-box .form-group label {
-            color: var(--text-light);
+        
+        .auth-box .form-group label .required {
+            color: var(--text-error);
         }
+        
         .auth-box .form-group input,
         .auth-box .form-group select {
             width: 100%;
             padding: 10px 14px;
-            border: 2px solid #ede8f5;
-            border-radius: 10px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
             font-size: 0.95rem;
             font-family: inherit;
             transition: all 0.3s ease;
-            background: #fff;
-            color: var(--text-dark);
+            background: var(--bg-input);
+            color: var(--text-primary);
         }
-        body.dark-mode .auth-box .form-group input,
-        body.dark-mode .auth-box .form-group select {
-            background: #2a2a2a;
-            color: var(--text-light);
-            border-color: #333;
-        }
+        
         .auth-box .form-group input:focus,
         .auth-box .form-group select:focus {
-            border-color: #8B5CF6;
+            border-color: var(--purple-primary);
             box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.12);
             outline: none;
         }
+        
+        .auth-box .form-group input::placeholder {
+            color: var(--text-muted);
+        }
+        
+        .auth-box .form-group .help-text {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+        
+        .auth-box .form-group .help-text i {
+            margin-right: 4px;
+        }
+        
+        /* ----- Form Rows ----- */
         .auth-box .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
+            gap: var(--spacing-sm);
         }
+        
         .auth-box .form-row-3 {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
-            gap: 12px;
+            gap: var(--spacing-sm);
         }
-        .auth-box .required {
-            color: #e74c3c;
-        }
-        .auth-box .help-text {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            margin-top: 3px;
-        }
-        .auth-box .btn-auth {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 30px;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: #8B5CF6;
-            color: #fff;
-            margin-top: 8px;
-        }
-        .auth-box .btn-auth:hover {
-            background: #6a3dcf;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.3);
-        }
-        .auth-box .alert {
-            padding: 10px 14px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            margin-bottom: 12px;
-            text-align: center;
-        }
-        .auth-box .alert-danger {
-            background: #fadbd8;
-            color: #922b21;
-            border-left: 4px solid #e74c3c;
-        }
-        .auth-box .alert-success {
-            background: #d5f5e3;
-            color: #1a7a4a;
-            border-left: 4px solid #27ae60;
-        }
-        body.dark-mode .auth-box .alert-danger {
-            background: #3a1a1a;
-            color: #f1948a;
-        }
-        body.dark-mode .auth-box .alert-success {
-            background: #1a3a2a;
-            color: #7dcea0;
-        }
-        .auth-box .auth-footer {
-            text-align: center;
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 1px solid #ede8f5;
-        }
-        body.dark-mode .auth-box .auth-footer {
-            border-color: #333;
-        }
-        .auth-box .auth-footer a {
-            color: #8B5CF6;
-            text-decoration: none;
-            font-weight: 600;
-        }
-        .auth-box .auth-footer a:hover {
-            text-decoration: underline;
-        }
-        .auth-box .auth-footer p {
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            margin: 0;
-        }
-
-        /* ===== PASSWORD VISIBILITY TOGGLE ===== */
-        .password-wrapper {
+        
+        /* ----- Password Toggle ----- */
+        .auth-box .password-wrapper {
             position: relative;
             width: 100%;
         }
-        .password-wrapper input {
+        
+        .auth-box .password-wrapper input {
             width: 100%;
             padding-right: 44px !important;
         }
-        .toggle-password {
+        
+        .auth-box .password-wrapper .toggle-password {
             position: absolute;
             right: 14px;
             top: 50%;
@@ -231,68 +214,177 @@
             color: var(--text-muted);
             font-size: 1.1rem;
             padding: 4px 6px;
-            transition: color 0.3s ease;
+            transition: all 0.3s ease;
             z-index: 2;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        .toggle-password:hover {
-            color: #8B5CF6;
+        
+        .auth-box .password-wrapper .toggle-password:hover {
+            color: var(--purple-primary);
         }
-        body.dark-mode .toggle-password {
-            color: #888;
+        
+        /* ----- Register Button ----- */
+        .auth-box .btn-auth {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--purple-gradient);
+            color: #fff;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
-        body.dark-mode .toggle-password:hover {
-            color: #a78bfa;
+        
+        .auth-box .btn-auth:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.3);
         }
-
-        @media (max-width: 600px) {
+        
+        .auth-box .btn-auth i {
+            font-size: 1rem;
+        }
+        
+        /* ----- Alerts ----- */
+        .auth-box .alert {
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            margin-bottom: var(--spacing-sm);
+            text-align: center;
+            border-left: 4px solid;
+        }
+        
+        .auth-box .alert-danger {
+            background: var(--bg-alert-error);
+            color: var(--text-error);
+            border-left-color: var(--text-error);
+        }
+        
+        .auth-box .alert-success {
+            background: var(--bg-alert-success);
+            color: var(--text-success);
+            border-left-color: var(--text-success);
+        }
+        
+        /* ----- Footer ----- */
+        .auth-box .auth-footer {
+            text-align: center;
+            margin-top: var(--spacing-md);
+            padding-top: var(--spacing-md);
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .auth-box .auth-footer p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin: 0;
+        }
+        
+        .auth-box .auth-footer a {
+            color: var(--purple-primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .auth-box .auth-footer a:hover {
+            text-decoration: underline;
+        }
+        
+        /* ----- Responsive ----- */
+        @media (max-width: 768px) {
             .auth-box {
-                padding: 20px 16px;
+                padding: var(--spacing-lg) var(--spacing-md);
             }
+            
             .auth-box .form-row,
             .auth-box .form-row-3 {
                 grid-template-columns: 1fr;
+            }
+            
+            .auth-box .auth-logo h1 {
+                font-size: 1.3rem;
+            }
+            
+            .auth-box .auth-title {
+                font-size: 1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .auth-box {
+                padding: var(--spacing-md);
+            }
+            
+            .auth-box .form-section {
+                padding: var(--spacing-sm);
             }
         }
     </style>
 </head>
 <body>
+
+    <!-- ============================================================
+    PAGE LOADER
+    ============================================================ -->
     <div id="page-loader">
         <div class="loader-logo"><span>SLC</span><div class="loader-water"></div></div>
         <div class="loader-text">SHINEX</div>
         <div class="loader-sub">LEARNING CIRCLE</div>
     </div>
 
+    <!-- ===== HEADER ===== -->
     <%- include(getHeader()) %>
 
+    <!-- ===== MAIN CONTENT ===== -->
     <main class="main-content">
         <div class="container">
             <div class="auth-wrapper">
+
+                <!-- ===== AUTH BOX ===== -->
                 <div class="auth-box">
+
                     <!-- Logo -->
                     <div class="auth-logo">
+                        <div class="logo-icon">SLC</div>
                         <h1>SHINEX<span>.</span></h1>
-                        <p>LEARNING CIRCLE</p>
+                        <p>Learning Circle</p>
                     </div>
 
+                    <!-- Titles -->
                     <div class="auth-title">Student Registration</div>
                     <div class="auth-subtitle">Join SHINEX Learning Circle (SLC)</div>
 
+                    <!-- Flash Messages -->
                     <% if (messages && messages.error) { %>
-                        <div class="alert alert-danger"><%= messages.error %></div>
+                        <div class="alert alert-danger flash-message" data-type="error">
+                            <i class="fas fa-exclamation-circle"></i> <%= messages.error %>
+                        </div>
                     <% } %>
                     <% if (messages && messages.success) { %>
-                        <div class="alert alert-success"><%= messages.success %></div>
+                        <div class="alert alert-success flash-message" data-type="success">
+                            <i class="fas fa-check-circle"></i> <%= messages.success %>
+                        </div>
                     <% } %>
 
+                    <!-- Registration Form -->
                     <form action="/register" method="POST" id="registerForm">
 
                         <!-- ===== 1. PERSONAL INFORMATION ===== -->
                         <div class="form-section">
-                            <h4><i class="fas fa-user" style="color:#8B5CF6;"></i> Personal Information</h4>
-                            <p class="sub">Tell us about yourself</p>
+                            <div class="section-title">
+                                <i class="fas fa-user"></i> Personal Information
+                            </div>
+                            <p class="section-subtitle">Tell us about yourself</p>
 
                             <div class="form-row">
                                 <div class="form-group">
@@ -354,12 +446,17 @@
 
                         <!-- ===== 2. CONTACT INFORMATION ===== -->
                         <div class="form-section">
-                            <h4><i class="fas fa-phone" style="color:#8B5CF6;"></i> Contact Information</h4>
-                            <p class="sub">How can we reach you?</p>
+                            <div class="section-title">
+                                <i class="fas fa-phone"></i> Contact Information
+                            </div>
+                            <p class="section-subtitle">How can we reach you?</p>
 
                             <div class="form-group">
                                 <label>Email Address <span class="required">*</span></label>
                                 <input type="email" name="email" placeholder="you@email.com" required>
+                                <div class="help-text">
+                                    <i class="fas fa-info-circle"></i> We'll send verification to this email
+                                </div>
                             </div>
 
                             <div class="form-row">
@@ -381,8 +478,10 @@
 
                         <!-- ===== 3. ACADEMIC INFORMATION ===== -->
                         <div class="form-section">
-                            <h4><i class="fas fa-graduation-cap" style="color:#8B5CF6;"></i> Academic Information</h4>
-                            <p class="sub">Tell us about your education</p>
+                            <div class="section-title">
+                                <i class="fas fa-graduation-cap"></i> Academic Information
+                            </div>
+                            <p class="section-subtitle">Tell us about your education</p>
 
                             <div class="form-group">
                                 <label>School/Institution <span class="required">*</span></label>
@@ -414,8 +513,10 @@
 
                         <!-- ===== 4. CHOOSE YOUR COURSE ===== -->
                         <div class="form-section">
-                            <h4><i class="fas fa-book-open" style="color:#8B5CF6;"></i> Choose Your Course</h4>
-                            <p class="sub">Select the course you want to study</p>
+                            <div class="section-title">
+                                <i class="fas fa-book-open"></i> Choose Your Course
+                            </div>
+                            <p class="section-subtitle">Select the course you want to study</p>
 
                             <div class="form-group">
                                 <label>Course <span class="required">*</span></label>
@@ -432,8 +533,10 @@
 
                         <!-- ===== 5. LEARNING LEVEL ===== -->
                         <div class="form-section">
-                            <h4><i class="fas fa-chart-line" style="color:#8B5CF6;"></i> Learning Level</h4>
-                            <p class="sub">Choose your experience level</p>
+                            <div class="section-title">
+                                <i class="fas fa-chart-line"></i> Learning Level
+                            </div>
+                            <p class="section-subtitle">Choose your experience level</p>
 
                             <div class="form-group">
                                 <label>Learning Level <span class="required">*</span></label>
@@ -446,14 +549,18 @@
                         </div>
 
                         <!-- ===== 6. ACCOUNT DETAILS ===== -->
-                        <div class="form-section" style="border:2px solid #8B5CF6;">
-                            <h4><i class="fas fa-lock" style="color:#8B5CF6;"></i> Account Details</h4>
-                            <p class="sub">Create your login credentials</p>
+                        <div class="form-section highlight">
+                            <div class="section-title">
+                                <i class="fas fa-lock"></i> Account Details
+                            </div>
+                            <p class="section-subtitle">Create your login credentials</p>
 
                             <div class="form-group">
                                 <label>Email Address <span class="required">*</span></label>
                                 <input type="email" name="email" placeholder="you@email.com" required>
-                                <div class="help-text">You will use this to login or receive updates</div>
+                                <div class="help-text">
+                                    <i class="fas fa-info-circle"></i> You will use this to login or receive updates
+                                </div>
                             </div>
 
                             <div class="form-row">
@@ -483,23 +590,31 @@
                             </div>
                         </div>
 
-                        <button type="submit" class="btn-auth">
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn-auth" id="registerBtn">
                             <i class="fas fa-user-plus"></i> Register
                         </button>
                     </form>
 
+                    <!-- Footer -->
                     <div class="auth-footer">
                         <p>Already have an account? <a href="/login">Login</a></p>
                     </div>
+
                 </div>
+
             </div>
         </div>
     </main>
 
+    <!-- ===== FOOTER ===== -->
     <%- include(getFooter()) %>
-    
+
     <script>
-        // ===== PASSWORD VISIBILITY TOGGLE =====
+        // ============================================================
+        // PASSWORD VISIBILITY TOGGLE
+        // ============================================================
+        
         function togglePassword(inputId, button) {
             const input = document.getElementById(inputId);
             if (!input) return;
@@ -513,11 +628,34 @@
                 input.type = 'password';
                 icon.className = 'fas fa-eye';
             }
-            
-            // Prevent form submission
-            event.preventDefault();
         }
+        
+        // ============================================================
+        // AUTO DISMISS FLASH MESSAGES
+        // ============================================================
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.flash-message').forEach(msg => {
+                setTimeout(() => {
+                    msg.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    msg.style.opacity = '0';
+                    msg.style.transform = 'translateY(-10px)';
+                    setTimeout(() => {
+                        if (msg.parentNode) msg.remove();
+                    }, 500);
+                }, 5000);
+            });
+        });
+        
+        // ============================================================
+        // CONSOLE WELCOME
+        // ============================================================
+        
+        console.log('📝 SHINEX Registration Page');
+        console.log('📚 Join SHINEX Learning Circle');
+        console.log('📧 Verify your email after registration');
     </script>
-    <script src="/js/script.js"></script>
+
+    <script src="/js/main.js"></script>
 </body>
 </html>

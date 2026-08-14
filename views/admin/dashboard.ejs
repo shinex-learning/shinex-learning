@@ -2,33 +2,38 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard – SHINEX Learning Circle</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title><%= title %> | SHINEX Admin</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/style.css">
     <style>
+        /* ============================================================
+           ADMIN DASHBOARD PAGE STYLES
+           ============================================================ */
+        
+        /* ----- Admin Layout ----- */
         .admin-layout {
             display: flex;
-            gap: 24px;
+            gap: var(--spacing-lg);
             max-width: 1400px;
             margin: 0 auto;
         }
+        
+        /* ----- Admin Sidebar ----- */
         .admin-sidebar {
-            width: 240px;
-            min-width: 200px;
-            background: var(--bg-light);
-            border-radius: var(--radius);
-            border: 1px solid #ede8f5;
+            width: 260px;
+            min-width: 220px;
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
             padding: 12px 0;
             height: fit-content;
             position: sticky;
             top: 80px;
+            box-shadow: var(--shadow-sm);
             transition: all 0.3s ease;
         }
-        body.dark-mode .admin-sidebar {
-            background: var(--dark-card);
-            border-color: var(--dark-border);
-        }
+        
         .admin-sidebar .sidebar-title {
             padding: 8px 18px 12px;
             font-weight: 700;
@@ -36,213 +41,458 @@
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 1px;
-            border-bottom: 1px solid #ede8f5;
+            border-bottom: 1px solid var(--border-color);
         }
-        body.dark-mode .admin-sidebar .sidebar-title {
-            border-color: var(--dark-border);
-        }
+        
         .admin-nav {
             list-style: none;
             padding: 4px 0;
             margin: 0;
         }
+        
         .admin-nav li {
             margin: 0;
         }
+        
         .admin-nav a {
             display: flex;
             align-items: center;
             gap: 10px;
             padding: 8px 18px;
-            color: var(--text-muted);
+            color: var(--text-secondary);
             text-decoration: none;
             font-size: 0.85rem;
             font-weight: 500;
             transition: all 0.2s ease;
             border-left: 3px solid transparent;
         }
+        
         .admin-nav a:hover {
-            background: var(--primary-bg);
-            color: var(--primary);
+            background: var(--purple-bg);
+            color: var(--purple-primary);
         }
+        
         .admin-nav a.active {
-            background: var(--primary-bg);
-            color: var(--primary);
-            border-left-color: var(--primary);
+            background: var(--purple-bg);
+            color: var(--purple-primary);
+            border-left-color: var(--purple-primary);
         }
-        body.dark-mode .admin-nav a:hover {
-            background: #2a1a4a;
+        
+        .admin-nav a i {
+            width: 20px;
+            text-align: center;
         }
-        body.dark-mode .admin-nav a.active {
-            background: #2a1a4a;
+        
+        .admin-nav a .nav-badge {
+            margin-left: auto;
+            font-size: 0.6rem;
+            padding: 2px 8px;
+            border-radius: var(--radius-full);
+            background: var(--text-error);
+            color: #fff;
         }
+        
+        .admin-nav a.logout-link {
+            color: var(--text-error);
+        }
+        
+        .admin-nav a.logout-link:hover {
+            background: var(--bg-alert-error);
+            color: var(--text-error);
+        }
+        
+        /* ----- Admin Content ----- */
         .admin-content {
             flex: 1;
             min-width: 0;
         }
+        
+        /* ----- Stats Grid ----- */
         .admin-stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 12px;
-            margin-bottom: 24px;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
         }
+        
         .admin-stat {
-            background: var(--bg-light);
-            border-radius: var(--radius);
-            border: 1px solid #ede8f5;
-            padding: 16px 20px;
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            padding: var(--spacing-md) var(--spacing-lg);
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
         }
-        body.dark-mode .admin-stat {
-            background: var(--dark-card);
-            border-color: var(--dark-border);
+        
+        .admin-stat:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
         }
-        .admin-stat .stat-number {
+        
+        .admin-stat .stat-icon {
             font-size: 1.8rem;
-            font-weight: 800;
-            color: var(--primary);
+            color: var(--purple-primary);
+            opacity: 0.3;
+            position: absolute;
+            right: 12px;
+            top: 12px;
         }
+        
+        .admin-stat .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--purple-primary);
+            line-height: 1.2;
+        }
+        
         .admin-stat .stat-label {
             font-size: 0.8rem;
             color: var(--text-muted);
             font-weight: 500;
             margin-top: 2px;
         }
-        .admin-stat .stat-icon {
-            float: right;
-            font-size: 1.8rem;
-            color: var(--primary-bg);
-            opacity: 0.5;
-        }
-        .admin-card {
-            background: var(--bg-light);
-            border-radius: var(--radius);
-            border: 1px solid #ede8f5;
-            padding: 20px 24px;
-            margin-bottom: 16px;
-        }
-        body.dark-mode .admin-card {
-            background: var(--dark-card);
-            border-color: var(--dark-border);
-        }
-        .admin-card h4 {
-            font-size: 1rem;
-            font-weight: 700;
-            margin: 0 0 8px;
-        }
-        .admin-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 2px 10px;
-            border-radius: 20px;
+        
+        .admin-stat .stat-change {
             font-size: 0.7rem;
             font-weight: 600;
+            margin-top: 4px;
         }
-        .admin-badge.success {
-            background: #d5f5e3;
-            color: #27ae60;
+        
+        .admin-stat .stat-change.positive {
+            color: var(--text-success);
         }
-        .admin-badge.danger {
-            background: #fadbd8;
-            color: #e74c3c;
+        
+        .admin-stat .stat-change.negative {
+            color: var(--text-error);
         }
-        .admin-badge.warning {
-            background: #fef9e7;
-            color: #f39c12;
+        
+        /* ----- Admin Cards ----- */
+        .admin-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-md);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
         }
-        body.dark-mode .admin-badge.success {
-            background: #1a3a2a;
-            color: #7dcea0;
+        
+        .admin-card:hover {
+            box-shadow: var(--shadow-md);
         }
-        body.dark-mode .admin-badge.danger {
-            background: #3a1a1a;
-            color: #f1948a;
+        
+        .admin-card .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
         }
-        body.dark-mode .admin-badge.warning {
-            background: #3a2a1a;
-            color: #f7dc6f;
+        
+        .admin-card .card-header h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        .admin-table {
-            width: 100%;
-            border-collapse: collapse;
+        
+        .admin-card .card-header h4 i {
+            color: var(--purple-primary);
+        }
+        
+        /* ----- Course Stats Grid ----- */
+        .course-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-sm);
+        }
+        
+        .course-stat-item {
+            background: var(--bg-card-secondary);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--radius-sm);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        
+        .course-stat-item:hover {
+            border-color: var(--purple-primary);
+            transform: translateX(4px);
+        }
+        
+        .course-stat-item .course-name {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        
+        .course-stat-item .course-count {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--purple-primary);
+            background: var(--purple-bg);
+            padding: 2px 12px;
+            border-radius: var(--radius-full);
+        }
+        
+        /* ----- Quick Actions Grid ----- */
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-sm);
+        }
+        
+        .quick-action-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: var(--spacing-md);
+            background: var(--bg-card-secondary);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+        
+        .quick-action-btn:hover {
+            border-color: var(--purple-primary);
+            background: var(--purple-bg);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .quick-action-btn i {
+            font-size: 1.2rem;
+            color: var(--purple-primary);
+            width: 24px;
+            text-align: center;
+        }
+        
+        .quick-action-btn .btn-badge {
+            margin-left: auto;
+            font-size: 0.6rem;
+            padding: 2px 8px;
+            border-radius: var(--radius-full);
+            background: var(--text-error);
+            color: #fff;
+        }
+        
+        /* ----- Page Header ----- */
+        .page-header {
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .page-header .page-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        
+        .page-header .page-subtitle {
+            color: var(--text-muted);
+            margin: 2px 0 0 0;
             font-size: 0.9rem;
         }
-        .admin-table th {
-            text-align: left;
-            padding: 8px 12px;
-            border-bottom: 2px solid #ede8f5;
-            font-weight: 600;
+        
+        /* ----- System Info ----- */
+        .system-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-sm);
+        }
+        
+        .system-info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: var(--spacing-sm) 0;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.85rem;
+        }
+        
+        .system-info-item:last-child {
+            border-bottom: none;
+        }
+        
+        .system-info-item .info-label {
             color: var(--text-muted);
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
-        body.dark-mode .admin-table th {
-            border-color: var(--dark-border);
+        
+        .system-info-item .info-value {
+            color: var(--text-primary);
+            font-weight: 500;
         }
-        .admin-table td {
-            padding: 8px 12px;
-            border-bottom: 1px solid #ede8f5;
-        }
-        body.dark-mode .admin-table td {
-            border-color: var(--dark-border);
-        }
-        .admin-table tr:hover {
-            background: var(--primary-bg);
-        }
-        body.dark-mode .admin-table tr:hover {
-            background: #1a1a1a;
-        }
-        @media (max-width: 768px) {
+        
+        /* ----- Responsive ----- */
+        @media (max-width: 1024px) {
             .admin-layout {
                 flex-direction: column;
             }
+            
             .admin-sidebar {
                 width: 100%;
                 min-width: unset;
                 position: relative;
                 top: 0;
+                max-height: 0;
+                overflow: hidden;
+                padding: 0;
+                transition: max-height 0.3s ease, padding 0.3s ease;
+                box-shadow: none;
             }
+            
+            .admin-sidebar.open {
+                max-height: 600px;
+                padding: 12px 0;
+                overflow-y: auto;
+            }
+            
+            .admin-sidebar-toggle {
+                display: flex !important;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .admin-card {
+                padding: var(--spacing-md);
+            }
+            
             .admin-stats {
                 grid-template-columns: 1fr 1fr;
+                gap: var(--spacing-sm);
+            }
+            
+            .admin-stat {
+                padding: var(--spacing-sm) var(--spacing-md);
+            }
+            
+            .admin-stat .stat-number {
+                font-size: 1.4rem;
+            }
+            
+            .admin-stat .stat-icon {
+                font-size: 1.2rem;
+                right: 8px;
+                top: 8px;
+            }
+            
+            .quick-actions-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .course-stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .system-info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .page-header .page-title {
+                font-size: 1.2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .admin-stats {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <%- include('partials/header', { showBack: true }) %>
 
+    <!-- ===== ADMIN HEADER (Built-in) ===== -->
+    <header style="background:linear-gradient(135deg, #8B5CF6, #6a3dcf); padding:12px 24px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:1000; box-shadow:0 2px 15px rgba(139,92,246,0.3);">
+        <div style="display:flex; align-items:center; gap:12px;">
+            <!-- Back Button -->
+            <a href="/" style="color:rgba(255,255,255,0.8); text-decoration:none; padding:4px 10px; border-radius:8px; transition:all 0.3s ease; font-size:14px;">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div style="width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.2); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:11px;">SLC</div>
+            <div>
+                <div style="font-weight:700; font-size:16px; color:#fff;">SHINEX <span style="opacity:0.7; font-weight:400;">Admin</span></div>
+                <div style="font-size:7px; color:rgba(255,255,255,0.6); letter-spacing:2px;">LEARNING CIRCLE</div>
+            </div>
+        </div>
+        <div style="display:flex; gap:12px; align-items:center;">
+            <span style="color:rgba(255,255,255,0.9); font-size:13px;">
+                <i class="fas fa-user"></i> <%= admin && admin.firstName ? admin.firstName : 'Admin' %>
+            </span>
+            <button onclick="document.body.classList.toggle('dark-mode'); localStorage.setItem('shinex-theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');" style="background:rgba(255,255,255,0.15); border:none; color:#fff; padding:6px 12px; border-radius:20px; font-size:14px; cursor:pointer;">
+                <i class="fas fa-moon"></i>
+            </button>
+            <a href="/admin/logout" style="color:#fff; text-decoration:none; background:rgba(255,255,255,0.15); padding:6px 14px; border-radius:20px; font-size:13px; transition:all 0.3s ease;">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </header>
+
+    <!-- ===== MAIN CONTENT ===== -->
     <main class="main-content">
         <div class="container">
+
+            <!-- Flash Messages -->
             <% if (messages && messages.success) { %>
-                <div class="alert alert-success"><%= messages.success %></div>
+                <div class="alert alert-success flash-message" data-type="success">
+                    <i class="fas fa-check-circle"></i> <%= messages.success %>
+                </div>
             <% } %>
             <% if (messages && messages.error) { %>
-                <div class="alert alert-danger"><%= messages.error %></div>
+                <div class="alert alert-danger flash-message" data-type="error">
+                    <i class="fas fa-exclamation-circle"></i> <%= messages.error %>
+                </div>
             <% } %>
 
+            <!-- ===== ADMIN LAYOUT ===== -->
             <div class="admin-layout">
-                <!-- ===== Admin Sidebar ===== -->
-                <aside class="admin-sidebar">
+
+                <!-- ===== SIDEBAR ===== -->
+                <aside class="admin-sidebar" id="adminSidebar">
                     <div class="sidebar-title"><i class="fas fa-crown"></i> Admin Panel</div>
                     <ul class="admin-nav">
                         <li><a href="/admin/dashboard" class="active"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
                         <li><a href="/admin/students"><i class="fas fa-users"></i> Students</a></li>
                         <li><a href="/admin/courses"><i class="fas fa-book"></i> Courses</a></li>
                         <li><a href="/admin/services"><i class="fas fa-concierge-bell"></i> Services</a></li>
-                        <li><a href="/admin/messages"><i class="fas fa-envelope"></i> Messages <span class="badge badge-red" style="font-size:0.6rem; padding:1px 8px;"><%= unreadCount || 0 %></span></a></li>
+                        <li><a href="/admin/messages"><i class="fas fa-envelope"></i> Messages <span class="nav-badge"><%= unreadCount || 0 %></span></a></li>
                         <li><a href="/admin/manage-admins"><i class="fas fa-user-shield"></i> Admins</a></li>
-                        <li><a href="/admin/logout" style="color:#e74c3c;"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                        <li><a href="/admin/logout" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                     </ul>
                 </aside>
 
-                <!-- ===== Admin Content ===== -->
+                <!-- ===== CONTENT ===== -->
                 <div class="admin-content">
-                    <h2 style="font-size:1.5rem; font-weight:700; margin:0 0 4px;">👋 Welcome, <%= admin.firstName %>!</h2>
-                    <p style="color:var(--text-muted); margin-bottom:20px;">Here's an overview of your platform.</p>
 
-                    <!-- Stats -->
+                    <!-- Page Header -->
+                    <div class="page-header">
+                        <h1 class="page-title">
+                            <i class="fas fa-crown" style="color:var(--purple-primary);"></i> 
+                            Welcome, <%= admin && admin.firstName ? admin.firstName : 'Admin' %>!
+                        </h1>
+                        <p class="page-subtitle">
+                            <i class="fas fa-calendar-alt"></i> 
+                            <%= new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %>
+                            <span style="margin:0 8px;">•</span>
+                            <i class="fas fa-clock"></i> 
+                            <%= new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) %>
+                        </p>
+                    </div>
+
+                    <!-- ===== STATS ===== -->
                     <div class="admin-stats">
                         <div class="admin-stat">
                             <span class="stat-icon"><i class="fas fa-users"></i></span>
@@ -257,7 +507,7 @@
                         <div class="admin-stat">
                             <span class="stat-icon"><i class="fas fa-user-graduate"></i></span>
                             <div class="stat-number"><%= totalEnrollments || 0 %></div>
-                            <div class="stat-label">Enrollments</div>
+                            <div class="stat-label">Total Enrollments</div>
                         </div>
                         <div class="admin-stat">
                             <span class="stat-icon"><i class="fas fa-layer-group"></i></span>
@@ -267,67 +517,193 @@
                         <div class="admin-stat">
                             <span class="stat-icon"><i class="fas fa-concierge-bell"></i></span>
                             <div class="stat-number"><%= totalServices || 0 %></div>
-                            <div class="stat-label">Services</div>
+                            <div class="stat-label">Active Services</div>
                         </div>
                         <div class="admin-stat">
                             <span class="stat-icon"><i class="fas fa-envelope"></i></span>
-                            <div class="stat-number"><%= unreadCount || 0 %></div>
+                            <div class="stat-number" style="color:<%= unreadCount > 0 ? 'var(--text-error)' : 'var(--text-success)' %>;">
+                                <%= unreadCount || 0 %>
+                            </div>
                             <div class="stat-label">Unread Messages</div>
                         </div>
                     </div>
 
-                    <!-- Students by Course -->
-                    <div class="admin-card">
-                        <h4><i class="fas fa-chart-bar"></i> Students by Course</h4>
-                        <% if (courses && courses.length > 0) { %>
-                            <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(200px,1fr)); gap:8px; margin-top:8px;">
-                                <% courses.forEach(c => { 
-                                    const data = studentsByCourse[c.id];
-                                    const count = data ? data.count : 0;
-                                %>
-                                    <div style="background:var(--primary-bg); padding:8px 14px; border-radius:8px; display:flex; justify-content:space-between; align-items:center;">
-                                        <span style="font-size:0.85rem; font-weight:500;"><%= c.title %></span>
-                                        <span class="badge badge-purple"><%= count %></span>
-                                    </div>
-                                <% }) %>
+                    <!-- ===== TWO COLUMN LAYOUT ===== -->
+                    <div style="display:grid; grid-template-columns: 2fr 1fr; gap: var(--spacing-md);">
+
+                        <!-- ===== LEFT COLUMN: Students by Course ===== -->
+                        <div class="admin-card">
+                            <div class="card-header">
+                                <h4><i class="fas fa-chart-bar"></i> Students by Course</h4>
+                                <a href="/admin/students" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-users"></i> View All
+                                </a>
                             </div>
-                        <% } else { %>
-                            <p style="color:var(--text-muted);">No courses available yet.</p>
-                        <% } %>
+                            <% if (courses && courses.length > 0) { %>
+                                <div class="course-stats-grid">
+                                    <% courses.forEach(c => { 
+                                        const data = studentsByCourse[c.id];
+                                        const count = data ? data.count : 0;
+                                    %>
+                                        <div class="course-stat-item">
+                                            <span class="course-name"><%= c.title %></span>
+                                            <span class="course-count"><%= count %></span>
+                                        </div>
+                                    <% }) %>
+                                </div>
+                            <% } else { %>
+                                <p style="color:var(--text-muted); text-align:center; padding:var(--spacing-lg);">
+                                    <i class="fas fa-info-circle"></i> No courses available yet.
+                                </p>
+                            <% } %>
+                        </div>
+
+                        <!-- ===== RIGHT COLUMN: Quick Actions & System Info ===== -->
+                        <div>
+                            <!-- Quick Actions -->
+                            <div class="admin-card">
+                                <div class="card-header">
+                                    <h4><i class="fas fa-bolt"></i> Quick Actions</h4>
+                                </div>
+                                <div class="quick-actions-grid">
+                                    <a href="/admin/courses" class="quick-action-btn">
+                                        <i class="fas fa-book"></i> Courses
+                                    </a>
+                                    <a href="/admin/students" class="quick-action-btn">
+                                        <i class="fas fa-users"></i> Students
+                                    </a>
+                                    <a href="/admin/services" class="quick-action-btn">
+                                        <i class="fas fa-concierge-bell"></i> Services
+                                    </a>
+                                    <a href="/admin/messages" class="quick-action-btn">
+                                        <i class="fas fa-envelope"></i> Messages
+                                        <% if (unreadCount > 0) { %>
+                                            <span class="btn-badge"><%= unreadCount %></span>
+                                        <% } %>
+                                    </a>
+                                    <a href="/admin/manage-admins" class="quick-action-btn">
+                                        <i class="fas fa-user-shield"></i> Admins
+                                    </a>
+                                    <a href="/admin/courses" class="quick-action-btn">
+                                        <i class="fas fa-plus-circle"></i> Add Course
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- System Info -->
+                            <div class="admin-card">
+                                <div class="card-header">
+                                    <h4><i class="fas fa-info-circle"></i> System Info</h4>
+                                </div>
+                                <div class="system-info-grid">
+                                    <div class="system-info-item">
+                                        <span class="info-label"><i class="fas fa-users"></i> Total Users</span>
+                                        <span class="info-value"><%= users ? users.length : 0 %></span>
+                                    </div>
+                                    <div class="system-info-item">
+                                        <span class="info-label"><i class="fas fa-user-shield"></i> Admins</span>
+                                        <span class="info-value"><%= users ? users.filter(u => u.isAdmin).length : 0 %></span>
+                                    </div>
+                                    <div class="system-info-item">
+                                        <span class="info-label"><i class="fas fa-building"></i> Platform</span>
+                                        <span class="info-value">SHINEX</span>
+                                    </div>
+                                    <div class="system-info-item">
+                                        <span class="info-label"><i class="fas fa-code-branch"></i> Version</span>
+                                        <span class="info-value">4.0</span>
+                                    </div>
+                                    <div class="system-info-item">
+                                        <span class="info-label"><i class="fas fa-database"></i> Database</span>
+                                        <span class="info-value">MongoDB</span>
+                                    </div>
+                                    <div class="system-info-item">
+                                        <span class="info-label"><i class="fas fa-envelope"></i> Email</span>
+                                        <span class="info-value">SendGrid</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Recent Activity / Quick Actions -->
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
-                        <div class="admin-card">
-                            <h4><i class="fas fa-bolt"></i> Quick Actions</h4>
-                            <div style="display:flex; flex-direction:column; gap:8px;">
-                                <a href="/admin/courses" class="btn btn-secondary btn-sm btn-block">Manage Courses</a>
-                                <a href="/admin/students" class="btn btn-secondary btn-sm btn-block">View Students</a>
-                                <a href="/admin/messages" class="btn btn-secondary btn-sm btn-block">Check Messages <span class="badge badge-red" style="font-size:0.6rem;"><%= unreadCount || 0 %></span></a>
+                    <!-- ===== RECENT ACTIVITY / WELCOME CARD ===== -->
+                    <div class="admin-card" style="background:var(--purple-gradient); border:none; color:#fff;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:var(--spacing-sm);">
+                            <div>
+                                <h4 style="color:#fff; margin:0;">
+                                    <i class="fas fa-rocket"></i> SHINEX Admin Panel
+                                </h4>
+                                <p style="color:rgba(255,255,255,0.8); margin:4px 0 0 0; font-size:0.9rem;">
+                                    Manage your courses, students, and content from one place.
+                                </p>
+                            </div>
+                            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                                <a href="/admin/courses" class="btn btn-light btn-sm" style="background:rgba(255,255,255,0.2); color:#fff; border:none;">
+                                    <i class="fas fa-book"></i> Manage Courses
+                                </a>
+                                <a href="/admin/students" class="btn btn-light btn-sm" style="background:rgba(255,255,255,0.2); color:#fff; border:none;">
+                                    <i class="fas fa-users"></i> View Students
+                                </a>
                             </div>
                         </div>
-                        <div class="admin-card">
-                            <h4><i class="fas fa-info-circle"></i> System Info</h4>
-                            <p style="font-size:0.85rem; color:var(--text-muted); margin:4px 0;">
-                                <strong>Total Users:</strong> <%= users ? users.length : 0 %>
-                            </p>
-                            <p style="font-size:0.85rem; color:var(--text-muted); margin:4px 0;">
-                                <strong>Admins:</strong> <%= users ? users.filter(u => u.isAdmin).length : 0 %>
-                            </p>
-                            <p style="font-size:0.85rem; color:var(--text-muted); margin:4px 0;">
-                                <strong>Platform:</strong> SHINEX Learning Circle
-                            </p>
-                            <p style="font-size:0.85rem; color:var(--text-muted); margin:4px 0;">
-                                <strong>Version:</strong> 4.0
-                            </p>
-                        </div>
                     </div>
+
                 </div>
             </div>
         </div>
     </main>
 
-    <%- include('partials/footer') %>
-    <script src="/js/main.js"></script>
+    <!-- ===== FOOTER ===== -->
+    <footer style="background:linear-gradient(135deg, #6a3dcf, #4a1a8a); padding:24px 0 16px; margin-top:40px;">
+        <div style="max-width:1200px; margin:0 auto; padding:0 20px; text-align:center; font-size:0.8rem; color:rgba(255,255,255,0.6);">
+            &copy; 2026 SHINEX Learning Circle. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        // ============================================================
+        // SIDEBAR TOGGLE (Mobile)
+        // ============================================================
+        
+        function toggleSidebar() {
+            const sidebar = document.getElementById('adminSidebar');
+            if (sidebar) {
+                sidebar.classList.toggle('open');
+            }
+        }
+        
+        // ============================================================
+        // DARK MODE INIT
+        // ============================================================
+        
+        if (localStorage.getItem('shinex-theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
+        
+        // ============================================================
+        // AUTO DISMISS FLASH MESSAGES
+        // ============================================================
+        
+        document.querySelectorAll('.flash-message').forEach(msg => {
+            setTimeout(() => {
+                msg.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                msg.style.opacity = '0';
+                msg.style.transform = 'translateY(-10px)';
+                setTimeout(() => {
+                    if (msg.parentNode) msg.remove();
+                }, 500);
+            }, 5000);
+        });
+        
+        // ============================================================
+        // CONSOLE WELCOME
+        // ============================================================
+        
+        console.log('🔐 SHINEX Admin Dashboard');
+        console.log('👋 Welcome, <%= admin && admin.firstName ? admin.firstName : 'Admin' %>!');
+        console.log('📊 Total Students: <%= totalStudents || 0 %>');
+        console.log('📚 Total Courses: <%= totalCourses || 0 %>');
+        console.log('📧 Unread Messages: <%= unreadCount || 0 %>');
+    </script>
+
 </body>
 </html>

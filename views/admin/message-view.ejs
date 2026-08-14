@@ -2,33 +2,38 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Message – SHINEX Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title><%= title %> | SHINEX Admin</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/style.css">
     <style>
+        /* ============================================================
+           ADMIN MESSAGE VIEW PAGE STYLES
+           ============================================================ */
+        
+        /* ----- Admin Layout ----- */
         .admin-layout {
             display: flex;
-            gap: 24px;
+            gap: var(--spacing-lg);
             max-width: 1400px;
             margin: 0 auto;
         }
+        
+        /* ----- Admin Sidebar ----- */
         .admin-sidebar {
-            width: 240px;
-            min-width: 200px;
-            background: var(--bg-light);
-            border-radius: var(--radius);
-            border: 1px solid #ede8f5;
+            width: 260px;
+            min-width: 220px;
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
             padding: 12px 0;
             height: fit-content;
             position: sticky;
             top: 80px;
+            box-shadow: var(--shadow-sm);
             transition: all 0.3s ease;
         }
-        body.dark-mode .admin-sidebar {
-            background: var(--dark-card);
-            border-color: var(--dark-border);
-        }
+        
         .admin-sidebar .sidebar-title {
             padding: 8px 18px 12px;
             font-weight: 700;
@@ -36,170 +41,404 @@
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 1px;
-            border-bottom: 1px solid #ede8f5;
+            border-bottom: 1px solid var(--border-color);
         }
-        body.dark-mode .admin-sidebar .sidebar-title {
-            border-color: var(--dark-border);
-        }
+        
         .admin-nav {
             list-style: none;
             padding: 4px 0;
             margin: 0;
         }
+        
         .admin-nav li {
             margin: 0;
         }
+        
         .admin-nav a {
             display: flex;
             align-items: center;
             gap: 10px;
             padding: 8px 18px;
-            color: var(--text-muted);
+            color: var(--text-secondary);
             text-decoration: none;
             font-size: 0.85rem;
             font-weight: 500;
             transition: all 0.2s ease;
             border-left: 3px solid transparent;
         }
+        
         .admin-nav a:hover {
-            background: var(--primary-bg);
-            color: var(--primary);
+            background: var(--purple-bg);
+            color: var(--purple-primary);
         }
+        
         .admin-nav a.active {
-            background: var(--primary-bg);
-            color: var(--primary);
-            border-left-color: var(--primary);
+            background: var(--purple-bg);
+            color: var(--purple-primary);
+            border-left-color: var(--purple-primary);
         }
-        body.dark-mode .admin-nav a:hover {
-            background: #2a1a4a;
+        
+        .admin-nav a i {
+            width: 20px;
+            text-align: center;
         }
-        body.dark-mode .admin-nav a.active {
-            background: #2a1a4a;
+        
+        .admin-nav a .nav-badge {
+            margin-left: auto;
+            font-size: 0.6rem;
+            padding: 2px 8px;
+            border-radius: var(--radius-full);
+            background: var(--text-error);
+            color: #fff;
         }
+        
+        .admin-nav a.logout-link {
+            color: var(--text-error);
+        }
+        
+        .admin-nav a.logout-link:hover {
+            background: var(--bg-alert-error);
+            color: var(--text-error);
+        }
+        
+        /* ----- Admin Content ----- */
         .admin-content {
             flex: 1;
             min-width: 0;
         }
+        
+        /* ----- Admin Cards ----- */
         .admin-card {
-            background: var(--bg-light);
-            border-radius: var(--radius);
-            border: 1px solid #ede8f5;
-            padding: 20px 24px;
-            margin-bottom: 16px;
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-md);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
         }
-        body.dark-mode .admin-card {
-            background: var(--dark-card);
-            border-color: var(--dark-border);
+        
+        .admin-card:hover {
+            box-shadow: var(--shadow-md);
         }
-        .admin-card h4 {
+        
+        .admin-card .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .admin-card .card-header h4 {
             font-size: 1rem;
             font-weight: 700;
-            margin: 0 0 8px;
+            color: var(--text-primary);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        .message-detail {
-            padding: 12px 0;
-            border-bottom: 1px solid #ede8f5;
+        
+        .admin-card .card-header h4 i {
+            color: var(--purple-primary);
         }
-        body.dark-mode .message-detail {
-            border-color: var(--dark-border);
+        
+        /* ----- Page Header ----- */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
         }
-        .message-detail:last-child {
-            border-bottom: none;
+        
+        .page-header .page-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
         }
-        .message-detail .label {
-            font-weight: 600;
-            font-size: 0.8rem;
+        
+        .page-header .page-subtitle {
             color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            margin: 2px 0 0 0;
+            font-size: 0.9rem;
         }
-        .message-detail .value {
-            font-size: 1rem;
-            margin-top: 2px;
-        }
-        .message-detail .value.message-body {
-            background: var(--primary-bg);
-            padding: 12px 16px;
-            border-radius: 8px;
-            white-space: pre-wrap;
-            line-height: 1.8;
-        }
-        body.dark-mode .message-detail .value.message-body {
-            background: #1a1a1a;
-        }
+        
+        /* ----- Status Badge ----- */
         .status-badge {
             display: inline-flex;
             align-items: center;
-            gap: 4px;
-            padding: 4px 16px;
-            border-radius: 20px;
+            gap: 8px;
+            padding: 6px 20px;
+            border-radius: var(--radius-full);
             font-size: 0.8rem;
             font-weight: 600;
         }
+        
         .status-badge.unread {
-            background: #fadbd8;
-            color: #922b21;
+            background: var(--bg-alert-error);
+            color: var(--text-error);
         }
+        
         .status-badge.read {
-            background: #d6eaf8;
+            background: var(--bg-alert-info);
             color: #1a5276;
         }
+        
         .status-badge.replied {
-            background: #d5f5e3;
-            color: #1a7a4a;
+            background: var(--bg-alert-success);
+            color: var(--text-success);
         }
-        body.dark-mode .status-badge.unread {
-            background: #3a1a1a;
-            color: #f1948a;
-        }
+        
         body.dark-mode .status-badge.read {
-            background: #1a2a3a;
             color: #85c1e9;
         }
-        body.dark-mode .status-badge.replied {
-            background: #1a3a2a;
-            color: #7dcea0;
+        
+        /* ----- Message Details ----- */
+        .message-detail {
+            padding: var(--spacing-sm) 0;
+            border-bottom: 1px solid var(--border-color);
         }
+        
+        .message-detail:last-of-type {
+            border-bottom: none;
+        }
+        
+        .message-detail .detail-label {
+            font-weight: 600;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .message-detail .detail-label i {
+            color: var(--purple-primary);
+        }
+        
+        .message-detail .detail-value {
+            font-size: 1rem;
+            margin-top: 2px;
+            color: var(--text-primary);
+        }
+        
+        .message-detail .detail-value.message-body {
+            background: var(--bg-card-secondary);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-sm);
+            white-space: pre-wrap;
+            line-height: 1.8;
+            border: 1px solid var(--border-color);
+            margin-top: 4px;
+        }
+        
+        /* ----- Reply Box ----- */
         .reply-box {
-            background: var(--primary-bg);
-            padding: 16px 20px;
-            border-radius: 10px;
-            margin-top: 12px;
+            background: var(--bg-card-secondary);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-sm);
+            margin-top: var(--spacing-sm);
+            border: 1px solid var(--border-color);
         }
-        body.dark-mode .reply-box {
-            background: #1a1a1a;
+        
+        .reply-box .reply-meta {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: var(--spacing-sm);
         }
-        .reply-box textarea {
-            min-height: 100px;
+        
+        .reply-box .reply-meta i {
+            margin-right: 4px;
         }
-        @media (max-width: 768px) {
+        
+        /* ----- Form ----- */
+        .form-group {
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--text-primary);
+        }
+        
+        .form-group label .required {
+            color: var(--text-error);
+        }
+        
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: var(--bg-input);
+            color: var(--text-primary);
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        .form-group textarea:focus {
+            border-color: var(--purple-primary);
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.12);
+            outline: none;
+        }
+        
+        .form-group .help-text {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+        
+        .form-group .help-text i {
+            margin-right: 4px;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+            flex-wrap: wrap;
+            margin-top: var(--spacing-sm);
+        }
+        
+        /* ----- Delete Button Area ----- */
+        .delete-area {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: var(--spacing-md);
+        }
+        
+        /* ----- Responsive ----- */
+        @media (max-width: 1024px) {
             .admin-layout {
                 flex-direction: column;
             }
+            
             .admin-sidebar {
                 width: 100%;
                 min-width: unset;
                 position: relative;
                 top: 0;
+                max-height: 0;
+                overflow: hidden;
+                padding: 0;
+                transition: max-height 0.3s ease, padding 0.3s ease;
+                box-shadow: none;
+            }
+            
+            .admin-sidebar.open {
+                max-height: 600px;
+                padding: 12px 0;
+                overflow-y: auto;
+            }
+            
+            .admin-sidebar-toggle {
+                display: flex !important;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .admin-card {
+                padding: var(--spacing-md);
+            }
+            
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .page-header .header-actions {
+                width: 100%;
+            }
+            
+            .page-header .header-actions .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .message-detail .detail-value {
+                font-size: 0.9rem;
+            }
+            
+            .message-detail .detail-value.message-body {
+                font-size: 0.9rem;
+                padding: var(--spacing-sm);
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .form-actions .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .delete-area {
+                justify-content: center;
             }
         }
     </style>
 </head>
 <body>
-    <%- include('partials/header', { showBack: true }) %>
 
+    <!-- ===== ADMIN HEADER (Built-in) ===== -->
+    <header style="background:linear-gradient(135deg, #8B5CF6, #6a3dcf); padding:12px 24px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:1000; box-shadow:0 2px 15px rgba(139,92,246,0.3);">
+        <div style="display:flex; align-items:center; gap:12px;">
+            <!-- Back Button -->
+            <a href="/admin/messages" style="color:rgba(255,255,255,0.8); text-decoration:none; padding:4px 10px; border-radius:8px; transition:all 0.3s ease; font-size:14px;">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div style="width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.2); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:11px;">SLC</div>
+            <div>
+                <div style="font-weight:700; font-size:16px; color:#fff;">SHINEX <span style="opacity:0.7; font-weight:400;">Admin</span></div>
+                <div style="font-size:7px; color:rgba(255,255,255,0.6); letter-spacing:2px;">LEARNING CIRCLE</div>
+            </div>
+        </div>
+        <div style="display:flex; gap:12px; align-items:center;">
+            <span style="color:rgba(255,255,255,0.9); font-size:13px;">
+                <i class="fas fa-user"></i> <%= admin && admin.firstName ? admin.firstName : 'Admin' %>
+            </span>
+            <button onclick="document.body.classList.toggle('dark-mode'); localStorage.setItem('shinex-theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');" style="background:rgba(255,255,255,0.15); border:none; color:#fff; padding:6px 12px; border-radius:20px; font-size:14px; cursor:pointer;">
+                <i class="fas fa-moon"></i>
+            </button>
+            <a href="/admin/logout" style="color:#fff; text-decoration:none; background:rgba(255,255,255,0.15); padding:6px 14px; border-radius:20px; font-size:13px; transition:all 0.3s ease;">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </header>
+
+    <!-- ===== MAIN CONTENT ===== -->
     <main class="main-content">
         <div class="container">
+
+            <!-- Flash Messages -->
             <% if (messages && messages.success) { %>
-                <div class="alert alert-success"><%= messages.success %></div>
+                <div class="alert alert-success flash-message" data-type="success">
+                    <i class="fas fa-check-circle"></i> <%= messages.success %>
+                </div>
             <% } %>
             <% if (messages && messages.error) { %>
-                <div class="alert alert-danger"><%= messages.error %></div>
+                <div class="alert alert-danger flash-message" data-type="error">
+                    <i class="fas fa-exclamation-circle"></i> <%= messages.error %>
+                </div>
             <% } %>
 
+            <!-- ===== ADMIN LAYOUT ===== -->
             <div class="admin-layout">
-                <!-- ===== Admin Sidebar ===== -->
-                <aside class="admin-sidebar">
+
+                <!-- ===== SIDEBAR ===== -->
+                <aside class="admin-sidebar" id="adminSidebar">
                     <div class="sidebar-title"><i class="fas fa-crown"></i> Admin Panel</div>
                     <ul class="admin-nav">
                         <li><a href="/admin/dashboard"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
@@ -208,106 +447,238 @@
                         <li><a href="/admin/services"><i class="fas fa-concierge-bell"></i> Services</a></li>
                         <li><a href="/admin/messages" class="active"><i class="fas fa-envelope"></i> Messages</a></li>
                         <li><a href="/admin/manage-admins"><i class="fas fa-user-shield"></i> Admins</a></li>
-                        <li><a href="/admin/logout" style="color:#e74c3c;"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                        <li><a href="/admin/logout" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                     </ul>
                 </aside>
 
-                <!-- ===== Admin Content ===== -->
+                <!-- ===== CONTENT ===== -->
                 <div class="admin-content">
-                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:16px;">
+
+                    <!-- Page Header -->
+                    <div class="page-header">
                         <div>
-                            <h2 style="font-size:1.5rem; font-weight:700; margin:0 0 2px;">📩 Message Details</h2>
-                            <p style="color:var(--text-muted); margin:0;">View and reply to this message.</p>
+                            <h1 class="page-title">
+                                <i class="fas fa-envelope-open-text" style="color:var(--purple-primary);"></i> 
+                                Message Details
+                            </h1>
+                            <p class="page-subtitle">
+                                <i class="fas fa-info-circle"></i> 
+                                View and reply to this message
+                            </p>
                         </div>
-                        <a href="/admin/messages" class="btn btn-secondary btn-sm">
-                            <i class="fas fa-arrow-left"></i> Back to Messages
-                        </a>
+                        <div class="header-actions">
+                            <a href="/admin/messages" class="btn btn-secondary btn-sm">
+                                <i class="fas fa-arrow-left"></i> Back to Messages
+                            </a>
+                            <button class="btn btn-secondary btn-sm admin-sidebar-toggle" onclick="toggleSidebar()" style="display:none;">
+                                <i class="fas fa-bars"></i> Menu
+                            </button>
+                        </div>
                     </div>
 
-                    <!-- Message Details -->
+                    <!-- ===== MESSAGE DETAILS ===== -->
                     <div class="admin-card">
-                        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:12px;">
+                        <!-- Status & Date -->
+                        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:var(--spacing-sm); margin-bottom:var(--spacing-md);">
                             <span class="status-badge <%= message.status %>">
                                 <% if (message.status === 'unread') { %>
-                                    <i class="fas fa-circle" style="color:#e74c3c; font-size:0.5rem;"></i> Unread
+                                    <i class="fas fa-circle" style="font-size:0.6rem;"></i> Unread
                                 <% } else if (message.status === 'read') { %>
-                                    <i class="fas fa-check-circle" style="color:#3498db; font-size:0.5rem;"></i> Read
+                                    <i class="fas fa-check-circle"></i> Read
                                 <% } else { %>
-                                    <i class="fas fa-check-double" style="color:#27ae60; font-size:0.5rem;"></i> Replied
+                                    <i class="fas fa-check-double"></i> Replied
                                 <% } %>
                             </span>
                             <span style="font-size:0.8rem; color:var(--text-muted);">
+                                <i class="far fa-clock"></i> 
                                 Received: <%= new Date(message.createdAt).toLocaleString() %>
                             </span>
                         </div>
 
+                        <!-- From -->
                         <div class="message-detail">
-                            <div class="label">From</div>
-                            <div class="value"><strong><%= message.name || 'Anonymous' %></strong></div>
+                            <div class="detail-label">
+                                <i class="fas fa-user"></i> From
+                            </div>
+                            <div class="detail-value">
+                                <strong><%= message.name || 'Anonymous' %></strong>
+                            </div>
                         </div>
 
+                        <!-- Email -->
                         <div class="message-detail">
-                            <div class="label">Email</div>
-                            <div class="value"><%= message.email || 'N/A' %></div>
+                            <div class="detail-label">
+                                <i class="fas fa-envelope"></i> Email
+                            </div>
+                            <div class="detail-value">
+                                <a href="mailto:<%= message.email %>" style="color:var(--purple-primary); text-decoration:none;">
+                                    <%= message.email || 'N/A' %>
+                                </a>
+                            </div>
                         </div>
 
+                        <!-- Subject -->
                         <div class="message-detail">
-                            <div class="label">Subject</div>
-                            <div class="value"><%= message.subject || 'No subject' %></div>
+                            <div class="detail-label">
+                                <i class="fas fa-heading"></i> Subject
+                            </div>
+                            <div class="detail-value">
+                                <%= message.subject || 'No subject' %>
+                            </div>
                         </div>
 
+                        <!-- Message -->
                         <div class="message-detail">
-                            <div class="label">Message</div>
-                            <div class="value message-body"><%= message.message || 'No message content.' %></div>
+                            <div class="detail-label">
+                                <i class="fas fa-comment"></i> Message
+                            </div>
+                            <div class="detail-value message-body">
+                                <%= message.message || 'No message content.' %>
+                            </div>
                         </div>
 
+                        <!-- Admin Reply (if exists) -->
                         <% if (message.adminReply) { %>
-                            <div class="message-detail" style="background:#e8f5e9; padding:12px 16px; border-radius:8px; margin-top:8px; border-left:4px solid #4CAF50;">
-                                <div class="label" style="color:#2E7D32;">Admin Reply</div>
-                                <div class="value" style="color:#1B5E20;"><%= message.adminReply %></div>
-                                <div style="font-size:0.8rem; color:var(--text-muted); margin-top:4px;">
+                            <div class="reply-box" style="margin-top:var(--spacing-md); border-left:4px solid var(--text-success);">
+                                <div class="detail-label" style="color:var(--text-success);">
+                                    <i class="fas fa-reply"></i> Admin Reply
+                                </div>
+                                <div class="detail-value" style="color:var(--text-primary);">
+                                    <%= message.adminReply %>
+                                </div>
+                                <div class="reply-meta">
+                                    <i class="fas fa-check-circle" style="color:var(--text-success);"></i>
                                     Replied on: <%= new Date(message.repliedAt).toLocaleString() %>
                                 </div>
                             </div>
                         <% } %>
                     </div>
 
-                    <!-- Reply Form -->
+                    <!-- ===== REPLY FORM ===== -->
                     <div class="admin-card" id="reply">
-                        <h4><i class="fas fa-reply"></i> Reply to <%= message.name %></h4>
-                        <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:12px;">
-                            Your reply will be sent directly to the user's email address.
+                        <div class="card-header">
+                            <h4><i class="fas fa-reply" style="color:var(--text-success);"></i> Reply to <%= message.name %></h4>
+                            <span class="badge badge-success">
+                                <i class="fas fa-paper-plane"></i> Send via Email
+                            </span>
+                        </div>
+                        
+                        <p style="color:var(--text-secondary); font-size:0.9rem; margin-bottom:var(--spacing-md);">
+                            <i class="fas fa-info-circle"></i> 
+                            Your reply will be sent directly to the user's email address using SendGrid.
                         </p>
 
                         <form action="/admin/messages/reply/<%= message.id %>" method="POST">
-                            <div class="settings-group">
-                                <label for="reply">Your Reply <span style="color:red;">*</span></label>
-                                <textarea id="reply" name="reply" rows="5" placeholder="Type your reply here..." required></textarea>
-                                <p class="help-text">The user will receive this reply via email.</p>
+                            <div class="form-group">
+                                <label for="replyText">
+                                    Your Reply <span class="required">*</span>
+                                </label>
+                                <textarea 
+                                    id="replyText" 
+                                    name="reply" 
+                                    rows="6" 
+                                    placeholder="Type your reply here..." 
+                                    required
+                                    autofocus
+                                ></textarea>
+                                <div class="help-text">
+                                    <i class="fas fa-info-circle"></i> 
+                                    The user will receive this reply via email. Be professional and clear.
+                                </div>
                             </div>
-                            <button type="submit" class="btn btn-success">
-                                <i class="fas fa-paper-plane"></i> Send Reply
-                            </button>
-                            <a href="/admin/messages" class="btn btn-secondary" style="margin-left:8px;">
-                                Cancel
-                            </a>
+                            
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-paper-plane"></i> Send Reply
+                                </button>
+                                <a href="/admin/messages" class="btn btn-secondary">
+                                    <i class="fas fa-times"></i> Cancel
+                                </a>
+                            </div>
                         </form>
                     </div>
 
-                    <!-- Delete Button -->
-                    <div style="text-align:right;">
-                        <form action="/admin/messages/delete/<%= message.id %>" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this message?');">
+                    <!-- ===== DELETE ===== -->
+                    <div class="delete-area">
+                        <form action="/admin/messages/delete/<%= message.id %>" method="POST" style="display:inline;" 
+                              onsubmit="return confirm('⚠️ Are you sure you want to delete this message?\n\nThis action cannot be undone.');">
                             <button type="submit" class="btn btn-danger btn-sm">
                                 <i class="fas fa-trash-alt"></i> Delete Message
                             </button>
                         </form>
                     </div>
+
                 </div>
             </div>
         </div>
     </main>
 
-    <%- include('partials/footer') %>
-    <script src="/js/main.js"></script>
+    <!-- ===== FOOTER ===== -->
+    <footer style="background:linear-gradient(135deg, #6a3dcf, #4a1a8a); padding:24px 0 16px; margin-top:40px;">
+        <div style="max-width:1200px; margin:0 auto; padding:0 20px; text-align:center; font-size:0.8rem; color:rgba(255,255,255,0.6);">
+            &copy; 2026 SHINEX Learning Circle. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        // ============================================================
+        // SIDEBAR TOGGLE (Mobile)
+        // ============================================================
+        
+        function toggleSidebar() {
+            const sidebar = document.getElementById('adminSidebar');
+            if (sidebar) {
+                sidebar.classList.toggle('open');
+            }
+        }
+        
+        // ============================================================
+        // DARK MODE INIT
+        // ============================================================
+        
+        if (localStorage.getItem('shinex-theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
+        
+        // ============================================================
+        // AUTO DISMISS FLASH MESSAGES
+        // ============================================================
+        
+        document.querySelectorAll('.flash-message').forEach(msg => {
+            setTimeout(() => {
+                msg.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                msg.style.opacity = '0';
+                msg.style.transform = 'translateY(-10px)';
+                setTimeout(() => {
+                    if (msg.parentNode) msg.remove();
+                }, 500);
+            }, 5000);
+        });
+        
+        // ============================================================
+        // AUTO FOCUS REPLY TEXTAREA
+        // ============================================================
+        
+        // Focus the reply textarea if the URL has #reply
+        if (window.location.hash === '#reply') {
+            const replyTextarea = document.getElementById('replyText');
+            if (replyTextarea) {
+                setTimeout(() => {
+                    replyTextarea.focus();
+                }, 500);
+            }
+        }
+        
+        // ============================================================
+        // CONSOLE WELCOME
+        // ============================================================
+        
+        console.log('🔐 SHINEX Admin Panel');
+        console.log('📩 Viewing Message from: <%= message.name || "Anonymous" %>');
+        console.log('📧 Email: <%= message.email || "N/A" %>');
+        console.log('📊 Status: <%= message.status %>');
+        console.log('📅 Received: <%= new Date(message.createdAt).toLocaleString() %>');
+    </script>
+
 </body>
 </html>

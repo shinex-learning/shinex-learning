@@ -1,54 +1,324 @@
 <!-- ============================================================
      HEADER – DESKTOP VERSION
      ============================================================ -->
-<header class="header">
-    <div style="display:flex; align-items:center; gap:12px;">
+<header class="header" style="
+    width: 100%;
+    padding: 12px 24px;
+    background: var(--purple-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: none;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 15px rgba(139, 92, 246, 0.3);
+    transition: all 0.3s ease;
+">
+    <!-- Left Section: Logo + Back Button -->
+    <div style="
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    ">
+        <!-- Back Button -->
         <% if (showBack) { %>
-            <a href="javascript:history.back()" class="back-btn" title="Go Back">
+            <a href="javascript:history.back()" style="
+                color: rgba(255,255,255,0.8);
+                text-decoration: none;
+                padding: 6px 14px;
+                border-radius: 8px;
+                transition: all 0.3s ease;
+                font-size: 0.85rem;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                background: rgba(255,255,255,0.1);
+            ">
                 <i class="fas fa-arrow-left"></i> Back
             </a>
         <% } %>
         
-        <a href="/" class="logo-container">
-            <div class="logo">SLC</div>
+        <!-- Logo -->
+        <a href="/" class="logo-container" style="
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        ">
+            <div class="logo" style="
+                width: 42px;
+                height: 42px;
+                border-radius: 50%;
+                background: rgba(255,255,255,0.2);
+                color: #fff;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 800;
+                font-size: 13px;
+                letter-spacing: 1px;
+                flex-shrink: 0;
+                transition: all 0.3s ease;
+            ">
+                SLC
+            </div>
             <div>
-                <div class="logo-text">SHINEX<span>.</span></div>
-                <div class="logo-sub">LEARNING CIRCLE</div>
+                <div class="logo-text" style="
+                    font-size: 18px;
+                    font-weight: 700;
+                    color: #fff;
+                    line-height: 1.2;
+                ">
+                    SHINEX<span style="color: rgba(255,255,255,0.8);">.</span>
+                </div>
+                <div class="logo-sub" style="
+                    font-size: 8px;
+                    font-weight: 600;
+                    color: rgba(255,255,255,0.7);
+                    letter-spacing: 2px;
+                    margin-top: -2px;
+                ">
+                    LEARNING CIRCLE
+                </div>
             </div>
         </a>
     </div>
 
-    <div class="header-actions">
+    <!-- Right Section: Controls + User Actions -->
+    <div class="header-actions" style="
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+    ">
         <!-- Text Size Slider -->
-        <div class="text-size-control">
-            <label><i class="fas fa-font"></i></label>
-            <input type="range" class="text-size-slider" min="12" max="24" value="16" step="1">
-            <span class="text-size-value">16px</span>
+        <div class="text-size-control" style="
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 12px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 30px;
+            transition: all 0.3s ease;
+        ">
+            <label style="
+                font-size: 0.65rem;
+                font-weight: 600;
+                color: rgba(255,255,255,0.8);
+                display: flex;
+                align-items: center;
+                gap: 4px;
+            ">
+                <i class="fas fa-font"></i>
+            </label>
+            <input type="range" class="text-size-slider" min="12" max="24" value="16" step="1" style="
+                width: 70px;
+                height: 3px;
+                -webkit-appearance: none;
+                appearance: none;
+                background: rgba(255,255,255,0.4);
+                border-radius: 4px;
+                outline: none;
+                padding: 0;
+                cursor: pointer;
+            ">
+            <span class="text-size-value" style="
+                font-size: 0.7rem;
+                font-weight: 700;
+                color: #fff;
+                min-width: 28px;
+                text-align: center;
+            ">16px</span>
         </div>
 
         <!-- Dark Mode Toggle -->
-        <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode">
-            🌙 <span class="toggle-label">Dark</span>
+        <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode" style="
+            background: rgba(255,255,255,0.1);
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            padding: 6px 14px;
+            border-radius: 30px;
+            color: #fff;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        ">
+            <i class="fas fa-moon"></i>
+            <span class="toggle-label" style="font-size: 0.7rem; font-weight: 600;">Dark</span>
         </button>
 
-        <!-- Login/Register OR User -->
+        <!-- User Actions -->
         <% if (user) { %>
-            <a href="/dashboard" class="btn btn-secondary btn-sm">
+            <!-- Logged In User -->
+            <a href="/dashboard" style="
+                background: rgba(255,255,255,0.15);
+                color: #fff;
+                text-decoration: none;
+                padding: 6px 16px;
+                border-radius: 30px;
+                font-size: 0.8rem;
+                font-weight: 600;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                transition: all 0.3s ease;
+                border: 1px solid rgba(255,255,255,0.1);
+            ">
                 <i class="fas fa-user"></i> <%= user.firstName %>
             </a>
-            <a href="/logout" class="btn btn-danger btn-sm">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </a>
-            <a href="/settings" class="btn btn-secondary btn-sm" style="min-height:36px; padding:6px 16px; border-radius:30px;">
+            <a href="/settings" style="
+                background: rgba(255,255,255,0.1);
+                color: #fff;
+                text-decoration: none;
+                padding: 6px 14px;
+                border-radius: 30px;
+                font-size: 0.8rem;
+                font-weight: 600;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                transition: all 0.3s ease;
+                border: 1px solid rgba(255,255,255,0.1);
+            ">
                 <i class="fas fa-cog"></i>
             </a>
+            <a href="/logout" style="
+                background: rgba(255,255,255,0.15);
+                color: #fff;
+                text-decoration: none;
+                padding: 6px 16px;
+                border-radius: 30px;
+                font-size: 0.8rem;
+                font-weight: 600;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                transition: all 0.3s ease;
+                border: 1px solid rgba(255,255,255,0.1);
+            ">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
         <% } else { %>
-            <a href="/login" class="btn btn-secondary btn-sm">
+            <!-- Logged Out User -->
+            <a href="/login" style="
+                background: rgba(255,255,255,0.15);
+                color: #fff;
+                text-decoration: none;
+                padding: 6px 16px;
+                border-radius: 30px;
+                font-size: 0.8rem;
+                font-weight: 600;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                transition: all 0.3s ease;
+                border: 1px solid rgba(255,255,255,0.1);
+            ">
                 <i class="fas fa-sign-in-alt"></i> Login
             </a>
-            <a href="/register" class="btn btn-primary btn-sm">
+            <a href="/register" style="
+                background: rgba(255,255,255,0.2);
+                color: #fff;
+                text-decoration: none;
+                padding: 6px 16px;
+                border-radius: 30px;
+                font-size: 0.8rem;
+                font-weight: 600;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                transition: all 0.3s ease;
+                border: 1px solid rgba(255,255,255,0.15);
+            ">
                 <i class="fas fa-user-plus"></i> Register
             </a>
         <% } %>
     </div>
 </header>
+
+<!-- ============================================================
+     HEADER SCRIPTS
+     ============================================================ -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // ============================================================
+        // TEXT SIZE SLIDER
+        // ============================================================
+        
+        const sliders = document.querySelectorAll('.text-size-slider');
+        const body = document.body;
+        
+        // Load saved size
+        const savedSize = localStorage.getItem('shinex-text-size') || 16;
+        body.style.fontSize = savedSize + 'px';
+        
+        sliders.forEach(slider => {
+            const valueDisplay = slider.parentElement.querySelector('.text-size-value');
+            
+            // Set initial value
+            slider.value = savedSize;
+            if (valueDisplay) valueDisplay.textContent = savedSize + 'px';
+            
+            slider.addEventListener('input', function() {
+                const size = this.value;
+                body.style.fontSize = size + 'px';
+                if (valueDisplay) valueDisplay.textContent = size + 'px';
+                localStorage.setItem('shinex-text-size', size);
+                
+                // Sync all sliders
+                document.querySelectorAll('.text-size-slider').forEach(s => {
+                    if (s !== this) s.value = size;
+                    const display = s.parentElement.querySelector('.text-size-value');
+                    if (display) display.textContent = size + 'px';
+                });
+            });
+        });
+        
+        // ============================================================
+        // DARK MODE TOGGLE
+        // ============================================================
+        
+        const darkToggle = document.getElementById('darkToggle');
+        
+        if (darkToggle) {
+            // Check saved theme
+            if (localStorage.getItem('shinex-theme') === 'dark') {
+                document.body.classList.add('dark-mode');
+                updateDarkToggle(darkToggle, true);
+            }
+            
+            darkToggle.addEventListener('click', function() {
+                const isDark = document.body.classList.toggle('dark-mode');
+                localStorage.setItem('shinex-theme', isDark ? 'dark' : 'light');
+                updateDarkToggle(this, isDark);
+            });
+        }
+        
+        function updateDarkToggle(button, isDark) {
+            const icon = button.querySelector('i');
+            const label = button.querySelector('.toggle-label');
+            
+            if (icon) {
+                icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+            }
+            if (label) {
+                label.textContent = isDark ? 'Light' : 'Dark';
+            }
+        }
+        
+        // ============================================================
+        // KEYBOARD SHORTCUT: Ctrl+Shift+D for Dark Mode
+        // ============================================================
+        
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.shiftKey && e.key === 'D') {
+                e.preventDefault();
+                const toggle = document.getElementById('darkToggle');
+                if (toggle) toggle.click();
+            }
+        });
+    });
+</script>

@@ -3,223 +3,877 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Dashboard – SHINEX</title>
+    <title>Dashboard – SHINEX Learning Circle</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/style.css">
     <style>
-        .mobile-dash-container { padding: 12px 12px 24px; max-width: 500px; margin: 0 auto; }
-        .mobile-welcome { padding: 18px 16px !important; border-radius: 14px !important; margin-bottom: 16px !important; background: linear-gradient(135deg, #8B5CF6, #6a3dcf) !important; }
-        .mobile-welcome h1 { font-size: 1.2rem !important; margin: 0 !important; color: #fff !important; }
-        .mobile-welcome p { font-size: 0.8rem !important; margin: 4px 0 0 !important; color: #d4c4f0 !important; }
-        .mobile-welcome .student-id { display: inline-block; background: rgba(255,255,255,0.2); padding: 2px 10px; border-radius: 20px; font-weight: 700; font-size: 0.75rem; color: #fff !important; }
-        .mobile-stats { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px; }
-        .mobile-stats .stat-box { padding: 10px 6px !important; border-radius: 10px !important; background: #f0ebfb !important; text-align: center !important; }
-        .mobile-stats .stat-box .stat-number { font-size: 1.2rem !important; font-weight: 800 !important; color: #8B5CF6 !important; }
-        .mobile-stats .stat-box .stat-label { font-size: 0.6rem !important; color: #7a6a8f !important; }
-        .mobile-progress { margin-bottom: 16px; }
-        .mobile-progress .progress-label { font-size: 0.8rem !important; color: var(--text-dark); }
-        .mobile-course-card { padding: 14px 14px !important; border-radius: 12px !important; margin-bottom: 12px !important; background: var(--bg-light) !important; border: 1px solid #ede8f5 !important; }
-        .mobile-course-card h3 { font-size: 1rem !important; margin: 0 0 4px !important; color: var(--text-dark); }
-        .mobile-course-card p { font-size: 0.82rem !important; margin: 0 0 8px !important; color: var(--text-muted); }
-        .mobile-course-card .btn { font-size: 0.82rem !important; padding: 8px 16px !important; min-height: 38px !important; border-radius: 30px !important; width: 100%; text-align: center; text-decoration: none; display: block; }
-        .mobile-section-title { font-size: 1.1rem !important; font-weight: 700 !important; margin: 16px 0 6px !important; color: var(--text-dark); }
-        .mobile-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .mobile-grid-2 .course-card { padding: 12px !important; border-radius: 10px !important; background: var(--bg-light) !important; border: 1px solid #ede8f5 !important; }
-        .mobile-grid-2 .course-card h4 { font-size: 0.82rem !important; margin: 0 0 2px !important; color: var(--text-dark); }
-        .mobile-grid-2 .course-card .btn { font-size: 0.7rem !important; padding: 6px !important; min-height: 32px !important; width: 100%; border-radius: 30px !important; text-align: center; text-decoration: none; display: block; }
-        .mobile-quick-links { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; padding-top: 12px; border-top: 1px solid #ede8f5; }
-        .mobile-quick-links .btn { font-size: 0.75rem !important; padding: 6px 12px !important; min-height: 32px !important; border-radius: 30px !important; text-decoration: none; }
-        .btn-change-course { background: rgba(255,255,255,0.2); color: #fff; border: 1px solid rgba(255,255,255,0.3); font-size: 0.75rem !important; padding: 4px 12px !important; min-height: 30px !important; border-radius: 20px !important; text-decoration: none; display: inline-block; }
-        .mobile-alert { font-size: 0.82rem !important; padding: 10px 14px !important; border-radius: 8px !important; margin-bottom: 12px !important; }
-        .empty-state { padding: 24px !important; border-radius: 12px !important; text-align: center !important; background: #f8f6fc !important; border: 1px solid #ede8f5 !important; }
-        .empty-state .empty-icon { font-size: 2rem; display: block; margin-bottom: 8px; opacity: 0.3; }
-        .empty-state h3 { font-size: 1rem !important; margin: 0 0 4px !important; color: var(--text-dark); }
-        .empty-state p { font-size: 0.85rem !important; margin: 0 !important; color: var(--text-muted); }
-        body.dark-mode .mobile-stats .stat-box { background: #2a1a4a !important; }
-        body.dark-mode .mobile-stats .stat-box .stat-number { color: #a78bfa !important; }
-        body.dark-mode .mobile-stats .stat-box .stat-label { color: #cccccc !important; }
-        body.dark-mode .mobile-course-card { background: var(--dark-card) !important; border-color: var(--dark-border) !important; }
-        body.dark-mode .mobile-grid-2 .course-card { background: var(--dark-card) !important; border-color: var(--dark-border) !important; }
-        body.dark-mode .mobile-quick-links { border-color: var(--dark-border) !important; }
-        body.dark-mode .empty-state { background: #1a1a1a !important; border-color: var(--dark-border) !important; }
-        @media (max-width: 400px) { .mobile-stats { grid-template-columns: 1fr 1fr; } .mobile-grid-2 { grid-template-columns: 1fr; } }
+        /* ============================================================
+           MOBILE DASHBOARD PAGE STYLES
+           ============================================================ */
+        
+        .mobile-dash-container {
+            padding: var(--spacing-sm) var(--spacing-sm) var(--spacing-xl);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        /* ----- Welcome Card ----- */
+        .welcome-card {
+            background: var(--purple-gradient);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg) var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            color: #fff;
+        }
+        
+        .welcome-card .welcome-top {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: var(--spacing-sm);
+        }
+        
+        .welcome-card h1 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #fff;
+            margin: 0;
+        }
+        
+        .welcome-card h1 i {
+            margin-right: 4px;
+        }
+        
+        .welcome-card .welcome-sub {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.85);
+            margin: 4px 0 0 0;
+        }
+        
+        .welcome-card .student-id-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 2px 12px;
+            border-radius: var(--radius-full);
+            font-weight: 700;
+            font-size: 0.7rem;
+            color: #fff;
+        }
+        
+        .welcome-card .change-course-btn {
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 0.7rem;
+            padding: 4px 12px;
+            border-radius: var(--radius-full);
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .welcome-card .change-course-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+        
+        /* ----- Stats Grid ----- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 8px;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .stat-box {
+            background: var(--bg-card-secondary);
+            border-radius: var(--radius-sm);
+            padding: var(--spacing-sm) 6px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        
+        .stat-box:hover {
+            transform: translateY(-2px);
+            border-color: var(--purple-primary);
+        }
+        
+        .stat-box .stat-number {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--purple-primary);
+            display: block;
+        }
+        
+        .stat-box .stat-label {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            display: block;
+            margin-top: 2px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .stat-box .stat-icon {
+            font-size: 0.8rem;
+            color: var(--purple-primary);
+            opacity: 0.5;
+            margin-bottom: 2px;
+            display: block;
+        }
+        
+        /* ----- Progress Section ----- */
+        .progress-section {
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .progress-section .progress-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        
+        .progress-section .progress-header .progress-percent {
+            color: var(--purple-primary);
+        }
+        
+        .progress-section .progress-bar {
+            height: 8px;
+            border-radius: var(--radius-full);
+            background: var(--bg-card-secondary);
+            overflow: hidden;
+        }
+        
+        .progress-section .progress-bar .progress-fill {
+            height: 100%;
+            border-radius: var(--radius-full);
+            background: var(--purple-gradient);
+            transition: width 0.6s ease;
+        }
+        
+        /* ----- Section Title ----- */
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: var(--spacing-md) 0 var(--spacing-sm) 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .section-title i {
+            color: var(--purple-primary);
+        }
+        
+        /* ----- Course Card ----- */
+        .course-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-sm);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+        }
+        
+        .course-card:hover {
+            border-color: var(--purple-primary);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .course-card.enrolled {
+            border-left: 4px solid var(--purple-primary);
+        }
+        
+        .course-card .course-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-bottom: 4px;
+        }
+        
+        .course-card .course-top h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        
+        .course-card .course-top .level-badge {
+            font-size: 0.6rem;
+            padding: 2px 10px;
+            border-radius: var(--radius-full);
+            background: var(--purple-bg);
+            color: var(--purple-primary);
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        
+        .course-card .course-description {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            margin: 0 0 var(--spacing-sm) 0;
+            line-height: 1.5;
+        }
+        
+        .course-card .course-meta {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .course-card .course-meta .meta-tag {
+            font-size: 0.6rem;
+            padding: 2px 10px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .course-card .course-meta .meta-tag.duration {
+            background: var(--bg-card-secondary);
+            color: var(--text-muted);
+        }
+        
+        .course-card .course-meta .meta-tag.progress-tag {
+            background: var(--bg-alert-success);
+            color: var(--text-success);
+        }
+        
+        .course-card .course-actions .btn-continue {
+            width: 100%;
+            font-size: 0.82rem;
+            padding: 8px;
+            min-height: 38px;
+            border-radius: var(--radius-full);
+            background: var(--purple-gradient);
+            color: #fff;
+            border: none;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .course-card .course-actions .btn-continue:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+        }
+        
+        .course-card .course-actions .btn-continue i {
+            margin-right: 6px;
+        }
+        
+        /* ----- More Courses Grid ----- */
+        .courses-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .course-mini-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            padding: var(--spacing-sm);
+            transition: all 0.3s ease;
+        }
+        
+        .course-mini-card:hover {
+            border-color: var(--purple-primary);
+            transform: translateY(-2px);
+        }
+        
+        .course-mini-card h4 {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0 0 2px 0;
+        }
+        
+        .course-mini-card p {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin: 0 0 6px 0;
+            line-height: 1.4;
+        }
+        
+        .course-mini-card .btn-view {
+            font-size: 0.7rem;
+            padding: 4px 12px;
+            min-height: 28px;
+            border-radius: var(--radius-full);
+            background: var(--bg-card-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .course-mini-card .btn-view:hover {
+            background: var(--purple-bg);
+            border-color: var(--purple-primary);
+            color: var(--purple-primary);
+        }
+        
+        /* ----- Quick Links ----- */
+        .quick-links {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: var(--spacing-md);
+            padding-top: var(--spacing-md);
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .quick-links .btn-quick {
+            font-size: 0.75rem;
+            padding: 6px 14px;
+            min-height: 32px;
+            border-radius: var(--radius-full);
+            background: var(--bg-card-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+        }
+        
+        .quick-links .btn-quick:hover {
+            background: var(--purple-bg);
+            border-color: var(--purple-primary);
+            color: var(--purple-primary);
+            transform: translateY(-2px);
+        }
+        
+        .quick-links .btn-quick i {
+            font-size: 0.7rem;
+        }
+        
+        /* ----- Empty State ----- */
+        .empty-state {
+            padding: var(--spacing-xl) var(--spacing-md);
+            border-radius: var(--radius-lg);
+            text-align: center;
+            background: var(--bg-card-secondary);
+            border: 1px solid var(--border-color);
+        }
+        
+        .empty-state .empty-icon {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: var(--spacing-sm);
+            opacity: 0.5;
+        }
+        
+        .empty-state h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0 0 4px 0;
+        }
+        
+        .empty-state p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin: 0 0 var(--spacing-md) 0;
+        }
+        
+        .empty-state .btn-explore {
+            width: 100%;
+            padding: 10px;
+            border-radius: var(--radius-full);
+            background: var(--purple-gradient);
+            color: #fff;
+            border: none;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .empty-state .btn-explore:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+        }
+        
+        /* ----- Alert ----- */
+        .mobile-alert {
+            font-size: 0.82rem;
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        /* ----- Responsive ----- */
+        @media (max-width: 400px) {
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .courses-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .welcome-card .welcome-top {
+                flex-direction: column;
+            }
+            
+            .welcome-card .change-course-btn {
+                align-self: flex-start;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- ===== MOBILE HEADER ===== -->
-    <header class="header" style="padding:8px 12px; flex-wrap:nowrap;">
+
+    <!-- ============================================================
+    MOBILE HEADER (Built-in)
+    ============================================================ -->
+    <header style="background:linear-gradient(135deg, #8B5CF6, #6a3dcf); padding:10px 14px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:100; flex-wrap:wrap; gap:4px;">
         <div style="display:flex; align-items:center; gap:8px; flex:1; min-width:0;">
-            <a href="/" class="logo-container" style="gap:8px; text-decoration:none;">
-                <div class="logo" style="width:32px; height:32px; border-radius:50%; background:rgba(255,255,255,0.2); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:10px;">SLC</div>
-                <div style="line-height:1.1;">
-                    <div class="logo-text" style="font-size:13px; color:#fff;">SHINEX<span style="color:#fff;">.</span></div>
-                    <div class="logo-sub" style="font-size:6px; color:rgba(255,255,255,0.7);">LEARNING</div>
+            <a href="/" style="text-decoration:none; display:flex; align-items:center; gap:8px;">
+                <div style="width:32px; height:32px; border-radius:50%; background:rgba(255,255,255,0.2); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:11px;">SLC</div>
+                <div>
+                    <div style="font-weight:700; font-size:14px; color:#fff;">SHINEX<span style="color:#fff;">.</span></div>
+                    <div style="font-size:6px; color:rgba(255,255,255,0.6); letter-spacing:2px;">LEARNING CIRCLE</div>
                 </div>
             </a>
         </div>
-        <div class="header-actions" style="gap:4px; flex-wrap:nowrap;">
-            <button class="dark-toggle" id="darkToggleMobile" onclick="toggleDarkModeMobile()" style="padding:4px 8px; font-size:1rem; background:rgba(255,255,255,0.15); border:none; border-radius:30px; color:#fff; cursor:pointer;">🌙</button>
-            <a href="/settings" class="btn btn-secondary btn-sm" style="min-height:30px; padding:2px 10px; font-size:0.7rem; background:rgba(255,255,255,0.2); color:#fff; border-radius:30px; text-decoration:none;"><i class="fas fa-cog"></i></a>
-            <a href="/logout" class="btn btn-danger btn-sm" style="min-height:30px; padding:2px 10px; font-size:0.7rem; background:#e74c3c; color:#fff; border-radius:30px; text-decoration:none;"><i class="fas fa-sign-out-alt"></i></a>
+        <div style="display:flex; gap:4px; align-items:center; flex-wrap:nowrap;">
+            <button onclick="document.body.classList.toggle('dark-mode'); localStorage.setItem('shinex-theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light'); updateThemeToggle();" style="background:rgba(255,255,255,0.15); border:none; color:#fff; padding:4px 8px; border-radius:20px; font-size:14px; cursor:pointer;">
+                <i class="fas fa-moon" id="themeIconMobile"></i>
+            </button>
+            <a href="/settings" style="background:rgba(255,255,255,0.15); border:none; color:#fff; padding:4px 8px; border-radius:20px; font-size:12px; text-decoration:none;">
+                <i class="fas fa-cog"></i>
+            </a>
+            <a href="/logout" style="background:rgba(255,255,255,0.15); border:none; color:#fff; padding:4px 8px; border-radius:20px; font-size:12px; text-decoration:none;">
+                <i class="fas fa-sign-out-alt"></i>
+            </a>
         </div>
     </header>
 
-    <!-- ===== MAIN CONTENT ===== -->
+    <!-- ============================================================
+    MAIN CONTENT
+    ============================================================ -->
     <main class="main-content">
         <div class="mobile-dash-container">
+
+            <!-- Flash Messages -->
             <% if (messages && messages.success) { %>
-                <div class="alert alert-success mobile-alert"><%= messages.success %></div>
+                <div class="alert alert-success mobile-alert flash-message" data-type="success">
+                    <i class="fas fa-check-circle"></i> <%= messages.success %>
+                </div>
             <% } %>
             <% if (messages && messages.error) { %>
-                <div class="alert alert-danger mobile-alert"><%= messages.error %></div>
+                <div class="alert alert-danger mobile-alert flash-message" data-type="error">
+                    <i class="fas fa-exclamation-circle"></i> <%= messages.error %>
+                </div>
             <% } %>
 
-            <div class="welcome-card mobile-welcome">
-                <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center;">
+            <!-- ===== WELCOME CARD ===== -->
+            <div class="welcome-card">
+                <div class="welcome-top">
                     <div>
-                        <h1>👋 Hi, <%= user.firstName %>!</h1>
-                        <p><span class="student-id"><%= user.studentId %></span> <span style="margin-left:6px; color:#d4c4f0;"><%= user.courseName || 'Not enrolled' %></span></p>
+                        <h1><i class="fas fa-hand-wave"></i> Hi, <%= user.firstName %>!</h1>
+                        <div class="welcome-sub">
+                            <span class="student-id-badge">
+                                <i class="fas fa-id-card"></i> <%= user.studentId %>
+                            </span>
+                            <span style="margin-left:8px; opacity:0.8;">
+                                <i class="fas fa-graduation-cap"></i> <%= user.courseName || 'Not enrolled' %>
+                            </span>
+                        </div>
                     </div>
-                    <div style="margin-top:6px;">
-                        <a href="/enroll" class="btn-change-course"><i class="fas fa-exchange-alt"></i> Change</a>
-                    </div>
+                    <a href="/enroll" class="change-course-btn">
+                        <i class="fas fa-exchange-alt"></i> Change
+                    </a>
                 </div>
             </div>
 
-            <div class="mobile-stats">
-                <div class="stat-box"><div class="stat-number"><%= totalClasses || 0 %></div><div class="stat-label">Classes</div></div>
-                <div class="stat-box"><div class="stat-number"><%= completedClasses || 0 %></div><div class="stat-label">Done</div></div>
-                <div class="stat-box"><div class="stat-number"><%= progress || 0 %>%</div><div class="stat-label">Progress</div></div>
-                <div class="stat-box"><div class="stat-number"><%= score || 0 %></div><div class="stat-label">Points</div></div>
+            <!-- ===== STATS ===== -->
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <span class="stat-icon"><i class="fas fa-book-open"></i></span>
+                    <span class="stat-number"><%= totalClasses || 0 %></span>
+                    <span class="stat-label">Classes</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-icon"><i class="fas fa-check-circle"></i></span>
+                    <span class="stat-number" style="color:var(--text-success);"><%= completedClasses || 0 %></span>
+                    <span class="stat-label">Completed</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-icon"><i class="fas fa-chart-line"></i></span>
+                    <span class="stat-number"><%= progress || 0 %>%</span>
+                    <span class="stat-label">Progress</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-icon"><i class="fas fa-star"></i></span>
+                    <span class="stat-number" style="color:var(--text-warning);"><%= score || 0 %></span>
+                    <span class="stat-label">Points</span>
+                </div>
             </div>
 
-            <div class="mobile-progress">
-                <div class="progress-label" style="display:flex; justify-content:space-between; font-weight:600; font-size:0.8rem;">
-                    <span>Course Progress</span>
-                    <span><%= progress || 0 %>%</span>
+            <!-- ===== PROGRESS ===== -->
+            <div class="progress-section">
+                <div class="progress-header">
+                    <span><i class="fas fa-tasks" style="color:var(--purple-primary);"></i> Overall Progress</span>
+                    <span class="progress-percent"><%= progress || 0 %>%</span>
                 </div>
-                <div class="progress-wrap" style="height:8px; border-radius:10px; background:#ede8f5;">
-                    <div class="progress-fill" style="width:<%= progress || 0 %>%; border-radius:10px; background:linear-gradient(90deg, #8B5CF6, #a78bfa);"></div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: <%= progress || 0 %>%;"></div>
                 </div>
             </div>
 
+            <!-- ===== ENROLLED COURSE ===== -->
             <% if (enrolledCourse) { %>
-                <h3 class="mobile-section-title">Your Course</h3>
-                <div class="course-card mobile-course-card" style="border-color:#8B5CF6;">
-                    <div style="display:flex; justify-content:space-between; align-items:start; flex-wrap:wrap;">
+                <h3 class="section-title">
+                    <i class="fas fa-graduation-cap"></i> Your Course
+                </h3>
+                <div class="course-card enrolled">
+                    <div class="course-top">
                         <h3><%= enrolledCourse.title %></h3>
-                        <span class="badge badge-purple" style="font-size:0.6rem; padding:2px 8px; border-radius:20px; background:#f0ebfb; color:#8B5CF6;"><%= enrolledCourse.level || 'Beginner' %></span>
+                        <span class="level-badge">
+                            <i class="fas fa-signal"></i> <%= enrolledCourse.level || 'Beginner' %>
+                        </span>
                     </div>
-                    <p><%= enrolledCourse.description ? enrolledCourse.description.substring(0,80) : '' %></p>
-                    <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px;">
-                        <span class="badge badge-dark" style="font-size:0.6rem; padding:2px 8px; border-radius:20px; background:#ede8f5; color:#1A0A2E;"><i class="far fa-clock"></i> <%= enrolledCourse.duration || 'Self-paced' %></span>
-                        <span class="badge badge-green" style="font-size:0.6rem; padding:2px 8px; border-radius:20px; background:#d5f5e3; color:#27ae60;"><i class="fas fa-check-circle"></i> <%= progress || 0 %>%</span>
+                    <p class="course-description">
+                        <%= enrolledCourse.description ? enrolledCourse.description.substring(0, 100) + (enrolledCourse.description.length > 100 ? '...' : '') : 'No description available.' %>
+                    </p>
+                    <div class="course-meta">
+                        <span class="meta-tag duration">
+                            <i class="far fa-clock"></i> <%= enrolledCourse.duration || 'Self-paced' %>
+                        </span>
+                        <span class="meta-tag progress-tag">
+                            <i class="fas fa-check-circle"></i> <%= progress || 0 %>% Complete
+                        </span>
+                        <span class="meta-tag duration">
+                            <i class="fas fa-layer-group"></i> <%= enrolledCourse.levels ? enrolledCourse.levels.length : 0 %> Levels
+                        </span>
                     </div>
-                    <a href="/course/<%= enrolledCourse.id %>" class="btn btn-primary" style="background:#8B5CF6; color:#fff; border:none;"><i class="fas fa-arrow-right"></i> Continue Learning</a>
+                    <div class="course-actions">
+                        <a href="/course/<%= enrolledCourse.id %>" class="btn-continue">
+                            <i class="fas fa-arrow-right"></i> Continue Learning
+                        </a>
+                    </div>
                 </div>
-            <% } else { %>
-                <div class="empty-state">
-                    <span class="empty-icon">📖</span>
-                    <h3>No course enrolled</h3>
-                    <p>Browse our courses and start learning!</p>
-                    <a href="/courses" class="btn btn-primary" style="margin-top:8px; width:100%; border-radius:30px; background:#8B5CF6; color:#fff; text-align:center; text-decoration:none; display:block; padding:10px;"><i class="fas fa-search"></i> Explore Courses</a>
-                </div>
-            <% } %>
 
-            <% if (enrolledCourse) { %>
-                <h3 class="mobile-section-title">More Courses</h3>
-                <div class="mobile-grid-2">
-                    <% courses.slice(0,4).forEach(c => { %>
-                        <% if (!enrolledCourse || c.id !== enrolledCourse.id) { %>
-                            <div class="course-card" style="padding:12px;">
+                <!-- ===== MORE COURSES ===== -->
+                <h3 class="section-title">
+                    <i class="fas fa-rocket" style="color:var(--purple-primary);"></i> More Courses
+                </h3>
+                <div class="courses-grid">
+                    <% let shown = 0; %>
+                    <% courses.forEach(c => { %>
+                        <% if ((!enrolledCourse || c.id !== enrolledCourse.id) && shown < 4) { %>
+                            <% shown++; %>
+                            <div class="course-mini-card">
                                 <h4><%= c.title %></h4>
-                                <p style="font-size:0.7rem; color:var(--text-muted); margin:0 0 6px;"><%= c.description ? c.description.substring(0,40)+'...' : '' %></p>
-                                <a href="/course/<%= c.id %>" class="btn btn-secondary btn-sm" style="background:#ede8f5; color:#1A0A2E; border:none;">View</a>
+                                <p><%= c.description ? c.description.substring(0, 40) + (c.description.length > 40 ? '...' : '') : '' %></p>
+                                <a href="/course/<%= c.id %>" class="btn-view">
+                                    <i class="fas fa-eye"></i> View
+                                </a>
                             </div>
                         <% } %>
                     <% }) %>
+                    <% if (shown === 0) { %>
+                        <div style="grid-column: 1 / -1; text-align:center; padding: var(--spacing-sm); color: var(--text-muted); font-size: 0.8rem;">
+                            <i class="fas fa-info-circle"></i> No other courses available
+                        </div>
+                    <% } %>
+                </div>
+            <% } else { %>
+                <!-- ===== NO COURSE ENROLLED ===== -->
+                <div class="empty-state">
+                    <span class="empty-icon">📖</span>
+                    <h3>No Course Enrolled</h3>
+                    <p>Browse our courses and start your learning journey today!</p>
+                    <a href="/" class="btn-explore">
+                        <i class="fas fa-search"></i> Explore Courses
+                    </a>
                 </div>
             <% } %>
 
-            <div class="mobile-quick-links">
-                <a href="/settings" class="btn btn-secondary btn-sm" style="background:#ede8f5; color:#1A0A2E; border:none;"><i class="fas fa-cog"></i> Settings</a>
-                <a href="/faq" class="btn btn-secondary btn-sm" style="background:#ede8f5; color:#1A0A2E; border:none;"><i class="fas fa-question-circle"></i> FAQ</a>
-                <a href="/contact" class="btn btn-secondary btn-sm" style="background:#ede8f5; color:#1A0A2E; border:none;"><i class="fas fa-headset"></i> Help</a>
+            <!-- ===== QUICK LINKS ===== -->
+            <div class="quick-links">
+                <a href="/settings" class="btn-quick">
+                    <i class="fas fa-cog"></i> Settings
+                </a>
+                <a href="/faq" class="btn-quick">
+                    <i class="fas fa-question-circle"></i> FAQ
+                </a>
+                <a href="/contact" class="btn-quick">
+                    <i class="fas fa-headset"></i> Help
+                </a>
+                <a href="/about" class="btn-quick">
+                    <i class="fas fa-info-circle"></i> About
+                </a>
             </div>
+
         </div>
     </main>
 
-    <!-- ===== MOBILE FOOTER ===== -->
-    <footer class="footer" style="background:linear-gradient(135deg, #6a3dcf, #4a1a8a); padding:24px 0 16px; margin-top:24px;">
-        <div class="container">
-            <div style="text-align:center;">
-                <div style="display:flex; justify-content:center; align-items:center; gap:8px; margin-bottom:6px;">
-                    <div class="logo" style="width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.2); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:11px;">SLC</div>
+    <!-- ============================================================
+    MOBILE FOOTER (Built-in)
+    ============================================================ -->
+    <footer style="background:linear-gradient(135deg, #6a3dcf, #4a1a8a); padding:24px 0 16px; margin-top:24px;">
+        <div style="max-width:500px; margin:0 auto; padding:0 16px;">
+            <!-- Logo -->
+            <div style="text-align:center; margin-bottom:12px;">
+                <div style="display:flex; justify-content:center; align-items:center; gap:8px; margin-bottom:4px;">
+                    <div style="width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.2); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:11px;">SLC</div>
                     <div>
-                        <div class="logo-text" style="font-size:14px; color:#fff;">SHINEX<span style="color:#fff;">.</span></div>
+                        <div style="font-weight:700; font-size:14px; color:#fff;">SHINEX<span style="color:#fff;">.</span></div>
+                        <div style="font-size:6px; color:rgba(255,255,255,0.6); letter-spacing:2px;">LEARNING CIRCLE</div>
                     </div>
                 </div>
-                <p style="color:rgba(255,255,255,0.7); font-size:0.8rem; margin:4px 0 8px;">Learn. Understand. Protect.</p>
-                <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:8px 16px; margin:12px 0;">
-                    <a href="/" style="color:rgba(255,255,255,0.7); font-size:0.75rem; text-decoration:none;">Home</a>
-                    <a href="/courses" style="color:rgba(255,255,255,0.7); font-size:0.75rem; text-decoration:none;">Courses</a>
-                    <a href="/services" style="color:rgba(255,255,255,0.7); font-size:0.75rem; text-decoration:none;">Services</a>
-                    <a href="/about" style="color:rgba(255,255,255,0.7); font-size:0.75rem; text-decoration:none;">About</a>
-                    <a href="/contact" style="color:rgba(255,255,255,0.7); font-size:0.75rem; text-decoration:none;">Contact</a>
-                    <a href="/faq" style="color:rgba(255,255,255,0.7); font-size:0.75rem; text-decoration:none;">FAQ</a>
-                </div>
-                <div style="display:flex; justify-content:center; gap:12px; margin:8px 0 12px;">
-                    <a href="#" style="color:rgba(255,255,255,0.7); font-size:1.2rem;"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" style="color:rgba(255,255,255,0.7); font-size:1.2rem;"><i class="fab fa-twitter"></i></a>
-                    <a href="#" style="color:rgba(255,255,255,0.7); font-size:1.2rem;"><i class="fab fa-instagram"></i></a>
-                    <a href="#" style="color:rgba(255,255,255,0.7); font-size:1.2rem;"><i class="fab fa-whatsapp"></i></a>
-                </div>
-                <div class="footer-bottom" style="border-top:1px solid rgba(255,255,255,0.1); padding-top:10px; font-size:0.7rem; color:rgba(255,255,255,0.6);">
-                    &copy; <%= new Date().getFullYear() %> SHINEX Learning Circle
-                </div>
+                <p style="color:rgba(255,255,255,0.7); font-size:0.8rem; margin:0;">Learn. Understand. Protect. 🛡️</p>
+            </div>
+
+            <!-- Footer Links -->
+            <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:6px 12px; margin:12px 0;">
+                <a href="/" style="color:rgba(255,255,255,0.7); font-size:0.75rem; text-decoration:none; transition:color 0.3s ease;">Home</a>
+                <a href="/about" style="color:rgba(255,255,255,0.7); font-size:0.75rem; text-decoration:none; transition:color 0.3s ease;">About</a>
+                <a href="/services" style="color:rgba(255,255,255,0.7); font-size:0.75rem; text-decoration:none; transition:color 0.3s ease;">Services</a>
+                <a href="/faq" style="color:rgba(255,255,255,0.7); font-size:0.75rem; text-decoration:none; transition:color 0.3s ease;">FAQ</a>
+                <a href="/contact" style="color:rgba(255,255,255,0.7); font-size:0.75rem; text-decoration:none; transition:color 0.3s ease;">Contact</a>
+                <a href="/terms" style="color:rgba(255,255,255,0.6); font-size:0.7rem; text-decoration:none; transition:color 0.3s ease;">Terms</a>
+                <a href="/privacy" style="color:rgba(255,255,255,0.6); font-size:0.7rem; text-decoration:none; transition:color 0.3s ease;">Privacy</a>
+            </div>
+
+            <!-- Social Icons -->
+            <div style="display:flex; justify-content:center; gap:12px; margin:12px 0 16px;">
+                <a href="#" style="color:rgba(255,255,255,0.7); font-size:1.2rem; transition:all 0.3s ease;">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="#" style="color:rgba(255,255,255,0.7); font-size:1.2rem; transition:all 0.3s ease;">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="#" style="color:rgba(255,255,255,0.7); font-size:1.2rem; transition:all 0.3s ease;">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="#" style="color:rgba(255,255,255,0.7); font-size:1.2rem; transition:all 0.3s ease;">
+                    <i class="fab fa-whatsapp"></i>
+                </a>
+                <a href="#" style="color:rgba(255,255,255,0.7); font-size:1.2rem; transition:all 0.3s ease;">
+                    <i class="fab fa-youtube"></i>
+                </a>
+            </div>
+
+            <!-- Copyright -->
+            <div style="border-top:1px solid rgba(255,255,255,0.1); padding-top:12px; text-align:center; font-size:0.7rem; color:rgba(255,255,255,0.5);">
+                &copy; <%= new Date().getFullYear() %> SHINEX Learning Circle. All rights reserved.
             </div>
         </div>
     </footer>
 
-    <!-- ===== AI BOT ===== -->
+    <!-- ============================================================
+    AI BOT
+    ============================================================ -->
     <div class="ai-bot" id="aiBot" style="position:fixed; bottom:30px; right:30px; z-index:999; cursor:pointer;">
-        <button class="ai-bot-btn" id="aiBotBtn" style="width:60px; height:60px; border-radius:50%; background:linear-gradient(135deg, #8B5CF6, #6a3dcf); color:#fff; border:none; font-size:26px; box-shadow:0 8px 30px rgba(139,92,246,0.4); cursor:pointer; position:relative; z-index:2;">🤖<span class="ai-bot-pulse" style="position:absolute; width:60px; height:60px; border-radius:50%; background:rgba(139,92,246,0.3); animation:pulseRing 2s ease-out infinite; z-index:1; top:0; left:0;"></span></button>
+        <button class="ai-bot-btn" id="aiBotBtn" style="width:60px; height:60px; border-radius:50%; background:linear-gradient(135deg, #8B5CF6, #6a3dcf); color:#fff; border:none; font-size:26px; box-shadow:0 8px 30px rgba(139,92,246,0.4); cursor:pointer; position:relative; z-index:2;">
+            🤖
+            <span class="ai-bot-pulse" style="position:absolute; width:60px; height:60px; border-radius:50%; background:rgba(139,92,246,0.3); animation:pulseRing 2s ease-out infinite; z-index:1; top:0; left:0;"></span>
+        </button>
     </div>
-    <div class="ai-chat-modal" id="aiChatModal" style="position:fixed; bottom:100px; right:30px; width:380px; max-width:calc(100vw - 40px); max-height:500px; background:#fff; border-radius:14px; border:1px solid #ede8f5; box-shadow:0 20px 60px rgba(0,0,0,0.15); z-index:1000; display:none; flex-direction:column; overflow:hidden;">
-        <div class="ai-chat-header" style="padding:14px 18px; background:#8B5CF6; color:#fff; display:flex; justify-content:space-between; align-items:center;">
+
+    <!-- AI Chat Modal -->
+    <div class="ai-chat-modal" id="aiChatModal" style="position:fixed; bottom:100px; right:30px; width:380px; max-width:calc(100vw - 40px); max-height:500px; background:var(--bg-card); border-radius:var(--radius-lg); border:1px solid var(--border-color); box-shadow:var(--shadow-xl); z-index:1000; display:none; flex-direction:column; overflow:hidden;">
+        <div class="ai-chat-header" style="padding:14px 18px; background:var(--purple-gradient); color:#fff; display:flex; justify-content:space-between; align-items:center;">
             <h4 style="font-size:0.95rem; font-weight:700; margin:0;">🤖 AI Tutor</h4>
             <button class="ai-chat-close" id="aiChatClose" style="background:none; border:none; color:#fff; font-size:1.2rem; cursor:pointer; padding:4px;">&times;</button>
         </div>
-        <div class="ai-chat-body" id="aiChatBody" style="padding:16px 18px; flex:1; overflow-y:auto; max-height:300px;">
+        <div class="ai-chat-body" id="aiChatBody" style="padding:16px 18px; flex:1; overflow-y:auto; max-height:300px; background:var(--bg-page);">
             <div class="ai-chat-messages" id="aiChatMessages" style="display:flex; flex-direction:column; gap:8px;">
-                <div class="ai-chat-msg bot" style="padding:10px 14px; border-radius:10px; font-size:0.9rem; max-width:85%; line-height:1.5; background:#f0ebfb; color:#1A0A2E; align-self:flex-start; border-bottom-left-radius:4px;">👋 Hi! I'm your SHINEX AI Tutor. Ask me anything!</div>
+                <div class="ai-chat-msg bot" style="padding:10px 14px; border-radius:var(--radius-md); font-size:0.9rem; max-width:85%; line-height:1.5; background:var(--purple-bg); color:var(--text-primary); align-self:flex-start; border-bottom-left-radius:4px;">
+                    👋 Hi! I'm your SHINEX AI Tutor. Ask me anything about your courses or any topic!
+                </div>
             </div>
         </div>
-        <div class="ai-chat-footer" style="padding:12px 18px; border-top:1px solid #ede8f5; display:flex; gap:8px;">
-            <input type="text" id="aiChatInput" placeholder="Ask a question..." autocomplete="off" style="flex:1; padding:8px 12px; border-radius:8px; border:1px solid #ede8f5; font-size:0.85rem;">
-            <button class="btn btn-primary" id="aiChatSend" style="padding:8px 16px; border:none; border-radius:30px; background:#8B5CF6; color:#fff; font-weight:600; cursor:pointer;">Send</button>
+        <div class="ai-chat-footer" style="padding:12px 18px; border-top:1px solid var(--border-color); display:flex; gap:8px; background:var(--bg-card);">
+            <input type="text" id="aiChatInput" placeholder="Ask a question..." autocomplete="off" style="flex:1; padding:8px 12px; border-radius:var(--radius-sm); border:1px solid var(--border-color); font-size:0.85rem; background:var(--bg-input); color:var(--text-primary);">
+            <button class="btn btn-primary" id="aiChatSend" style="padding:8px 16px; border:none; border-radius:var(--radius-full); background:var(--purple-primary); color:#fff; font-weight:600; cursor:pointer; transition:all 0.3s ease;">
+                Send
+            </button>
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"></script>
-    <script src="/js/main.js"></script>
+    <!-- ============================================================
+    SCRIPTS
+    ============================================================ -->
     <script>
-        function toggleDarkModeMobile() {
-            const body = document.body;
-            body.classList.toggle('dark-mode');
-            const isDark = body.classList.contains('dark-mode');
-            localStorage.setItem('shinex-dark-mode', isDark);
-            const btn = document.getElementById('darkToggleMobile');
-            if (btn) btn.textContent = isDark ? '☀️' : '🌙';
+        // ============================================================
+        // THEME TOGGLE
+        // ============================================================
+        
+        function updateThemeToggle() {
+            const isDark = document.body.classList.contains('dark-mode');
+            const icon = document.getElementById('themeIconMobile');
+            if (icon) {
+                icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+            }
         }
+        
+        // ============================================================
+        // AI BOT
+        // ============================================================
+        
         document.addEventListener('DOMContentLoaded', function() {
-            const savedDark = localStorage.getItem('shinex-dark-mode');
-            if (savedDark === 'true') {
-                document.body.classList.add('dark-mode');
-                const btn = document.getElementById('darkToggleMobile');
-                if (btn) btn.textContent = '☀️';
+            const botBtn = document.getElementById('aiBotBtn');
+            const chatModal = document.getElementById('aiChatModal');
+            const chatClose = document.getElementById('aiChatClose');
+            const chatInput = document.getElementById('aiChatInput');
+            const chatSend = document.getElementById('aiChatSend');
+            const chatMessages = document.getElementById('aiChatMessages');
+            
+            if (!botBtn || !chatModal) return;
+            
+            botBtn.addEventListener('click', function() {
+                chatModal.classList.toggle('open');
+                if (chatModal.classList.contains('open')) {
+                    chatModal.style.display = 'flex';
+                    chatInput.focus();
+                } else {
+                    chatModal.style.display = 'none';
+                }
+            });
+            
+            if (chatClose) {
+                chatClose.addEventListener('click', function() {
+                    chatModal.classList.remove('open');
+                    chatModal.style.display = 'none';
+                });
+            }
+            
+            document.addEventListener('click', function(e) {
+                if (chatModal.classList.contains('open')) {
+                    if (!chatModal.contains(e.target) && e.target !== botBtn && !botBtn.contains(e.target)) {
+                        chatModal.classList.remove('open');
+                        chatModal.style.display = 'none';
+                    }
+                }
+            });
+            
+            function addChatMessage(text, type) {
+                const div = document.createElement('div');
+                div.className = 'ai-chat-msg ' + type;
+                let formatted = text;
+                formatted = formatted.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+                formatted = formatted.replace(/\n/g, '<br>');
+                div.innerHTML = formatted;
+                chatMessages.appendChild(div);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            function sendMessage() {
+                const message = chatInput.value.trim();
+                if (!message) return;
+                
+                addChatMessage(message, 'user');
+                chatInput.value = '';
+                chatInput.disabled = true;
+                chatSend.disabled = true;
+                
+                const loadingMsg = document.createElement('div');
+                loadingMsg.className = 'ai-chat-msg bot';
+                loadingMsg.innerHTML = '⏳ Thinking...';
+                loadingMsg.id = 'aiChatLoading';
+                chatMessages.appendChild(loadingMsg);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                
+                fetch('/api/ai-tutor', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userPrompt: message })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const loading = document.getElementById('aiChatLoading');
+                    if (loading) loading.remove();
+                    
+                    if (data.error) {
+                        addChatMessage('❌ ' + data.error, 'bot');
+                    } else {
+                        addChatMessage(data.answer, 'bot');
+                    }
+                    chatInput.disabled = false;
+                    chatSend.disabled = false;
+                    chatInput.focus();
+                })
+                .catch(error => {
+                    const loading = document.getElementById('aiChatLoading');
+                    if (loading) loading.remove();
+                    addChatMessage('❌ Sorry, I\'m having trouble connecting. Please try again.', 'bot');
+                    chatInput.disabled = false;
+                    chatSend.disabled = false;
+                });
+            }
+            
+            if (chatSend) {
+                chatSend.addEventListener('click', sendMessage);
+            }
+            
+            if (chatInput) {
+                chatInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        sendMessage();
+                    }
+                });
             }
         });
+        
+        // ============================================================
+        // DARK MODE INIT
+        // ============================================================
+        
+        if (localStorage.getItem('shinex-theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            updateThemeToggle();
+        }
+        
+        // ============================================================
+        // AUTO DISMISS FLASH MESSAGES
+        // ============================================================
+        
+        document.querySelectorAll('.flash-message').forEach(msg => {
+            setTimeout(() => {
+                msg.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                msg.style.opacity = '0';
+                msg.style.transform = 'translateY(-10px)';
+                setTimeout(() => {
+                    if (msg.parentNode) msg.remove();
+                }, 500);
+            }, 5000);
+        });
+        
+        // ============================================================
+        // CONSOLE WELCOME
+        // ============================================================
+        
+        console.log('📊 SHINEX Dashboard');
+        console.log('👤 Welcome, <%= user.firstName %>!');
+        console.log('📚 Student ID: <%= user.studentId %>');
+        console.log('📖 Course: <%= user.courseName || "Not enrolled" %>');
+        console.log('📈 Progress: <%= progress || 0 %>%');
+        console.log('⭐ Points: <%= score || 0 %>');
     </script>
+
 </body>
 </html>
