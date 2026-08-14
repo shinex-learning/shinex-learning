@@ -1,14 +1,11 @@
 /* ============================================================
-   SHINEX LEARNING CIRCLE – GLOBAL THEME SYSTEM v5.0
+   SHINEX LEARNING CIRCLE – COMPLETE GLOBAL THEME SYSTEM v5.0
    COMPLETE DARK/LIGHT MODE WITH ZERO THEME MIXING
    ============================================================ */
 
 /* ============================================================
-   SHINEX LEARNING CIRCLE – COMPLETE GLOBAL THEME SYSTEM v5.0
-   FIXED: All dark mode overrides included
+   CSS VARIABLES - THE ENTIRE THEME IN ONE PLACE
    ============================================================ */
-
-/* ===== CSS VARIABLES - THE ENTIRE THEME IN ONE PLACE ===== */
 :root {
     /* ---- LIGHT MODE (Default) ---- */
     --bg-page: #f8f6fc;
@@ -730,127 +727,6 @@ body.dark-mode .text-size-control label {
 
 body.dark-mode .text-size-value {
     color: #ffffff !important;
-}
-
-/* ============================================================
-   REST OF STYLES (Keep your existing styles below)
-   ============================================================ */
-
-/* ============================================================
-   GLOBAL RESET & BASE
-   ============================================================ */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-html {
-    scroll-behavior: smooth;
-}
-
-body {
-    font-family: var(--font-family);
-    background: var(--bg-page);
-    color: var(--text-primary);
-    font-size: var(--font-base);
-    line-height: 1.6;
-    transition: background 0.3s ease, color 0.3s ease;
-    min-height: 100vh;
-}
-
-/* ===== CSS VARIABLES - THE ENTIRE THEME IN ONE PLACE ===== */
-:root {
-    /* ---- LIGHT MODE (Default) ---- */
-    --bg-page: #f8f6fc;
-    --bg-card: #ffffff;
-    --bg-card-secondary: #f0ebfb;
-    --bg-input: #ffffff;
-    --bg-input-hover: #f8f6fc;
-    --bg-sidebar: #ffffff;
-    --bg-modal: #ffffff;
-    --bg-dropdown: #ffffff;
-    --bg-alert-success: #d5f5e3;
-    --bg-alert-error: #fadbd8;
-    --bg-alert-info: #d6eaf8;
-    --bg-alert-warning: #fef9e7;
-    
-    --text-primary: #1A0A2E;
-    --text-secondary: #5a4a70;
-    --text-muted: #7a6a8f;
-    --text-light: #b0a0c0;
-    --text-white: #ffffff;
-    --text-success: #27ae60;
-    --text-error: #e74c3c;
-    --text-warning: #f39c12;
-    
-    --border-color: #ede8f5;
-    --border-dark: #d4c4f0;
-    --border-light: #f5f0fa;
-    
-    --shadow-sm: 0 2px 8px rgba(26, 10, 46, 0.06);
-    --shadow-md: 0 4px 20px rgba(26, 10, 46, 0.08);
-    --shadow-lg: 0 8px 40px rgba(26, 10, 46, 0.12);
-    --shadow-xl: 0 12px 60px rgba(26, 10, 46, 0.16);
-    
-    --radius-sm: 8px;
-    --radius-md: 12px;
-    --radius-lg: 16px;
-    --radius-xl: 20px;
-    --radius-full: 9999px;
-    
-    --spacing-xs: 4px;
-    --spacing-sm: 8px;
-    --spacing-md: 16px;
-    --spacing-lg: 24px;
-    --spacing-xl: 32px;
-    --spacing-2xl: 48px;
-    
-    --purple-primary: #8B5CF6;
-    --purple-dark: #6a3dcf;
-    --purple-light: #a78bfa;
-    --purple-bg: #f0ebfb;
-    --purple-gradient: linear-gradient(135deg, #8B5CF6, #6a3dcf);
-    --purple-gradient-light: linear-gradient(135deg, #a78bfa, #8B5CF6);
-    
-    --font-base: 16px;
-    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-}
-
-/* ===== DARK MODE VARIABLES ===== */
-body.dark-mode {
-    --bg-page: #0a0a0a;
-    --bg-card: #1a1a1a;
-    --bg-card-secondary: #2a1a4a;
-    --bg-input: #2a2a2a;
-    --bg-input-hover: #333333;
-    --bg-sidebar: #1a1a1a;
-    --bg-modal: #1a1a1a;
-    --bg-dropdown: #2a2a2a;
-    --bg-alert-success: #1a3a2a;
-    --bg-alert-error: #3a1a1a;
-    --bg-alert-info: #1a2a3a;
-    --bg-alert-warning: #2a2a1a;
-    
-    --text-primary: #ffffff;
-    --text-secondary: #cccccc;
-    --text-muted: #999999;
-    --text-light: #666666;
-    --text-white: #ffffff;
-    --text-success: #7dcea0;
-    --text-error: #f1948a;
-    --text-warning: #f7dc6f;
-    
-    --border-color: #333333;
-    --border-dark: #444444;
-    --border-light: #2a2a2a;
-    
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.4);
-    --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.5);
-    --shadow-xl: 0 12px 60px rgba(0, 0, 0, 0.6);
-    
-    --purple-bg: #2a1a4a;
 }
 
 /* ============================================================
