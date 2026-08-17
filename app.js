@@ -521,6 +521,28 @@ function blockMobileAdmin(req, res, next) {
 }
 
 // ============================================================
+// ===== ROOT ROUTE (FIXED - NO REDIRECT LOOP) =====
+// ============================================================
+app.get('/', async (req, res) => {
+    // Check if mobile - redirect to mobile app
+    if (isMobile(req)) {
+        return res.redirect('/app');
+    }
+    
+    // Desktop users - render desktop home
+    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
+    const courses = await Course.find();
+    
+    res.render('desktop/index', {
+        user: user,
+        courses: courses.slice(0, 6),
+        messages: req.session.messages || {},
+        title: 'Home'
+    });
+    req.session.messages = {};
+});
+
+// ============================================================
 // ===== MOBILE APP ROUTES =====
 // ============================================================
 
@@ -1044,17 +1066,6 @@ app.get('/app/level/:courseId/:levelId/prev/:classId', requireUser, async (req, 
 });
 
 // ============================================================
-// ===== REDIRECT ROOT =====
-// ============================================================
-app.get('/', (req, res) => {
-    if (isMobile(req)) {
-        res.redirect('/app');
-    } else {
-        res.redirect('/');
-    }
-});
-
-// ============================================================
 // ===== VERIFICATION ROUTES =====
 // ============================================================
 app.get('/verify-email-sent', (req, res) => {
@@ -1413,23 +1424,6 @@ app.get('/about', async (req, res) => {
 // ============================================================
 // ===== DESKTOP ROUTES =====
 // ============================================================
-
-app.get('/', async (req, res) => {
-    if (isMobile(req)) {
-        return res.redirect('/app');
-    }
-    
-    const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
-    const courses = await Course.find();
-    
-    res.render('desktop/index', {
-        user: user,
-        courses: courses.slice(0, 6),
-        messages: req.session.messages || {},
-        title: 'Home'
-    });
-    req.session.messages = {};
-});
 
 app.get('/dashboard', requireUser, async (req, res) => {
     if (isMobile(req)) return res.redirect('/app/dashboard');
