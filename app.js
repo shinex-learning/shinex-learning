@@ -521,15 +521,13 @@ function blockMobileAdmin(req, res, next) {
 }
 
 // ============================================================
-// ===== ROOT ROUTE (FIXED - NO REDIRECT LOOP) =====
+// ===== ROOT ROUTE =====
 // ============================================================
 app.get('/', async (req, res) => {
-    // Check if mobile - redirect to mobile app
     if (isMobile(req)) {
         return res.redirect('/app');
     }
     
-    // Desktop users - render desktop home
     const user = req.session.userId ? await User.findOne({ id: req.session.userId }) : null;
     const courses = await Course.find();
     
@@ -782,10 +780,11 @@ app.get('/app/settings', requireUser, async (req, res) => {
     req.session.messages = {};
 });
 
-// ===== APP LOGIN =====
+// ===== APP LOGIN (FIXED) =====
 app.get('/app/login', (req, res) => {
     if (req.session.userId) return res.redirect('/app/dashboard');
     res.render('app/login', {
+        user: null,
         messages: req.session.messages || {},
         title: 'Login'
     });
@@ -835,11 +834,12 @@ app.post('/app/login', async (req, res) => {
     }
 });
 
-// ===== APP REGISTER =====
+// ===== APP REGISTER (FIXED) =====
 app.get('/app/register', (req, res) => {
     if (req.session.userId) return res.redirect('/app/dashboard');
     const courses = Object.keys(COURSE_CODES);
     res.render('app/register', {
+        user: null,
         courses: courses,
         messages: req.session.messages || {},
         title: 'Register'
@@ -1337,7 +1337,7 @@ app.post('/contact/send', async (req, res) => {
 });
 
 // ============================================================
-// ===== APP LEGAL PAGES (Privacy, FAQ, Terms, About) =====
+// ===== APP LEGAL PAGES =====
 // ============================================================
 
 app.get('/app/privacy', async (req, res) => {
@@ -1656,6 +1656,7 @@ app.get('/login', (req, res) => {
     if (req.session.userId) return res.redirect('/dashboard');
     
     res.render('desktop/login', {
+        user: null,
         messages: req.session.messages || {},
         title: 'Login'
     });
@@ -1717,6 +1718,7 @@ app.get('/register', (req, res) => {
     
     const courses = Object.keys(COURSE_CODES);
     res.render('desktop/register', {
+        user: null,
         courses: courses,
         messages: req.session.messages || {},
         title: 'Register'
