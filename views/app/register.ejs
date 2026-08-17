@@ -1,0 +1,67 @@
+<%
+const body = `
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="auth-logo">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                <h1>SHINEX</h1>
+            </div>
+            <p>Create your account and start learning</p>
+        </div>
+
+        <form action="/app/register" method="POST" class="auth-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="firstName">First Name</label>
+                    <input type="text" id="firstName" name="firstName" class="form-control" placeholder="First name" required>
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Last Name</label>
+                    <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Last name" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" class="form-control" placeholder="you@example.com" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone" class="form-control" placeholder="Enter your phone number">
+            </div>
+            <div class="form-group">
+                <label for="courseName">Select Course</label>
+                <select id="courseName" name="courseName" class="form-control" required>
+                    <option value="">-- Select a course --</option>
+                    <% courses.forEach(course => { %>
+                        <option value="<%= course %>"><%= course %></option>
+                    <% }) %>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="learningLevel">Learning Level</label>
+                <select id="learningLevel" name="learningLevel" class="form-control">
+                    <option value="Beginner">Beginner</option>
+                    <option value="Intermediate">Intermediate</option>
+                    <option value="Advanced">Advanced</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" class="form-control" placeholder="Min 6 characters" required>
+            </div>
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" placeholder="Confirm your password" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+        </form>
+
+        <div class="auth-footer">
+            <p>Already have an account? <a href="/app/login">Login</a></p>
+        </div>
+    </div>
+</div>
+`;
+%>
+<%- include('../partials/app-layout', { body: body, user: user, title: title, messages: messages }) %>

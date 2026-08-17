@@ -1,0 +1,61 @@
+<%- include('../partials/header', { user: user, title: title }) %>
+
+<section class="level-header">
+    <div class="container">
+        <a href="/course/<%= course.id %>" class="level-back">← Back to Course</a>
+        <h1><%= level.name %></h1>
+        <p><%= course.title %></p>
+    </div>
+</section>
+
+<section class="level-progress">
+    <div class="container">
+        <div class="progress-card">
+            <div class="progress-header">
+                <span>Level Progress</span>
+                <span class="progress-percent"><%= progress %>%</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width: <%= progress %>%"></div></div>
+            <div class="progress-stats">
+                <span><%= completedClasses %> / <%= totalClasses %> classes completed</span>
+                <span><%= score %> points</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="level-classes">
+    <div class="container">
+        <h2>Classes</h2>
+        <div class="classes-grid">
+            <% allClasses.forEach((cls, index) => { %>
+                <div class="class-card <%= cls.completed ? 'completed' : '' %> <%= cls.locked ? 'locked' : '' %>">
+                    <div class="class-status">
+                        <% if (cls.completed) { %>
+                            <span class="class-done">✓</span>
+                        <% } else if (cls.locked) { %>
+                            <span class="class-locked">🔒</span>
+                        <% } else { %>
+                            <span class="class-number"><%= index + 1 %></span>
+                        <% } %>
+                    </div>
+                    <div class="class-info">
+                        <h4><%= cls.title %></h4>
+                        <span><%= cls.lessonTitle %></span>
+                    </div>
+                    <div class="class-action">
+                        <% if (cls.completed) { %>
+                            <span class="class-done">Completed</span>
+                        <% } else if (cls.locked) { %>
+                            <span class="class-locked">Locked</span>
+                        <% } else { %>
+                            <a href="/level/<%= course.id %>/<%= level.id %>?classId=<%= cls.id %>" class="btn btn-primary btn-sm">Start</a>
+                        <% } %>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+</section>
+
+<%- include('../partials/footer', { user: user }) %>

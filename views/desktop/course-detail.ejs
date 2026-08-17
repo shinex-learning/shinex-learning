@@ -1,0 +1,86 @@
+<%- include('../partials/header', { user: user, title: title }) %>
+
+<%
+let totalClasses = 0;
+let completedClasses = 0;
+let progress = 0;
+if (course.levels && user && user.progress) {
+    course.levels.forEach(level => {
+        if (level.lessons) {
+            level.lessons.forEach(lesson => {
+                if (lesson.classes) {
+                    lesson.classes.forEach(cls => {
+                        totalClasses++;
+                        if (user.progress && user.progress[cls.id]) completedClasses++;
+                    });
+                }
+            });
+        }
+    });
+}
+progress = totalClasses > 0 ? Math.round((completedClasses / totalClasses) * 100) : 0;
+%>
+
+<section class="page-hero" style="background: linear-gradient(135deg, #8B5CF6, #6a3dcf); color: #fff;">
+    <div class="container">
+        <h1 style="color: #fff;"><%= course.title %></h1>
+        <p style="color: rgba(255,255,255,0.85);"><%= course.description || 'Learn essential skills in this comprehensive course.' %></p>
+        <div style="display: flex; gap: 20px; margin-top: 12px; color: rgba(255,255,255,0.8);">
+            <span><%= totalClasses %> Lessons</span>
+            <span><%= course.duration || 'Flexible' %></span>
+            <span><%= course.level || 'Beginner' %></span>
+        </div>
+    </div>
+</section>
+
+<section class="course-progress">
+    <div class="container">
+        <div class="progress-card">
+            <div class="progress-header">
+                <span>Your Progress</span>
+                <span class="progress-percent"><%= progress %>%</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width: <%= progress %>%"></div></div>
+            <div class="progress-stats">
+                <span><%= completedClasses %> / <%= totalClasses %> lessons completed</span>
+                <span><%= completedClasses * 10 %> points earned</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="course-levels">
+    <div class="container">
+        <h2>Course Levels</h2>
+        <div class="levels-grid">
+            <% if (course.levels && course.levels.length > 0) { %>
+                <% course.levels.forEach(level => { 
+                    let levelClasses = 0;
+                    let levelCompleted = 0;
+                    if (level.lessons) {
+                        level.lessons.forEach(lesson => {
+                            if (lesson.classes) {
+                                lesson.classes.forEach(cls => {
+                                    levelClasses++;
+                                    if (user && user.progress && user.progress[cls.id]) levelCompleted++;
+                                });
+                            }
+                        });
+                    }
+                    let levelProgress = levelClasses > 0 ? Math.round((levelCompleted / levelClasses) * 100) : 0;
+                %>
+                    <a href="/level/<%= course.id %>/<%= level.id %>" class="level-card">
+                        <h4><%= level.name %></h4>
+                        <p><%= level.duration || 'Self-paced' %> • <%= levelClasses %> lessons</p>
+                        <div class="progress-bar"><div class="progress-fill" style="width: <%= levelProgress %>%"></div></div>
+                        <span><%= levelProgress %>% complete</span>
+                    </a>
+                <% }) %>
+            <% } else { %>
+                <div class="empty-state">No levels available for this course.</div>
+            <% } %>
+        </div>
+    </div>
+</section>
+
+<%- include('../partials/footer', { user: user }) %>

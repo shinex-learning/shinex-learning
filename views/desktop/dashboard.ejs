@@ -1,0 +1,114 @@
+<%- include('../partials/header', { user: user, title: title }) %>
+
+<%
+let totalClasses = 0;
+let completedClasses = 0;
+let certificatesEarned = 0;
+let progress = 0;
+let coursesEnrolled = 0;
+
+if (user && user.courseId) {
+    const enrolledCourse = courses ? courses.find(c => c.id === user.courseId) : null;
+    if (enrolledCourse && enrolledCourse.levels && user.progress) {
+        enrolledCourse.levels.forEach(level => {
+            if (level.lessons) {
+                level.lessons.forEach(lesson => {
+                    if (lesson.classes) {
+                        lesson.classes.forEach(cls => {
+                            totalClasses++;
+                            if (user.progress && user.progress[cls.id]) completedClasses++;
+                        });
+                    }
+                });
+            }
+        });
+        certificatesEarned = Math.floor(completedClasses / 10);
+        progress = totalClasses > 0 ? Math.round((completedClasses / totalClasses) * 100) : 0;
+    }
+    coursesEnrolled = 1;
+}
+%>
+
+<section class="dashboard-hero">
+    <div class="container">
+        <h1>Welcome back, <%= user ? user.firstName : 'Student' %>!</h1>
+        <p>Keep learning today! Here's your progress summary.</p>
+    </div>
+</section>
+
+<section class="dashboard-stats">
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-number"><%= progress %>%</div>
+                <div class="stat-label">Your Progress</div>
+                <div class="progress-bar" style="margin-top: 8px;">
+                    <div class="progress-fill" style="width: <%= progress %>%"></div>
+                </div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number"><%= coursesEnrolled %></div>
+                <div class="stat-label">Courses Enrolled</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number"><%= completedClasses %></div>
+                <div class="stat-label">Lessons Completed</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number"><%= certificatesEarned %></div>
+                <div class="stat-label">Certificates Earned</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="dashboard-courses">
+    <div class="container">
+        <div class="section-header">
+            <h2>Your Enrolled Courses</h2>
+            <a href="/courses" class="view-all-link">View All Courses →</a>
+        </div>
+        <div class="desktop-courses-grid">
+            <% if (user && user.courseId) { 
+                const enrolledCourse = courses ? courses.find(c => c.id === user.courseId) : null;
+                if (enrolledCourse) { 
+                    let lessonCount = 0;
+                    if (enrolledCourse.levels) {
+                        enrolledCourse.levels.forEach(level => {
+                            if (level.lessons) {
+                                level.lessons.forEach(lesson => {
+                                    if (lesson.classes) lessonCount += lesson.classes.length;
+                                });
+                            }
+                        });
+                    }
+            %>
+                <div class="desktop-course-card">
+                    <div class="desktop-course-image" style="background: linear-gradient(135deg, #8B5CF6, #6a3dcf);">
+                        <span class="course-badge"><%= enrolledCourse.level || 'Beginner' %></span>
+                    </div>
+                    <div class="desktop-course-body">
+                        <h3><%= enrolledCourse.title %></h3>
+                        <p><%= enrolledCourse.description ? enrolledCourse.description.substring(0, 100) + '...' : 'Learn essential skills in this comprehensive course.' %></p>
+                        <div class="desktop-course-meta">
+                            <span><%= lessonCount %> Lessons</span>
+                            <span><%= enrolledCourse.duration || 'Flexible' %></span>
+                        </div>
+                        <div style="margin: 12px 0;">
+                            <span>Progress: <%= progress %>%</span>
+                            <div class="progress-bar"><div class="progress-fill" style="width: <%= progress %>%"></div></div>
+                        </div>
+                        <a href="/course/<%= enrolledCourse.id %>" class="btn btn-primary btn-block">Continue Learning</a>
+                    </div>
+                </div>
+            <% } else { %>
+                <div class="empty-state">You haven't enrolled in any course yet. <a href="/courses">Browse Courses</a></div>
+            <% } %>
+            <% } else { %>
+                <div class="empty-state">You haven't enrolled in any course yet. <a href="/courses">Browse Courses</a></div>
+            <% } %>
+        </div>
+    </div>
+</section>
+
+<%- include('../partials/footer', { user: user }) %>

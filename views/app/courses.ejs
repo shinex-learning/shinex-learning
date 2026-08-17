@@ -1,0 +1,56 @@
+<section class="courses-header">
+    <h1>All Courses</h1>
+    <p>Choose from our comprehensive range of courses</p>
+</section>
+
+<section class="courses-list">
+    <div class="courses-grid">
+        <% if (courses && courses.length > 0) { %>
+            <% courses.forEach(course => { 
+                let lessonCount = 0;
+                if (course.levels) {
+                    course.levels.forEach(level => {
+                        if (level.lessons) {
+                            level.lessons.forEach(lesson => {
+                                if (lesson.classes) lessonCount += lesson.classes.length;
+                            });
+                        }
+                    });
+                }
+            %>
+                <div class="course-card">
+                    <div class="course-image" style="background: linear-gradient(135deg, #8B5CF6, #6a3dcf);">
+                        <span class="course-level"><%= course.level || 'Beginner' %></span>
+                    </div>
+                    <div class="course-info">
+                        <h3><%= course.title %></h3>
+                        <p><%= course.description ? course.description.substring(0, 80) + '...' : 'Learn essential skills in this comprehensive course.' %></p>
+                        <div class="course-meta">
+                            <span class="meta-item">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                                    <line x1="16" y1="2" x2="16" y2="6"/>
+                                    <line x1="8" y1="2" x2="8" y2="6"/>
+                                    <line x1="3" y1="10" x2="21" y2="10"/>
+                                </svg>
+                                <%= lessonCount %> Lessons
+                            </span>
+                            <span class="meta-item">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <polyline points="12 6 12 12 16 14"/>
+                                </svg>
+                                <%= course.duration || 'Flexible' %>
+                            </span>
+                        </div>
+                        <a href="/app/course/<%= course.id %>" class="btn btn-primary btn-sm btn-block">View Course</a>
+                    </div>
+                </div>
+            <% }) %>
+        <% } else { %>
+            <div class="empty-state">
+                <p>No courses available yet. Check back soon!</p>
+            </div>
+        <% } %>
+    </div>
+</section>

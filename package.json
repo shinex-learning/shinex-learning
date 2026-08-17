@@ -1,26 +1,24 @@
 {
-  "name": "shinex-learning-circle",
+  "name": "shinex-app",
   "version": "1.0.0",
-  "description": "SHINEX Learning Circle (SLC lmt.®) – Complete E-Learning Platform",
+  "description": "SHINEX Learning Circle - Mobile & Desktop Learning Platform",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js"
   },
   "dependencies": {
-    "@sendgrid/mail": "^8.1.6",
-    "bcrypt": "^5.1.1",
-    "compression": "^1.8.1",
+    "bcrypt": "^5.1.0",
+    "compression": "^1.7.4",
     "crypto": "^1.0.1",
-    "dotenv": "^17.4.2",
+    "dotenv": "^16.3.1",
     "ejs": "^3.1.9",
-    "express": "^4.22.2",
-    "express-session": "^1.19.0",
-    "helmet": "^8.3.0",
-    "mongoose": "^9.9.2",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "helmet": "^7.0.0",
+    "mongoose": "^7.5.0",
     "multer": "^1.4.5-lts.1",
-    "sanitize-html": "^2.17.6",
-    "uuid": "^14.0.1"
+    "@sendgrid/mail": "^7.7.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"

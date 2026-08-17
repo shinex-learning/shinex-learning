@@ -1,0 +1,128 @@
+<%- include('../partials/header', { user: user, title: title }) %>
+
+<section class="ai-tutor-page">
+    <div class="container">
+        <div class="ai-tutor-header">
+            <h1>AI Learning Assistant</h1>
+            <p>Ask any question about your courses or any topic you want to learn</p>
+        </div>
+
+        <div class="ai-tutor-container">
+            <div class="chat-messages" id="chatMessages">
+                <div class="welcome-message">
+                    <div class="ai-avatar">AI</div>
+                    <div class="message-content">
+                        <p>Hello! I'm your AI Learning Assistant. Ask me anything about:</p>
+                        <ul>
+                            <li>Cybersecurity concepts</li>
+                            <li>Programming fundamentals</li>
+                            <li>Web development</li>
+                            <li>Data analysis</li>
+                            <li>Digital marketing</li>
+                            <li>And much more!</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quick-questions">
+                <button class="quick-btn" data-question="What is cybersecurity and why is it important?">What is cybersecurity?</button>
+                <button class="quick-btn" data-question="Explain HTML and CSS in simple terms">What is HTML and CSS?</button>
+                <button class="quick-btn" data-question="What is the difference between Python and JavaScript?">Python vs JavaScript</button>
+                <button class="quick-btn" data-question="How do I start learning web development?">Start web development</button>
+            </div>
+
+            <div id="loadingIndicator" class="loading-indicator" style="display: none;">
+                <div class="spinner"></div>
+                <p>Thinking...</p>
+            </div>
+
+            <div class="chat-input-area">
+                <textarea id="userPrompt" placeholder="Type your question here..." rows="3"></textarea>
+                <button id="sendBtn" class="btn btn-primary">Send Question</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const chatMessages = document.getElementById('chatMessages');
+    const userPrompt = document.getElementById('userPrompt');
+    const sendBtn = document.getElementById('sendBtn');
+    const loadingIndicator = document.getElementById('loadingIndicator');
+
+    document.querySelectorAll('.quick-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            userPrompt.value = this.getAttribute('data-question');
+            sendQuestion();
+        });
+    });
+
+    sendBtn.addEventListener('click', sendQuestion);
+    userPrompt.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendQuestion();
+        }
+    });
+
+    async function sendQuestion() {
+        const prompt = userPrompt.value.trim();
+        if (!prompt) return;
+
+        addMessage('user', prompt);
+        userPrompt.value = '';
+        loadingIndicator.style.display = 'flex';
+        sendBtn.disabled = true;
+
+        try {
+            const response = await fetch('/api/ai-tutor', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userPrompt: prompt })
+            });
+            const data = await response.json();
+
+            if (data.error) {
+                addMessage('ai', 'Error: ' + data.error);
+            } else if (data.answer) {
+                addMessage('ai', data.answer);
+            } else {
+                addMessage('ai', 'I could not generate a response. Please try again.');
+            }
+        } catch (error) {
+            addMessage('ai', 'Connection error. Please check your internet connection.');
+        } finally {
+            loadingIndicator.style.display = 'none';
+            sendBtn.disabled = false;
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+    }
+
+    function addMessage(type, content) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'message ' + type;
+        
+        if (type === 'ai') {
+            const avatar = document.createElement('div');
+            avatar.className = 'ai-avatar';
+            avatar.textContent = 'AI';
+            messageDiv.appendChild(avatar);
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            contentDiv.innerHTML = content.replace(/\\n/g, '<br>');
+            messageDiv.appendChild(contentDiv);
+        } else {
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            contentDiv.textContent = content;
+            messageDiv.appendChild(contentDiv);
+        }
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+});
+</script>
+
+<%- include('../partials/footer', { user: user }) %>

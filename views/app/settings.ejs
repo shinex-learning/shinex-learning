@@ -1,0 +1,173 @@
+<%
+const body = `
+<section class="settings-header">
+    <h1>Settings</h1>
+    <p>Customize your learning experience</p>
+</section>
+
+<section class="settings-section">
+    <div class="settings-card">
+        <h3>Profile Settings</h3>
+        <form id="settingsForm" class="settings-form">
+            <div class="form-group">
+                <label for="firstName">First Name</label>
+                <input type="text" id="firstName" name="firstName" class="form-control" value="<%= user ? user.firstName : '' %>" required>
+            </div>
+            <div class="form-group">
+                <label for="lastName">Last Name</label>
+                <input type="text" id="lastName" name="lastName" class="form-control" value="<%= user ? user.lastName : '' %>" required>
+            </div>
+            <div class="form-group">
+                <label for="bio">Bio</label>
+                <textarea id="bio" name="bio" class="form-control" rows="3" placeholder="Tell us about yourself"><%= user ? user.bio : '' %></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Save Profile</button>
+        </form>
+    </div>
+
+    <div class="settings-card">
+        <h3>Preferences</h3>
+        <div class="settings-option">
+            <div>
+                <label for="darkMode">Dark Mode</label>
+                <span class="settings-desc">Switch between light and dark theme</span>
+            </div>
+            <label class="switch">
+                <input type="checkbox" id="darkMode" name="darkMode" <%= user && user.darkMode ? 'checked' : '' %>>
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="settings-option">
+            <div>
+                <label for="emailNotifications">Email Notifications</label>
+                <span class="settings-desc">Receive updates via email</span>
+            </div>
+            <label class="switch">
+                <input type="checkbox" id="emailNotifications" name="emailNotifications" <%= user && user.emailNotifications !== false ? 'checked' : '' %>>
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="settings-option">
+            <div>
+                <label for="courseUpdates">Course Updates</label>
+                <span class="settings-desc">Get notified about new content</span>
+            </div>
+            <label class="switch">
+                <input type="checkbox" id="courseUpdates" name="courseUpdates" <%= user && user.courseUpdates !== false ? 'checked' : '' %>>
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="settings-option">
+            <div>
+                <label for="profileVisibility">Profile Visibility</label>
+                <span class="settings-desc">Who can see your profile</span>
+            </div>
+            <select id="profileVisibility" name="profileVisibility" class="form-control" style="width: auto;">
+                <option value="public" <%= user && user.profileVisibility === 'public' ? 'selected' : '' %>>Public</option>
+                <option value="private" <%= user && user.profileVisibility === 'private' ? 'selected' : '' %>>Private</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="settings-card">
+        <h3>Change Password</h3>
+        <form id="passwordForm" class="settings-form">
+            <div class="form-group">
+                <label for="currentPassword">Current Password</label>
+                <input type="password" id="currentPassword" name="currentPassword" class="form-control" placeholder="Enter current password" required>
+            </div>
+            <div class="form-group">
+                <label for="newPassword">New Password</label>
+                <input type="password" id="newPassword" name="newPassword" class="form-control" placeholder="Min 6 characters" required>
+            </div>
+            <div class="form-group">
+                <label for="confirmPassword">Confirm New Password</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" placeholder="Confirm new password" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Update Password</button>
+        </form>
+    </div>
+
+    <div class="settings-card settings-danger">
+        <h3>Danger Zone</h3>
+        <p>Once you delete your account, there is no going back.</p>
+        <button id="deleteAccountBtn" class="btn btn-danger btn-block">Delete Account</button>
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('settingsForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        const data = Object.fromEntries(formData.entries());
+        try {
+            const response = await fetch('/settings/update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const result = await response.json();
+            if (result.success) { alert('Settings updated successfully!'); location.reload(); }
+            else { alert('Error: ' + result.error); }
+        } catch (error) { alert('Something went wrong. Please try again.'); }
+    });
+
+    document.getElementById('passwordForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        const data = Object.fromEntries(formData.entries());
+        if (data.newPassword !== data.confirmPassword) { alert('New passwords do not match.'); return; }
+        if (data.newPassword.length < 6) { alert('New password must be at least 6 characters.'); return; }
+        try {
+            const response = await fetch('/settings/update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const result = await response.json();
+            if (result.success) { alert('Password updated successfully!'); document.getElementById('passwordForm').reset(); }
+            else { alert('Error: ' + result.error); }
+        } catch (error) { alert('Something went wrong. Please try again.'); }
+    });
+
+    document.getElementById('deleteAccountBtn').addEventListener('click', function() {
+        if (confirm('Are you sure you want to delete your account? This cannot be undone!')) {
+            if (confirm('Really? All your progress and data will be permanently deleted.')) {
+                alert('Account deletion request sent. Please contact support.');
+            }
+        }
+    });
+
+    document.querySelectorAll('.switch input').forEach(input => {
+        input.addEventListener('change', async function() {
+            const data = {}; data[this.name] = this.checked;
+            try {
+                const response = await fetch('/settings/update', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                if (!result.success) { alert('Error: ' + result.error); this.checked = !this.checked; }
+            } catch (error) { alert('Something went wrong.'); this.checked = !this.checked; }
+        });
+    });
+
+    document.getElementById('profileVisibility').addEventListener('change', async function() {
+        const data = { profileVisibility: this.value };
+        try {
+            const response = await fetch('/settings/update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const result = await response.json();
+            if (!result.success) { alert('Error: ' + result.error); }
+        } catch (error) { alert('Something went wrong.'); }
+    });
+});
+</script>
+`;
+%>
+<%- include('../partials/app-layout', { body: body, user: user, title: title, messages: messages }) %>

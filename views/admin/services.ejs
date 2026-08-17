@@ -2,929 +2,142 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title><%= title %> | SHINEX Admin</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services - SHINEX Admin</title>
+    <link rel="stylesheet" href="/css/style.css">
     <style>
-        /* ============================================================
-           ADMIN SERVICES PAGE STYLES
-           ============================================================ */
-        
-        /* ----- Admin Layout ----- */
-        .admin-layout {
-            display: flex;
-            gap: var(--spacing-lg);
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        
-        /* ----- Admin Sidebar ----- */
-        .admin-sidebar {
-            width: 260px;
-            min-width: 220px;
-            background: var(--bg-card);
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--border-color);
-            padding: 12px 0;
-            height: fit-content;
-            position: sticky;
-            top: 80px;
-            box-shadow: var(--shadow-sm);
-            transition: all 0.3s ease;
-        }
-        
-        .admin-sidebar .sidebar-title {
-            padding: 8px 18px 12px;
-            font-weight: 700;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        .admin-nav {
-            list-style: none;
-            padding: 4px 0;
-            margin: 0;
-        }
-        
-        .admin-nav li {
-            margin: 0;
-        }
-        
-        .admin-nav a {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 18px;
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.85rem;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            border-left: 3px solid transparent;
-        }
-        
-        .admin-nav a:hover {
-            background: var(--purple-bg);
-            color: var(--purple-primary);
-        }
-        
-        .admin-nav a.active {
-            background: var(--purple-bg);
-            color: var(--purple-primary);
-            border-left-color: var(--purple-primary);
-        }
-        
-        .admin-nav a i {
-            width: 20px;
-            text-align: center;
-        }
-        
-        .admin-nav a.logout-link {
-            color: var(--text-error);
-        }
-        
-        .admin-nav a.logout-link:hover {
-            background: var(--bg-alert-error);
-            color: var(--text-error);
-        }
-        
-        /* ----- Admin Content ----- */
-        .admin-content {
-            flex: 1;
-            min-width: 0;
-        }
-        
-        /* ----- Admin Cards ----- */
-        .admin-card {
-            background: var(--bg-card);
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--border-color);
-            padding: var(--spacing-lg);
-            margin-bottom: var(--spacing-md);
-            box-shadow: var(--shadow-sm);
-            transition: all 0.3s ease;
-        }
-        
-        .admin-card:hover {
-            box-shadow: var(--shadow-md);
-        }
-        
-        .admin-card .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: var(--spacing-sm);
-            margin-bottom: var(--spacing-md);
-        }
-        
-        .admin-card .card-header h4 {
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin: 0;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .admin-card .card-header h4 i {
-            color: var(--purple-primary);
-        }
-        
-        /* ----- Page Header ----- */
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: var(--spacing-sm);
-            margin-bottom: var(--spacing-md);
-        }
-        
-        .page-header .page-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin: 0;
-        }
-        
-        .page-header .page-subtitle {
-            color: var(--text-muted);
-            margin: 2px 0 0 0;
-            font-size: 0.9rem;
-        }
-        
-        .page-header .header-actions {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        
-        /* ----- Service Cards ----- */
-        .service-card {
-            background: var(--bg-card-secondary);
-            border-radius: var(--radius-md);
-            padding: var(--spacing-md);
-            margin-bottom: var(--spacing-sm);
-            border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
-        }
-        
-        .service-card:hover {
-            border-color: var(--purple-primary);
-            box-shadow: var(--shadow-sm);
-            transform: translateX(4px);
-        }
-        
-        .service-card .service-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: var(--spacing-sm);
-        }
-        
-        .service-card .service-header .service-name {
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin: 0;
-        }
-        
-        .service-card .service-header .service-name i {
-            color: var(--purple-primary);
-            margin-right: 6px;
-        }
-        
-        .service-card .service-header .service-price {
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: var(--purple-primary);
-        }
-        
-        .service-card .service-details {
-            margin-top: var(--spacing-sm);
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-        
-        .service-card .service-details .service-description {
-            margin: 0;
-        }
-        
-        .service-card .service-meta {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-            margin-top: var(--spacing-sm);
-            align-items: center;
-        }
-        
-        .service-card .service-meta .service-date {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            margin-left: auto;
-        }
-        
-        .service-card .service-actions {
-            display: flex;
-            gap: 4px;
-            flex-wrap: wrap;
-        }
-        
-        .service-card .service-actions .btn {
-            padding: 4px 10px;
-            font-size: 0.7rem;
-            min-height: 30px;
-        }
-        
-        /* ----- Badges ----- */
-        .badge-category {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 3px 12px;
-            border-radius: var(--radius-full);
-            font-size: 0.65rem;
-            font-weight: 600;
-        }
-        
-        .badge-category.registration {
-            background: var(--purple-bg);
-            color: var(--purple-primary);
-        }
-        
-        .badge-category.design {
-            background: var(--bg-alert-warning);
-            color: var(--text-warning);
-        }
-        
-        .badge-category.campaign {
-            background: var(--bg-alert-success);
-            color: var(--text-success);
-        }
-        
-        .badge-category.website {
-            background: var(--bg-alert-info);
-            color: #1a5276;
-        }
-        
-        .badge-category.other {
-            background: var(--bg-card-secondary);
-            color: var(--text-muted);
-        }
-        
-        body.dark-mode .badge-category.website {
-            color: #85c1e9;
-        }
-        
-        .badge-status {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 3px 12px;
-            border-radius: var(--radius-full);
-            font-size: 0.65rem;
-            font-weight: 600;
-        }
-        
-        .badge-status.active {
-            background: var(--bg-alert-success);
-            color: var(--text-success);
-        }
-        
-        .badge-status.inactive {
-            background: var(--bg-alert-error);
-            color: var(--text-error);
-        }
-        
-        /* ----- Modal ----- */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 9999;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(4px);
-        }
-        
-        .modal-overlay.open {
-            display: flex;
-        }
-        
-        .modal-box {
-            background: var(--bg-card);
-            border-radius: var(--radius-lg);
-            padding: var(--spacing-xl);
-            max-width: 550px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: var(--shadow-xl);
-            border: 1px solid var(--border-color);
-            animation: modalSlideIn 0.3s ease;
-        }
-        
-        @keyframes modalSlideIn {
-            0% { opacity: 0; transform: translateY(30px) scale(0.95); }
-            100% { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        
-        .modal-box .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: var(--spacing-md);
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: var(--spacing-sm);
-        }
-        
-        .modal-box .modal-header h3 {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin: 0;
-        }
-        
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 1.8rem;
-            cursor: pointer;
-            color: var(--text-muted);
-            transition: all 0.3s ease;
-            line-height: 1;
-            padding: 0 4px;
-        }
-        
-        .modal-close:hover {
-            color: var(--text-error);
-            transform: rotate(90deg);
-        }
-        
-        .modal-box .form-group {
-            margin-bottom: var(--spacing-md);
-        }
-        
-        .modal-box .form-group label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 4px;
-            color: var(--text-primary);
-        }
-        
-        .modal-box .form-group label .required {
-            color: var(--text-error);
-        }
-        
-        .modal-box .form-group input,
-        .modal-box .form-group textarea,
-        .modal-box .form-group select {
-            width: 100%;
-            padding: 10px 14px;
-            border: 2px solid var(--border-color);
-            border-radius: var(--radius-sm);
-            font-size: 0.95rem;
-            font-family: inherit;
-            transition: all 0.3s ease;
-            background: var(--bg-input);
-            color: var(--text-primary);
-        }
-        
-        .modal-box .form-group input:focus,
-        .modal-box .form-group textarea:focus,
-        .modal-box .form-group select:focus {
-            border-color: var(--purple-primary);
-            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.12);
-            outline: none;
-        }
-        
-        .modal-box .form-group textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-        
-        .modal-box .form-group .help-text {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-top: 4px;
-        }
-        
-        .modal-box .form-group .help-text i {
-            margin-right: 4px;
-        }
-        
-        .modal-box .modal-actions {
-            display: flex;
-            gap: 8px;
-            margin-top: var(--spacing-md);
-        }
-        
-        .modal-box .modal-actions .btn {
-            flex: 1;
-        }
-        
-        /* ----- Stats Cards ----- */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: var(--spacing-md);
-            margin-top: var(--spacing-md);
-        }
-        
-        .stat-card {
-            background: var(--bg-card);
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--border-color);
-            padding: var(--spacing-md);
-            text-align: center;
-            box-shadow: var(--shadow-sm);
-            transition: all 0.3s ease;
-        }
-        
-        .stat-card:hover {
-            box-shadow: var(--shadow-md);
-        }
-        
-        .stat-card .stat-number {
-            font-size: 1.8rem;
-            font-weight: 800;
-            line-height: 1.2;
-        }
-        
-        .stat-card .stat-number.active-color {
-            color: var(--text-success);
-        }
-        
-        .stat-card .stat-number.inactive-color {
-            color: var(--text-error);
-        }
-        
-        .stat-card .stat-number.total-color {
-            color: var(--purple-primary);
-        }
-        
-        .stat-card .stat-label {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-top: 2px;
-        }
-        
-        /* ----- Empty State ----- */
-        .empty-state {
-            text-align: center;
-            padding: var(--spacing-xl) var(--spacing-lg);
-            color: var(--text-muted);
-        }
-        
-        .empty-state i {
-            font-size: 64px;
-            color: var(--text-light);
-            margin-bottom: var(--spacing-md);
-            display: block;
-            opacity: 0.5;
-        }
-        
-        .empty-state h4 {
-            color: var(--text-primary);
-            margin: 0 0 4px 0;
-        }
-        
-        .empty-state p {
-            margin: 0;
-        }
-        
-        /* ----- Responsive ----- */
-        @media (max-width: 1024px) {
-            .admin-layout {
-                flex-direction: column;
-            }
-            
-            .admin-sidebar {
-                width: 100%;
-                min-width: unset;
-                position: relative;
-                top: 0;
-                max-height: 0;
-                overflow: hidden;
-                padding: 0;
-                transition: max-height 0.3s ease, padding 0.3s ease;
-                box-shadow: none;
-            }
-            
-            .admin-sidebar.open {
-                max-height: 600px;
-                padding: 12px 0;
-                overflow-y: auto;
-            }
-            
-            .admin-sidebar-toggle {
-                display: flex !important;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .admin-card {
-                padding: var(--spacing-md);
-            }
-            
-            .page-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .page-header .header-actions {
-                width: 100%;
-            }
-            
-            .page-header .header-actions .btn {
-                flex: 1;
-                justify-content: center;
-            }
-            
-            .service-card .service-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .service-card .service-header .service-price {
-                align-self: flex-start;
-            }
-            
-            .service-card .service-actions {
-                width: 100%;
-            }
-            
-            .service-card .service-actions .btn {
-                flex: 1;
-                justify-content: center;
-            }
-            
-            .service-card .service-meta .service-date {
-                margin-left: 0;
-                width: 100%;
-                text-align: left;
-            }
-            
-            .stats-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-            
-            .modal-box {
-                padding: var(--spacing-md);
-            }
-            
-            .modal-box .modal-actions {
-                flex-direction: column;
-            }
-            
-            .modal-box .modal-actions .btn {
-                width: 100%;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-        }
+        .admin-container { display: flex; min-height: 100vh; background: #f8f6fc; }
+        .admin-sidebar { width: 250px; background: #1A0A2E; color: #fff; padding: 24px 0; position: fixed; height: 100vh; overflow-y: auto; }
+        .admin-sidebar .logo { padding: 0 24px 24px; font-size: 24px; font-weight: 800; color: #fff; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .admin-sidebar .logo span { color: #8B5CF6; }
+        .admin-sidebar .nav a { display: flex; align-items: center; gap: 12px; padding: 12px 24px; color: rgba(255,255,255,0.7); text-decoration: none; transition: all 0.2s; font-size: 14px; }
+        .admin-sidebar .nav a:hover, .admin-sidebar .nav a.active { background: rgba(139,92,246,0.2); color: #fff; border-left: 3px solid #8B5CF6; }
+        .admin-main { margin-left: 250px; flex: 1; padding: 24px; }
+        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; background: #fff; padding: 16px 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .admin-header h1 { font-size: 24px; }
+        .admin-section { background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 24px; }
+        .admin-table { width: 100%; border-collapse: collapse; }
+        .admin-table th, .admin-table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #e8e3f0; }
+        .admin-table th { font-weight: 600; color: #5a4a70; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .btn-sm { padding: 4px 12px; font-size: 12px; border-radius: 6px; border: none; cursor: pointer; text-decoration: none; display: inline-block; }
+        .btn-primary-sm { background: #8B5CF6; color: #fff; }
+        .btn-danger-sm { background: #e74c3c; color: #fff; }
+        .btn-success-sm { background: #27ae60; color: #fff; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+        .form-control { width: 100%; padding: 10px 14px; border: 2px solid #e8e3f0; border-radius: 8px; font-size: 14px; transition: border-color 0.2s; }
+        .form-control:focus { outline: none; border-color: #8B5CF6; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .btn { padding: 10px 24px; background: linear-gradient(135deg, #8B5CF6, #6a3dcf); color: #fff; border: none; border-radius: 30px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(139,92,246,0.3); }
+        .badge { padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+        .badge-success { background: #e8f5e9; color: #27ae60; }
+        .badge-danger { background: #fde8e8; color: #e74c3c; }
+        .alert { padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; }
+        .alert-success { background: #e8f5e9; color: #27ae60; border-left: 4px solid #27ae60; }
+        .alert-error { background: #fde8e8; color: #e74c3c; border-left: 4px solid #e74c3c; }
+        @media (max-width: 768px) { .admin-sidebar { display: none; } .admin-main { margin-left: 0; } .form-row { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
+    <div class="admin-container">
+        <aside class="admin-sidebar">
+            <div class="logo">SHINEX<span>.</span></div>
+            <nav class="nav">
+                <a href="/admin/dashboard">📊 Dashboard</a>
+                <a href="/admin/students">👤 Students</a>
+                <a href="/admin/courses">📚 Courses</a>
+                <a href="/admin/services" class="active">💼 Services</a>
+                <a href="/admin/messages">✉️ Messages</a>
+                <a href="/admin/manage-admins">🔐 Manage Admins</a>
+                <a href="/admin/logout" style="color: #e74c3c; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 16px;">🚪 Logout</a>
+            </nav>
+        </aside>
 
-    <!-- ===== ADMIN HEADER (Built-in) ===== -->
-    <header style="background:linear-gradient(135deg, #8B5CF6, #6a3dcf); padding:12px 24px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:1000; box-shadow:0 2px 15px rgba(139,92,246,0.3);">
-        <div style="display:flex; align-items:center; gap:12px;">
-            <!-- Back Button -->
-            <a href="/admin/dashboard" style="color:rgba(255,255,255,0.8); text-decoration:none; padding:4px 10px; border-radius:8px; transition:all 0.3s ease; font-size:14px;">
-                <i class="fas fa-arrow-left"></i>
-            </a>
-            <div style="width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.2); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:11px;">SLC</div>
-            <div>
-                <div style="font-weight:700; font-size:16px; color:#fff;">SHINEX <span style="opacity:0.7; font-weight:400;">Admin</span></div>
-                <div style="font-size:7px; color:rgba(255,255,255,0.6); letter-spacing:2px;">LEARNING CIRCLE</div>
+        <main class="admin-main">
+            <div class="admin-header">
+                <h1>Manage Services</h1>
+                <span><%= services ? services.length : 0 %> total</span>
             </div>
-        </div>
-        <div style="display:flex; gap:12px; align-items:center;">
-            <span style="color:rgba(255,255,255,0.9); font-size:13px;">
-                <i class="fas fa-user"></i> <%= admin && admin.firstName ? admin.firstName : 'Admin' %>
-            </span>
-            <button onclick="document.body.classList.toggle('dark-mode'); localStorage.setItem('shinex-theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');" style="background:rgba(255,255,255,0.15); border:none; color:#fff; padding:6px 12px; border-radius:20px; font-size:14px; cursor:pointer;">
-                <i class="fas fa-moon"></i>
-            </button>
-            <a href="/admin/logout" style="color:#fff; text-decoration:none; background:rgba(255,255,255,0.15); padding:6px 14px; border-radius:20px; font-size:13px; transition:all 0.3s ease;">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </a>
-        </div>
-    </header>
 
-    <!-- ===== MAIN CONTENT ===== -->
-    <main class="main-content">
-        <div class="container">
-
-            <!-- Flash Messages -->
             <% if (messages && messages.success) { %>
-                <div class="alert alert-success flash-message" data-type="success">
-                    <i class="fas fa-check-circle"></i> <%= messages.success %>
-                </div>
+                <div class="alert alert-success"><%= messages.success %></div>
             <% } %>
             <% if (messages && messages.error) { %>
-                <div class="alert alert-danger flash-message" data-type="error">
-                    <i class="fas fa-exclamation-circle"></i> <%= messages.error %>
-                </div>
+                <div class="alert alert-error"><%= messages.error %></div>
             <% } %>
 
-            <!-- ===== ADMIN LAYOUT ===== -->
-            <div class="admin-layout">
-
-                <!-- ===== SIDEBAR ===== -->
-                <aside class="admin-sidebar" id="adminSidebar">
-                    <div class="sidebar-title"><i class="fas fa-crown"></i> Admin Panel</div>
-                    <ul class="admin-nav">
-                        <li><a href="/admin/dashboard"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
-                        <li><a href="/admin/students"><i class="fas fa-users"></i> Students</a></li>
-                        <li><a href="/admin/courses"><i class="fas fa-book"></i> Courses</a></li>
-                        <li><a href="/admin/services" class="active"><i class="fas fa-concierge-bell"></i> Services</a></li>
-                        <li><a href="/admin/messages"><i class="fas fa-envelope"></i> Messages</a></li>
-                        <li><a href="/admin/manage-admins"><i class="fas fa-user-shield"></i> Admins</a></li>
-                        <li><a href="/admin/logout" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-                    </ul>
-                </aside>
-
-                <!-- ===== CONTENT ===== -->
-                <div class="admin-content">
-
-                    <!-- Page Header -->
-                    <div class="page-header">
-                        <div>
-                            <h1 class="page-title">
-                                <i class="fas fa-concierge-bell" style="color:var(--purple-primary);"></i> 
-                                Manage Services
-                            </h1>
-                            <p class="page-subtitle">
-                                <i class="fas fa-info-circle"></i> 
-                                <%= services ? services.length : 0 %> services available
-                            </p>
+            <!-- Add Service -->
+            <div class="admin-section">
+                <h2>Add New Service</h2>
+                <form action="/admin/services/add" method="POST">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="name">Service Name</label>
+                            <input type="text" id="name" name="name" class="form-control" placeholder="e.g. Graphic Design" required>
                         </div>
-                        <div class="header-actions">
-                            <button class="btn btn-primary" onclick="openModal('addServiceModal')">
-                                <i class="fas fa-plus"></i> Add Service
-                            </button>
-                            <button class="btn btn-secondary btn-sm admin-sidebar-toggle" onclick="toggleSidebar()" style="display:none;">
-                                <i class="fas fa-bars"></i> Menu
-                            </button>
+                        <div class="form-group">
+                            <label for="price">Price (₦)</label>
+                            <input type="number" id="price" name="price" class="form-control" placeholder="0">
                         </div>
                     </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="category">Category</label>
+                            <select id="category" name="category" class="form-control">
+                                <option value="registration">Registration</option>
+                                <option value="design">Design</option>
+                                <option value="campaign">Campaign</option>
+                                <option value="website">Website</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <input type="text" id="description" name="description" class="form-control" placeholder="Brief description">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn">Add Service</button>
+                </form>
+            </div>
 
-                    <!-- ===== SERVICES LIST ===== -->
-                    <div class="admin-card">
+            <!-- Service List -->
+            <div class="admin-section">
+                <h2>All Services</h2>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                         <% if (services && services.length > 0) { %>
                             <% services.forEach(service => { %>
-                                <div class="service-card">
-                                    <div class="service-header">
-                                        <h5 class="service-name">
-                                            <i class="fas fa-cube"></i>
-                                            <%= service.name %>
-                                        </h5>
-                                        <div class="service-price">
-                                            ₦<%= service.price.toLocaleString() %>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="service-details">
-                                        <p class="service-description">
-                                            <%= service.description || 'No description available.' %>
-                                        </p>
-                                    </div>
-                                    
-                                    <div class="service-meta">
-                                        <span class="badge-category <%= service.category || 'other' %>">
-                                            <i class="fas fa-tag"></i> 
-                                            <%= service.category ? service.category.charAt(0).toUpperCase() + service.category.slice(1) : 'Other' %>
-                                        </span>
-                                        <span class="badge-status <%= service.isActive ? 'active' : 'inactive' %>">
-                                            <i class="fas <%= service.isActive ? 'fa-check-circle' : 'fa-times-circle' %>"></i>
-                                            <%= service.isActive ? 'Active' : 'Inactive' %>
-                                        </span>
-                                        <span class="service-date">
-                                            <i class="far fa-calendar-alt"></i>
-                                            Added: <%= new Date(service.createdAt).toLocaleDateString() %>
-                                        </span>
-                                        <div class="service-actions">
-                                            <a href="/admin/services/edit/<%= service.id %>" class="btn btn-primary btn-sm">
-                                                <i class="fas fa-edit"></i> Edit
-                                            </a>
-                                            <form action="/admin/services/toggle/<%= service.id %>" method="POST" style="display:inline;">
-                                                <button type="submit" class="btn btn-secondary btn-sm" title="<%= service.isActive ? 'Deactivate' : 'Activate' %>">
-                                                    <i class="fas <%= service.isActive ? 'fa-eye-slash' : 'fa-eye' %>"></i>
-                                                </button>
-                                            </form>
-                                            <form action="/admin/services/delete/<%= service.id %>" method="GET" style="display:inline;" onsubmit="return confirm('⚠️ Delete this service?\n\nService: <%= service.name %>\nPrice: ₦<%= service.price.toLocaleString() %>\n\nThis action cannot be undone.');">
-                                                <button type="submit" class="btn btn-danger btn-sm">
-                                                    <i class="fas fa-trash-alt"></i>
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
+                                <tr>
+                                    <td><strong><%= service.name %></strong></td>
+                                    <td><%= service.category %></td>
+                                    <td>₦<%= service.price.toLocaleString() %></td>
+                                    <td><span class="badge <%= service.isActive ? 'badge-success' : 'badge-danger' %>"><%= service.isActive ? 'Active' : 'Inactive' %></span></td>
+                                    <td>
+                                        <a href="/admin/services/edit/<%= service.id %>" class="btn-sm btn-primary-sm">Edit</a>
+                                        <form action="/admin/services/toggle/<%= service.id %>" method="POST" style="display: inline;">
+                                            <button type="submit" class="btn-sm <%= service.isActive ? 'btn-danger-sm' : 'btn-success-sm' %>"><%= service.isActive ? 'Deactivate' : 'Activate' %></button>
+                                        </form>
+                                        <a href="/admin/services/delete/<%= service.id %>" class="btn-sm btn-danger-sm" onclick="return confirm('Delete this service?')">Delete</a>
+                                    </td>
+                                </tr>
                             <% }) %>
                         <% } else { %>
-                            <div class="empty-state">
-                                <i class="fas fa-concierge-bell"></i>
-                                <h4>No Services Yet</h4>
-                                <p>Click "Add Service" to create your first service.</p>
-                                <button class="btn btn-primary" onclick="openModal('addServiceModal')" style="margin-top:12px;">
-                                    <i class="fas fa-plus"></i> Add Service
-                                </button>
-                            </div>
+                            <tr><td colspan="5" style="text-align: center; color: #5a4a70; padding: 40px;">No services added yet.</td></tr>
                         <% } %>
-                    </div>
-
-                    <!-- ===== STATS ===== -->
-                    <% if (services && services.length > 0) { 
-                        const active = services.filter(s => s.isActive).length;
-                        const inactive = services.filter(s => !s.isActive).length;
-                    %>
-                        <div class="stats-grid">
-                            <div class="stat-card">
-                                <div class="stat-number total-color"><%= services.length %></div>
-                                <div class="stat-label"><i class="fas fa-cubes"></i> Total Services</div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-number active-color"><%= active %></div>
-                                <div class="stat-label"><i class="fas fa-check-circle" style="color:var(--text-success);"></i> Active</div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-number inactive-color"><%= inactive %></div>
-                                <div class="stat-label"><i class="fas fa-times-circle" style="color:var(--text-error);"></i> Inactive</div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-number total-color">
-                                    ₦<%= services.reduce((acc, s) => acc + (s.isActive ? s.price : 0), 0).toLocaleString() %>
-                                </div>
-                                <div class="stat-label"><i class="fas fa-money-bill-wave"></i> Total Revenue</div>
-                            </div>
-                        </div>
-                    <% } %>
-
-                </div>
+                    </tbody>
+                </table>
             </div>
-        </div>
-    </main>
-
-    <!-- ===== ADD SERVICE MODAL ===== -->
-    <div class="modal-overlay" id="addServiceModal">
-        <div class="modal-box">
-            <div class="modal-header">
-                <h3><i class="fas fa-plus-circle" style="color:var(--purple-primary);"></i> Add New Service</h3>
-                <button class="modal-close" onclick="closeModal('addServiceModal')">&times;</button>
-            </div>
-            <form action="/admin/services/add" method="POST">
-                <div class="form-group">
-                    <label for="serviceName">Service Name <span class="required">*</span></label>
-                    <input type="text" id="serviceName" name="name" placeholder="e.g. TASUED Registration Service" required>
-                    <div class="help-text">
-                        <i class="fas fa-info-circle"></i> The name displayed to users
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="serviceDescription">Description <span class="optional">(optional)</span></label>
-                    <textarea id="serviceDescription" name="description" rows="3" placeholder="Describe what this service includes..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="servicePrice">Price (₦) <span class="required">*</span></label>
-                    <input type="number" id="servicePrice" name="price" placeholder="e.g. 20000" required min="0" step="100">
-                    <div class="help-text">
-                        <i class="fas fa-info-circle"></i> Price in Nigerian Naira (₦)
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="serviceCategory">Category</label>
-                    <select id="serviceCategory" name="category">
-                        <option value="registration">Registration</option>
-                        <option value="design">Design</option>
-                        <option value="campaign">Campaign</option>
-                        <option value="website">Website</option>
-                        <option value="other">Other</option>
-                    </select>
-                    <div class="help-text">
-                        <i class="fas fa-info-circle"></i> Helps organize services by type
-                    </div>
-                </div>
-                <div class="modal-actions">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Add Service
-                    </button>
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('addServiceModal')">
-                        <i class="fas fa-times"></i> Cancel
-                    </button>
-                </div>
-            </form>
-        </div>
+        </main>
     </div>
-
-    <!-- ===== FOOTER ===== -->
-    <footer style="background:linear-gradient(135deg, #6a3dcf, #4a1a8a); padding:24px 0 16px; margin-top:40px;">
-        <div style="max-width:1200px; margin:0 auto; padding:0 20px; text-align:center; font-size:0.8rem; color:rgba(255,255,255,0.6);">
-            &copy; 2026 SHINEX Learning Circle. All rights reserved.
-        </div>
-    </footer>
-
-    <script>
-        // ============================================================
-        // MODAL CONTROLS
-        // ============================================================
-        
-        function openModal(id) {
-            const modal = document.getElementById(id);
-            if (modal) {
-                modal.classList.add('open');
-                document.body.style.overflow = 'hidden';
-            }
-        }
-        
-        function closeModal(id) {
-            const modal = document.getElementById(id);
-            if (modal) {
-                modal.classList.remove('open');
-                document.body.style.overflow = '';
-            }
-        }
-        
-        // Close modal on overlay click
-        document.querySelectorAll('.modal-overlay').forEach(modal => {
-            modal.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    this.classList.remove('open');
-                    document.body.style.overflow = '';
-                }
-            });
-        });
-        
-        // Close modal on Escape key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                document.querySelectorAll('.modal-overlay.open').forEach(modal => {
-                    modal.classList.remove('open');
-                    document.body.style.overflow = '';
-                });
-            }
-        });
-        
-        // ============================================================
-        // SIDEBAR TOGGLE (Mobile)
-        // ============================================================
-        
-        function toggleSidebar() {
-            const sidebar = document.getElementById('adminSidebar');
-            if (sidebar) {
-                sidebar.classList.toggle('open');
-            }
-        }
-        
-        // ============================================================
-        // DARK MODE INIT
-        // ============================================================
-        
-        if (localStorage.getItem('shinex-theme') === 'dark') {
-            document.body.classList.add('dark-mode');
-        }
-        
-        // ============================================================
-        // AUTO DISMISS FLASH MESSAGES
-        // ============================================================
-        
-        document.querySelectorAll('.flash-message').forEach(msg => {
-            setTimeout(() => {
-                msg.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-                msg.style.opacity = '0';
-                msg.style.transform = 'translateY(-10px)';
-                setTimeout(() => {
-                    if (msg.parentNode) msg.remove();
-                }, 500);
-            }, 5000);
-        });
-        
-        // ============================================================
-        // CONSOLE WELCOME
-        // ============================================================
-        
-        console.log('🔐 SHINEX Admin Panel');
-        console.log('🛠️ Services Management');
-        console.log('📊 Total Services: <%= services ? services.length : 0 %>');
-        console.log('✅ Active: <%= services ? services.filter(s => s.isActive).length : 0 %>');
-        console.log('❌ Inactive: <%= services ? services.filter(s => !s.isActive).length : 0 %>');
-    </script>
-
 </body>
 </html>

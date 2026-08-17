@@ -2,1168 +2,157 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title><%= title %> | SHINEX Admin</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Level - SHINEX Admin</title>
+    <link rel="stylesheet" href="/css/style.css">
     <style>
-        /* ============================================================
-           ADMIN LEVEL EDIT PAGE STYLES
-           ============================================================ */
-        
-        /* ----- Admin Layout ----- */
-        .admin-layout {
-            display: flex;
-            gap: var(--spacing-lg);
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        
-        /* ----- Admin Sidebar ----- */
-        .admin-sidebar {
-            width: 260px;
-            min-width: 220px;
-            background: var(--bg-card);
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--border-color);
-            padding: 12px 0;
-            height: fit-content;
-            position: sticky;
-            top: 80px;
-            box-shadow: var(--shadow-sm);
-            transition: all 0.3s ease;
-        }
-        
-        .admin-sidebar .sidebar-title {
-            padding: 8px 18px 12px;
-            font-weight: 700;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        .admin-nav {
-            list-style: none;
-            padding: 4px 0;
-            margin: 0;
-        }
-        
-        .admin-nav li {
-            margin: 0;
-        }
-        
-        .admin-nav a {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 18px;
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.85rem;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            border-left: 3px solid transparent;
-        }
-        
-        .admin-nav a:hover {
-            background: var(--purple-bg);
-            color: var(--purple-primary);
-        }
-        
-        .admin-nav a.active {
-            background: var(--purple-bg);
-            color: var(--purple-primary);
-            border-left-color: var(--purple-primary);
-        }
-        
-        .admin-nav a i {
-            width: 20px;
-            text-align: center;
-        }
-        
-        .admin-nav a.logout-link {
-            color: var(--text-error);
-        }
-        
-        .admin-nav a.logout-link:hover {
-            background: var(--bg-alert-error);
-            color: var(--text-error);
-        }
-        
-        /* ----- Admin Content ----- */
-        .admin-content {
-            flex: 1;
-            min-width: 0;
-        }
-        
-        /* ----- Admin Cards ----- */
-        .admin-card {
-            background: var(--bg-card);
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--border-color);
-            padding: var(--spacing-lg);
-            margin-bottom: var(--spacing-md);
-            box-shadow: var(--shadow-sm);
-            transition: all 0.3s ease;
-        }
-        
-        .admin-card:hover {
-            box-shadow: var(--shadow-md);
-        }
-        
-        .admin-card .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: var(--spacing-sm);
-            margin-bottom: var(--spacing-md);
-        }
-        
-        .admin-card .card-header h4 {
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin: 0;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .admin-card .card-header h4 i {
-            color: var(--purple-primary);
-        }
-        
-        /* ----- Lesson Items ----- */
-        .lesson-item {
-            background: var(--bg-card-secondary);
-            border-radius: var(--radius-md);
-            padding: var(--spacing-md);
-            margin-bottom: var(--spacing-md);
-            border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
-        }
-        
-        .lesson-item:hover {
-            border-color: var(--purple-primary);
-        }
-        
-        .lesson-item .lesson-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: var(--spacing-sm);
-        }
-        
-        .lesson-item .lesson-header h5 {
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin: 0;
-        }
-        
-        .lesson-item .lesson-header .lesson-actions {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-        
-        .lesson-item .lesson-description {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin: var(--spacing-sm) 0;
-        }
-        
-        /* ----- Class Items ----- */
-        .class-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 6px 8px 6px 16px;
-            border-bottom: 1px solid var(--border-color);
-            font-size: 0.85rem;
-            transition: background 0.2s ease;
-        }
-        
-        .class-item:hover {
-            background: var(--purple-bg);
-        }
-        
-        .class-item:last-child {
-            border-bottom: none;
-        }
-        
-        .class-item .class-info {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        
-        .class-item .class-info .class-title {
-            color: var(--text-primary);
-        }
-        
-        .class-item .class-info .class-badges {
-            display: flex;
-            gap: 4px;
-        }
-        
-        .class-item .class-info .class-badges .badge-sm {
-            font-size: 0.6rem;
-            padding: 1px 8px;
-            border-radius: var(--radius-full);
-            display: inline-flex;
-            align-items: center;
-            gap: 3px;
-        }
-        
-        .class-item .class-actions {
-            display: flex;
-            gap: 4px;
-        }
-        
-        .class-item .class-actions .btn-sm {
-            padding: 2px 8px;
-            font-size: 0.65rem;
-            min-height: 26px;
-        }
-        
-        /* ----- Test Question Items ----- */
-        .test-question-item {
-            background: var(--bg-card-secondary);
-            padding: var(--spacing-md);
-            border-radius: var(--radius-sm);
-            margin-bottom: var(--spacing-sm);
-            border-left: 4px solid var(--text-warning);
-            transition: all 0.3s ease;
-        }
-        
-        .test-question-item:hover {
-            border-left-color: var(--purple-primary);
-        }
-        
-        .test-question-item .q-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: start;
-            flex-wrap: wrap;
-            gap: var(--spacing-sm);
-        }
-        
-        .test-question-item .q-text {
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-        
-        .test-question-item .q-options {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-top: 4px;
-        }
-        
-        .test-question-item .q-options .correct-option {
-            color: var(--text-success);
-            font-weight: 700;
-        }
-        
-        /* ----- Empty State ----- */
-        .empty-state {
-            text-align: center;
-            padding: var(--spacing-xl) var(--spacing-lg);
-            color: var(--text-muted);
-        }
-        
-        .empty-state i {
-            font-size: 48px;
-            color: var(--text-light);
-            margin-bottom: var(--spacing-md);
-            display: block;
-            opacity: 0.5;
-        }
-        
-        .empty-state h4 {
-            color: var(--text-primary);
-            margin: 0 0 4px 0;
-        }
-        
-        .empty-state p {
-            margin: 0;
-        }
-        
-        /* ----- Modal ----- */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 9999;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(4px);
-        }
-        
-        .modal-overlay.open {
-            display: flex;
-        }
-        
-        .modal-box {
-            background: var(--bg-card);
-            border-radius: var(--radius-lg);
-            padding: var(--spacing-xl);
-            max-width: 650px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: var(--shadow-xl);
-            border: 1px solid var(--border-color);
-            animation: modalSlideIn 0.3s ease;
-        }
-        
-        @keyframes modalSlideIn {
-            0% { opacity: 0; transform: translateY(30px) scale(0.95); }
-            100% { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        
-        .modal-box .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: var(--spacing-md);
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: var(--spacing-sm);
-        }
-        
-        .modal-box .modal-header h3 {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin: 0;
-        }
-        
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 1.8rem;
-            cursor: pointer;
-            color: var(--text-muted);
-            transition: all 0.3s ease;
-            line-height: 1;
-            padding: 0 4px;
-        }
-        
-        .modal-close:hover {
-            color: var(--text-error);
-            transform: rotate(90deg);
-        }
-        
-        .modal-box .form-group {
-            margin-bottom: var(--spacing-md);
-        }
-        
-        .modal-box .form-group label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 4px;
-            color: var(--text-primary);
-        }
-        
-        .modal-box .form-group label .required {
-            color: var(--text-error);
-        }
-        
-        .modal-box .form-group input,
-        .modal-box .form-group textarea,
-        .modal-box .form-group select {
-            width: 100%;
-            padding: 10px 14px;
-            border: 2px solid var(--border-color);
-            border-radius: var(--radius-sm);
-            font-size: 0.95rem;
-            font-family: inherit;
-            transition: all 0.3s ease;
-            background: var(--bg-input);
-            color: var(--text-primary);
-        }
-        
-        .modal-box .form-group input:focus,
-        .modal-box .form-group textarea:focus,
-        .modal-box .form-group select:focus {
-            border-color: var(--purple-primary);
-            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.12);
-            outline: none;
-        }
-        
-        .modal-box .form-group textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-        
-        .modal-box .form-group .help-text {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-top: 4px;
-        }
-        
-        .modal-box .form-group .help-text i {
-            margin-right: 4px;
-        }
-        
-        .modal-box .modal-actions {
-            display: flex;
-            gap: 8px;
-            margin-top: var(--spacing-md);
-        }
-        
-        .modal-box .modal-actions .btn {
-            flex: 1;
-        }
-        
-        /* ----- Image Preview in Modal ----- */
-        .image-preview-container {
-            margin-top: var(--spacing-sm);
-            padding: var(--spacing-sm);
-            border: 1px dashed var(--border-color);
-            border-radius: var(--radius-sm);
-            text-align: center;
-            display: none;
-        }
-        
-        .image-preview-container.has-image {
-            display: block;
-        }
-        
-        .image-preview-container img {
-            max-width: 100%;
-            max-height: 200px;
-            border-radius: var(--radius-sm);
-        }
-        
-        .image-preview-container .preview-label {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-bottom: 4px;
-        }
-        
-        /* ----- File Input Styling ----- */
-        input[type="file"] {
-            padding: 8px;
-            background: var(--bg-input);
-            border: 2px dashed var(--border-color);
-            cursor: pointer;
-        }
-        
-        input[type="file"]:hover {
-            border-color: var(--purple-primary);
-        }
-        
-        input[type="file"]::-webkit-file-upload-button {
-            background: var(--purple-primary);
-            color: #fff;
-            border: none;
-            padding: 6px 16px;
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        
-        input[type="file"]::-webkit-file-upload-button:hover {
-            background: var(--purple-dark);
-        }
-        
-        /* ----- Page Header ----- */
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: var(--spacing-sm);
-            margin-bottom: var(--spacing-md);
-        }
-        
-        .page-header .page-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin: 0;
-        }
-        
-        .page-header .page-subtitle {
-            color: var(--text-muted);
-            margin: 2px 0 0 0;
-            font-size: 0.9rem;
-        }
-        
-        /* ----- Responsive ----- */
-        @media (max-width: 1024px) {
-            .admin-layout {
-                flex-direction: column;
-            }
-            
-            .admin-sidebar {
-                width: 100%;
-                min-width: unset;
-                position: relative;
-                top: 0;
-                max-height: 0;
-                overflow: hidden;
-                padding: 0;
-                transition: max-height 0.3s ease, padding 0.3s ease;
-                box-shadow: none;
-            }
-            
-            .admin-sidebar.open {
-                max-height: 600px;
-                padding: 12px 0;
-                overflow-y: auto;
-            }
-            
-            .admin-sidebar-toggle {
-                display: flex !important;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .admin-card {
-                padding: var(--spacing-md);
-            }
-            
-            .page-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .lesson-item .lesson-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .lesson-item .lesson-header .lesson-actions {
-                width: 100%;
-            }
-            
-            .class-item {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 4px;
-                padding: 8px;
-            }
-            
-            .class-item .class-actions {
-                width: 100%;
-                justify-content: flex-start;
-            }
-            
-            .test-question-item .q-header {
-                flex-direction: column;
-            }
-            
-            .modal-box {
-                padding: var(--spacing-md);
-            }
-            
-            .modal-box .modal-actions {
-                flex-direction: column;
-            }
-            
-            .modal-box .modal-actions .btn {
-                width: 100%;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .class-item .class-info {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 4px;
-            }
-        }
+        .admin-container { display: flex; min-height: 100vh; background: #f8f6fc; }
+        .admin-sidebar { width: 250px; background: #1A0A2E; color: #fff; padding: 24px 0; position: fixed; height: 100vh; overflow-y: auto; }
+        .admin-sidebar .logo { padding: 0 24px 24px; font-size: 24px; font-weight: 800; color: #fff; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .admin-sidebar .logo span { color: #8B5CF6; }
+        .admin-sidebar .nav a { display: flex; align-items: center; gap: 12px; padding: 12px 24px; color: rgba(255,255,255,0.7); text-decoration: none; transition: all 0.2s; font-size: 14px; }
+        .admin-sidebar .nav a:hover, .admin-sidebar .nav a.active { background: rgba(139,92,246,0.2); color: #fff; border-left: 3px solid #8B5CF6; }
+        .admin-main { margin-left: 250px; flex: 1; padding: 24px; }
+        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; background: #fff; padding: 16px 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .admin-header h1 { font-size: 24px; }
+        .admin-section { background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 24px; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+        .form-control { width: 100%; padding: 10px 14px; border: 2px solid #e8e3f0; border-radius: 8px; font-size: 14px; transition: border-color 0.2s; }
+        .form-control:focus { outline: none; border-color: #8B5CF6; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .btn { padding: 10px 24px; background: linear-gradient(135deg, #8B5CF6, #6a3dcf); color: #fff; border: none; border-radius: 30px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(139,92,246,0.3); }
+        .btn-danger { background: #e74c3c; }
+        .btn-danger:hover { background: #c0392b; }
+        .btn-sm { padding: 4px 12px; font-size: 12px; border-radius: 6px; border: none; cursor: pointer; text-decoration: none; display: inline-block; }
+        .btn-primary-sm { background: #8B5CF6; color: #fff; }
+        .btn-danger-sm { background: #e74c3c; color: #fff; }
+        .btn-success-sm { background: #27ae60; color: #fff; }
+        .lesson-card { background: #f8f6fc; border-radius: 8px; padding: 16px; margin-bottom: 12px; }
+        .lesson-card h3 { font-size: 16px; margin-bottom: 4px; }
+        .lesson-card p { font-size: 13px; color: #5a4a70; margin: 0 0 8px 0; }
+        .class-item { background: #fff; padding: 10px 14px; border-radius: 6px; margin: 6px 0; display: flex; justify-content: space-between; align-items: center; border-left: 3px solid #8B5CF6; }
+        .class-item .class-title { font-weight: 500; }
+        .class-item .class-actions { display: flex; gap: 6px; }
+        .alert { padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; }
+        .alert-success { background: #e8f5e9; color: #27ae60; border-left: 4px solid #27ae60; }
+        .alert-error { background: #fde8e8; color: #e74c3c; border-left: 4px solid #e74c3c; }
+        @media (max-width: 768px) { .admin-sidebar { display: none; } .admin-main { margin-left: 0; } .form-row { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
+    <div class="admin-container">
+        <aside class="admin-sidebar">
+            <div class="logo">SHINEX<span>.</span></div>
+            <nav class="nav">
+                <a href="/admin/dashboard">📊 Dashboard</a>
+                <a href="/admin/students">👤 Students</a>
+                <a href="/admin/courses" class="active">📚 Courses</a>
+                <a href="/admin/services">💼 Services</a>
+                <a href="/admin/messages">✉️ Messages</a>
+                <a href="/admin/manage-admins">🔐 Manage Admins</a>
+                <a href="/admin/logout" style="color: #e74c3c; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 16px;">🚪 Logout</a>
+            </nav>
+        </aside>
 
-    <!-- ===== ADMIN HEADER (Built-in) ===== -->
-    <header style="background:linear-gradient(135deg, #8B5CF6, #6a3dcf); padding:12px 24px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:1000; box-shadow:0 2px 15px rgba(139,92,246,0.3);">
-        <div style="display:flex; align-items:center; gap:12px;">
-            <!-- Back Button -->
-            <a href="/admin/courses/edit/<%= course.id %>" style="color:rgba(255,255,255,0.8); text-decoration:none; padding:4px 10px; border-radius:8px; transition:all 0.3s ease; font-size:14px;">
-                <i class="fas fa-arrow-left"></i>
-            </a>
-            <div style="width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.2); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:11px;">SLC</div>
-            <div>
-                <div style="font-weight:700; font-size:16px; color:#fff;">SHINEX <span style="opacity:0.7; font-weight:400;">Admin</span></div>
-                <div style="font-size:7px; color:rgba(255,255,255,0.6); letter-spacing:2px;">LEARNING CIRCLE</div>
+        <main class="admin-main">
+            <div class="admin-header">
+                <h1>Level: <%= level.name %></h1>
+                <a href="/admin/courses/edit/<%= course.id %>" class="btn-sm btn-primary-sm">← Back to Course</a>
             </div>
-        </div>
-        <div style="display:flex; gap:12px; align-items:center;">
-            <span style="color:rgba(255,255,255,0.9); font-size:13px;">
-                <i class="fas fa-user"></i> <%= admin && admin.firstName ? admin.firstName : 'Admin' %>
-            </span>
-            <button onclick="document.body.classList.toggle('dark-mode'); localStorage.setItem('shinex-theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');" style="background:rgba(255,255,255,0.15); border:none; color:#fff; padding:6px 12px; border-radius:20px; font-size:14px; cursor:pointer;">
-                <i class="fas fa-moon"></i>
-            </button>
-            <a href="/admin/logout" style="color:#fff; text-decoration:none; background:rgba(255,255,255,0.15); padding:6px 14px; border-radius:20px; font-size:13px; transition:all 0.3s ease;">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </a>
-        </div>
-    </header>
 
-    <!-- ===== MAIN CONTENT ===== -->
-    <main class="main-content">
-        <div class="container">
-
-            <!-- Flash Messages -->
             <% if (messages && messages.success) { %>
-                <div class="alert alert-success flash-message" data-type="success">
-                    <i class="fas fa-check-circle"></i> <%= messages.success %>
-                </div>
+                <div class="alert alert-success"><%= messages.success %></div>
             <% } %>
             <% if (messages && messages.error) { %>
-                <div class="alert alert-danger flash-message" data-type="error">
-                    <i class="fas fa-exclamation-circle"></i> <%= messages.error %>
-                </div>
+                <div class="alert alert-error"><%= messages.error %></div>
             <% } %>
 
-            <!-- ===== ADMIN LAYOUT ===== -->
-            <div class="admin-layout">
-
-                <!-- ===== SIDEBAR ===== -->
-                <aside class="admin-sidebar" id="adminSidebar">
-                    <div class="sidebar-title"><i class="fas fa-crown"></i> Admin Panel</div>
-                    <ul class="admin-nav">
-                        <li><a href="/admin/dashboard"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
-                        <li><a href="/admin/students"><i class="fas fa-users"></i> Students</a></li>
-                        <li><a href="/admin/courses" class="active"><i class="fas fa-book"></i> Courses</a></li>
-                        <li><a href="/admin/services"><i class="fas fa-concierge-bell"></i> Services</a></li>
-                        <li><a href="/admin/messages"><i class="fas fa-envelope"></i> Messages</a></li>
-                        <li><a href="/admin/manage-admins"><i class="fas fa-user-shield"></i> Admins</a></li>
-                        <li><a href="/admin/logout" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-                    </ul>
-                </aside>
-
-                <!-- ===== CONTENT ===== -->
-                <div class="admin-content">
-
-                    <!-- Page Header -->
-                    <div class="page-header">
-                        <div>
-                            <h1 class="page-title">
-                                <i class="fas fa-layer-group" style="color:var(--purple-primary);"></i> 
-                                Edit Level: <%= level.name %>
-                            </h1>
-                            <p class="page-subtitle">
-                                <i class="fas fa-book"></i> <%= course.title %> • 
-                                <span class="badge badge-purple"><%= level.duration || 'Flexible' %></span>
-                            </p>
+            <!-- Add Lesson -->
+            <div class="admin-section">
+                <h2>Add New Lesson</h2>
+                <form action="/admin/levels/<%= course.id %>/<%= level.id %>/lessons/add" method="POST">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="lessonTitle">Lesson Title</label>
+                            <input type="text" id="lessonTitle" name="title" class="form-control" placeholder="e.g. Introduction to HTML" required>
                         </div>
-                        <div style="display:flex; gap:8px;">
-                            <a href="/admin/courses/edit/<%= course.id %>" class="btn btn-secondary btn-sm">
-                                <i class="fas fa-arrow-left"></i> Back to Course
-                            </a>
-                            <button class="btn btn-secondary btn-sm admin-sidebar-toggle" onclick="toggleSidebar()" style="display:none;">
-                                <i class="fas fa-bars"></i> Menu
-                            </button>
+                        <div class="form-group">
+                            <label for="lessonDescription">Description (optional)</label>
+                            <input type="text" id="lessonDescription" name="description" class="form-control" placeholder="Brief description">
                         </div>
                     </div>
+                    <button type="submit" class="btn btn-sm" style="padding: 8px 20px;">Add Lesson</button>
+                </form>
+            </div>
 
-                    <!-- ===== LESSONS & CLASSES ===== -->
-                    <div class="admin-card">
-                        <div class="card-header">
-                            <h4><i class="fas fa-book-open"></i> Lessons & Classes</h4>
-                            <button class="btn btn-primary btn-sm" onclick="openModal('addLessonModal')">
-                                <i class="fas fa-plus"></i> Add Lesson
-                            </button>
-                        </div>
-
-                        <% if (level.lessons && level.lessons.length > 0) { %>
-                            <% level.lessons.forEach((lesson, lessonIndex) => { %>
-                                <div class="lesson-item">
-                                    <div class="lesson-header">
-                                        <h5>
-                                            <span class="badge badge-purple" style="font-size:0.7rem;">Lesson <%= lessonIndex + 1 %></span>
-                                            <%= lesson.title %>
-                                        </h5>
-                                        <div class="lesson-actions">
-                                            <button class="btn btn-primary btn-sm" onclick="openAddClass('<%= course.id %>','<%= level.id %>','<%= lesson.id %>')" style="padding:2px 10px; font-size:0.7rem;">
-                                                <i class="fas fa-plus"></i> Add Class
-                                            </button>
-                                            <form action="/admin/levels/<%= course.id %>/<%= level.id %>/lessons/delete/<%= lesson.id %>" method="POST" style="display:inline;" onsubmit="return confirm('⚠️ Delete this lesson and all its classes?');">
-                                                <button type="submit" class="btn btn-danger btn-sm" style="padding:2px 10px; font-size:0.7rem;">
-                                                    <i class="fas fa-trash-alt"></i>
-                                                </button>
-                                            </form>
-                                        </div>
+            <!-- Lessons & Classes -->
+            <div class="admin-section">
+                <h2>Lessons & Classes</h2>
+                <% if (level.lessons && level.lessons.length > 0) { %>
+                    <% level.lessons.forEach(lesson => { %>
+                        <div class="lesson-card">
+                            <h3><%= lesson.title %></h3>
+                            <p><%= lesson.description || 'No description' %></p>
+                            
+                            <!-- Add Class Form -->
+                            <form action="/admin/levels/<%= course.id %>/<%= level.id %>/lessons/<%= lesson.id %>/classes/add" method="POST" enctype="multipart/form-data" style="margin: 12px 0;">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="classTitle_<%= lesson.id %>">Class Title</label>
+                                        <input type="text" id="classTitle_<%= lesson.id %>" name="title" class="form-control" placeholder="e.g. What is HTML?" required>
                                     </div>
-                                    
-                                    <% if (lesson.description) { %>
-                                        <div class="lesson-description">
-                                            <i class="fas fa-info-circle" style="color:var(--text-muted);"></i>
-                                            <%= lesson.description %>
-                                        </div>
-                                    <% } %>
-
-                                    <!-- Classes List -->
-                                    <div style="margin-top:var(--spacing-sm);">
-                                        <% if (lesson.classes && lesson.classes.length > 0) { %>
-                                            <% lesson.classes.forEach((cls) => { %>
-                                                <div class="class-item">
-                                                    <div class="class-info">
-                                                        <span class="class-title">
-                                                            <i class="fas fa-file-alt" style="color:var(--purple-primary);"></i>
-                                                            <%= cls.title %>
-                                                        </span>
-                                                        <div class="class-badges">
-                                                            <% if (cls.imageUrl) { %>
-                                                                <span class="badge-sm badge-purple">
-                                                                    <i class="fas fa-image"></i> Image
-                                                                </span>
-                                                            <% } %>
-                                                            <% if (cls.videoUrl) { %>
-                                                                <span class="badge-sm badge-dark">
-                                                                    <i class="fas fa-video"></i> Video
-                                                                </span>
-                                                            <% } %>
-                                                            <% if (cls.externalLink) { %>
-                                                                <span class="badge-sm badge-gold">
-                                                                    <i class="fas fa-link"></i> Link
-                                                                </span>
-                                                            <% } %>
-                                                        </div>
-                                                    </div>
-                                                    <div class="class-actions">
-                                                        <button class="btn btn-primary btn-sm" onclick="openEditClass('<%= course.id %>','<%= level.id %>','<%= lesson.id %>','<%= cls.id %>')">
-                                                            <i class="fas fa-edit"></i>
-                                                        </button>
-                                                        <form action="/admin/levels/<%= course.id %>/<%= level.id %>/lessons/<%= lesson.id %>/classes/delete/<%= cls.id %>" method="POST" style="display:inline;" onsubmit="return confirm('⚠️ Delete this class?');">
-                                                            <button type="submit" class="btn btn-danger btn-sm">
-                                                                <i class="fas fa-trash-alt"></i>
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            <% }) %>
-                                        <% } else { %>
-                                            <div class="empty-state" style="padding:var(--spacing-sm);">
-                                                <p style="margin:0; font-size:0.85rem;">
-                                                    <i class="fas fa-info-circle"></i> No classes in this lesson yet.
-                                                </p>
-                                            </div>
-                                        <% } %>
+                                    <div class="form-group">
+                                        <label for="classImage_<%= lesson.id %>">Image (optional)</label>
+                                        <input type="file" id="classImage_<%= lesson.id %>" name="classImage" class="form-control" accept="image/*">
                                     </div>
                                 </div>
-                            <% }) %>
-                        <% } else { %>
-                            <div class="empty-state">
-                                <i class="fas fa-book-open"></i>
-                                <h4>No Lessons Yet</h4>
-                                <p>Click "Add Lesson" to create your first lesson.</p>
-                                <button class="btn btn-primary" onclick="openModal('addLessonModal')" style="margin-top:12px;">
-                                    <i class="fas fa-plus"></i> Add Lesson
-                                </button>
-                            </div>
-                        <% } %>
-                    </div>
-
-                    <!-- ===== LEVEL TEST ===== -->
-                    <div class="admin-card">
-                        <div class="card-header">
-                            <h4><i class="fas fa-pencil-alt"></i> Level Test</h4>
-                            <button class="btn btn-gold btn-sm" onclick="openModal('addTestModal')">
-                                <i class="fas fa-plus"></i> Add Question
-                            </button>
-                        </div>
-
-                        <% if (level.test && level.test.questions && level.test.questions.length > 0) { %>
-                            <% level.test.questions.forEach((q, questionIndex) => { %>
-                                <div class="test-question-item">
-                                    <div class="q-header">
-                                        <div>
-                                            <div class="q-text">
-                                                <span class="badge badge-gold" style="font-size:0.7rem;">Q<%= questionIndex + 1 %></span>
-                                                <%= q.question %>
-                                            </div>
-                                            <div class="q-options">
-                                                <% q.options.forEach((opt, optIndex) => { %>
-                                                    <span class="<%= optIndex === q.correct ? 'correct-option' : '' %>">
-                                                        <%= String.fromCharCode(65 + optIndex) %>. <%= opt %>
-                                                        <%= optIndex === q.correct ? ' ✅' : '' %>
-                                                    </span>
-                                                    <% if (optIndex < q.options.length - 1) { %> | <% } %>
-                                                <% }) %>
-                                            </div>
-                                        </div>
-                                        <form action="/admin/levels/<%= course.id %>/<%= level.id %>/test/delete/<%= q.id %>" method="POST" style="display:inline;" onsubmit="return confirm('⚠️ Delete this test question?');">
-                                            <button type="submit" class="btn btn-danger btn-sm" style="padding:2px 10px; font-size:0.7rem;">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </button>
-                                        </form>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="classVideo_<%= lesson.id %>">Video URL (optional)</label>
+                                        <input type="text" id="classVideo_<%= lesson.id %>" name="videoUrl" class="form-control" placeholder="https://youtube.com/watch?v=...">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="classLink_<%= lesson.id %>">External Link (optional)</label>
+                                        <input type="text" id="classLink_<%= lesson.id %>" name="externalLink" class="form-control" placeholder="https://example.com">
                                     </div>
                                 </div>
-                            <% }) %>
-                        <% } else { %>
-                            <div class="empty-state" style="padding:var(--spacing-md);">
-                                <i class="fas fa-question-circle"></i>
-                                <h4>No Test Questions</h4>
-                                <p>Add questions to test students' knowledge.</p>
-                                <button class="btn btn-gold" onclick="openModal('addTestModal')" style="margin-top:12px;">
-                                    <i class="fas fa-plus"></i> Add Question
-                                </button>
-                            </div>
-                        <% } %>
-                    </div>
+                                <div class="form-group">
+                                    <label for="classContent_<%= lesson.id %>">Content</label>
+                                    <textarea id="classContent_<%= lesson.id %>" name="content" class="form-control" rows="3" placeholder="Class content..." required></textarea>
+                                </div>
+                                <button type="submit" class="btn-sm btn-success-sm">Add Class</button>
+                            </form>
 
-                </div>
-            </div>
-        </div>
-    </main>
+                            <!-- Existing Classes -->
+                            <% if (lesson.classes && lesson.classes.length > 0) { %>
+                                <div style="margin-top: 12px;">
+                                    <strong>Classes:</strong>
+                                    <% lesson.classes.forEach(cls => { %>
+                                        <div class="class-item">
+                                            <span class="class-title"><%= cls.title %></span>
+                                            <div class="class-actions">
+                                                <a href="#" class="btn-sm btn-primary-sm" onclick="alert('Edit class: <%= cls.id %>')">Edit</a>
+                                                <form action="/admin/levels/<%= course.id %>/<%= level.id %>/lessons/<%= lesson.id %>/classes/delete/<%= cls.id %>" method="POST" style="display: inline;" onsubmit="return confirm('Delete this class?')">
+                                                    <button type="submit" class="btn-sm btn-danger-sm">Delete</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    <% }) %>
+                                </div>
+                            <% } %>
 
-    <!-- ===== ADD LESSON MODAL ===== -->
-    <div class="modal-overlay" id="addLessonModal">
-        <div class="modal-box">
-            <div class="modal-header">
-                <h3><i class="fas fa-plus-circle" style="color:var(--purple-primary);"></i> Add New Lesson</h3>
-                <button class="modal-close" onclick="closeModal('addLessonModal')">&times;</button>
+                            <form action="/admin/levels/<%= course.id %>/<%= level.id %>/lessons/delete/<%= lesson.id %>" method="POST" style="display: inline;" onsubmit="return confirm('Delete this lesson?')">
+                                <button type="submit" class="btn-sm btn-danger-sm" style="margin-top: 8px;">Delete Lesson</button>
+                            </form>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <p style="color: #5a4a70;">No lessons added yet.</p>
+                <% } %>
             </div>
-            <form action="/admin/levels/<%= course.id %>/<%= level.id %>/lessons/add" method="POST">
-                <div class="form-group">
-                    <label for="lessonTitle">Lesson Title <span class="required">*</span></label>
-                    <input type="text" id="lessonTitle" name="title" placeholder="e.g. Introduction to Networking" required>
-                </div>
-                <div class="form-group">
-                    <label for="lessonDescription">Description <span style="color:var(--text-muted); font-weight:400;">(optional)</span></label>
-                    <textarea id="lessonDescription" name="description" rows="2" placeholder="Brief description of this lesson..."></textarea>
-                </div>
-                <div class="modal-actions">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Add Lesson
-                    </button>
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('addLessonModal')">
-                        <i class="fas fa-times"></i> Cancel
-                    </button>
-                </div>
-            </form>
-        </div>
+        </main>
     </div>
-
-    <!-- ===== ADD CLASS MODAL (WITH IMAGE UPLOAD) ===== -->
-    <div class="modal-overlay" id="addClassModal">
-        <div class="modal-box">
-            <div class="modal-header">
-                <h3><i class="fas fa-plus-circle" style="color:var(--purple-primary);"></i> Add New Class</h3>
-                <button class="modal-close" onclick="closeModal('addClassModal')">&times;</button>
-            </div>
-            <form id="addClassForm" action="" method="POST" enctype="multipart/form-data">
-                <div class="form-group">
-                    <label for="classTitle">Class Title <span class="required">*</span></label>
-                    <input type="text" id="classTitle" name="title" placeholder="e.g. Understanding IP Addresses" required>
-                </div>
-                <div class="form-group">
-                    <label for="classContent">Content <span class="required">*</span></label>
-                    <textarea id="classContent" name="content" rows="5" placeholder="Write the class content here. Supports markdown-like formatting..." required></textarea>
-                    <div class="help-text">
-                        <i class="fas fa-info-circle"></i> Use ## for headings, **bold**, *italic*, - for bullet lists, --- for horizontal rules.
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="classImage">Upload Image <span style="color:var(--text-muted); font-weight:400;">(optional)</span></label>
-                    <input type="file" id="classImage" name="classImage" accept="image/*" onchange="previewImage(this, 'addImagePreview')">
-                    <div class="help-text">
-                        <i class="fas fa-info-circle"></i> JPEG, PNG, GIF, WEBP, SVG (max 5MB)
-                    </div>
-                    <div class="image-preview-container" id="addImagePreview">
-                        <div class="preview-label">Image Preview</div>
-                        <img id="addPreviewImg" src="" alt="Preview">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="videoUrl">Video URL <span style="color:var(--text-muted); font-weight:400;">(optional)</span></label>
-                    <input type="text" id="videoUrl" name="videoUrl" placeholder="https://www.youtube.com/embed/VIDEO_ID">
-                </div>
-                <div class="form-group">
-                    <label for="externalLink">External Link <span style="color:var(--text-muted); font-weight:400;">(optional)</span></label>
-                    <input type="text" id="externalLink" name="externalLink" placeholder="https://example.com/resource">
-                </div>
-                <div class="modal-actions">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Add Class
-                    </button>
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('addClassModal')">
-                        <i class="fas fa-times"></i> Cancel
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- ===== EDIT CLASS MODAL (WITH IMAGE UPLOAD) ===== -->
-    <div class="modal-overlay" id="editClassModal">
-        <div class="modal-box">
-            <div class="modal-header">
-                <h3><i class="fas fa-edit" style="color:var(--purple-primary);"></i> Edit Class</h3>
-                <button class="modal-close" onclick="closeModal('editClassModal')">&times;</button>
-            </div>
-            <form id="editClassForm" action="" method="POST" enctype="multipart/form-data">
-                <input type="hidden" id="editClassId" name="classId">
-                <div class="form-group">
-                    <label for="editClassTitle">Class Title <span class="required">*</span></label>
-                    <input type="text" id="editClassTitle" name="title" required>
-                </div>
-                <div class="form-group">
-                    <label for="editClassContent">Content <span class="required">*</span></label>
-                    <textarea id="editClassContent" name="content" rows="5" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="editClassImage">Upload New Image <span style="color:var(--text-muted); font-weight:400;">(optional - leave empty to keep current)</span></label>
-                    <input type="file" id="editClassImage" name="classImage" accept="image/*" onchange="previewImage(this, 'editImagePreview')">
-                    <div class="help-text">
-                        <i class="fas fa-info-circle"></i> JPEG, PNG, GIF, WEBP, SVG (max 5MB)
-                    </div>
-                    <div class="image-preview-container" id="editImagePreview">
-                        <div class="preview-label">Image Preview</div>
-                        <img id="editPreviewImg" src="" alt="Preview">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="editVideoUrl">Video URL <span style="color:var(--text-muted); font-weight:400;">(optional)</span></label>
-                    <input type="text" id="editVideoUrl" name="videoUrl" placeholder="https://www.youtube.com/embed/VIDEO_ID">
-                </div>
-                <div class="form-group">
-                    <label for="editExternalLink">External Link <span style="color:var(--text-muted); font-weight:400;">(optional)</span></label>
-                    <input type="text" id="editExternalLink" name="externalLink" placeholder="https://example.com/resource">
-                </div>
-                <div class="modal-actions">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Update Class
-                    </button>
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('editClassModal')">
-                        <i class="fas fa-times"></i> Cancel
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- ===== ADD TEST QUESTION MODAL ===== -->
-    <div class="modal-overlay" id="addTestModal">
-        <div class="modal-box">
-            <div class="modal-header">
-                <h3><i class="fas fa-plus-circle" style="color:var(--text-warning);"></i> Add Test Question</h3>
-                <button class="modal-close" onclick="closeModal('addTestModal')">&times;</button>
-            </div>
-            <form action="/admin/levels/<%= course.id %>/<%= level.id %>/test/add" method="POST">
-                <div class="form-group">
-                    <label for="testQuestion">Question <span class="required">*</span></label>
-                    <input type="text" id="testQuestion" name="question" placeholder="e.g. What is the OSI model?" required>
-                </div>
-                <div class="form-group">
-                    <label for="option1">Option A <span class="required">*</span></label>
-                    <input type="text" id="option1" name="option1" placeholder="First option" required>
-                </div>
-                <div class="form-group">
-                    <label for="option2">Option B <span class="required">*</span></label>
-                    <input type="text" id="option2" name="option2" placeholder="Second option" required>
-                </div>
-                <div class="form-group">
-                    <label for="option3">Option C <span class="required">*</span></label>
-                    <input type="text" id="option3" name="option3" placeholder="Third option" required>
-                </div>
-                <div class="form-group">
-                    <label for="option4">Option D <span class="required">*</span></label>
-                    <input type="text" id="option4" name="option4" placeholder="Fourth option" required>
-                </div>
-                <div class="form-group">
-                    <label for="correct">Correct Answer <span class="required">*</span></label>
-                    <select id="correct" name="correct" required>
-                        <option value="0">A</option>
-                        <option value="1">B</option>
-                        <option value="2">C</option>
-                        <option value="3">D</option>
-                    </select>
-                </div>
-                <div class="modal-actions">
-                    <button type="submit" class="btn btn-gold">
-                        <i class="fas fa-save"></i> Add Question
-                    </button>
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('addTestModal')">
-                        <i class="fas fa-times"></i> Cancel
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- ===== FOOTER ===== -->
-    <footer style="background:linear-gradient(135deg, #6a3dcf, #4a1a8a); padding:24px 0 16px; margin-top:40px;">
-        <div style="max-width:1200px; margin:0 auto; padding:0 20px; text-align:center; font-size:0.8rem; color:rgba(255,255,255,0.6);">
-            &copy; 2026 SHINEX Learning Circle. All rights reserved.
-        </div>
-    </footer>
-
-    <script>
-        // ============================================================
-        // MODAL CONTROLS
-        // ============================================================
-        
-        function openModal(id) {
-            const modal = document.getElementById(id);
-            if (modal) {
-                modal.classList.add('open');
-                document.body.style.overflow = 'hidden';
-            }
-        }
-        
-        function closeModal(id) {
-            const modal = document.getElementById(id);
-            if (modal) {
-                modal.classList.remove('open');
-                document.body.style.overflow = '';
-            }
-        }
-        
-        // Close modal on overlay click
-        document.querySelectorAll('.modal-overlay').forEach(modal => {
-            modal.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    this.classList.remove('open');
-                    document.body.style.overflow = '';
-                }
-            });
-        });
-        
-        // Close modal on Escape key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                document.querySelectorAll('.modal-overlay.open').forEach(modal => {
-                    modal.classList.remove('open');
-                    document.body.style.overflow = '';
-                });
-            }
-        });
-        
-        // ============================================================
-        // ADD CLASS
-        // ============================================================
-        
-        function openAddClass(courseId, levelId, lessonId) {
-            const form = document.getElementById('addClassForm');
-            form.action = `/admin/levels/${courseId}/${levelId}/lessons/${lessonId}/classes/add`;
-            
-            // Reset form
-            form.reset();
-            document.getElementById('addImagePreview').classList.remove('has-image');
-            document.getElementById('addPreviewImg').src = '';
-            
-            openModal('addClassModal');
-        }
-        
-        // ============================================================
-        // EDIT CLASS
-        // ============================================================
-        
-        function openEditClass(courseId, levelId, lessonId, classId) {
-            const form = document.getElementById('editClassForm');
-            form.action = `/admin/levels/${courseId}/${levelId}/lessons/${lessonId}/classes/edit/${classId}`;
-            
-            // Fetch class data
-            fetch(`/admin/levels/${courseId}/${levelId}/lessons/${lessonId}/classes/${classId}/data`)
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('editClassTitle').value = data.title || '';
-                    document.getElementById('editClassContent').value = data.content || '';
-                    document.getElementById('editVideoUrl').value = data.videoUrl || '';
-                    document.getElementById('editExternalLink').value = data.externalLink || '';
-                    
-                    // Show current image if exists
-                    const previewContainer = document.getElementById('editImagePreview');
-                    const previewImg = document.getElementById('editPreviewImg');
-                    if (data.imageUrl) {
-                        previewImg.src = data.imageUrl;
-                        previewContainer.classList.add('has-image');
-                    } else {
-                        previewImg.src = '';
-                        previewContainer.classList.remove('has-image');
-                    }
-                    
-                    openModal('editClassModal');
-                })
-                .catch(error => {
-                    console.error('Error fetching class data:', error);
-                    alert('Failed to load class data. Please try again.');
-                });
-        }
-        
-        // ============================================================
-        // IMAGE PREVIEW
-        // ============================================================
-        
-        function previewImage(input, containerId) {
-            const container = document.getElementById(containerId);
-            const img = container.querySelector('img');
-            
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    img.src = e.target.result;
-                    container.classList.add('has-image');
-                };
-                reader.readAsDataURL(input.files[0]);
-            } else {
-                img.src = '';
-                container.classList.remove('has-image');
-            }
-        }
-        
-        // ============================================================
-        // SIDEBAR TOGGLE (Mobile)
-        // ============================================================
-        
-        function toggleSidebar() {
-            const sidebar = document.getElementById('adminSidebar');
-            if (sidebar) {
-                sidebar.classList.toggle('open');
-            }
-        }
-        
-        // ============================================================
-        // DARK MODE INIT
-        // ============================================================
-        
-        if (localStorage.getItem('shinex-theme') === 'dark') {
-            document.body.classList.add('dark-mode');
-        }
-        
-        // ============================================================
-        // AUTO DISMISS FLASH MESSAGES
-        // ============================================================
-        
-        document.querySelectorAll('.flash-message').forEach(msg => {
-            setTimeout(() => {
-                msg.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-                msg.style.opacity = '0';
-                msg.style.transform = 'translateY(-10px)';
-                setTimeout(() => {
-                    if (msg.parentNode) msg.remove();
-                }, 500);
-            }, 5000);
-        });
-        
-        // ============================================================
-        // CONSOLE WELCOME
-        // ============================================================
-        
-        console.log('🔐 SHINEX Admin Panel');
-        console.log('📚 Editing Level: <%= level.name %>');
-        console.log('📖 Lessons: <%= level.lessons ? level.lessons.length : 0 %>');
-        console.log('📝 Test Questions: <%= level.test && level.test.questions ? level.test.questions.length : 0 %>');
-    </script>
-
 </body>
 </html>

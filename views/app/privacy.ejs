@@ -1,0 +1,39 @@
+<%
+const body = `
+<section class="legal-header">
+    <h1>Privacy Policy</h1>
+    <p>How we handle your data</p>
+</section>
+
+<section class="legal-content">
+    <div class="legal-card">
+        <h2>Information We Collect</h2>
+        <p>We collect information you provide when registering, including name, email, phone number, and course preferences. We also collect usage data to improve our services.</p>
+
+        <h2>How We Use Your Information</h2>
+        <ul>
+            <li>To provide and improve our courses</li>
+            <li>To send you course updates and notifications</li>
+            <li>To personalize your learning experience</li>
+            <li>To respond to your inquiries and support requests</li>
+        </ul>
+
+        <h2>Data Security</h2>
+        <p>We use industry-standard security measures to protect your data. All sensitive information is encrypted and stored securely.</p>
+
+        <h2>Cookies</h2>
+        <p>We use cookies to enhance your experience and remember your preferences. You can disable cookies in your browser settings.</p>
+
+        <h2>Third-Party Services</h2>
+        <p>We may use third-party services (like SendGrid for email) to deliver our services. These services have their own privacy policies.</p>
+
+        <h2>Your Rights</h2>
+        <p>You can access, update, or delete your account at any time. Contact us if you have any concerns about your data.</p>
+
+        <h2>Contact</h2>
+        <p>For privacy concerns, please <a href="/app/contact">contact us</a>.</p>
+    </div>
+</section>
+`;
+%>
+<%- include('../partials/app-layout', { body: body, user: user, title: title, messages: messages }) %>

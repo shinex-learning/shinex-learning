@@ -1,0 +1,37 @@
+<%- include('../partials/header', { user: null, title: title }) %>
+
+<section class="auth-section">
+    <div class="container">
+        <div class="auth-container">
+            <div class="auth-card">
+                <h1>Login to SHINEX</h1>
+                <p>Welcome back! Login to continue learning</p>
+
+                <% if (messages && messages.error) { %>
+                    <div class="alert alert-error"><%= messages.error %></div>
+                <% } %>
+                <% if (messages && messages.success) { %>
+                    <div class="alert alert-success"><%= messages.success %></div>
+                <% } %>
+
+                <form action="/login" method="POST">
+                    <div class="form-group">
+                        <label for="identifier">Student ID or Email</label>
+                        <input type="text" id="identifier" name="identifier" class="form-control" placeholder="Enter your Student ID or Email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Login</button>
+                </form>
+
+                <div class="auth-footer">
+                    <p>Don't have an account? <a href="/register">Register</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<%- include('../partials/footer', { user: null }) %>

@@ -1,0 +1,19 @@
+<%- include('../partials/header', { user: null, title: title }) %>
+
+<section class="auth-section">
+    <div class="container">
+        <div class="auth-container">
+            <div class="auth-card" style="text-align: center;">
+                <div style="font-size: 64px; margin-bottom: 16px; color: #e74c3c;">❌</div>
+                <h1 style="color: #e74c3c;">Verification Failed</h1>
+                <p><%= messages && messages.error ? messages.error : 'Invalid or expired verification token.' %></p>
+                <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 24px;">
+                    <a href="/register" class="btn btn-primary btn-block">Register Again</a>
+                    <a href="/login" class="btn btn-secondary btn-block">Back to Login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<%- include('../partials/footer', { user: null }) %>

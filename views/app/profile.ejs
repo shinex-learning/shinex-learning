@@ -1,0 +1,44 @@
+<%
+const body = `
+<section class="profile-header">
+    <div class="profile-avatar">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" stroke-width="2"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+    </div>
+    <h1><%= user ? user.firstName + ' ' + user.lastName : 'Student' %></h1>
+    <p class="profile-student-id">Student ID: <%= user ? user.studentId : 'N/A' %></p>
+    <p class="profile-email"><%= user ? user.email : 'No email' %></p>
+</section>
+
+<section class="profile-menu">
+    <a href="/app/settings" class="profile-menu-item">
+        <div class="profile-menu-left">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#5a4a70" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+            <span>Settings</span>
+        </div>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7a6a8f" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+    </a>
+    <a href="/app/dashboard" class="profile-menu-item">
+        <div class="profile-menu-left">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#5a4a70" stroke-width="2"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1h-2z"/></svg>
+            <span>Dashboard</span>
+        </div>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7a6a8f" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+    </a>
+    <a href="/app/ai-tutor" class="profile-menu-item">
+        <div class="profile-menu-left">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#5a4a70" stroke-width="2"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+            <span>AI Tutor</span>
+        </div>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7a6a8f" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+    </a>
+    <a href="/app/logout" class="profile-menu-item profile-logout">
+        <div class="profile-menu-left">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e74c3c" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            <span style="color: #e74c3c;">Logout</span>
+        </div>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e74c3c" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+    </a>
+</section>
+`;
+%>
+<%- include('../partials/app-layout', { body: body, user: user, title: title, messages: messages }) %>

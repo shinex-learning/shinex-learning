@@ -1,0 +1,48 @@
+<%- include('../partials/header', { user: user, title: title }) %>
+
+<section class="page-hero">
+    <div class="container">
+        <h1>All Courses</h1>
+        <p>Choose from our comprehensive range of courses designed to boost your career</p>
+    </div>
+</section>
+
+<section class="courses-list">
+    <div class="container">
+        <div class="desktop-courses-grid">
+            <% if (courses && courses.length > 0) { %>
+                <% courses.forEach(course => { 
+                    let lessonCount = 0;
+                    if (course.levels) {
+                        course.levels.forEach(level => {
+                            if (level.lessons) {
+                                level.lessons.forEach(lesson => {
+                                    if (lesson.classes) lessonCount += lesson.classes.length;
+                                });
+                            }
+                        });
+                    }
+                %>
+                    <div class="desktop-course-card">
+                        <div class="desktop-course-image" style="background: linear-gradient(135deg, #8B5CF6, #6a3dcf);">
+                            <span class="course-badge"><%= course.level || 'Beginner' %></span>
+                        </div>
+                        <div class="desktop-course-body">
+                            <h3><%= course.title %></h3>
+                            <p><%= course.description ? course.description.substring(0, 100) + '...' : 'Learn essential skills in this comprehensive course.' %></p>
+                            <div class="desktop-course-meta">
+                                <span><%= lessonCount %> Lessons</span>
+                                <span><%= course.duration || 'Flexible' %></span>
+                            </div>
+                            <a href="/course/<%= course.id %>" class="btn btn-primary btn-block">View Course</a>
+                        </div>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <div class="empty-state">No courses available yet. Check back soon!</div>
+            <% } %>
+        </div>
+    </div>
+</section>
+
+<%- include('../partials/footer', { user: user }) %>

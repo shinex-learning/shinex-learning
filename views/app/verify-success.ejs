@@ -1,0 +1,17 @@
+<%
+const body = `
+<div class="verify-container">
+    <div class="verify-card success-card">
+        <div class="verify-icon success-icon">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#27ae60" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <h1>Email Verified!</h1>
+        <p>Your account has been successfully verified.</p>
+        <div class="verify-actions">
+            <a href="/app/dashboard" class="btn btn-primary btn-block">Go to Dashboard</a>
+        </div>
+    </div>
+</div>
+`;
+%>
+<%- include('../partials/app-layout', { body: body, user: user, title: title, messages: messages }) %>
