@@ -1,19 +1,36 @@
-<header class="desktop-header">
-    <div class="container">
-        <a href="/" class="logo">SHINEX<span>.</span></a>
-        <nav class="desktop-nav">
-            <a href="/" class="<%= title === 'Home' ? 'active' : '' %>">Home</a>
-            <a href="/courses" class="<%= title === 'Courses' ? 'active' : '' %>">Courses</a>
-            <a href="/ai-tutor" class="<%= title === 'AI Tutor' ? 'active' : '' %>">AI Tutor</a>
-            <a href="/contact" class="<%= title === 'Contact Us' ? 'active' : '' %>">Contact</a>
-            <% if (user) { %>
-                <a href="/dashboard">Dashboard</a>
-                <a href="/profile">Profile</a>
-                <a href="/logout">Logout</a>
-            <% } else { %>
-                <a href="/login">Login</a>
-                <a href="/register" class="btn btn-primary btn-sm">Register</a>
-            <% } %>
-        </nav>
-    </div>
-</header>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> - SHINEX</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- ========================================================== -->
+    <!-- MONETAG AD CODE -->
+    <!-- ========================================================== -->
+    <script src="https://quge5.com/88/tag.min.js" data-zone="270823" async data-cfasync="false"></script>
+    <!-- ========================================================== -->
+
+</head>
+<body>
+    <header class="desktop-header">
+        <div class="container">
+            <a href="/" class="logo">SHINEX<span>.</span></a>
+            <nav class="desktop-nav">
+                <a href="/" class="<%= title === 'Home' ? 'active' : '' %>">Home</a>
+                <a href="/courses" class="<%= title === 'Courses' ? 'active' : '' %>">Courses</a>
+                <a href="/ai-tutor" class="<%= title === 'AI Tutor' ? 'active' : '' %>">AI Tutor</a>
+                <a href="/contact" class="<%= title === 'Contact Us' ? 'active' : '' %>">Contact</a>
+                <% if (user) { %>
+                    <a href="/dashboard">Dashboard</a>
+                    <a href="/profile">Profile</a>
+                    <a href="/logout">Logout</a>
+                <% } else { %>
+                    <a href="/login">Login</a>
+                    <a href="/register" class="btn btn-primary btn-sm">Register</a>
+                <% } %>
+            </nav>
+        </div>
+    </header>
